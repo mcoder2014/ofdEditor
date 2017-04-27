@@ -2,31 +2,27 @@
 #define COMMONDT_H
 
 //6种基本数据类型
-class ST_Loc {
+struct ST_Loc {
 
 };
 
-class ST_Array {
+struct ST_Array {
 
 };
 
-class ST_ID {
-public:
+struct ST_ID {
     unsigned long id;
 };
 
-class ST_RefID {
-public:
+struct ST_RefID {
     unsigned long ref_id;
 };
 
-class ST_Pos {
-public:
+struct ST_Pos {
     double x, y;
 };
 
-class ST_Box {
-public:
+struct ST_Box {
     double start_x, start_y, delta_x, delta_y;
 };
 
