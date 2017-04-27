@@ -28,7 +28,8 @@ SOURCES += ofd.cpp \
     DataTypes/CT_DrawParam.cpp \
     DataTypes/Color/CT_ColorSpace.cpp \
     DataTypes/Color/CT_Color.cpp \
-    DataTypes/Color/CT_Pattern.cpp
+    DataTypes/Color/CT_Pattern.cpp \
+    DataTypes/Color/CT_AxialShd.cpp
 
 HEADERS += ofd.h\
         ofd_global.h \
@@ -36,7 +37,8 @@ HEADERS += ofd.h\
     DataTypes/CT_DrawParam.h \
     DataTypes/Color/CT_ColorSpace.h \
     DataTypes/Color/CT_Color.h \
-    DataTypes/Color/CT_Pattern.h
+    DataTypes/Color/CT_Pattern.h \
+    DataTypes/Color/CT_AxialShd.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

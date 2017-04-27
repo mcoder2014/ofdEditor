@@ -1,6 +1,14 @@
 #ifndef COMMONDT_H
 #define COMMONDT_H
 
+// 其他数据类型
+#include "CT_DrawParam.h"
+#include "Color/CT_AxialShd.h"
+#include "Color/CT_Color.h"
+#include "Color/CT_ColorSpace.h"
+#include "Color/CT_Pattern.h"
+
+
 //6种基本数据类型
 struct ST_Loc {
 

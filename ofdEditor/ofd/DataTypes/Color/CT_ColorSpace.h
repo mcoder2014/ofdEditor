@@ -3,6 +3,8 @@
 
 #include <string>
 using std::string;
+#include <vector>
+using std::vector;
 #include "../basic_datatype.h"
 
 // 颜色空间描述
@@ -17,9 +19,17 @@ public:
     int BitsPerComponent;   // 颜色通道数，默认为 8
     ST_Loc Profile;         // 指向包内的文件描述文件
     // Palette // 调色版描述
-    ST_Array CV;            // 调色板中预定义颜色
+    vector<CT_ColorSpace_Palette> Palette;      // 调色板描述
+
 
     CT_ColorSpace();
 };
+
+class CT_ColorSpace_Palette{
+    ST_Array CV;            // 调色板中预定义颜色
+};
+
+
+
 
 #endif // CT_COLORSPACE_H
