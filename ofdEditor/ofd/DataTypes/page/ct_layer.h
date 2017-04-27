@@ -1,0 +1,12 @@
+#ifndef CT_LAYER_H
+#define CT_LAYER_H
+#include "../basic_datatype.h"
+#include "ct_pageblock.h"
+
+class CT_Layer : CT_PageBlock {
+public:
+    enum LayerType {Body, Foreground, Background};
+    LayerType type;
+};
+
+#endif // CT_LAYER_H

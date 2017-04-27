@@ -29,7 +29,10 @@ struct ST_Box {
 
 class CT_PageArea {
 public:
-    ST_Box physical_box;
+    ST_Box physical_box;    //物理区域
+    ST_Box application_box; //显示区域
+    ST_Box content_box;     //版心区域
+    ST_Box bleed_box;       //出血区域
 };
 
 

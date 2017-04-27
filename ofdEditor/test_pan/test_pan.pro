@@ -29,9 +29,24 @@ SOURCES += \
 
 HEADERS  += \
     basic_datatype.h \
-    documentclasses.h \
     mainwindow.h \
-    text_object_classes.h
+    text_object_classes.h \
+    document_object_classes.h \
+    document/ofd.h \
+    document/ct_docinfo.h \
+    document/docbody.h \
+    document/ct_commondata.h \
+    document/document.h \
+    document/ct_outlineelem.h \
+    document/ct_outlines.h \
+    page/ct_pageblock.h \
+    page/ct_layer.h \
+    page/page.h \
+    page/pages.h \
+    text/ct_font.h \
+    text/ct_cgtransform.h \
+    text/textcode.h \
+    text/ct_text.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -42,6 +57,7 @@ OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 INCLUDEPATH += ../model \
                ../ofd
 
+FORMS    += mainwindow.ui
 
 unix{
     LIBS += ../bin/libmodel.so\

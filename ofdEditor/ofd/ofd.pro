@@ -28,7 +28,22 @@ SOURCES += ofd.cpp
 
 HEADERS += ofd.h\
         ofd_global.h \
-    DataTypes/basic_datatype.h
+    DataTypes/basic_datatype.h \
+    DataTypes/text/ct_cgtransform.h \
+    DataTypes/text/ct_font.h \
+    DataTypes/text/ct_text.h \
+    DataTypes/text/textcode.h \
+    DataTypes/page/ct_layer.h \
+    DataTypes/page/ct_pageblock.h \
+    DataTypes/page/page.h \
+    DataTypes/document/ct_commondata.h \
+    DataTypes/document/ct_docinfo.h \
+    DataTypes/document/ct_outlineelem.h \
+    DataTypes/document/ct_outlines.h \
+    DataTypes/document/docbody.h \
+    DataTypes/document/document.h \
+    DataTypes/document/ofd.h \
+    DataTypes/page/ct_pages.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
