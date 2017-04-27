@@ -27,7 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += ofd.cpp
 
 HEADERS += ofd.h\
-        ofd_global.h
+        ofd_global.h \
+    DataTypes/basic_datatype.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
