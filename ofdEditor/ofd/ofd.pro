@@ -24,11 +24,35 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += ofd.cpp
+SOURCES += ofd.cpp \
+    DataTypes/CT_DrawParam.cpp \
+    DataTypes/Color/CT_ColorSpace.cpp \
+    DataTypes/Color/CT_Color.cpp \
+    DataTypes/Color/CT_Pattern.cpp \
+    DataTypes/Color/CT_AxialShd.cpp \
+    DataTypes/Color/CT_RadialShd.cpp \
+    DataTypes/CT_Clip.cpp \
+    DataTypes/CT_GraphicUnit.cpp \
+    DataTypes/CT_Action.cpp \
+    DataTypes/CT_Path.cpp \
+    DataTypes/CT_Image.cpp \
+    DataTypes/CT_PageArea.cpp
 
 HEADERS += ofd.h\
         ofd_global.h \
-    DataTypes/basic_datatype.h
+    DataTypes/basic_datatype.h \
+    DataTypes/CT_DrawParam.h \
+    DataTypes/Color/CT_ColorSpace.h \
+    DataTypes/Color/CT_Color.h \
+    DataTypes/Color/CT_Pattern.h \
+    DataTypes/Color/CT_AxialShd.h \
+    DataTypes/Color/CT_RadialShd.h \
+    DataTypes/CT_Clip.h \
+    DataTypes/CT_GraphicUnit.h \
+    DataTypes/CT_Action.h \
+    DataTypes/CT_Path.h \
+    DataTypes/CT_Image.h \
+    DataTypes/CT_PageArea.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
