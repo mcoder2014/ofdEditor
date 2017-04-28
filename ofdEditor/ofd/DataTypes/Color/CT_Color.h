@@ -1,14 +1,18 @@
 #ifndef CT_COLOR_H
 #define CT_COLOR_H
 
+#include "../../ofd_global.h"  // 生成库文件需要
+
 #include <string>
 using std::string;
 #include "../basic_datatype.h"
 #include "CT_Pattern.h"
+#include "CT_AxialShd.h"
+#include "CT_RadialShd.h"
 
 // 颜色结构
 
-class CT_Color
+class OFDSHARED_EXPORT CT_Color
 {
 public:
 
@@ -20,8 +24,9 @@ public:
     CT_Pattern Pattern;         // 底纹填充，复杂颜色的一种。
 
     // 二选一
-    //CT_AxialShd AxialShd;       // 轴向渐变
-    //CT_RadialShd RadialShd;     // 径向渐变
+    CT_AxialShd AxialShd;       // 轴向渐变
+    CT_RadialShd RadialShd;     // 径向渐变
+    int Shd_Selected;           // 0表示选择轴向，1表示选择径向，默认值-1
 
     CT_Color();
 };

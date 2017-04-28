@@ -1,6 +1,8 @@
 #ifndef CT_IMAGE_H
 #define CT_IMAGE_H
 
+#include "../ofd_global.h"   // 生成库文件时需要
+
 #include <string>
 using std::string;
 #include "CT_GraphicUnit.h"
@@ -10,7 +12,7 @@ using std::string;
  * @brief  图像对象类型
  * @date   2017/04/28
  */
-class CT_Image:public CT_GraphicUnit
+class OFDSHARED_EXPORT CT_Image:public CT_GraphicUnit
 {
 public:
 

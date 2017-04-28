@@ -1,6 +1,8 @@
 #ifndef CT_PATH_H
 #define CT_PATH_H
 
+#include "../ofd_global.h"   // 生成库文件时需要
+
 #include <string>
 using std::string;
 #include "CT_GraphicUnit.h"
@@ -11,7 +13,7 @@ using std::string;
  * @brief  图形对象及其定义
  * @date   2017/04/28
  */
-class CT_Path : public CT_GraphicUnit
+class OFDSHARED_EXPORT CT_Path : public CT_GraphicUnit
 {
 public:
 

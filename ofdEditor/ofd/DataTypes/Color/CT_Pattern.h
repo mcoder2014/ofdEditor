@@ -1,6 +1,8 @@
 #ifndef CT_PATTERN_H
 #define CT_PATTERN_H
 
+#include "../../ofd_global.h"  // 生成库文件需要
+
 #include <string>
 using std::string;
 #include "../basic_datatype.h"
@@ -18,7 +20,7 @@ using std::string;
 //};
 
 // 底纹类型
-class CT_Pattern
+class OFDSHARED_EXPORT CT_Pattern
 {
 public:
 
@@ -35,7 +37,7 @@ public:
     ST_Array CTM;               // Pattern 单元的变换矩阵，用于某些需要对Pattern 单元进行平移旋转变换的场合，默认为单位矩阵；
                                 // Pattern 呈现时先做XStep,YStep 排布，然后一起做CTM 处理
     //CT_PageBlock CellContent;   // 底纹单元，用底纹画刷填充目标区域时，所使用的单元对象 -必选
-//    CT_Pattern_CellContent CellContent;     //底纹单元
+    //CT_Pattern_CellContent CellContent;     //底纹单元
 
     CT_Pattern();
 };

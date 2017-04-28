@@ -1,6 +1,8 @@
 #ifndef CT_RADIALSHD_H
 #define CT_RADIALSHD_H
 
+#include "../../ofd_global.h"  // 生成库文件需要
+
 #include <string>
 using std::string;
 #include <vector>
@@ -9,7 +11,7 @@ using std::vector;
 #include "../basic_datatype.h"
 #include "CT_AxialShd.h"
 
-class CT_RadialShd
+class OFDSHARED_EXPORT CT_RadialShd
 {
 public:
 

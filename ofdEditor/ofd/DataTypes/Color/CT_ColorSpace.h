@@ -1,6 +1,8 @@
 #ifndef CT_COLORSPACE_H
 #define CT_COLORSPACE_H
 
+#include "../../ofd_global.h"  // 生成库文件需要
+
 #include <string>
 using std::string;
 #include <vector>
@@ -13,7 +15,7 @@ class CT_ColorSpace_Palette;
 // 颜色空间描述
 
 
-class CT_ColorSpace
+class OFDSHARED_EXPORT CT_ColorSpace
 {
 public:
 
@@ -28,7 +30,7 @@ public:
     CT_ColorSpace();
 };
 
-class CT_ColorSpace_Palette{
+class OFDSHARED_EXPORT CT_ColorSpace_Palette{
     ST_Array CV;            // 调色板中预定义颜色
 };
 

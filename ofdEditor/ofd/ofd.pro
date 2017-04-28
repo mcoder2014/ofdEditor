@@ -35,7 +35,8 @@ SOURCES += ofd.cpp \
     DataTypes/CT_GraphicUnit.cpp \
     DataTypes/CT_Action.cpp \
     DataTypes/CT_Path.cpp \
-    DataTypes/CT_Image.cpp
+    DataTypes/CT_Image.cpp \
+    DataTypes/CT_PageArea.cpp
 
 HEADERS += ofd.h\
         ofd_global.h \
@@ -50,7 +51,8 @@ HEADERS += ofd.h\
     DataTypes/CT_GraphicUnit.h \
     DataTypes/CT_Action.h \
     DataTypes/CT_Path.h \
-    DataTypes/CT_Image.h
+    DataTypes/CT_Image.h \
+    DataTypes/CT_PageArea.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

@@ -1,6 +1,8 @@
 #ifndef CT_AXIALSHD_H
 #define CT_AXIALSHD_H
 
+#include "../../ofd_global.h"  // 生成库文件需要
+
 #include <string>
 using std::string;
 #include <vector>
@@ -13,7 +15,7 @@ class CT_AxialShd_Color_Segment;
 // 轴向渐变属性
 
 
-class CT_AxialShd
+class OFDSHARED_EXPORT CT_AxialShd
 {
 public:
 
@@ -34,7 +36,7 @@ public:
 };
 
 // 颜色段的表示
-class CT_AxialShd_Color_Segment{
+class OFDSHARED_EXPORT CT_AxialShd_Color_Segment{
 public:
     double Position;            // 用于确定StartPoint 和EndPoint 中的各颜色的位置值，取值范围是[0, 1.0]，各段颜色的Position 值应根据颜色出现的顺序递增。
     CT_Color Color;             // 该段的颜色，简单的颜色

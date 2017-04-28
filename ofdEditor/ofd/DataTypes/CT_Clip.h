@@ -1,16 +1,19 @@
 #ifndef CT_CLIP_H
 #define CT_CLIP_H
 
+#include "../ofd_global.h"   // 生成库文件时需要
+
 #include <string>
 using std::string;
 #include <vector>
 using std::vector;
 #include "basic_datatype.h"
+#include "CT_Path.h"
 
-class CT_Clip_Area{
+class OFDSHARED_EXPORT CT_Clip_Area{
 
     // 二选一
-    // CT_Path Path;        // 用于裁剪的路径
+    CT_Path Path;        // 用于裁剪的路径
     // CT_Text Text;        // 用于裁剪的文本
 
     ST_RefID DrawParam;     // 绘制参数引用
@@ -20,7 +23,7 @@ class CT_Clip_Area{
 
 
 // 裁剪区结构
-class CT_Clip
+class OFDSHARED_EXPORT CT_Clip
 {
 public:
 

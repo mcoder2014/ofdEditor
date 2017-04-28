@@ -1,6 +1,8 @@
 #ifndef CT_GRAPHICUNIT_H
 #define CT_GRAPHICUNIT_H
 
+#include "../ofd_global.h"   // 生成库文件时需要
+
 #include <vector>
 using std::vector;
 #include "basic_datatype.h"
@@ -12,7 +14,7 @@ using std::string;
 #include "CT_Action.h"
 
 // 基本图元对象定义
-class CT_GraphicUnit
+class OFDSHARED_EXPORT CT_GraphicUnit
 {
 
 public:
@@ -31,7 +33,7 @@ public:
 
     CT_Color FillColor;         // 填充颜色
     CT_Color StrokeColor;       // 勾边颜色
-    // CT_Action Actions;       // 图元对象附带的动作序列。
+    // CT_Actions Actions;       // 图元对象附带的动作序列。
 
     vector<CT_Clip> Clips;      // 图元对象的裁剪区
 
