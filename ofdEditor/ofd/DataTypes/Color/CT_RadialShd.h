@@ -15,8 +15,11 @@ class OFDSHARED_EXPORT CT_RadialShd
 {
 public:
 
-    string MapType;             // 渐变绘制的方式，
+    //string MapType;             // 渐变绘制的方式，
         // 可选值 "Direct","Repeat","Reflect", 默认值为 "Direct"
+    enum MapType_Def{Direct,Repeat,Reflect};
+    MapType_Def MapType;
+
     double MapUnit;             // 当MapType的值不为Direct时出现。
         // 表示中心点连线上一个渐变区间所绘制的长度，默认值为中心点连线长度。
     double Eccentricity;        // 两个椭圆的离心率，取值范围是[0, 1]。

@@ -1,11 +1,11 @@
 #ifndef CT_GRAPHICUNIT_H
 #define CT_GRAPHICUNIT_H
 
-#include "../ofd_global.h"   // 生成库文件时需要
+#include "../../ofd_global.h"   // 生成库文件时需要
 
 #include <vector>
 using std::vector;
-#include "basic_datatype.h"
+#include "../basic_datatype.h"
 #include <string>
 using std::string;
 
@@ -27,10 +27,17 @@ public:
     ST_Array CTM;               // 对象坐标系下的变换矩阵。
     ST_RefID DrawParam;         // 绘制参数的引用
     double LineWidth;           // 线宽
-    string Cap;                 // 线帽样式。默认"Butt"
-        // 可选"Round"、"Round"、"Square"
-    string Join;                // 结合点样式。默认"Miter"
-        // 可选"Miter"、"Round"、"Bevel"
+
+//    string Cap;                 // 线帽样式。默认"Butt"
+//        // 可选"Round"、"Round"、"Square"
+    enum Cap_Def{Butt,Round,Square};
+    Cap_Def Cap;
+
+//    string Join;                // 结合点样式。默认"Miter"
+//        // 可选"Miter"、"Round"、"Bevel"
+    enum Join_Def{Miter,Round,Bevel};
+    Join_Def Join;
+
     double MiterLimit;          // Join为Miter时JoinSize截断值。
         // 默认为3.528毫米（10  磅）
     double DashOffset;          // 虚线重复起始值。

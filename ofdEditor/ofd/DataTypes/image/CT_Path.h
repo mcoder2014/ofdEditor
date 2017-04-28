@@ -1,7 +1,7 @@
 #ifndef CT_PATH_H
 #define CT_PATH_H
 
-#include "../ofd_global.h"   // 生成库文件时需要
+#include "../../ofd_global.h"   // 生成库文件时需要
 
 #include <string>
 using std::string;

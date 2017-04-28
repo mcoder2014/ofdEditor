@@ -1,56 +1,45 @@
 #ifndef COMMONDT_H
 #define COMMONDT_H
-
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 #include "../ofd_global.h"   // 生成库文件时需要
 
 #include <string>
 using std::string;
 
-// 其他数据类型
-//#include "CT_DrawParam.h"
-//#include "Color/CT_AxialShd.h"
-//#include "Color/CT_Color.h"
-//#include "Color/CT_ColorSpace.h"
-//#include "Color/CT_Pattern.h"
-//#include "Color/CT_RadialShd.h"
-
 //6种基本数据类型
-struct OFDSHARED_EXPORT ST_Loc {
-    string path;
+class OFDSHARED_EXPORT ST_Loc {
+public:
+    string location;
+};
+
+class OFDSHARED_EXPORT ST_Array {
 
 };
 
-struct OFDSHARED_EXPORT ST_Array {
-
-};
-
-struct OFDSHARED_EXPORT ST_ID {
+class OFDSHARED_EXPORT ST_ID {
+public:
     unsigned long id;
 };
 
-struct OFDSHARED_EXPORT ST_RefID {
+class OFDSHARED_EXPORT ST_RefID {
+public:
     unsigned long ref_id;
 };
 
-struct OFDSHARED_EXPORT ST_Pos {
+class OFDSHARED_EXPORT ST_Pos {
+public:
     double x, y;
 };
 
-struct OFDSHARED_EXPORT ST_Box {
+class OFDSHARED_EXPORT ST_Box {
+public:
     double start_x, start_y, delta_x, delta_y;
 };
 
-// 根据xsd描述重新写了
-//class CT_PageArea {
-//public:
-//    ST_Box physical_box;
-//};
-
-// 根据xsd描述重新写了
-//class CT_Color {
-//    //属性
-//    ST_Array value;
-//    int index;
-//    ST_RefID colorspace;
-//};
+class OFDSHARED_EXPORT CT_Object { //OFD文档中所有部件的基类
+    ST_ID id;
+};
 #endif // COMMONDT_H
