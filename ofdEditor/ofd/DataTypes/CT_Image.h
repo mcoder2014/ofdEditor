@@ -5,6 +5,7 @@
 
 #include <string>
 using std::string;
+#include "basic_datatype.h"
 #include "CT_GraphicUnit.h"
 
 /**
