@@ -8,7 +8,6 @@ using std::string;
 #include <vector>
 using std::vector;
 #include "../basic_datatype.h"
-#include "CT_AxialShd.h"
 
 class CT_ColorSpace_Palette;
 

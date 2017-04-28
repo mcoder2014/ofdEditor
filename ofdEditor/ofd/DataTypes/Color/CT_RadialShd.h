@@ -30,7 +30,7 @@ public:
                                 // 2：在起点圆至终点圆延长线方向绘制渐变；
                                 // 3：向两侧延长线方向绘制渐变。
 
-    vector<CT_AxialShd_Color_Segment> Segment;  // 颜色段，至少需要两个
+    vector<CT_AxialShd_Color_Segment*> Segment;  // 颜色段，至少需要两个
 
 
     CT_RadialShd();

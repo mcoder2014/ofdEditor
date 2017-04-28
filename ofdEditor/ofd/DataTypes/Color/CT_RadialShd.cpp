@@ -1,4 +1,5 @@
 #include "CT_RadialShd.h"
+#include "CT_Color.h"
 
 CT_RadialShd::CT_RadialShd()
 {

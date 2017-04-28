@@ -4,9 +4,11 @@
 #include "../ofd_global.h"   // 生成库文件时需要
 
 #include "basic_datatype.h"
-#include "Color/CT_Color.h"
+
 #include <string>
 using std::string;
+
+class CT_Color;
 
 // 图元绘制参数属性
 
@@ -26,10 +28,11 @@ public:
     string Cap;                 // 线端点样式，枚举值，指定了一条线的端点样式。默认值为Butt       - 可选 ("Butt";"Round";"Square";)
     double MiterLimit;          // Join 为Miter 时小角度JoinSize 的截断值，默认值为3.528。
                                 // 当Join 不等于Miter 时该参数无效 - 可选
-    CT_Color FillColor;         // 填充颜色     -默认为透明值 - 可选
-    CT_Color StrokeColor;       // 描边颜色     -默认为黑色  - 可选
+    CT_Color* FillColor;         // 填充颜色     -默认为透明值 - 可选
+    CT_Color* StrokeColor;       // 描边颜色     -默认为黑色  - 可选
 
     CT_DrawParam();
+    ~CT_DrawParam();
 };
 
 #endif // CT_DRAWPARAM_H
