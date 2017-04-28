@@ -21,9 +21,12 @@ class OFDSHARED_EXPORT CT_AxialShd
 {
 public:
 
-    string MapType;             // 渐变绘制的方式，可选值 "Direct","Repeat","Reflect", 默认值为 "Direct"
-    double MapUnit;             // 轴线一个渐变区间的长度，当MapType 的值不等于Direct 时出现，默认值为轴线长度
-    int Extend;                 // 轴线延长线方向是否继续绘制渐变。可选值为0、1、2、3
+    string MapType;             // 渐变绘制的方式，
+        // 可选值 "Direct","Repeat","Reflect", 默认值为 "Direct"
+    double MapUnit;             // 轴线一个渐变区间的长度，
+        // 当MapType 的值不等于Direct 时出现，默认值为轴线长度
+    int Extend;                 // 轴线延长线方向是否继续绘制渐变。
+        // 可选值为0、1、2、3
                                 // 0：不向两侧继续绘制渐变；
                                 // 1：在终点至起点延长线方向绘制渐变；
                                 // 2：在起点至终点延长线方向绘制渐变；
@@ -40,7 +43,9 @@ public:
 // 颜色段的表示
 class OFDSHARED_EXPORT CT_AxialShd_Color_Segment{
 public:
-    double Position;            // 用于确定StartPoint 和EndPoint 中的各颜色的位置值，取值范围是[0, 1.0]，各段颜色的Position 值应根据颜色出现的顺序递增。
+    double Position;            // 用于确定StartPoint 和 EndPoint
+        // 中的各颜色的位置值，取值范围是[0, 1.0]，
+        // 各段颜色的Position 值应根据颜色出现的顺序递增。
     CT_Color* Color;             // 该段的颜色，简单的颜色
 
     CT_AxialShd_Color_Segment();
