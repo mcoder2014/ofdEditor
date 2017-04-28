@@ -2,12 +2,12 @@
 #define COMMONDT_H
 
 // 其他数据类型
-#include "CT_DrawParam.h"
-#include "Color/CT_AxialShd.h"
-#include "Color/CT_Color.h"
-#include "Color/CT_ColorSpace.h"
-#include "Color/CT_Pattern.h"
-
+//#include "CT_DrawParam.h"
+//#include "Color/CT_AxialShd.h"
+//#include "Color/CT_Color.h"
+//#include "Color/CT_ColorSpace.h"
+//#include "Color/CT_Pattern.h"
+//#include "Color/CT_RadialShd.h"
 
 //6种基本数据类型
 struct ST_Loc {
@@ -35,16 +35,16 @@ struct ST_Box {
 };
 
 
-class CT_PageArea {
-public:
-    ST_Box physical_box;
-};
+//class CT_PageArea {
+//public:
+//    ST_Box physical_box;
+//};
 
 
-class CT_Color {
-    //属性
-    ST_Array value;
-    int index;
-    ST_RefID colorspace;
-};
+//class CT_Color {
+//    //属性
+//    ST_Array value;
+//    int index;
+//    ST_RefID colorspace;
+//};
 #endif // COMMONDT_H

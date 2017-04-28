@@ -1,6 +1,7 @@
 #ifndef CT_DRAWPARAM_H
 #define CT_DRAWPARAM_H
 #include "basic_datatype.h"
+#include "Color/CT_Color.h"
 #include <string>
 using std::string;
 

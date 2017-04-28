@@ -6,8 +6,12 @@ using std::string;
 #include <vector>
 using std::vector;
 #include "../basic_datatype.h"
+#include "CT_Color.h"
+
+class CT_AxialShd_Color_Segment;
 
 // 轴向渐变属性
+
 
 class CT_AxialShd
 {
@@ -24,14 +28,14 @@ public:
     ST_Pos StartPoint;          // 轴线起始点        -必选
     ST_Pos EndPoint;            // 轴线的结束点      -必选
     // Segment                  // 颜色段，至少出现两个
-    vector<CT_AxialShd_Color_Segment> Segment;  // 颜色段，至少出现两个
+    vector<CT_AxialShd_Color_Segment> Segment;  // 颜色段，至少需要两个
 
     CT_AxialShd();
 };
 
 // 颜色段的表示
 class CT_AxialShd_Color_Segment{
-
+public:
     double Position;            // 用于确定StartPoint 和EndPoint 中的各颜色的位置值，取值范围是[0, 1.0]，各段颜色的Position 值应根据颜色出现的顺序递增。
     CT_Color Color;             // 该段的颜色，简单的颜色
 };
