@@ -1,11 +1,9 @@
 #ifndef CT_PAGEAREA_H
 #define CT_PAGEAREA_H
 
-#include "../ofd_global.h"   // 生成库文件时需要
+#include "../../ofd_global.h"   // 生成库文件时需要
 
-#include"basic_datatype.h"
-
-
+#include"../basic_datatype.h"
 
 /**
  * @Author Chaoqun

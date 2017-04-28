@@ -1,13 +1,13 @@
 #ifndef CT_CLIP_H
 #define CT_CLIP_H
 
-#include "../ofd_global.h"   // 生成库文件时需要
+#include "../../ofd_global.h"   // 生成库文件时需要
 
 #include <string>
 using std::string;
 #include <vector>
 using std::vector;
-#include "basic_datatype.h"
+#include "../basic_datatype.h"
 
 class CT_Path;
 

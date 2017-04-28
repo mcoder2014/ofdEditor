@@ -3,6 +3,7 @@
 
 CT_RadialShd::CT_RadialShd()
 {
+    this->MapType = Direct;
     this->Eccentricity = 0;
     this->Angle = 0;
     this->Extend = 0;

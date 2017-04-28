@@ -1,11 +1,11 @@
 #ifndef CT_IMAGE_H
 #define CT_IMAGE_H
 
-#include "../ofd_global.h"   // 生成库文件时需要
+#include "../../ofd_global.h"   // 生成库文件时需要
 
 #include <string>
 using std::string;
-#include "basic_datatype.h"
+#include "../basic_datatype.h"
 #include "CT_GraphicUnit.h"
 
 /**

@@ -21,8 +21,11 @@ class OFDSHARED_EXPORT CT_AxialShd
 {
 public:
 
-    string MapType;             // 渐变绘制的方式，
+    //string MapType;             // 渐变绘制的方式，
         // 可选值 "Direct","Repeat","Reflect", 默认值为 "Direct"
+    enum MapType_Def{Direct,Repeat,Reflect};
+    MapType_Def MapType;
+
     double MapUnit;             // 轴线一个渐变区间的长度，
         // 当MapType 的值不等于Direct 时出现，默认值为轴线长度
     int Extend;                 // 轴线延长线方向是否继续绘制渐变。
