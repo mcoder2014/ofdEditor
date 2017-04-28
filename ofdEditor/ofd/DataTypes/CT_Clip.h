@@ -32,7 +32,8 @@ class OFDSHARED_EXPORT CT_Clip
 public:
 
 
-    vector<CT_Clip_Area* > Area;  // 剪区类型，描述了图元的裁剪区。裁剪区是各个Area的“并”。
+    vector<CT_Clip_Area* > Area;  // 剪区类型，描述了图元的裁剪区。
+        // 裁剪区是各个Area的“并”。
     CT_Clip();
 };
 

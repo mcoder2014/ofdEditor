@@ -18,10 +18,12 @@ class OFDSHARED_EXPORT CT_Path : public CT_GraphicUnit
 {
 public:
 
-    string AbbreviatedData;         // 定义了一种路径元素描述序列，由一系列紧缩的操作符和操作数构成。使用对象相对坐标系。
+    string AbbreviatedData;         // 定义了一种路径元素描述序列，
+        // 由一系列紧缩的操作符和操作数构成。使用对象相对坐标系。
     bool Stroke;                    // 是否被勾边，默认值为true。
     bool Fill;                      // 是否被填充，默认值为false。
-    string Rule;                    // 描述Path的填充规则。可选值为NonZero和Even-Odd，默认值为NonZero。
+    string Rule;                    // 描述Path的填充规则。
+        // 可选值为NonZero和Even-Odd，默认值为NonZero。
 
     CT_Path();
 };

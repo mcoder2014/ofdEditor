@@ -29,13 +29,15 @@ public:
     double XStep;               // X方向底纹单元间隔    -默认值底纹宽度
     double YStep;               // Y方向底纹单元间隔    -默认值底纹高度
 
-    string ReflectMethod;       // 描述底纹Cell的映像翻转方式，枚举值，默认为Normal
+    string ReflectMethod;       // 描述底纹Cell的映像翻转方式，
+        // 枚举值，默认为Normal
     string RelativeTo;          // Pattern 单元起始绘制位置。可取值如下
                                 // Page：相对于页面坐标系的原点
                                 // Object：相对于对象坐标系的原点
                                 // 默认值是Object
-    ST_Array CTM;               // Pattern 单元的变换矩阵，用于某些需要对Pattern 单元进行平移旋转变换的场合，默认为单位矩阵；
-                                // Pattern 呈现时先做XStep,YStep 排布，然后一起做CTM 处理
+    ST_Array CTM;               // Pattern 单元的变换矩阵，
+        // 用于某些需要对Pattern 单元进行平移旋转变换的场合，默认为单位矩阵；
+        // Pattern 呈现时先做XStep,YStep 排布，然后一起做CTM 处理
     //CT_PageBlock CellContent;   // 底纹单元，用底纹画刷填充目标区域时，所使用的单元对象 -必选
     //CT_Pattern_CellContent CellContent;     //底纹单元
 
