@@ -9,6 +9,7 @@ using std::string;
 
 #include "Color/CT_Color.h"
 #include "CT_Clip.h"
+#include "CT_Action.h"
 
 // 基本图元对象定义
 class CT_GraphicUnit
