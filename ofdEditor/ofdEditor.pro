@@ -13,7 +13,7 @@ SUBDIRS += \
     model \
     ofd   \
     start \
-    test_chaoqun \
+    test_chaoqun\
     test_pan \
     test_yang
 

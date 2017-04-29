@@ -4,57 +4,42 @@
 #include <vector>
 using std::string;
 using std::vector;
+#include "../ofd_global.h"   // 生成库文件时需要
+
+#include <string>
+using std::string;
+
 //6种基本数据类型
-class ST_Loc {
+class OFDSHARED_EXPORT ST_Loc {
+public:
+    string location;
+};
+
+class OFDSHARED_EXPORT ST_Array {
 
 };
 
-class ST_Array {
-
-};
-
-class ST_ID {
+class OFDSHARED_EXPORT ST_ID {
 public:
     unsigned long id;
 };
 
-class ST_RefID {
+class OFDSHARED_EXPORT ST_RefID {
 public:
     unsigned long ref_id;
 };
 
-class ST_Pos {
+class OFDSHARED_EXPORT ST_Pos {
 public:
     double x, y;
 };
 
-class ST_Box {
+class OFDSHARED_EXPORT ST_Box {
 public:
     double start_x, start_y, delta_x, delta_y;
 };
 
-
-class CT_PageArea {
-public:
-    ST_Box physical_box;    //物理区域
-    ST_Box application_box; //显示区域
-    ST_Box content_box;     //版心区域
-    ST_Box bleed_box;       //出血区域
-};
-
-class CT_Object { //OFD文档中所有部件的基类
+class OFDSHARED_EXPORT CT_Object { //OFD文档中所有部件的基类
     ST_ID id;
-};
-
-class CT_GraphicUnit : CT_Object{ //图元对象
-    //属性
-    ST_Box boundary;
-};
-
-class CT_Color {
-    //属性
-    ST_Array value;
-    int index;
-    ST_RefID colorspace;
 };
 #endif // COMMONDT_H
