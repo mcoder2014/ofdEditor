@@ -3,7 +3,6 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::addLibraryPath("$$PWD/../libs/quazip/libs");
     QApplication a(argc, argv);
 
     MainWindow w;
