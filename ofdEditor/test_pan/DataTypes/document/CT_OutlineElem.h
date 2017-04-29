@@ -1,7 +1,10 @@
 #ifndef CT_OUTLINEELEM_H
 #define CT_OUTLINEELEM_H
+#include "../basic_datatype.h"
 
-class CT_OutlineElem {
+#include "../../ofd_global.h"  // 生成库文件需要
+
+class OFDSHARED_EXPORT CT_OutlineElem {
     string title;
     int count;
     bool expanded;

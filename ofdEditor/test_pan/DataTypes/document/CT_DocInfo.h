@@ -1,7 +1,10 @@
 #ifndef CT_DOCINFO_H
 #define CT_DOCINFO_H
+#include "../basic_datatype.h"
 
-class CT_DocInfo {  //文档员数据信息
+#include "../../ofd_global.h"  // 生成库文件需要
+
+class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
     string doc_id;
     string title;
     string author;

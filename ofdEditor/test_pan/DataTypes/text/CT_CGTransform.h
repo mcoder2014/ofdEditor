@@ -1,7 +1,10 @@
 #ifndef CT_CGTRANSFORM_H
 #define CT_CGTRANSFORM_H
+#include "../basic_datatype.h"
 
-class CT_CGTransform {  //字形变换类型
+#include "../../ofd_global.h"  // 生成库文件需要
+
+class OFDSHARED_EXPORT CT_CGTransform {  //字形变换类型
     //属性
     int CodePosition;   //TextCode中字符编码的起始位置，从0开始
     int CodeCount;  //变换关系中字符的数量，该数值必须大于等于1.

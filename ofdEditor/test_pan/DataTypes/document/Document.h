@@ -1,7 +1,14 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
-class Document {
+#include "../basic_datatype.h"
+#include "CT_CommonData.h"
+#include "../page/CT_Pages.h"
+#include "ct_outlines.h"
+
+#include "../../ofd_global.h"  // 生成库文件需要
+
+class OFDSHARED_EXPORT Document {
     CT_CommonData common_data;  //文档公共数据，定义了默认页面单位、页面区域定义、公共资源等数据
     CT_Pages pages; //页树
     CT_Outlines outlines;   //大纲树
