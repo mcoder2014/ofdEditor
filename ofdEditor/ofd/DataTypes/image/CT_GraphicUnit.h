@@ -30,12 +30,12 @@ public:
 
 //    string Cap;                 // 线帽样式。默认"Butt"
 //        // 可选"Round"、"Round"、"Square"
-    enum Cap_Def{Butt,Round,Square};
+    enum Cap_Def{Butt,Round_Cap,Square};
     Cap_Def Cap;
 
 //    string Join;                // 结合点样式。默认"Miter"
 //        // 可选"Miter"、"Round"、"Bevel"
-    enum Join_Def{Miter,Round,Bevel};
+    enum Join_Def{Miter,Round_Join,Bevel};
     Join_Def Join;
 
     double MiterLimit;          // Join为Miter时JoinSize截断值。
