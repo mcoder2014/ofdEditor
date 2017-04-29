@@ -19,7 +19,7 @@ public:
     ST_RefID Relative;      // 指明当前绘制参数的基础绘制参数          - 可选
     //string Join;            // 结合点，指定了两个线的端点结合时采用的样式。
         // 默认值为Miter  - 可选    ("Miter";"Round";"Bevel";)
-    enum Join_Def{Miter,Round,Bevel};
+    enum Join_Def{Miter,Round_Join,Bevel};
     Join_Def Join;
 
     double LineWidth;       // 线宽当线宽为0 时，绘制一个像素的宽度。
@@ -31,7 +31,7 @@ public:
     ST_Array DashPattern;   //  虚线的重复样式。默认值为空。 - 可选
     //string Cap;             // 线端点样式，枚举值，指定了一条线的端点样式。
         // 默认值为Butt       - 可选 ("Butt";"Round";"Square";)
-    enum Cap_Def{Butt,Round,Square};
+    enum Cap_Def{Butt,Round_Cap,Square};
     Cap_Def Cap;
     double MiterLimit;      // Join 为Miter 时小角度JoinSize 的截断值，
         // 默认值为3.528。当Join 不等于Miter 时该参数无效 - 可选

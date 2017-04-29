@@ -31,7 +31,8 @@ SOURCES += \
     DataTypes/image/CT_GraphicUnit.cpp \
     DataTypes/image/CT_Image.cpp \
     DataTypes/image/CT_Path.cpp \
-    DataTypes/page/CT_PageArea.cpp
+    DataTypes/page/CT_PageArea.cpp \
+    Loaders/ZipTool.cpp
 
 
 HEADERS +=\
@@ -63,7 +64,8 @@ HEADERS +=\
     DataTypes/text/CT_CGTransform.h \
     DataTypes/text/CT_Font.h \
     DataTypes/text/CT_Text.h \
-    DataTypes/text/TextCode.h
+    DataTypes/text/TextCode.h \
+    Loaders/ZipTool.h
 
 
 DESTDIR = ../bin     # 生成文件在这
@@ -71,12 +73,15 @@ MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
 RCC_DIR = ./rcc     # .qrc 文件转换后存放路径
 OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 
+INCLUDEPATH += $$PWD/../libs/quazip/includes            # 引用quazip库
+    # $$PWD表示当前pro对应的文件夹路径
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
 win32 {
-
+    LIBS += -L$$PWD/../libs/quazip/libs -lquazip
 
 }
