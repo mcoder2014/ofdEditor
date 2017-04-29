@@ -1,5 +1,6 @@
 #include "ZipTool.h"
 #include <QFile>
+#include <QFileInfoList>
 
 #include "JlCompress.h"     // 压缩文件库
 
@@ -51,7 +52,9 @@ bool ZipTool::compressDir(QString fileCompressed,
     if(deleteDir == true)
     {
         // 如果需要删除源文件夹，比如保存并关闭文件
-        QFile* files = new QFile(dir);
+        //QFile* files = new QFile(dir);
+        QDir * files = new QDir(dir);
+
         if(!files->exists())
         {
             qDebug("Files don't exist! ",
@@ -61,9 +64,79 @@ bool ZipTool::compressDir(QString fileCompressed,
         }
         else
         {
-         return files->remove();
+            //return files->remove();
+            ZipTool::deleteFolder(dir);
+        }
+        return true;
+    }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  彻底删除某个文件夹
+ * @param  const QString &folderFullPath
+ * @return void
+ * @date   2017/04/29
+ */
+void ZipTool::deleteFolder(const QString &folderFullPath)
+{
+    QDir             dir(folderFullPath);
+    QFileInfoList    fileList;
+    QFileInfo        curFile;
+    QFileInfoList    fileListTemp;
+    int            infoNum;
+    int            i;
+    int            j;
+    /* 首先获取目标文件夹内所有文件及文件夹信息  */
+    fileList=dir.entryInfoList(QDir::Dirs|QDir::Files
+                               |QDir::Readable|QDir::Writable
+                               |QDir::Hidden|QDir::NoDotAndDotDot
+                               ,QDir::Name);
+
+    while(fileList.size() > 0)
+    {
+        infoNum = fileList.size();
+
+        for(i = infoNum - 1; i >= 0; i--)
+        {
+            curFile = fileList[i];
+            if(curFile.isFile()) /* 如果是文件，删除文件  */
+            {
+                QFile fileTemp(curFile.filePath());
+                fileTemp.remove();
+                fileList.removeAt(i);
+            }
+
+            if(curFile.isDir()) /* 如果是文件夹  */
+            {
+                QDir dirTemp(curFile.filePath());
+                fileListTemp = dirTemp.entryInfoList(QDir::Dirs | QDir::Files
+                                                     | QDir::Readable | QDir::Writable
+                                                     | QDir::Hidden | QDir::NoDotAndDotDot
+                                                     , QDir::Name);
+                if(fileListTemp.size() == 0)
+                    /* 下层没有文件或文件夹 则直接删除  */
+                {
+                    dirTemp.rmdir(".");
+                    fileList.removeAt(i);
+                }
+                else /* 下层有文件夹或文件 则将信息添加到列表  */
+                {
+                    for(j = 0; j < fileListTemp.size(); j++)
+                    {
+                        if(!(fileList.contains(fileListTemp[j])))
+                        {
+                            fileList.append(fileListTemp[j]);
+                        }
+                    }
+                }
+            }
         }
     }
+    dir.rmdir(".");
+    /*删除目标文件夹,
+     * 如果只是清空文件夹folderFullPath的内容
+     * 而不删除folderFullPath本身,则删掉本行即可  */
 }
 
 
