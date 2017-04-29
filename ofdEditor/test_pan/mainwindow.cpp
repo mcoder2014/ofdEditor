@@ -71,8 +71,56 @@ void MainWindow::readContent() {                    //读取页面内容
     while (!reader.isEndElement() || reader.name() != "Content")
     {
         reader.readNext();
-        if (reader.isStartElement() && reader.name() == "Layer") {
-            //reader.attributes().
+        if (reader.isStartElement() && reader.name() == "Layer") {  //层
+            while (!reader.isEndElement() || reader.name() != "Layer") {
+                reader.readNext();
+                if (reader.isStartElement() && reader.name() == "TextObject") { //文字图元对象
+                    QXmlStreamAttributes textobject_attributes = reader.attributes();  //属性
+                    if (textobject_attributes.hasAttribute("ID"))
+                    {
+
+                    }
+                    if (textobject_attributes.hasAttribute("Boundary"))
+                    {
+
+                    }
+                    if (textobject_attributes.hasAttribute("Font"))
+                    {
+
+                    }
+                    if (textobject_attributes.hasAttribute("Size"))
+                    {
+
+                    }
+                    while (!reader.isEndElement() || reader.name() != "TextObject") {
+                        reader.readNext();
+                        //FillColor待实现
+                        if (reader.isStartElement() && reader.name() == "TextCode")
+                        {
+                            QXmlStreamAttributes textcode_attributes = reader.attributes();
+                            if (textcode_attributes.hasAttribute("X"))
+                            {
+
+                            }
+                            if (textcode_attributes.hasAttribute("Y"))
+                            {
+
+                            }
+                            if (textcode_attributes.hasAttribute("DeltaX"))
+                            {
+
+                            }
+                            if (textcode_attributes.hasAttribute("DeltaY"))
+                            {
+
+                            }
+                            QString str = reader.readElementText();
+                            //将内容存储
+                        }
+                    }
+
+                }
+            }
         }
     }
 }

@@ -57,7 +57,8 @@ OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 INCLUDEPATH += ../model \
                ../ofd
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    mainwindow.ui
 
 unix{
     LIBS += ../bin/libmodel.so\

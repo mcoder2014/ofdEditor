@@ -4,8 +4,7 @@
 #include <QMainWindow>
 #include <QXmlStreamReader>
 #include <QFile>
-#include "text_object_classes.h"
-#include "document_object_classes.h"
+#include "page/page.h"
 
 namespace Ui {
 class MainWindow;
