@@ -25,28 +25,53 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+#    DataTypes/CT_Action.cpp \
+#    DataTypes/CT_Clip.cpp \
+#    DataTypes/Color/CT_AxialShd.cpp \
+#    DataTypes/Color/CT_Color.cpp \
+#    DataTypes/Color/CT_ColorSpace.cpp \
+#    DataTypes/Color/CT_Pattern.cpp \
+#    DataTypes/Color/CT_RadialShd.cpp \
+#    DataTypes/image/CT_Clip.cpp \
+#    DataTypes/image/CT_DrawParam.cpp \
+#    DataTypes/image/CT_GraphicUnit.cpp \
+#    DataTypes/image/CT_Image.cpp \
+#    DataTypes/image/CT_Path.cpp \
+#    DataTypes/page/CT_PageArea.cpp
 
 HEADERS  += \
     basic_datatype.h \
     mainwindow.h \
-    text_object_classes.h \
-    document_object_classes.h \
-    document/ofd.h \
-    document/ct_docinfo.h \
-    document/docbody.h \
-    document/ct_commondata.h \
-    document/document.h \
-    document/ct_outlineelem.h \
-    document/ct_outlines.h \
-    page/ct_pageblock.h \
-    page/ct_layer.h \
-    page/page.h \
-    page/pages.h \
-    text/ct_font.h \
-    text/ct_cgtransform.h \
-    text/textcode.h \
-    text/ct_text.h
+#    DataTypes/basic_datatype.h \
+#    DataTypes/CT_Action.h \
+#    DataTypes/Color/CT_AxialShd.h \
+#    DataTypes/Color/CT_Color.h \
+#    DataTypes/Color/CT_ColorSpace.h \
+#    DataTypes/Color/CT_Pattern.h \
+#    DataTypes/Color/CT_RadialShd.h \
+#    DataTypes/document/CT_CommonData.h \
+#    DataTypes/document/CT_DocInfo.h \
+#    DataTypes/document/CT_OutlineElem.h \
+#    DataTypes/document/CT_Outlines.h \
+#    DataTypes/document/DocBody.h \
+#    DataTypes/document/Document.h \
+#    DataTypes/document/OFD.h \
+#    DataTypes/image/CT_Clip.h \
+#    DataTypes/image/CT_DrawParam.h \
+#    DataTypes/image/CT_GraphicUnit.h \
+#    DataTypes/image/CT_Image.h \
+#    DataTypes/image/CT_Path.h \
+#    DataTypes/page/CT_Layer.h \
+#    DataTypes/page/CT_PageArea.h \
+#    DataTypes/page/CT_PageBlock.h \
+#    DataTypes/page/CT_Pages.h \
+#    DataTypes/page/Page.h \
+#    DataTypes/text/CT_CGTransform.h \
+#    DataTypes/text/CT_Font.h \
+#    DataTypes/text/CT_Text.h \
+#    DataTypes/text/TextCode.h \
+#    ofd_global.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -67,6 +92,6 @@ unix{
 }
 
 win32{
-    LIBS += ../bin/model.lib \
-            ../bin/ofd.lib
+    #LIBS += ../bin/model.lib \
+    #        ../bin/ofd.lib
 }

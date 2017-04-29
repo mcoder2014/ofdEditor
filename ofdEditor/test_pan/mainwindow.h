@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QXmlStreamReader>
 #include <QFile>
-#include "page/page.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +15,11 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void start();
+    void readOFD();
+    void readDocument();
+    void readCustomTags();
+    void readPublicRes();
     void readPage();
     void readPageArea();
     void readContent();
@@ -24,7 +28,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QFile *file;
-    Page p;
+    //Page p;
     QXmlStreamReader reader;
 };
 
