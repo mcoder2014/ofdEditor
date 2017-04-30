@@ -2,11 +2,12 @@
 #define DOCPAGE_H
 
 #include "model_global.h"       // 导出lib使用
-#include <vector>;
-using std::vector;
+
+#include <QVector>
 
 // 类声明
 class DocLayer;
+class CT_PageArea;
 
 
 /**
@@ -21,7 +22,9 @@ public:
     ~DocPage();
 
 private:
-    vector<DocLayer *> layers;          // 一个文档具有很多层
+    QVector<DocLayer *> layers;          // 一个文档具有很多层
+    // 还应该有模板页
+    CT_PageArea* area;                  // 页面大小描述
 
 };
 

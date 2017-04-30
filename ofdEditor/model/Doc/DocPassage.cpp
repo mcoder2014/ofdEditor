@@ -42,7 +42,7 @@ DocPassage::~DocPassage()
         if(temp != NULL)
         {
             delete temp;
-            temp = NULL;
+            this->pages.at(i) = NULL;
         }
     }
     this->pages.clear();
