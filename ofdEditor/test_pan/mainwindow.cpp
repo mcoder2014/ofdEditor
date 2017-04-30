@@ -149,74 +149,74 @@ void MainWindow::readOFD()
     vector<QString> doc_root_list;
     Q_ASSERT(reader.isStartDocument());
     reader.setNamespaceProcessing(false);
-    reader.readNext();
-    if (reader.isStartElement() && reader.name() == "OFD") {
-        QXmlStreamAttributes ofd_attributes = reader.attributes();
-        qDebug() << "DocType: " << ofd_attributes.value("DocType") << " ";
-        qDebug() << "Version: " << ofd_attributes.value("Version") << "\n";
-        while (!reader.isEndElement() || reader.name() != "OFD") {
-            reader.readNext();
-            //qDebug() << reader.name();
-            if (reader.isStartElement() && reader.name() == "DocBody") {
-                reader.readNextStartElement();
+    while (!reader.isEndDocument()) {
+        reader.readNext();
+        if (reader.isStartElement() && reader.name() == "OFD") {
+            QXmlStreamAttributes ofd_attributes = reader.attributes();
+            qDebug() << "DocType: " << ofd_attributes.value("DocType") << " ";
+            qDebug() << "Version: " << ofd_attributes.value("Version") << "\n";
+            while (!reader.isEndElement() || reader.name() != "OFD") {
+                reader.readNext();
                 //qDebug() << reader.name();
-                if (reader.name() == "DocInfo") {
-                    while (!reader.isEndElement() || reader.name() != "DocInfo") {
+                if (reader.isStartElement() && reader.name() == "DocBody") {
+                    while (!reader.isEndDocument() || reader.name() != "DocBody") {
                         reader.readNext();
-                        if (reader.isStartElement() && reader.name() == "DocID") {
-                            qDebug() << "DocID: " << reader.readElementText() << "\n";
-                        } else if (reader.isStartElement() && reader.name() == "CreationDate") {
-                            qDebug() << "CreationDate: " << reader.readElementText() << "\n";
-                        } else if (reader.isStartElement() && reader.name() == "ModDate") {
-                            qDebug() << "ModDate: " << reader.readElementText() << "\n";
-                        } else if (reader.isStartElement() && reader.name() == "Title") {
-                            qDebug() << "Title: " << reader.readElementText() << "\n";
-                        } else if (reader.isStartElement() && reader.name() == "CustomDatas") {
-                            qDebug() << "自定义数据元： ";
-                            while (!reader.isEndElement() || reader.name() != "CustomDatas") {
+                        if (reader.name() == "DocInfo") {
+                            while (!reader.isEndElement() || reader.name() != "DocInfo") {
                                 reader.readNext();
-                                if (reader.isStartElement() && reader.name() == "CustomData") {
-                                    QXmlStreamAttributes customtag_attributes = reader.attributes();
-                                    qDebug() << customtag_attributes.value("Name") << ": " << reader.readElementText() << "\n";
+                                if (reader.isStartElement() && reader.name() == "DocID") {
+                                    qDebug() << "DocID: " << reader.readElementText() << "\n";
+                                } else if (reader.isStartElement() && reader.name() == "CreationDate") {
+                                    qDebug() << "CreationDate: " << reader.readElementText() << "\n";
+                                } else if (reader.isStartElement() && reader.name() == "ModDate") {
+                                    qDebug() << "ModDate: " << reader.readElementText() << "\n";
+                                } else if (reader.isStartElement() && reader.name() == "Title") {
+                                    qDebug() << "Title: " << reader.readElementText() << "\n";
+                                } else if (reader.isStartElement() && reader.name() == "CustomDatas") {
+                                    qDebug() << "自定义数据元： ";
+                                    while (!reader.isEndElement() || reader.name() != "CustomDatas") {
+                                        reader.readNext();
+                                        if (reader.isStartElement() && reader.name() == "CustomData") {
+                                            QXmlStreamAttributes customtag_attributes = reader.attributes();
+                                            qDebug() << customtag_attributes.value("Name") << ": " << reader.readElementText() << "\n";
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                reader.readNextStartElement();
-                if (reader.name() == "DocRoot") {
-//                    qDebug() << reader.readElementText() << "\n";
-                    doc_root_list.push_back(reader.readElementText());
+                    reader.readNextStartElement();
+                    if (reader.name() == "DocRoot") {
+                        //                    qDebug() << reader.readElementText() << "\n";
+                        doc_root_list.push_back(reader.readElementText());
+                    }
                 }
             }
-        }
-        vector<QString>::iterator iter;
-        for (iter = doc_root_list.begin(); iter != doc_root_list.end(); iter++)
-        {
-            QString dir = "F:\\第六届中软杯\\OFD Document\\" + *iter;
-            //qDebug() << dir << "\n";
-            dir.replace("/", "\\");
-            //qDebug() << dir << "\n";
-            QFile document_file(dir);
-            if (!document_file.open(QFile::ReadOnly | QFile::Text)) {
+            vector<QString>::iterator iter;
+            for (iter = doc_root_list.begin(); iter != doc_root_list.end(); iter++)
+            {
+                QString dir = "F:\\第六届中软杯\\OFD Document\\" + *iter;
+                //qDebug() << dir << "\n";
+                dir.replace("/", "\\");
+                //qDebug() << dir << "\n";
+                QFile document_file(dir);
+                if (!document_file.open(QFile::ReadOnly | QFile::Text)) {
                     QMessageBox::critical(this, tr("Error"),
                                           tr("Cannot read file %1").arg(document_file.fileName()));
-            }
-            QIODevice * current_device = reader.device();
-            reader.setDevice(&document_file);
-            reader.readNext();
-            if (reader.isStartDocument()) {
-                qDebug() << "XML Version : " << reader.documentVersion()
-                     << " XML Encoding : " << reader.documentEncoding() << endl;
-                readDocument();
-                reader.setDevice(current_device);
-                document_file.close();
+                }
+                QIODevice * current_device = reader.device();
+                reader.setDevice(&document_file);
+                reader.readNext();
+                if (reader.isStartDocument()) {
+                    qDebug() << "XML Version : " << reader.documentVersion()
+                             << " XML Encoding : " << reader.documentEncoding() << endl;
+                    readDocument();
+                    reader.setDevice(current_device);
+                    document_file.close();
+                }
             }
         }
-    }
-    else {
-        qDebug() << "The OFD.xml does not start with a <OFD> tag.";
-        abort();
+
     }
 }
 

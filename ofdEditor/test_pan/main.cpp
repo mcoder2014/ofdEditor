@@ -2,7 +2,10 @@
 #include <QApplication>
 #include <iostream>
 #include <QDebug>
+#include "DataTypes/basic_datatype.h"
+#include "ofd_parser.h"
 
+using namespace std;
 int main(int argc, char *argv[])
 {
 //    QXmlStreamReader reader;
@@ -24,7 +27,10 @@ int main(int argc, char *argv[])
 //    }
 //    else qDebug() << "Nothing happened." << reader.name();
 //    file.close();
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.start();
+//    QApplication a(argc, argv);
+//    MainWindow w;
+//    w.start();
+    OFDParser t("F://第六届中软杯//OFD Document//OFD.xml");
+    OFD * i = t.getData();
+    qDebug() << i->getOfdVersion() << i->getDocType();
 }

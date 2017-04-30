@@ -1,45 +1,114 @@
 #ifndef COMMONDT_H
 #define COMMONDT_H
-#include <string>
-#include <vector>
-using std::string;
-using std::vector;
+#include <QString>
+#include <QStringList>
+#include <QVector>
 #include "../ofd_global.h"   // 生成库文件时需要
 
 #include <string>
-using std::string;
 
 //6种基本数据类型
 class OFDSHARED_EXPORT ST_Loc {
+    QString title;  //该路径的标签，比如资源路径为"Res"，页面路径为"Page"（与XML的标签等同）
+    QString abs_path;   //绝对路径
 public:
-    string location;
+    ST_Loc(){}
+    ST_Loc(QString tag, QString relative_path, QString current_path);   //构造方法，包括对路径的解析
+    ST_Loc(QString tag, QString _abs_path) : title(tag), abs_path(_abs_path) {  //构造方法，在直接已有绝对路径时
+        abs_path.replace("/", "\\");
+    }
+
+    operator QString() {    //可以直接把ST_Loc作为一个路径字符串使用
+        return abs_path;
+    }
+    QString getPath() {     //返回绝对路径，以“\\”为分隔符
+        return abs_path;
+    }
+
+    QString getTitle() {    //返回当该路径的标签
+        return title;
+    }
 };
 
-class OFDSHARED_EXPORT ST_Array {
-
+class OFDSHARED_EXPORT ST_Array {   //以QStringList的形式来实现（因为容器类型的多样性，不如返回QString，具体的类型留给调用者去处理）
+    QString title;
+    QStringList elements;
+public: //对QStringList的一些简单封装（在有需要时再拓展接口）
+    ST_Array(QString const & tag, QString const & elements_collection, QString const & separator = " ") :
+        title(tag), elements(elements_collection.split(separator)) {}
+    int size() {    //元素个数
+        return elements.size();
+    }
+    int length() {  //元素个数
+        return elements.length();
+    }
+    QString operator[](int index) { //随机访问元素
+        return elements[index];
+    }
+    bool contains(QString const & value) {  //判断值为value的元素是否存在
+        return elements.contains(value);
+    }
 };
 
-class OFDSHARED_EXPORT ST_ID {
-public:
-    unsigned long id;
+class ID_Table {    //为方便ID的管理，为两者建一个基类
+protected:
+    static QVector<int> id_set;     //凡是出现过的ID，全都在其中记录
 };
 
-class OFDSHARED_EXPORT ST_RefID {
+class OFDSHARED_EXPORT ST_ID : ID_Table {
+    long id;
 public:
+    ST_ID(int _id) {
+        if (id_set.contains(_id)){
+            //！！！出现重复ID，报错处理
+        }
+        id = _id;
+    }
+    operator long() { return id; }
+    long getID() { return id; }
+};
+
+class OFDSHARED_EXPORT ST_RefID : ID_Table {
     unsigned long ref_id;
+public:
+    ST_RefID(int _ref_id) {
+        if (!id_set.contains(_ref_id)){
+            //！！！不存在的ID，报错处理
+        }
+        ref_id = _ref_id;
+    }
+    operator long() { return ref_id; }
+    long getRefID() { return ref_id; }
 };
 
-class OFDSHARED_EXPORT ST_Pos {
-public:
+class OFDSHARED_EXPORT ST_Pos { //坐标位置，简单封装即可
     double x, y;
-};
-
-class OFDSHARED_EXPORT ST_Box {
 public:
-    double start_x, start_y, delta_x, delta_y;
+    ST_Pos(double _x, double _y) :
+        x(_x), y(_y) {}
+    double getX() const { return x; }
+    double getY() const { return y; }
+    void setX(double _x) { x = _x; }
+    void setY(double _y) { y = _y; }
 };
 
-class OFDSHARED_EXPORT CT_Object { //OFD文档中所有部件的基类
-    ST_ID id;
+class OFDSHARED_EXPORT ST_Box { //坐标位置+边长，简单封装即可
+    double start_x, start_y, delta_x, delta_y;
+public:
+    ST_Box(double _start_x, double _start_y, double _delta_x, double _delta_y) :
+    start_x(_start_x), start_y(_start_y), delta_x(_delta_x), delta_y(_delta_y) {}
+    double getX() { return start_x; }
+    double getY() { return start_y; }
+    double getDeltaX() { return delta_x; }
+    double getDeltaY() { return delta_y; }
+    void setX(double _x) { start_x = _x; }
+    void setY(double _y) { start_y = _y; }
+    void setDeltaX(double _delta_x) { delta_x = _delta_x; }
+    void setDeltaY(double _delta_y) { delta_y = _delta_y; }
 };
+
+//因为ID与RefID的不同，暂不使用这个基类
+//class OFDSHARED_EXPORT CT_Object { //OFD文档中所有部件的基类
+//    ST_ID id;
+//};
 #endif // COMMONDT_H

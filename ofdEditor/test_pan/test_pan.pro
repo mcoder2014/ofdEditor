@@ -38,25 +38,27 @@ SOURCES += \
 #    DataTypes/image/CT_GraphicUnit.cpp \
 #    DataTypes/image/CT_Image.cpp \
 #    DataTypes/image/CT_Path.cpp \
-#    DataTypes/page/CT_PageArea.cpp
+#    DataTypes/page/CT_PageArea.cpp \
+    DataTypes/basic_datatype.cpp \
+    ofd_parser.cpp \
+    document_parser.cpp
 
 HEADERS  += \
-    basic_datatype.h \
     mainwindow.h \
-#    DataTypes/basic_datatype.h \
+    DataTypes/basic_datatype.h \
 #    DataTypes/CT_Action.h \
 #    DataTypes/Color/CT_AxialShd.h \
 #    DataTypes/Color/CT_Color.h \
 #    DataTypes/Color/CT_ColorSpace.h \
 #    DataTypes/Color/CT_Pattern.h \
 #    DataTypes/Color/CT_RadialShd.h \
-#    DataTypes/document/CT_CommonData.h \
-#    DataTypes/document/CT_DocInfo.h \
+    DataTypes/document/CT_CommonData.h \
+    DataTypes/document/CT_DocInfo.h \
 #    DataTypes/document/CT_OutlineElem.h \
 #    DataTypes/document/CT_Outlines.h \
-#    DataTypes/document/DocBody.h \
-#    DataTypes/document/Document.h \
-#    DataTypes/document/OFD.h \
+    DataTypes/document/DocBody.h \
+    DataTypes/document/Document.h \
+    DataTypes/document/OFD.h \
 #    DataTypes/image/CT_Clip.h \
 #    DataTypes/image/CT_DrawParam.h \
 #    DataTypes/image/CT_GraphicUnit.h \
@@ -67,6 +69,9 @@ HEADERS  += \
 #    DataTypes/page/CT_PageBlock.h \
 #    DataTypes/page/CT_Pages.h \
 #    DataTypes/page/Page.h \
+    ofd_parser.h \
+    document_parser.h \
+    DataTypes/document/res.h
 #    DataTypes/text/CT_CGTransform.h \
 #    DataTypes/text/CT_Font.h \
 #    DataTypes/text/CT_Text.h \
