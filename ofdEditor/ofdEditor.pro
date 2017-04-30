@@ -9,13 +9,13 @@
 TEMPLATE = subdirs      # 工程类型，多工程
 
 #  子工程
-SUBDIRS += \
-    model \
+SUBDIRS += \    
     ofd   \
+    model \
     start \
     test_chaoqun\
-    test_pan \
-    test_yang
+    #test_pan \
+    #test_yang
 
 CONFIG += ordered warn_on  qt
 # ordered 按照上边的顺序编译子工程，尽量减少两个工程之间的相互依赖关系，将依赖的工程先行编译

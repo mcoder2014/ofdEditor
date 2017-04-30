@@ -5,7 +5,7 @@
 
 // 本类型用来表述文章中的图片
 
-class DocImage
+class MODELSHARED_EXPORT DocImage
 {
 public:
     DocImage();

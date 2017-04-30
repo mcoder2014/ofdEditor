@@ -32,7 +32,8 @@ SOURCES += \
     DataTypes/image/CT_Image.cpp \
     DataTypes/image/CT_Path.cpp \
     DataTypes/page/CT_PageArea.cpp \
-    Loaders/ZipTool.cpp
+    Loaders/ZipTool.cpp \
+    DataTypes/document/CT_DocInfo.cpp
 
 
 HEADERS +=\

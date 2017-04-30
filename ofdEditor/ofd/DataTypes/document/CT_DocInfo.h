@@ -5,6 +5,8 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
+
+public:
     string doc_id;
     string title;
     string author;
@@ -18,6 +20,9 @@ class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
     string creator; //创建文档的应用程序
     string creator_version; //创建文档的应用程序的版本信息
     //++用户自定义信息
+
+    CT_DocInfo();
+    ~CT_DocInfo();
 };
 
 #endif // CT_DOCINFO_H
