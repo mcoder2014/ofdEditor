@@ -42,7 +42,8 @@ SOURCES += model.cpp \
     Doc/DocDrawParam.cpp \
     Doc/DocParaStyle.cpp \
     Doc/DocTextStyle.cpp \
-    Widget/PassageWidget.cpp
+    Widget/PassageWidget.cpp \
+    Tool/UnitTool.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -64,7 +65,8 @@ HEADERS += model.h\
     Doc/DocBasicTypes.h \
     Doc/DocParaStyle.h \
     Doc/DocTextStyle.h \
-    Widget/PassageWidget.h
+    Widget/PassageWidget.h \
+    Tool/UnitTool.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
