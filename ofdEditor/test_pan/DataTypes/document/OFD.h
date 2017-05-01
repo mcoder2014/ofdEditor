@@ -18,9 +18,9 @@ class OFDSHARED_EXPORT OFD { //主入口文件的根元素
     QVector<Document *> * docs;
 
     //私有方法
-    OFD(QString _version = "1.0", QString _doc_type = "OFD") :
-        version(_version), doc_type(_doc_type) {
+    OFD() {
         docbodys = new QVector<DocBody *>();
+        docs = new QVector<Document *>();
     }
 public:
     friend class OFDParser;
@@ -42,6 +42,10 @@ public:
     }
 
     ~OFD() {
+        for (int i = 0; i < docbodys->length(); i++)
+            delete docbodys->at(i);
+        for (int i = 0; i < docs->length(); i++)
+            delete docs->at(i);
         delete docbodys;
         delete docs;
     }

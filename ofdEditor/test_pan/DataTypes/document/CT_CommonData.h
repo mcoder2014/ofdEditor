@@ -10,6 +10,8 @@ class OFDSHARED_EXPORT CT_CommonData {
     QVector<ST_Loc> public_res;  //公共资源序列，每个资源指向OFD包内部的一个XML文件
     //vector<CT_TemplatePage> template_page; //模板页序列
     ST_RefID default_cs;    //缺省颜色空间
+public:
+    friend class OFDParser;
 };
 
 #endif // CT_COMMONDATA_H

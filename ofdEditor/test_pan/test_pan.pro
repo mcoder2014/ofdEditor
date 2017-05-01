@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -39,7 +40,6 @@ SOURCES += \
 #    DataTypes/image/CT_Image.cpp \
 #    DataTypes/image/CT_Path.cpp \
 #    DataTypes/page/CT_PageArea.cpp \
-    DataTypes/basic_datatype.cpp \
     ofd_parser.cpp \
     document_parser.cpp
 

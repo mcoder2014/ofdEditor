@@ -32,5 +32,7 @@ int main(int argc, char *argv[])
 //    w.start();
     OFDParser t("F://第六届中软杯//OFD Document//OFD.xml");
     OFD * i = t.getData();
-    qDebug() << i->getOfdVersion() << i->getDocType();
+    qDebug() << i->getOfdVersion() << i->getDocType() << endl;
+    qDebug() << i->getDocBodies()->at(0)->getDocInfo()->getDocId() << endl;
+    return 0;
 }

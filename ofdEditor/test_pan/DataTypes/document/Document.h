@@ -18,8 +18,11 @@ class OFDSHARED_EXPORT Document {
 
     QVector<Res *> * public_res;
     QVector<Page *> * pages;
-public:
 
+    Document(){}
+
+public:
+    friend class OFDParser;
 };
 
 #endif // DOCUMENT_H
