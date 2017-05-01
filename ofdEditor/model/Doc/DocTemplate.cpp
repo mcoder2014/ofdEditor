@@ -19,7 +19,7 @@ DocTemplate::~DocTemplate()
         if(temp != NULL)
         {
             delete temp;
-            this->layers.at(i) = NULL;
+            (this->layers)[i] = NULL;
         }
     }
     this->layers.clear();   // 清空层

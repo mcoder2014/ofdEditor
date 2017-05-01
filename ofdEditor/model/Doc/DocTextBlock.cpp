@@ -17,7 +17,7 @@ DocTextBlock::~DocTextBlock()
        if(temp != NULL)
        {
            delete temp;
-           this->paragraphs.at(i) = NULL;
+           (this->paragraphs)[i] = NULL;
        }
    }
    this->paragraphs.clear();

@@ -1,11 +1,14 @@
 #ifndef DOCPARASTYLE_H
 #define DOCPARASTYLE_H
 
+class DocImage;
+
 
 class DocParaStyle
 {
 public:
     DocParaStyle();
+    ~DocParaStyle();
 private:
     double spaceAbove;      // 段前间距
     double spaceBelow;      // 段后间距
@@ -17,9 +20,11 @@ private:
     int LineSpaceType;           // 0-deltaLineSpace
                                  // 1-fixedlineSpace
 
-    // 大纲级别
+    DocImage *background;        // 段落可能需要背景颜色花纹等
 
-    enum ParaAlign{Left,Centered,Right,Justified};
+    // 大纲级别     -- 用来做大纲
+
+    enum ParaAlign{Left,Centered,Right,Fullness};
     // 段落缩进,居左,居中,居右，撑满
     ParaAlign alignment;
 

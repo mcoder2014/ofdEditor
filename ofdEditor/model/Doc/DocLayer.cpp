@@ -21,7 +21,7 @@ DocLayer::~DocLayer()
         if(temp != NULL)
         {
             delete temp;
-            this->blocks.at(i) = NULL;
+            (this->blocks)[i] = NULL;
         }
     }
     this->blocks.clear();
@@ -35,7 +35,7 @@ DocLayer::~DocLayer()
         if(temp != NULL)
         {
             delete temp;
-            this->tables.at(i)=NULL;
+            (this->tables)[i]=NULL;
         }
     }
     this->tables.clear();

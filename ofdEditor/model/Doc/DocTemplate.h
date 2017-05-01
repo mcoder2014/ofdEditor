@@ -2,6 +2,7 @@
 #define DOCTEMPLATE_H
 
 #include "model_global.h"       // 导出lib使用
+#include <QVector>
 
 // 类声明
 class DocLayer;
