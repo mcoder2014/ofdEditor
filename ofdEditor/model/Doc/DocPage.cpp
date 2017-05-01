@@ -61,6 +61,17 @@ void DocPage::setSize(double width, double height)
     this->setFixedSize((int)width, (int)height);        // 设置大小
     //this->setBaseSize((int)width, (int)height);
     //this->resize((int)width,(int)height);
-    this->setBackgroundRole(QPalette::Dark);              // 背景颜色
+    this->setBackgroundRole(QPalette::BrightText);              // 背景颜色
     this->setAutoFillBackground(true);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得页面的大小-像素大小
+ * @return QSize
+ * @date   2017/05/01
+ */
+QSize DocPage::getSize()
+{
+    return QSize((int)width,(int)height);
 }

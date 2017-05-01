@@ -44,15 +44,19 @@ private:
 
     // 渲染区
     //QScrollArea * scrollArea;      // 可以进行进度条操作的区域
-    QVBoxLayout * layout;          // 纵向排列
+    QVBoxLayout * layout;           // 纵向排列
     QWidget * widget;               // 用widget做缓冲
 
-    double scaleFactor;            // 表示缩放倍数
+    double scaleFactor;             // 表示缩放倍数
+    double widgetWidth;             // 内容的宽度
+    double widgetHeight;            // 内容的高度
 
 
 private:
     void init();                    // 初始化
-    void adjustScrollBar(QScrollBar *scrollBar, double factor); // 调整滑动条
+    void adjustScrollBar(QScrollBar *scrollBar,
+                         double factor); // 调整滑动条
+    void adjustWidgetSize();        // 根据页数来自动调整widget大小
 
 
 

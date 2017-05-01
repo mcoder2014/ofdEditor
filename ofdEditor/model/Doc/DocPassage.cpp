@@ -4,6 +4,9 @@
 #include "DataTypes/document/CT_DocInfo.h"
 
 #include <QDebug>
+#include <QDesktopWidget>
+#include <QPalette>
+#include <QApplication>
 #include <QScrollBar>
 
 //#include "DataTypes/document/CT_CommonData.h"
@@ -91,7 +94,11 @@ void DocPassage::addPage(DocPage *page)
     this->pages.append(page);
 
     // 再添加到ScrollArea
-    this->layout->addWidget(page);      // 向layout中增加一个
+
+    this->adjustWidgetSize();   // 调整大小
+
+    this->layout->addWidget(page,0,Qt::AlignCenter);
+        // 向layout中增加一页，并居中显示
     this->layout->update();             // 更新
 
     qDebug() << "You have added an new page";
@@ -117,21 +124,24 @@ void DocPassage::addPassage(QVector<DocPage *>& passage)
 void DocPassage::init()
 {
     // 更新渲染区域
-    //this->scrollArea = new QScrollArea(this);
+
     this->layout = new QVBoxLayout;             // 新建布局
 
-    //this->scrollArea->setLayout(this->layout);  // 应用布局
-//    this->setLayout(this->layout);
-    // 将scrollArea加入到场景中
-//    QVBoxLayout* temp_layout = new QVBoxLayout;
-//    temp_layout->addWidget(this->scrollArea);
-//    this->setLayout(temp_layout);
-
+    // 新增widget
     this->widget = new QWidget(this);
     this->widget->setLayout(this->layout);
     this->setWidget(this->widget);
     this->widget->setVisible(true);
-    this->widget->setFixedSize(1300,600);
+
+    // 设置窗口大小为屏幕中心指定位置
+    QDesktopWidget *desktop = QApplication::desktop();
+
+    QRect screenRect = desktop->screenGeometry(desktop->primaryScreen());
+    // 获取默认系统默认桌面的桌面大小
+    this->setFixedSize(screenRect.width(),
+                       screenRect.height());    // 设置初始页面大小
+
+    this->widget->setBackgroundRole(QPalette::Dark);
 
     adjustScrollBar(this->horizontalScrollBar(), 1);
     adjustScrollBar(this->verticalScrollBar(),1);
@@ -152,5 +162,42 @@ void DocPassage::init()
 void DocPassage::adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
     scrollBar->setValue(int(factor * scrollBar->value()
-                           + ((factor -1) * scrollBar->pageStep()/2)));
+                            + ((factor -1) * scrollBar->pageStep()/2)));
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  根据每一页的大小，调整显示区域面积
+ * @return void
+ * @date   2017/05/01
+ */
+void DocPassage::adjustWidgetSize()
+{
+    int width = 0;
+    int height = 0;
+
+    int horizontalWhite = 200;
+    int verticalWhite = 100;
+
+    int length = this->pages.size();
+    for(int i = 0; i <length; i++)
+    {
+        if(width < this->pages[i]->getSize().width())
+        {
+           width =  this->pages[i]->getSize().width();
+        }
+
+        height += verticalWhite + this->pages[i]->getSize().height();
+    }
+
+    height += verticalWhite;
+    width += 2*horizontalWhite;
+
+    this->widget->setFixedSize(width, height);
+
+    this->widgetWidth = width;
+    this->widgetHeight = height;
+
+    adjustScrollBar(this->horizontalScrollBar(), 1);
+    adjustScrollBar(this->verticalScrollBar(), 1);
 }

@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 //    w.show();
     PassageMainWindow w;
 
-    DocPage* page1 = new DocPage(600,300,1,&w);
-    DocPage* page2 = new DocPage(600,200,1,&w);
+    DocPage* page1 = new DocPage(900,300,1,&w);
+    DocPage* page2 = new DocPage(600,400,1,&w);
 
     DocPassage * pas = new DocPassage();
     pas->addPage(page1);
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     page2->setLayout(layout2);
 
     w.setPassage(pas);
+    w.setMinimumSize(600,400);
 
     w.show();
 

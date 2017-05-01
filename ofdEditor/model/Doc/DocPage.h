@@ -27,6 +27,7 @@ public:
     ~DocPage();
 
     void setSize(double width, double height);    // 设置页面大小
+    QSize getSize();
 
 private:
     QVector<DocLayer *> layers;          // 一个文档具有很多层
