@@ -27,15 +27,17 @@ public:
     ~DocPage();
 
     void setSize(double width, double height);    // 设置页面大小
-    QSize getSize();
+    QSize getSize();                              // 获得页面像素大小
+    double getWidth(){return width_mm;}           // 返回毫米单位宽度
+    double getHeight(){return height_mm;}         // 返回毫米单位高度
 
 private:
     QVector<DocLayer *> layers;          // 一个文档具有很多层
     // 还应该有模板页
     //CT_PageArea* area;                  // 页面大小描述
 
-    double width;          // 页面的宽
-    double height;         // 页面的高
+    double width_mm;          // 页面的宽      --单位 mm
+    double height_mm;         // 页面的高
 
     double scaleFactor;            // 表示缩放倍数
 

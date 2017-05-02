@@ -2,6 +2,7 @@
 #define PASSAGEMAINWINDOW_H
 
 #include <QMainWindow>
+#include <QResizeEvent>
 
 class DocPassage;       // 文档类型
 class DocPage;          // 文档中的某一页
@@ -20,6 +21,10 @@ public slots:
 
 private:
     DocPassage* passage;        // 文章
+
+protected:
+    void resizeEvent(QResizeEvent *event);
+
 };
 
 #endif // PASSAGEMAINWINDOW_H

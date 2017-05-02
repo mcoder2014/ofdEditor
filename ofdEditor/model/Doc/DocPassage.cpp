@@ -144,12 +144,19 @@ void DocPassage::init()
     this->widget->setLayout(this->layout);
     this->widget->setVisible(true);
     this->widget->setBackgroundRole(QPalette::Dark);    // 背景
+    this->widget->setAutoFillBackground(true);
 
     this->setWidget(this->widget);                      // 设置内置widget
     this->widget->show();
 
-    this->setBackgroundRole(QPalette::Highlight);       // 临时测试
+    this->horizontalWhite = 100;            // 文章两侧黑边
+    this->verticalWhite = 50;               // 文章之间黑边
 
+    // 设置滚动条策略
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    // 设置滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), 1);
     adjustScrollBar(this->verticalScrollBar(),1);
 
@@ -165,6 +172,7 @@ void DocPassage::init()
  */
 void DocPassage::adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
+    // 设置滚动条位置
     scrollBar->setValue(int(factor * scrollBar->value()
                             + ((factor -1) * scrollBar->pageStep()/2)));
 }
@@ -177,11 +185,9 @@ void DocPassage::adjustScrollBar(QScrollBar *scrollBar, double factor)
  */
 void DocPassage::adjustWidgetSize()
 {
+    // 计算页面大小
     int width = 0;
     int height = 0;
-
-    int horizontalWhite = 100;
-    int verticalWhite = 50;
 
     int length = this->pages.size();
     for(int i = 0; i <length; i++)
@@ -197,15 +203,14 @@ void DocPassage::adjustWidgetSize()
     height += verticalWhite;
     width += 2*horizontalWhite;
 
-    //this->widget->setFixedSize(width, height);      // 中间的widget大小
-    this->widget->resize(width,height);
-    //this->setMinimumSize(width,height);             // 外边的scrollBar大小
-//    QWidget * parent = (QWidget *)this->parent();  //的父类
-//    this->setMinimumSize(parent->width(), parent->height());
+    this->widget->setMinimumSize(width, height);    // 设置内容大小
 
+    // 保存计算结果
     this->widgetWidth = width;
     this->widgetHeight = height;
 
+    // 调整滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), this->scaleFactor);
     adjustScrollBar(this->verticalScrollBar(), this->scaleFactor);
+
 }

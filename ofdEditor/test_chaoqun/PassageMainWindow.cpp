@@ -2,8 +2,14 @@
 #include "Doc/DocPassage.h"
 #include "Doc/DocPage.h"
 
+#include <QDebug>
+
+#include <QPalette>
+
 PassageMainWindow::PassageMainWindow(QWidget *parent) : QMainWindow(parent)
 {
+
+    this->setBackgroundRole(QPalette::Button);
 
 }
 
@@ -34,4 +40,16 @@ void PassageMainWindow::setPassage(DocPassage *passage)
 void PassageMainWindow::addPage(DocPage *page)
 {
     this->passage->addPage(page);
+}
+
+void PassageMainWindow::resizeEvent(QResizeEvent *event)
+{
+    if(this->passage != NULL)
+    {
+        this->passage->resize(event->size().width(),
+                              event->size().height());
+        qDebug() << "MainWindow:resize";
+    }
+
+
 }

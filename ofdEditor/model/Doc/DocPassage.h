@@ -47,13 +47,15 @@ private:
     QVector<DocPage *> pages;    // 既作为数据，也作为渲染
 
     // 渲染区
-    //QScrollArea * scrollArea;      // 可以进行进度条操作的区域
     QVBoxLayout * layout;           // 纵向排列
     QWidget * widget;               // 用widget做缓冲
 
     double scaleFactor;             // 表示缩放倍数
     double widgetWidth;             // 内容的宽度
     double widgetHeight;            // 内容的高度
+
+    int horizontalWhite;            // 白色页面左右两边的灰色区域
+    int verticalWhite;              // 白色页面上下的灰色区域
 
 
 private:

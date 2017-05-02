@@ -1,4 +1,6 @@
 #include "UnitTool.h"
+#include <QScreen>
+#include <QApplication>
 
 UnitTool::UnitTool()
 {
@@ -15,5 +17,9 @@ UnitTool::UnitTool()
  */
 int UnitTool::mmToPixel(double mm)
 {
-    return (int)mm;
+    double inch = mm * 0.0393700787;        // 转换成英寸
+    QScreen* screen = QApplication::primaryScreen();
+    double dotsPerInch = screen->physicalDotsPerInch(); // 每英寸多少像素
+
+    return (int)(inch * dotsPerInch);       // 返回像素大小
 }

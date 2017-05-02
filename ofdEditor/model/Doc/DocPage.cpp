@@ -1,5 +1,6 @@
 #include "DocPage.h"
-#include"DocLayer.h"
+#include "DocLayer.h"
+#include "Tool/UnitTool.h"
 
 #include <QPalette>
 
@@ -20,7 +21,7 @@ DocPage::DocPage(double width,
                  double height, double scaleFactor, QWidget *parent)
     :QWidget(parent)
 {
-    this->setSize(width,height);
+    this->setSize(width,height);     // 设置widget大小
     this->scaleFactor = scaleFactor;
     this->setVisible(true);
 }
@@ -55,13 +56,13 @@ DocPage::~DocPage()
  */
 void DocPage::setSize(double width, double height)
 {
-    this->width = width;
-    this->height = height;
+    // 保存mm单位大小
+    this->width_mm = width;
+    this->height_mm = height;
 
-    this->setFixedSize((int)width, (int)height);        // 设置大小
-    //this->setBaseSize((int)width, (int)height);
-    //this->resize((int)width,(int)height);
-    this->setBackgroundRole(QPalette::BrightText);              // 背景颜色
+    this->setFixedSize(UnitTool::mmToPixel(width),
+                       UnitTool::mmToPixel(height));   // 设置页面大小
+    this->setBackgroundRole(QPalette::BrightText);          // 背景颜色
     this->setAutoFillBackground(true);
 }
 
@@ -73,5 +74,6 @@ void DocPage::setSize(double width, double height)
  */
 QSize DocPage::getSize()
 {
-    return QSize((int)width,(int)height);
+    return QSize(UnitTool::mmToPixel(width_mm),
+                 UnitTool::mmToPixel(height_mm));
 }

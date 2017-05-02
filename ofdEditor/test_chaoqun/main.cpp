@@ -5,6 +5,8 @@
 #include "Doc/DocPage.h"
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QScreen>
+#include <QSizePolicy>
 
 int main(int argc, char *argv[])
 {
@@ -13,9 +15,14 @@ int main(int argc, char *argv[])
 //    MainWindow w;
 //    w.show();
     PassageMainWindow w;
+    //w.setMinimumSize(800,600);
+    w.setMinimumSize(QApplication::primaryScreen()->size().width(),
+                     QApplication::primaryScreen()->size().height());
+//    w.showMaximized();
 
-    DocPage* page1 = new DocPage(500,300,1,&w);
-    DocPage* page2 = new DocPage(600,300,1,&w);
+
+    DocPage* page1 = new DocPage(210,297,1,&w);
+    DocPage* page2 = new DocPage(210,297,1,&w);
 
     DocPassage * pas = new DocPassage();
     pas->addPage(page1);
@@ -33,7 +40,11 @@ int main(int argc, char *argv[])
     page2->setLayout(layout2);
 
     w.setPassage(pas);
-    w.setMinimumSize(600,400);
+
+
+//    w.setSizePolicy(QSizePolicy(QSizePolicy::Maximum,
+//                                QSizePolicy::Maximum));
+
 
     w.show();
 
