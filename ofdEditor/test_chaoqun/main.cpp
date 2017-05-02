@@ -15,9 +15,9 @@ int main(int argc, char *argv[])
 //    MainWindow w;
 //    w.show();
     PassageMainWindow w;
-    //w.setMinimumSize(800,600);
-    w.setMinimumSize(QApplication::primaryScreen()->size().width(),
-                     QApplication::primaryScreen()->size().height());
+    w.setMinimumSize(1000,800);
+//    w.setMinimumSize(QApplication::primaryScreen()->size().width(),
+//                     QApplication::primaryScreen()->size().height());
 //    w.showMaximized();
 
 

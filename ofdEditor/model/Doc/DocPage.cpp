@@ -3,11 +3,12 @@
 #include "Tool/UnitTool.h"
 
 #include <QPalette>
+#include <QPaintEvent>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
 DocPage::DocPage(QWidget *parent)
-    :QWidget(parent)
+    :QGraphicsView(parent)
 {
     this->setSize(210,297);
 
@@ -19,7 +20,7 @@ DocPage::DocPage(QWidget *parent)
 
 DocPage::DocPage(double width,
                  double height, double scaleFactor, QWidget *parent)
-    :QWidget(parent)
+    :QGraphicsView(parent)
 {
     this->setSize(width,height);     // 设置widget大小
     this->scaleFactor = scaleFactor;
@@ -76,4 +77,16 @@ QSize DocPage::getSize()
 {
     return QSize(UnitTool::mmToPixel(width_mm),
                  UnitTool::mmToPixel(height_mm));
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  摘要
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/02
+ */
+void DocPage::paintEvent(QPaintEvent *event)
+{
+
 }

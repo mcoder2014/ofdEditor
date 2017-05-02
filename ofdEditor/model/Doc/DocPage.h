@@ -5,6 +5,7 @@
 
 #include <QVector>
 #include <QWidget>
+#include <QGraphicsView>
 
 // 类声明
 class DocLayer;
@@ -17,7 +18,7 @@ class DocLayer;
  * @date   2017/04/30
  */
 class MODELSHARED_EXPORT DocPage
-        :public QWidget
+        :public QGraphicsView
 {
     Q_OBJECT
 public:
@@ -30,6 +31,9 @@ public:
     QSize getSize();                              // 获得页面像素大小
     double getWidth(){return width_mm;}           // 返回毫米单位宽度
     double getHeight(){return height_mm;}         // 返回毫米单位高度
+
+protected:
+    void paintEvent(QPaintEvent *event);
 
 private:
     QVector<DocLayer *> layers;          // 一个文档具有很多层

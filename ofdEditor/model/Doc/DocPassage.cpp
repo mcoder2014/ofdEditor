@@ -147,10 +147,11 @@ void DocPassage::init()
     this->widget->setAutoFillBackground(true);
 
     this->setWidget(this->widget);                      // 设置内置widget
-    this->widget->show();
+    this->setBackgroundRole(QPalette::Dark);            // 背景
 
     this->horizontalWhite = 100;            // 文章两侧黑边
     this->verticalWhite = 50;               // 文章之间黑边
+    this->setAlignment(Qt::AlignHCenter);   // 设置位置水平居中
 
     // 设置滚动条策略
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -174,7 +175,7 @@ void DocPassage::adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
     // 设置滚动条位置
     scrollBar->setValue(int(factor * scrollBar->value()
-                            + ((factor -1) * scrollBar->pageStep()/2)));
+                            + ((factor -1) * scrollBar->pageStep()/2)) + 1);
 }
 
 /**
@@ -208,9 +209,16 @@ void DocPassage::adjustWidgetSize()
     // 保存计算结果
     this->widgetWidth = width;
     this->widgetHeight = height;
+    this->QScrollArea::update();
 
     // 调整滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), this->scaleFactor);
     adjustScrollBar(this->verticalScrollBar(), this->scaleFactor);
+
+
+
+
+    qDebug() <<"widget's Size"<<this->widget->size();
+    qDebug() << "ScrollArea's Size" << this->size();
 
 }
