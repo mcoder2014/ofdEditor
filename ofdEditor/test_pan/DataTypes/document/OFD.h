@@ -29,7 +29,7 @@ public:
         return docbodys;
     }
 
-    QVector<Document *> * getDocument() {
+    QVector<Document *> * getDocuments() {
         return docs;
     }
 

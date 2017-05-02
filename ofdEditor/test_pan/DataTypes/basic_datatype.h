@@ -60,6 +60,10 @@ public:
     QString getTitle() {    //返回当该路径的标签
         return title;
     }
+
+    bool isNull() {
+        return abs_path.isNull();
+    }
 };
 
 class OFDSHARED_EXPORT ST_Array {   //以QStringList的形式来实现（因为容器类型的多样性，不如返回QString，具体的类型留给调用者去处理）
@@ -87,22 +91,39 @@ protected:
     static QVector<int> id_set;     //凡是出现过的ID，全都在其中记录
 };
 
-class OFDSHARED_EXPORT ST_ID : ID_Table {
+
+
+class OFDSHARED_EXPORT ST_ID : public ID_Table {
     long id;
+    bool is_null;
 public:
+    ST_ID() {
+        is_null = true;
+        id = 0;
+    }
+
     ST_ID(int _id) {
         if (id_set.contains(_id)){
             //！！！出现重复ID，报错处理
         }
         id = _id;
+        is_null = false;
     }
     operator long() { return id; }
     long getID() { return id; }
+    bool isNull() {
+        return is_null;
+    }
 };
 
-class OFDSHARED_EXPORT ST_RefID : ID_Table {
+class OFDSHARED_EXPORT ST_RefID : public ID_Table {
     long ref_id;
+    bool is_null;
 public:
+    ST_RefID() {
+        is_null = true;
+        ref_id = 0;
+    }
     ST_RefID(int _ref_id) {
         if (!id_set.contains(_ref_id)){
             //！！！不存在的ID，报错处理
@@ -111,24 +132,32 @@ public:
     }
     operator long() { return ref_id; }
     long getRefID() { return ref_id; }
+    bool isNull() {
+        return is_null;
+    }
 };
 
 class OFDSHARED_EXPORT ST_Pos { //坐标位置，简单封装即可
     double x, y;
+    bool is_null;
 public:
+    ST_Pos() { is_null = true; x = y = 0; }
     ST_Pos(double _x, double _y) :
-        x(_x), y(_y) {}
+        x(_x), y(_y), is_null(false) {}
     double getX() const { return x; }
     double getY() const { return y; }
     void setX(double _x) { x = _x; }
     void setY(double _y) { y = _y; }
+    bool isNull() { return is_null; }
 };
 
 class OFDSHARED_EXPORT ST_Box { //坐标位置+边长，简单封装即可
     double start_x, start_y, delta_x, delta_y;
+    bool is_null;
 public:
+    ST_Box() { is_null = true;  start_x = start_y = delta_x = delta_y = 0; }
     ST_Box(double _start_x, double _start_y, double _delta_x, double _delta_y) :
-    start_x(_start_x), start_y(_start_y), delta_x(_delta_x), delta_y(_delta_y) {}
+    start_x(_start_x), start_y(_start_y), delta_x(_delta_x), delta_y(_delta_y), is_null(false) {}
     double getX() { return start_x; }
     double getY() { return start_y; }
     double getDeltaX() { return delta_x; }
@@ -137,6 +166,7 @@ public:
     void setY(double _y) { start_y = _y; }
     void setDeltaX(double _delta_x) { delta_x = _delta_x; }
     void setDeltaY(double _delta_y) { delta_y = _delta_y; }
+    bool isNull() { return is_null; }
 };
 
 //因为ID与RefID的不同，暂不使用这个基类

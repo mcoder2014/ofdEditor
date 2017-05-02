@@ -17,12 +17,20 @@ class OFDSHARED_EXPORT Document {
     ST_Loc annotations; //指向注释文件
 
     QVector<Res *> * public_res;
-    QVector<Page *> * pages;
+    CT_Pages *pages;
 
-    Document(){}
+    Document() {
+        public_res = new QVector<Res *>();
+    }
 
 public:
     friend class OFDParser;
+    CT_CommonData * getCommonData() { return common_data; }
+    CT_Outlines * getOutLines() { return outlines; }
+    ST_Loc getCustomTags() { return custom_tags; }
+    ST_Loc getAnnotations() { return annotations; }
+    QVector<Res *> * getPublicRes() { return public_res; }
+    CT_Pages * getPages() { return pages; }
 };
 
 #endif // DOCUMENT_H

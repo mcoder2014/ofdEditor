@@ -3,15 +3,18 @@
 #include "../basic_datatype.h"
 #include "CT_Layer.h"
 #include "CT_PageArea.h"
-
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT Page {
+    ST_ID id;
+    ST_Loc base_loc;
+    QVector<CT_Layer *> *content;
+    Page() {
+        content = new QVector<CT_Layer *>;
+    }
 public:
-    CT_PageArea area;   //该页页面区域大小
-    ST_Loc page_res;    //指向该页使用的资源文件
-    vector<CT_Layer> content;
-    //++动作
+    friend class OFDParser;
+    ST_ID getID() { return id; }
 };
 
 #endif // PAGE_H

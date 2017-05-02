@@ -9,7 +9,6 @@
 #include "DataTypes/document/Document.h"
 #include "DataTypes/page/Page.h"
 #include "DataTypes/basic_datatype.h"
-#include "document_parser.h"
 
 class OFDParser {  //解析OFD.xml
     OFD * data;     //保存了解析出来的数据信息
@@ -22,11 +21,11 @@ class OFDParser {  //解析OFD.xml
     void openFile();            //打开文件
     OFD *readOFD();             //读取OFD文档信息
     Document *readDocument();        //读取Document文档信息
-
+    void readPage(Page *);      //读取Content页面信息
 public:
     OFDParser(QString _path); //!!!!!!!!!!!!!!!应设为private
     OFD * getData() {
-        return ofd_data;
+        return data;
     }
 };
 

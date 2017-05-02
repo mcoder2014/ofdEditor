@@ -39,9 +39,8 @@ SOURCES += \
 #    DataTypes/image/CT_GraphicUnit.cpp \
 #    DataTypes/image/CT_Image.cpp \
 #    DataTypes/image/CT_Path.cpp \
-#    DataTypes/page/CT_PageArea.cpp \
     ofd_parser.cpp \
-    document_parser.cpp
+    DataTypes/basic_datatypes.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -65,18 +64,17 @@ HEADERS  += \
 #    DataTypes/image/CT_Image.h \
 #    DataTypes/image/CT_Path.h \
 #    DataTypes/page/CT_Layer.h \
-#    DataTypes/page/CT_PageArea.h \
+    DataTypes/page/CT_PageArea.h \
 #    DataTypes/page/CT_PageBlock.h \
-#    DataTypes/page/CT_Pages.h \
-#    DataTypes/page/Page.h \
+    DataTypes/page/CT_Pages.h \
+    DataTypes/page/Page.h \
     ofd_parser.h \
-    document_parser.h \
     DataTypes/document/res.h
 #    DataTypes/text/CT_CGTransform.h \
 #    DataTypes/text/CT_Font.h \
 #    DataTypes/text/CT_Text.h \
 #    DataTypes/text/TextCode.h \
-#    ofd_global.h
+    ofd_global.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
