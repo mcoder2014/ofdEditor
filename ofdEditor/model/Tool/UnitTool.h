@@ -10,7 +10,7 @@ class UnitTool
 {
 public:
     UnitTool();
-    static int mmToPixel(double mm);
+    static int mmToPixel(double mm);        // 将毫米单位和像素单位进行换算
 };
 
 #endif // UNITTOOL_H

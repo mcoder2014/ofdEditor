@@ -8,6 +8,7 @@
 #include <QPalette>
 #include <QApplication>
 #include <QScrollBar>
+#include <QMainWindow>
 
 //#include "DataTypes/document/CT_CommonData.h"
 
@@ -121,33 +122,36 @@ void DocPassage::addPassage(QVector<DocPage *>& passage)
     }
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置重置响应事件，窗口大小发生调整，将会调用这个函数u
+ * @param  QResizeEvent *event
+ * @return void
+ * @date   2017/05/02
+ */
+void DocPassage::resizeEvent(QResizeEvent *event)
+{
+    this->adjustWidgetSize();       // 调整整体大小
+    qDebug() << "DocPassage::resizeEvent Runs";
+}
+
 void DocPassage::init()
 {
-    // 更新渲染区域
-
     this->layout = new QVBoxLayout;             // 新建布局
 
     // 新增widget
     this->widget = new QWidget(this);
     this->widget->setLayout(this->layout);
-    this->setWidget(this->widget);
     this->widget->setVisible(true);
+    this->widget->setBackgroundRole(QPalette::Dark);    // 背景
 
-    // 设置窗口大小为屏幕中心指定位置
-    QDesktopWidget *desktop = QApplication::desktop();
+    this->setWidget(this->widget);                      // 设置内置widget
+    this->widget->show();
 
-    QRect screenRect = desktop->screenGeometry(desktop->primaryScreen());
-    // 获取默认系统默认桌面的桌面大小
-    this->setFixedSize(screenRect.width(),
-                       screenRect.height());    // 设置初始页面大小
-
-    this->widget->setBackgroundRole(QPalette::Dark);
+    this->setBackgroundRole(QPalette::Highlight);       // 临时测试
 
     adjustScrollBar(this->horizontalScrollBar(), 1);
     adjustScrollBar(this->verticalScrollBar(),1);
-
-
-
 
 }
 
@@ -176,8 +180,8 @@ void DocPassage::adjustWidgetSize()
     int width = 0;
     int height = 0;
 
-    int horizontalWhite = 200;
-    int verticalWhite = 100;
+    int horizontalWhite = 100;
+    int verticalWhite = 50;
 
     int length = this->pages.size();
     for(int i = 0; i <length; i++)
@@ -193,11 +197,15 @@ void DocPassage::adjustWidgetSize()
     height += verticalWhite;
     width += 2*horizontalWhite;
 
-    this->widget->setFixedSize(width, height);
+    //this->widget->setFixedSize(width, height);      // 中间的widget大小
+    this->widget->resize(width,height);
+    //this->setMinimumSize(width,height);             // 外边的scrollBar大小
+//    QWidget * parent = (QWidget *)this->parent();  //的父类
+//    this->setMinimumSize(parent->width(), parent->height());
 
     this->widgetWidth = width;
     this->widgetHeight = height;
 
-    adjustScrollBar(this->horizontalScrollBar(), 1);
-    adjustScrollBar(this->verticalScrollBar(), 1);
+    adjustScrollBar(this->horizontalScrollBar(), this->scaleFactor);
+    adjustScrollBar(this->verticalScrollBar(), this->scaleFactor);
 }

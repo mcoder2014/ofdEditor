@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QScrollArea>
 #include <QVBoxLayout>      // 树状排布
+#include <QResizeEvent>
 
 // 类声明
 class DocPage;
@@ -31,6 +32,9 @@ public:
 
     void addPage(DocPage *page);                    // 添加一个新页面
     void addPassage(QVector<DocPage* >& passage);    // 添加很多界面
+
+protected:
+    void resizeEvent(QResizeEvent* event);
 
 
 private:
