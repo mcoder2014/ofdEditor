@@ -48,3 +48,18 @@ DocLayer::~DocLayer()
     }
 
 }
+
+/**
+ * @Author Chaoqun
+ * @brief  修改本层的 zValue的值
+ * @param  qreal z
+ * @return void
+ * @date   2017/05/03
+ */
+void DocLayer::setZValue(qreal z)
+{
+    this->zValue = z;
+
+    // 遍历所有块，将他们的值全部修改为 z
+
+}
