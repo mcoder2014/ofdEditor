@@ -47,7 +47,7 @@ HEADERS  += \
     DataTypes/basic_datatype.h \
 #    DataTypes/CT_Action.h \
 #    DataTypes/Color/CT_AxialShd.h \
-#    DataTypes/Color/CT_Color.h \
+    DataTypes/Color/CT_Color.h \
 #    DataTypes/Color/CT_ColorSpace.h \
 #    DataTypes/Color/CT_Pattern.h \
 #    DataTypes/Color/CT_RadialShd.h \
@@ -60,20 +60,20 @@ HEADERS  += \
     DataTypes/document/OFD.h \
 #    DataTypes/image/CT_Clip.h \
 #    DataTypes/image/CT_DrawParam.h \
-#    DataTypes/image/CT_GraphicUnit.h \
-#    DataTypes/image/CT_Image.h \
-#    DataTypes/image/CT_Path.h \
-#    DataTypes/page/CT_Layer.h \
+    DataTypes/image/CT_GraphicUnit.h \
+    DataTypes/image/CT_Image.h \
+    DataTypes/image/CT_Path.h \
+    DataTypes/page/CT_Layer.h \
     DataTypes/page/CT_PageArea.h \
-#    DataTypes/page/CT_PageBlock.h \
+    DataTypes/page/CT_PageBlock.h \
     DataTypes/page/CT_Pages.h \
     DataTypes/page/Page.h \
     ofd_parser.h \
-    DataTypes/document/res.h
+    DataTypes/document/res.h\
 #    DataTypes/text/CT_CGTransform.h \
 #    DataTypes/text/CT_Font.h \
-#    DataTypes/text/CT_Text.h \
-#    DataTypes/text/TextCode.h \
+    DataTypes/text/CT_Text.h \
+    DataTypes/text/TextCode.h \
     ofd_global.h
 
 DESTDIR = ../bin     # 生成文件在这

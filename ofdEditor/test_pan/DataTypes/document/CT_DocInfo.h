@@ -26,7 +26,7 @@ public:
         delete custom_datas;
     }
 
-    QString getDocId() {
+    QString getDocID() {
         return doc_id;
     }
 

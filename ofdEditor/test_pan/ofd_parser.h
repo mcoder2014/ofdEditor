@@ -18,6 +18,8 @@ class OFDParser {  //解析OFD.xml
     int error_line;
     int error_column;
 
+    void readPageArea(CT_PageArea * data, QDomElement & root_node); //读取PageArea部分的子模块
+
     void openFile();            //打开文件
     OFD *readOFD();             //读取OFD文档信息
     Document *readDocument();        //读取Document文档信息

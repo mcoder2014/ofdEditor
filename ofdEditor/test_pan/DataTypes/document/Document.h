@@ -31,6 +31,14 @@ public:
     ST_Loc getAnnotations() { return annotations; }
     QVector<Res *> * getPublicRes() { return public_res; }
     CT_Pages * getPages() { return pages; }
+    ~Document() {
+        for (int i = 0; i < public_res->length(); i++)
+            delete public_res[i];
+        delete common_data;
+        delete outlines;
+        delete public_res;
+        delete pages;
+    }
 };
 
 #endif // DOCUMENT_H

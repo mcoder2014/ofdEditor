@@ -169,8 +169,15 @@ public:
     bool isNull() { return is_null; }
 };
 
-//因为ID与RefID的不同，暂不使用这个基类
-//class OFDSHARED_EXPORT CT_Object { //OFD文档中所有部件的基类
-//    ST_ID id;
-//};
+
+class OFDSHARED_EXPORT CT_Base { //所有含有ID属性的元素的基类
+    ST_ID id;
+public:
+    ST_ID getID() {
+        return id;
+    }
+    void setID(ST_ID new_id) {
+        id = new_idl
+    }
+};
 #endif // COMMONDT_H

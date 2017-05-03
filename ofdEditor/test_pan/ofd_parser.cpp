@@ -120,51 +120,7 @@ Document * OFDParser::readDocument(){
             if (!(t = new_commondata.firstChildElement("ofd:PageArea")).isNull()) {
                 CT_PageArea *pagearea_data = new CT_PageArea();
                 commondata_data->page_area = pagearea_data;
-                QDomElement t2;
-                if (!(t2 = t.firstChildElement("ofd:PhysicalBox")).isNull()) {
-                    QStringList values = t2.text().split(" ");
-                    //qDebug() << values[0] << values[1] << values[2] << endl;
-                    if (values.size() == 4) {
-                        pagearea_data->physical_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                    }
-                    else {
-                        //Error
-                        abort();
-                    }
-                } else {
-                    //Error
-                }
-
-                if (!(t2 = t.firstChildElement("ofd:ApplicationBox")).isNull()) {
-                    QStringList values = t2.text().split(" ");
-                    if (values.size() == 4)
-                        pagearea_data->application_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                    else {
-                        //Error
-                        abort();
-                    }
-                }
-
-                if (!(t2 = t.firstChildElement("ofd:ContentBox")).isNull()) {
-                    QStringList values = t2.text().split(" ");
-                    if (values.size() == 4)
-                        pagearea_data->content_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                    else {
-                        //Error
-                        abort();
-                    }
-                }
-
-                if (!(t2 = t.firstChildElement("ofd:BleedBox")).isNull()) {
-                    QStringList values = t2.text().split(" ");
-                    if (values.size() == 4)
-                        pagearea_data->bleed_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                    else {
-                        //Error
-                        abort();
-                    }
-                }
-
+                readPageArea(pageare_data, t);
             } else {
                 //Error
             }
@@ -243,6 +199,141 @@ Document * OFDParser::readDocument(){
     return document_data;
 }
 
-void OFDParser::readPage(Page *) {
+void OFDParser::readPage(Page * page_data) {
+    openFile();
+    QDomElement new_page = document->firstChildElement("ofd:Page");
+    if (!new_page.isNull()) {
+        QDomElement t;
+        if (!(t = new_page.firstChildElement("ofd:Area").isnull())) {
+            CT_PageArea * area_data;
+            readPageArea(area_data, t);
+            page_data->area = area_data;
+        }
 
+        t = new_commondata.firstChildElement("ofd:PageRes");
+        while (!t.isNull()) {
+            ST_Loc p("PageRes", t.text(), current_path);
+            page_data->page_res->push_back(p);
+            t = new_commondata.nextSiblingElement("ofd:PageRes");
+        }
+
+        if (!(t = new_page.firstChildElement("ofd:Content").isnull())) {
+            QDomElement new_layer = t.firstChildElement("ofd:Layer");
+            while (!new_layer.isNull()) {
+                CT_Layer * layer_data = new CT_Layer();
+                if (new_layer.hasAttribute("ID")) {
+                    ST_ID i(new_layer.attribute("ID").toInt());
+                    layer_data->setID(i);
+                } else {
+                    //Error
+                    abort();
+                }
+                if (new_layer.hasAttribute("DrawParam")) {
+                    ST_RefID ri(new_layer.attribute("DrawParam").toInt());
+                    layer_data->draw_param = ri;
+                }
+                QDomElement t;
+                t = new_layer.firstChildElement("ofd:TextObject");
+                while (!t.isNull()) {
+                    CT_Text * text_data = new CT_Text();
+                    layer_data->text_object->push_back(text_data);
+
+                    if (t.hasAttribute("ID")) {
+                        ST_ID i(t.attribute("ID").toInt());
+                        text_data->setID(i);
+                    } else {
+                        //Error
+                        abort();
+                    }
+
+                    if (t.hasAttribute("Font")) {
+                        ST_RefID ri(t.attribute("Font").toInt());
+                        text_data->font(ri);
+                    } else {
+                        //Error
+                        abort();
+                    }
+
+                    if (t.hasAttribute("Size")) {
+                        text_data->size(t.attribute("Size").toDouble());
+                    } else {
+                        //Error
+                        abort();
+                    }
+
+                    if (t.hasAttribute("Boundary")) {
+                        QStringList values = t.attribute("Boundary").split(" ");
+                        if (values.size() == 4) {
+                            text_data->boundary = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+                        }
+                        else {
+                            //Error
+                            abort();
+                        }
+                    } else {
+                        //Error
+                        abort();
+                    }
+
+                    //many optional attributes to be implemented
+
+                    QDomElement t2;
+                    if (!(t2 = t.firstChildElement("FillColor").isNull())) {
+
+                    }
+                }
+
+            }
+        }
+    } else {
+        //Error
+        abort();
+    }
+}
+
+void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
+    QDomeElement t;
+    if (!(t = root_node.firstChildElement("ofd:PhysicalBox")).isNull()) {
+        QStringList values = t.text().split(" ");
+        //qDebug() << values[0] << values[1] << values[2] << endl;
+        if (values.size() == 4) {
+            data->physical_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+        }
+        else {
+            //Error
+            abort();
+        }
+    } else {
+        //Error
+    }
+
+    if (!(t = root_node.firstChildElement("ofd:ApplicationBox")).isNull()) {
+        QStringList values = t.text().split(" ");
+        if (values.size() == 4)
+            data->application_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+        else {
+            //Error
+            abort();
+        }
+    }
+
+    if (!(t = root_node.firstChildElement("ofd:ContentBox")).isNull()) {
+        QStringList values = t.text().split(" ");
+        if (values.size() == 4)
+            data->content_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+        else {
+            //Error
+            abort();
+        }
+    }
+
+    if (!(t = root_node.firstChildElement("ofd:BleedBox")).isNull()) {
+        QStringList values = t.text().split(" ");
+        if (values.size() == 4)
+            data->bleed_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+        else {
+            //Error
+            abort();
+        }
+    }
 }
