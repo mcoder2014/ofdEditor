@@ -6,10 +6,12 @@
 #include <QVector>
 #include <QWidget>
 #include <QGraphicsView>
+#include <QGraphicsScene>
 
 // 类声明
 class DocLayer;
 //class CT_PageArea;
+
 
 
 /**
@@ -36,7 +38,9 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
+    QGraphicsScene* scene;               // 场景
     QVector<DocLayer *> layers;          // 一个文档具有很多层
+
     // 还应该有模板页
     //CT_PageArea* area;                  // 页面大小描述
 

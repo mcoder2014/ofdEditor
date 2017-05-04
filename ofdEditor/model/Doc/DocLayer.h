@@ -25,6 +25,7 @@ public:
 private:
     QVector<DocBlock* > blocks;         // 块    -文字块图形块的父类
     QVector<DocTable* > tables;         // 表格
+
     DocDrawParam* drawParam;            // 该层的默认绘画模式
 
     enum LayerType{Body,ForeGround,BackGroune};

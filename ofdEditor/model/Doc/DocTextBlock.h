@@ -4,6 +4,7 @@
 #include "model_global.h"       // 导出lib使用
 #include "Doc/DocBlock.h"
 #include <QVector>
+#include <QTextEdit>
 
 class DocParagraph;
 
