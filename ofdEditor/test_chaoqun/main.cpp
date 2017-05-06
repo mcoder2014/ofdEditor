@@ -8,6 +8,8 @@
 #include <QScreen>
 #include <QSizePolicy>
 
+#include "Doc/DocTextBlock.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -28,16 +30,7 @@ int main(int argc, char *argv[])
     pas->addPage(page1);
     pas->addPage(page2);
 
-    QLabel *label = new QLabel("test");
-    QVBoxLayout * layout = new QVBoxLayout;
-    layout->addWidget(label);
-
-    QLabel *label2 = new QLabel("I want to test");
-    QVBoxLayout * layout2 = new QVBoxLayout;
-    layout2->addWidget(label2);
-
-    page1->setLayout(layout);
-    page2->setLayout(layout2);
+    page1->addBlock(new DocTextBlock(page1),DocPage::Body);
 
     w.setPassage(pas);
 

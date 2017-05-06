@@ -9,6 +9,11 @@ DocLayer::DocLayer()
 
 }
 
+DocLayer::DocLayer(DocPage::Layer layer)
+{
+    this->type = layer;
+}
+
 DocLayer::~DocLayer()
 {
 
@@ -62,4 +67,55 @@ void DocLayer::setZValue(qreal z)
 
     // 遍历所有块，将他们的值全部修改为 z
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  向该层添加一个block
+ * @param  DocBlock * block
+ * @return void
+ * @date   2017/05/06
+ */
+void DocLayer::addBlock(DocBlock *block)
+{
+    this->blocks.append(block);     // 追加到队尾
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  移除块
+ * @param  DocBlock * block
+ * @return void
+ * @date   2017/05/06
+ */
+void DocLayer::removeBlock(DocBlock *block)
+{
+    // 判断参数是否正确
+    if(block == NULL)
+        return;
+    // 判断是否包含本块
+    if(this->blocks.contains(block))
+    {
+        int index = this->blocks.indexOf(block);
+        this->blocks.remove(index);
+    }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得本层的所有blocks
+ * @return QVector<DocBlock *>
+ * @date   2017/05/06
+ */
+QVector<DocBlock *>* DocLayer::getBlocks()
+{
+    QVector<DocBlock* > *vector = new QVector<DocBlock* >();
+    int length = this->blocks.length();
+
+    for(int i = 0; i<length; i++)
+    {
+        vector->push_back((this->blocks)[i]);
+    }
+
+    return vector;
 }

@@ -1,9 +1,11 @@
 #include "DocPage.h"
 #include "DocLayer.h"
 #include "Tool/UnitTool.h"
+#include "Doc/DocBlock.h"
 
 #include <QPalette>
 #include <QPaintEvent>
+#include <QDebug>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
@@ -11,10 +13,8 @@ DocPage::DocPage(QWidget *parent)
     :QGraphicsView(parent)
 {
     this->setSize(210,297);
-
     this->scaleFactor = 1.0;
-
-
+    this->init();
 
 }
 
@@ -25,25 +25,12 @@ DocPage::DocPage(double width,
     this->setSize(width,height);     // 设置widget大小
     this->scaleFactor = scaleFactor;
     this->setVisible(true);
+    this->init();
 }
 
 DocPage::~DocPage()
 {
     // area空间释放
-
-    // 层空间释放
-    int layers_length = layers.size();
-    for(int i = 0; i < layers_length; i++)
-        // 挨个释放空间
-    {
-        DocLayer* temp = this->layers.at(i);
-        if(temp != NULL)
-        {
-            delete temp;
-            (this->layers)[i] = NULL;
-        }
-    }
-    this->layers.clear();   // 清空层
 
 }
 
@@ -81,6 +68,44 @@ QSize DocPage::getSize()
 
 /**
  * @Author Chaoqun
+ * @brief  添加一个新的块到页面之中
+ * @param  DocBlock* block  具体的块
+ * @param  Layer layer      在哪层
+ * @return 返回值
+ * @date   2017/05/06
+ */
+void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
+{
+
+    qDebug() << "DocPage::addBlock excuted";
+    QGraphicsProxyWidget* widget = this->scene->addWidget(block);
+    qDebug() << "DocPage::addBlock excuted this->scene->addWidget(block)";
+    widget->setVisible(true);
+    qDebug() << "DocPage::addBlock excuted widget->setVisible(true);";
+    widget->setPos(100,100);
+    qDebug() << "DocPage::addBlock excuted widget->setPos(100,100);";
+    widget->resize(700,700);
+    qDebug() << "DocPage::addBlock excuted widget->resize(700,700);";
+
+    switch (layer) {
+    case Body:
+        this->bodyLayer->addBlock(block);
+        break;
+    case Foreground:
+        this->foregroundLayer->addBlock(block);
+        break;
+    case Background:
+        this->backgroundLayer->addBlock(block);
+        break;
+    default:
+        break;
+    }
+
+
+}
+
+/**
+ * @Author Chaoqun
  * @brief  摘要
  * @param  参数
  * @return 返回值
@@ -89,4 +114,21 @@ QSize DocPage::getSize()
 void DocPage::paintEvent(QPaintEvent *event)
 {
 
+}
+
+
+/**
+ * @Author Chaoqun
+ * @brief  初始化DocPage
+ * @date   2017/05/06
+ */
+void DocPage::init()
+{
+    this->scene = new QGraphicsScene(); // 新建
+    this->setScene(this->scene);        // 设置场景
+
+    // 新建三个层
+    this->foregroundLayer = new DocLayer(Foreground);
+    this->bodyLayer = new DocLayer(DocPage::Body);
+    this->backgroundLayer = new DocLayer(Background);
 }

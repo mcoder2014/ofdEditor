@@ -5,17 +5,21 @@
 #include "Doc/DocBlock.h"
 #include <QVector>
 #include <QTextEdit>
+#include <QGraphicsProxyWidget>
 
 class DocParagraph;
 
 class MODELSHARED_EXPORT DocTextBlock
         :public DocBlock
 {
+    Q_OBJECT
 public:
-    DocTextBlock();
+    DocTextBlock(QWidget *parent = Q_NULLPTR);
     ~DocTextBlock();
+
+
 private:
-    QVector<DocParagraph *> paragraphs;      // 段落
+
 };
 
 #endif // DOCTEXTBLOCK_H
