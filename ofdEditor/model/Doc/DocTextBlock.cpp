@@ -2,13 +2,15 @@
 #include "Doc/DocParagraph.h"
 
 #include <QTextCursor>
+#include <QPalette>
 
 DocTextBlock::DocTextBlock(QWidget *parent)
-    :DocBlock(parent)
+    :QTextEdit(parent)
 {
-//    QTextCursor cursor(this->textCursor());
-//    cursor.insertText(tr("test text"));
-//    this->setFixedSize(300,300);
+    QTextCursor cursor(this->textCursor());
+    cursor.insertText(tr("testsesetstsetestes"));
+
+    this->setBackgroundRole(QPalette::Dark);
 }
 
 DocTextBlock::~DocTextBlock()

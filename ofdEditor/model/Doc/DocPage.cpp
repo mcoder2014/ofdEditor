@@ -78,14 +78,8 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
 {
 
     qDebug() << "DocPage::addBlock excuted";
-    QGraphicsProxyWidget* widget = this->scene->addWidget(block);
-    qDebug() << "DocPage::addBlock excuted this->scene->addWidget(block)";
-    widget->setVisible(true);
-    qDebug() << "DocPage::addBlock excuted widget->setVisible(true);";
-    widget->setPos(100,100);
-    qDebug() << "DocPage::addBlock excuted widget->setPos(100,100);";
-    widget->resize(700,700);
-    qDebug() << "DocPage::addBlock excuted widget->resize(700,700);";
+    this->scene->addItem(block);       // 添加元素
+    qDebug() << "DocPage::addBlock excuted this->scene->addItem(block);";
 
     switch (layer) {
     case Body:

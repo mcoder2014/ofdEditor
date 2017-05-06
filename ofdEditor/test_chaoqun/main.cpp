@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include <QScreen>
 #include <QSizePolicy>
+#include <QDebug>
 
 #include "Doc/DocTextBlock.h"
 
@@ -30,7 +31,20 @@ int main(int argc, char *argv[])
     pas->addPage(page1);
     pas->addPage(page2);
 
-    page1->addBlock(new DocTextBlock(page1),DocPage::Body);
+    QLabel * label = new QLabel("testetstests");
+
+    DocBlock * block = new DocBlock();
+    DocTextBlock * bloc = new DocTextBlock();
+    //bloc->resize(600,600);
+    //block->setWidget(bloc);
+    block->setWidget(label);
+    block->setPos(20,20);
+    block->resize(300,300);
+    block->setVisible(true);
+    block->setZValue(0);
+
+    page1->addBlock(block, DocPage::Body);
+    //page1->addBlock(new DocTextBlock(page1),DocPage::Body);
 
     w.setPassage(pas);
 
@@ -40,6 +54,8 @@ int main(int argc, char *argv[])
 
 
     w.show();
+
+    qDebug()<<bloc->isVisible();
 
     return a.exec();
 }

@@ -10,7 +10,7 @@
 class DocParagraph;
 
 class MODELSHARED_EXPORT DocTextBlock
-        :public DocBlock
+        :public QTextEdit
 {
     Q_OBJECT
 public:
