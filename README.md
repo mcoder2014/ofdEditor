@@ -35,20 +35,20 @@
 ## Qt 帮助文档
 Qt的帮助文档极为丰富，看完之后能够对Qt的功能产生系统性的了解，这样设计软件时，思路就会更加的清晰。
 
-|文件名|作用|
-| - |-|
-|Qt Data Types.pdf|Qt的一些基础数据类型|
-|Creating Custom Qt Types.pdf |创建自定义的Qt 类|
-|MainWindow.pdf|主窗口相关的|
-|Widget Tutorial.pdf|Widget 的简要教程|
-|Layout.pdf|布局|
-|State Machine.pdf|状态机|
-|Sighals and Slots.pdf|信号槽|
-|Event System.pdf|事件系统|
-|Drag and Drop.pdf|拖拽操作处理|
-|Painting System.pdf|绘画系统|
-|Qgraphics view framework.pdf|Qt的快速响应的图形渲染方式|
-|Qt 富文本框架.pdf|Qt富文本系统|
-|Creating Qt Plugins.pdf|制作Qt插件|
-|Model View Programming.pdf|模型视图结构编程|
-|Model View Tutorial.pdf|模型视图结构教学|
+| 文件名 | 作用 |
+| --- | --- |
+| Qt Data Types.pdf | Qt的一些基础数据类型 |
+| Creating Custom Qt Types.pdf | 创建自定义的Qt 类 |
+| MainWindow.pdf | 主窗口相关的 |
+| Widget Tutorial.pdf | Widget 的简要教程 |
+| Layout.pdf | 布局 |
+| State Machine.pdf | 状态机 |
+| Sighals and Slots.pdf | 信号槽 |
+| Event System.pdf | 事件系统 |
+| Drag and Drop.pdf | 拖拽操作处理 |
+| Painting System.pdf | 绘画系统 |
+| Qgraphics view framework.pdf | Qt的快速响应的图形渲染方式 |
+| Qt 富文本框架.pdf | Qt富文本系统 |
+| Creating Qt Plugins.pdf | 制作Qt插件 |
+| Model View Programming.pdf | 模型视图结构编程 |
+| Model View Tutorial.pdf | 模型视图结构教学 |
