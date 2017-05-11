@@ -23,8 +23,6 @@ protected:
     QString cap;                // 线帽样式。默认"Butt", 可选"Round"、"Round"、"Square"
     QString join;               //绘制路径时使用的结合点方式
 
-    QString join;
-
     double miter_limit;          // Join为Miter时JoinSize截断值。
         // 默认为3.528毫米（10  磅）
     double dash_offset;          // 虚线重复起始值。
@@ -41,7 +39,13 @@ protected:
     CT_GraphicUnit() {}
 public:
     friend class OFDParser;
-    //To be implemented
+    ST_Box getBoundary() {
+        return boundary;
+    }
+
+    CT_Color * getFillColor() {
+        return fill_color;
+    }
 };
 
 #endif // CT_GRAPHICUNIT_H

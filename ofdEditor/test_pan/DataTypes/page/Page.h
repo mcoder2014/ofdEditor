@@ -27,9 +27,9 @@ public:
     }
     ~Page() {
         for (int i = 0; i < page_res->length(); i++)
-            delete page_res[i];
+            delete page_res->at(i);
         for (int i = 0; i < content->length(); i++)
-            delete content[i];
+            delete content->at(i);
         delete area;
         delete page_res;
         delete content;

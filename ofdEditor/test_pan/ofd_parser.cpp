@@ -120,7 +120,7 @@ Document * OFDParser::readDocument(){
             if (!(t = new_commondata.firstChildElement("ofd:PageArea")).isNull()) {
                 CT_PageArea *pagearea_data = new CT_PageArea();
                 commondata_data->page_area = pagearea_data;
-                readPageArea(pageare_data, t);
+                readPageArea(pagearea_data, t);
             } else {
                 //Error
             }
@@ -149,7 +149,7 @@ Document * OFDParser::readDocument(){
             while (!new_page.isNull()) {
                 Page *p = new Page();
                 ST_ID i(new_page.attribute("ID").toLong());
-                p->id = i;
+                p->setID(i);
                 ST_Loc path("Page", new_page.attribute("BaseLoc"), current_path);
                 p->base_loc = path;
                 pages_data->pages->push_back(p);
@@ -204,13 +204,13 @@ void OFDParser::readPage(Page * page_data) {
     QDomElement new_page = document->firstChildElement("ofd:Page");
     if (!new_page.isNull()) {
         QDomElement t;
-        if (!(t = new_page.firstChildElement("ofd:Area").isnull())) {
+        if (!(t = new_page.firstChildElement("ofd:Area").isNull())) {
             CT_PageArea * area_data;
             readPageArea(area_data, t);
             page_data->area = area_data;
         }
 
-        t = new_commondata.firstChildElement("ofd:PageRes");
+        t = new_page.firstChildElement("ofd:PageRes");
         while (!t.isNull()) {
             ST_Loc p("PageRes", t.text(), current_path);
             page_data->page_res->push_back(p);
@@ -237,15 +237,8 @@ void OFDParser::readPage(Page * page_data) {
                 while (!t.isNull()) {
                     CT_Text * text_data = new CT_Text();
                     layer_data->text_object->push_back(text_data);
-
-                    if (t.hasAttribute("ID")) {
-                        ST_ID i(t.attribute("ID").toInt());
-                        text_data->setID(i);
-                    } else {
-                        //Error
-                        abort();
-                    }
-
+                    readGraphicUnit(text_data, t);
+                    //Read TextObject attributes
                     if (t.hasAttribute("Font")) {
                         ST_RefID ri(t.attribute("Font").toInt());
                         text_data->font(ri);
@@ -261,27 +254,40 @@ void OFDParser::readPage(Page * page_data) {
                         abort();
                     }
 
-                    if (t.hasAttribute("Boundary")) {
-                        QStringList values = t.attribute("Boundary").split(" ");
-                        if (values.size() == 4) {
-                            text_data->boundary = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-                        }
+                    //many optional attributes to be implemented
+
+                    QDomElement t2;
+                    if (!(t2 = t.firstChildElement("ofd:TextCode").isNull())) {
+                        TextCode * text_code_data = new TextCode();
+                        text_data->text_code = text_code_data;
+                        if (t2.hasAttribute("X"))
+                            text_code_data->x = t2.attribute("X").toDouble();
                         else {
                             //Error
                             abort();
                         }
+                        if (t2.hasAttribute("Y"))
+                            text_code_data->y = t2.attribute("Y").toDouble();
+                        else {
+                            //Error
+                            abort();
+                        }
+                        if (t2.hasAttribute("DeltaX")) {
+                            ST_Array delta_x_data(t2.attribute("DeltaX"));
+                            text_code_data->delta_x = delta_x_data;
+                        }
+                        if (t2.hasAttribute("DeltaY")) {
+                            ST_Array delta_y_data(t2.attribute("DeltaY"));
+                            text_code_data->delta_y = delta_y_data;
+                        }
+                        text_code_data->text = t2.text();
                     } else {
                         //Error
                         abort();
                     }
-
-                    //many optional attributes to be implemented
-
-                    QDomElement t2;
-                    if (!(t2 = t.firstChildElement("FillColor").isNull())) {
-
-                    }
+                    t = new_layer.nextSiblingElement("ofd:TextObject");
                 }
+                //Other GraphicUnit objects to be implemented
 
             }
         }
@@ -336,4 +342,47 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
             abort();
         }
     }
+}
+
+void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
+    //读取属性
+    if (root_node.hasAttribute("ID")) {
+        ST_ID i(root_node.attribute("ID").toInt());
+        data->setID(i);
+    } else {
+        //Error
+        abort();
+    }
+
+    if (root_node.hasAttribute("Boundary")) {
+        QStringList values = root_node.attribute("Boundary").split(" ");
+        if (values.size() == 4) {
+            text_data->boundary = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+        }
+        else {
+            //Error
+            abort();
+        }
+    } else {
+        //Error
+        abort();
+    }
+
+    //读取成员
+    QDomElement t;
+    if (!(t = root_node.firstChildElement("ofd:FillColor")).isNull()) {
+        CT_Color * fill_color_data = new CT_Color();
+        data->fill_color = fill_color_data;
+        if (t.hasAttribute("Value")) {
+            ST_Array value_data("Value", t.attribute("Value"));
+            fill_color_data->value = value_data;
+        }
+        if (t.hasAttribute("ColorSpace")) {
+            ST_RefID colorspace_data(t.attribute("ColorSpace").toInt());
+            fill_color_data->color_space = colorspace_data;
+        }
+        //Other attributes to be implemented
+    }
+
+    //Other members to be implemented
 }

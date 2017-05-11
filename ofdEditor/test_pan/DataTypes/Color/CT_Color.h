@@ -27,6 +27,12 @@ class OFDSHARED_EXPORT CT_Color
     CT_Color();
 public:
     friend class OFDParser;
+    ST_Array getValue() {
+        return value;
+    }
+    ST_RefID getColorSpace() {
+        return color_space;
+    }
 };
 
 #endif // CT_COLOR_H

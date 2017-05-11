@@ -6,11 +6,6 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT CT_Layer : public CT_PageBlock {
-    LayerType type;
-    ST_RefID draw_param;
-    CT_Layer() : CT_PageBlock(){
-        type = Body;
-    }
 public:
     enum LayerType {Body, Foreground, Background};
     QString getType() {
@@ -28,6 +23,12 @@ public:
     }
 
     //从CT_PageBlock继承了几个接口
+private:
+    LayerType type;
+    ST_RefID draw_param;
+    CT_Layer() : CT_PageBlock(){
+        type = Body;
+    }
 };
 
 #endif // CT_LAYER_H

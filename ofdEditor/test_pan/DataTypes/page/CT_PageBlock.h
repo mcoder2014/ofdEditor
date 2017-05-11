@@ -14,10 +14,10 @@ protected:
     QVector<CT_Image *> * image_object;
     QVector<CT_PageBlock *> * pageblock;
     CT_PageBlock() {
-        text_object = new QVector<>();
-        path_object = new QVector<>();
-        image_object = new QVector<>();
-        pageblock = new QVector<>();
+        text_object = new QVector<CT_Text *>();
+        path_object = new QVector<CT_Path *>();
+        image_object = new QVector<CT_Image *>();
+        pageblock = new QVector<CT_PageBlock *>();
     }
 public:
     friend class OFDParser;
@@ -35,13 +35,13 @@ public:
     }
     ~CT_PageBlock() {
         for (int i = 0; i < text_object->length(); i++)
-            delete text_object[i];
+            delete text_object->at(i);
         for (int i = 0; i < path_object->length(); i++)
-            delete path_object[i];
+            delete path_object->at(i);
         for (int i = 0; i < image_object->length(); i++)
-            delete image_object[i];
+            delete image_object->at(i);
         for (int i = 0; i < pageblock->length(); i++)
-            delete pageblock[i];
+            delete pageblock->at(i);
         delete text_object;
         delete path_object;
         delete image_object;

@@ -14,6 +14,8 @@ public:
     double getY() { return y; }
     ST_Array getDeltaX() { return delta_x; }
     ST_Array getDeltaY() { return delta_y; }
-
+    QString getText() {             //获取文本内容
+        return text;
+    }
 };
 #endif // TEXTCODE_H

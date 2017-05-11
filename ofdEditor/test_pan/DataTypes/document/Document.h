@@ -33,7 +33,7 @@ public:
     CT_Pages * getPages() { return pages; }
     ~Document() {
         for (int i = 0; i < public_res->length(); i++)
-            delete public_res[i];
+            delete public_res->at(i);
         delete common_data;
         delete outlines;
         delete public_res;

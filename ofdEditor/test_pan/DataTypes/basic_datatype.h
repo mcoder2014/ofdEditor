@@ -70,6 +70,7 @@ class OFDSHARED_EXPORT ST_Array {   //以QStringList的形式来实现（因为�
     QString title;
     QStringList elements;
 public: //对QStringList的一些简单封装（在有需要时再拓展接口）
+    ST_Array() {}
     ST_Array(QString const & tag, QString const & elements_collection, QString const & separator = " ") :
         title(tag), elements(elements_collection.split(separator)) {}
     int size() {    //元素个数
@@ -177,7 +178,7 @@ public:
         return id;
     }
     void setID(ST_ID new_id) {
-        id = new_idl
+        id = new_id;
     }
 };
 #endif // COMMONDT_H

@@ -35,8 +35,7 @@ class OFDSHARED_EXPORT CT_Text : public CT_GraphicUnit
 public:
     friend class OFDParser;
     ~CT_Text() {
-        delete fillcolor;
-        delete textcode;
+        delete text_code;
     }
     ST_RefID getFont() { return font; }
     double getSize() { return size; }
