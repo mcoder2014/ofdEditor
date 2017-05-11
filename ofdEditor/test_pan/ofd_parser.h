@@ -25,6 +25,7 @@ class OFDParser {  //解析OFD.xml
     OFD *readOFD();             //读取OFD文档信息
     Document *readDocument();        //读取Document文档信息
     void readPage(Page *);      //读取Content页面信息
+    void readResource(Res *);   //读取Res文档信息
 public:
     OFDParser(QString _path); //!!!!!!!!!!!!!!!应设为private
     OFD * getData() {

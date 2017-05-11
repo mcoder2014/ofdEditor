@@ -88,10 +88,7 @@ OFD * OFDParser::readOFD() {
     }
     if (ofd_data) {
         for (int i = 0; i < ofd_data->docbodys->length(); i++) {
-            //qDebug() << ofd_data->docbodys->at(i)->doc_root << endl;
-            //qDebug() << current_path << endl;
             current_path = ofd_data->docbodys->at(i)->doc_root;
-            //qDebug() << current_path << endl;
             ofd_data->docs->push_back(readDocument());
         }
     }
@@ -194,7 +191,8 @@ Document * OFDParser::readDocument(){
 
     for (int i = 0; i < document_data->common_data->public_res->size(); i++) {
         current_path = document_data->common_data->public_res->at(i);
-        //to be implemented
+        Res * res_data = new Res();
+        readResource(res_data);
     }
     return document_data;
 }
@@ -204,7 +202,7 @@ void OFDParser::readPage(Page * page_data) {
     QDomElement new_page = document->firstChildElement("ofd:Page");
     if (!new_page.isNull()) {
         QDomElement t;
-        if (!(t = new_page.firstChildElement("ofd:Area").isNull())) {
+        if (!(t = new_page.firstChildElement("ofd:Area")).isNull()) {
             CT_PageArea * area_data;
             readPageArea(area_data, t);
             page_data->area = area_data;
@@ -213,11 +211,13 @@ void OFDParser::readPage(Page * page_data) {
         t = new_page.firstChildElement("ofd:PageRes");
         while (!t.isNull()) {
             ST_Loc p("PageRes", t.text(), current_path);
-            page_data->page_res->push_back(p);
-            t = new_commondata.nextSiblingElement("ofd:PageRes");
+            Res * new_res = new Res();
+            new_res->base_loc = p;
+            page_data->page_res->push_back(new_res);
+            t = new_page.nextSiblingElement("ofd:PageRes");
         }
 
-        if (!(t = new_page.firstChildElement("ofd:Content").isnull())) {
+        if (!(t = new_page.firstChildElement("ofd:Content")).isNull()) {
             QDomElement new_layer = t.firstChildElement("ofd:Layer");
             while (!new_layer.isNull()) {
                 CT_Layer * layer_data = new CT_Layer();
@@ -241,7 +241,7 @@ void OFDParser::readPage(Page * page_data) {
                     //Read TextObject attributes
                     if (t.hasAttribute("Font")) {
                         ST_RefID ri(t.attribute("Font").toInt());
-                        text_data->font(ri);
+                        text_data->font = ri;
                     } else {
                         //Error
                         abort();
@@ -257,7 +257,7 @@ void OFDParser::readPage(Page * page_data) {
                     //many optional attributes to be implemented
 
                     QDomElement t2;
-                    if (!(t2 = t.firstChildElement("ofd:TextCode").isNull())) {
+                    if (!(t2 = t.firstChildElement("ofd:TextCode")).isNull()) {
                         TextCode * text_code_data = new TextCode();
                         text_data->text_code = text_code_data;
                         if (t2.hasAttribute("X"))
@@ -273,11 +273,11 @@ void OFDParser::readPage(Page * page_data) {
                             abort();
                         }
                         if (t2.hasAttribute("DeltaX")) {
-                            ST_Array delta_x_data(t2.attribute("DeltaX"));
+                            ST_Array delta_x_data("DeltaX", t2.attribute("DeltaX"));
                             text_code_data->delta_x = delta_x_data;
                         }
                         if (t2.hasAttribute("DeltaY")) {
-                            ST_Array delta_y_data(t2.attribute("DeltaY"));
+                            ST_Array delta_y_data("DeltaX", t2.attribute("DeltaY"));
                             text_code_data->delta_y = delta_y_data;
                         }
                         text_code_data->text = t2.text();
@@ -298,12 +298,12 @@ void OFDParser::readPage(Page * page_data) {
 }
 
 void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
-    QDomeElement t;
+    QDomElement t;
     if (!(t = root_node.firstChildElement("ofd:PhysicalBox")).isNull()) {
         QStringList values = t.text().split(" ");
         //qDebug() << values[0] << values[1] << values[2] << endl;
         if (values.size() == 4) {
-            data->physical_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+            data->physical_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         }
         else {
             //Error
@@ -316,7 +316,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
     if (!(t = root_node.firstChildElement("ofd:ApplicationBox")).isNull()) {
         QStringList values = t.text().split(" ");
         if (values.size() == 4)
-            data->application_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+            data->application_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         else {
             //Error
             abort();
@@ -326,7 +326,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
     if (!(t = root_node.firstChildElement("ofd:ContentBox")).isNull()) {
         QStringList values = t.text().split(" ");
         if (values.size() == 4)
-            data->content_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+            data->content_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         else {
             //Error
             abort();
@@ -336,7 +336,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
     if (!(t = root_node.firstChildElement("ofd:BleedBox")).isNull()) {
         QStringList values = t.text().split(" ");
         if (values.size() == 4)
-            data->bleed_box = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+            data->bleed_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         else {
             //Error
             abort();
@@ -357,7 +357,7 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
     if (root_node.hasAttribute("Boundary")) {
         QStringList values = root_node.attribute("Boundary").split(" ");
         if (values.size() == 4) {
-            text_data->boundary = St_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
+            data->boundary = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         }
         else {
             //Error
@@ -385,4 +385,71 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
     }
 
     //Other members to be implemented
+}
+
+void OFDParser::readResource(Res * res_data) {
+    openFile();
+    QDomElement new_res = document->firstChildElement("ofd:Res");
+    if (!new_res.isNull()) {
+        //读取属性
+        if (new_res.hasAttribute("BaseLoc")) {
+            ST_Loc new_baseloc("BaseLoc", new_res.attribute("BaseLoc"), current_path);
+            res_data->base_loc = new_baseloc;
+        } else {
+            //Error
+            abort();
+        }
+        //读取成员
+        QDomElement t;
+        if (!(t = new_res.firstChildElement("ofd:Fonts")).isNull()) {
+            QDomElement t2 = t.firstChildElement("ofd:Font");
+            while (!t2.isNull()) {
+                CT_Font * font_data = new CT_Font();
+                res_data->fonts->push_back(font_data);
+                if (t2.hasAttribute("ID")) {
+                    ST_ID i(t2.attribute("ID").toInt());
+                    font_data->setID(i);
+                } else {
+                    //Error
+                    abort();
+                }
+                if (t2.hasAttribute("FontName")) {
+                    font_data->font_name = t2.attribute("FontName");
+                } else {
+                    //Error
+                    abort();
+                }
+                if (t2.hasAttribute("FamilyName")) {
+                    font_data->family_name = t2.attribute("FamilyName");
+                }
+                //Other stuff to be implemented
+                t2 = t.nextSiblingElement("ofd:Font");
+            }
+        }
+        if (!(t = new_res.firstChildElement("ofd:ColorSpaces")).isNull()) {
+            QDomElement t2 = t.firstChildElement("ofd:ColorSpace");
+            while (!t2.isNull()) {
+                CT_ColorSpace * colorspace_data = new CT_ColorSpace();
+                res_data->colorspaces->push_back(colorspace_data);
+                if (t2.hasAttribute("ID")) {
+                    ST_ID i(t2.attribute("ID").toInt());
+                    colorspace_data->setID(i);
+                } else {
+                    //Error
+                    abort();
+                }
+                if (t2.hasAttribute("Type")) {
+                    colorspace_data->type = t2.attribute("Type");
+                } else {
+                    //Error
+                    abort();
+                }
+                //Other stuff to be implemented
+            }
+        }
+        //Other stuff to be implemented
+    } else {
+        //Error
+        abort();
+    }
 }

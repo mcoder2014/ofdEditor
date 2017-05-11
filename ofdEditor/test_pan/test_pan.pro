@@ -48,7 +48,7 @@ HEADERS  += \
 #    DataTypes/CT_Action.h \
 #    DataTypes/Color/CT_AxialShd.h \
     DataTypes/Color/CT_Color.h \
-#    DataTypes/Color/CT_ColorSpace.h \
+    DataTypes/Color/CT_ColorSpace.h \
 #    DataTypes/Color/CT_Pattern.h \
 #    DataTypes/Color/CT_RadialShd.h \
     DataTypes/document/CT_CommonData.h \
@@ -71,7 +71,7 @@ HEADERS  += \
     ofd_parser.h \
     DataTypes/document/res.h\
 #    DataTypes/text/CT_CGTransform.h \
-#    DataTypes/text/CT_Font.h \
+    DataTypes/text/CT_Font.h \
     DataTypes/text/CT_Text.h \
     DataTypes/text/TextCode.h \
     ofd_global.h
