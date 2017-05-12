@@ -18,7 +18,9 @@ class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
     ST_Loc cover;           //文档的封面，此路径指向一个图片文件
     //ST_Array keywords;  //关键词集合
     QVector<QStringList> *custom_datas;  //每个CustomData元素为2元QStringList，其中[0]为"Name"属性，[1]为值
-    CT_DocInfo() {}
+    CT_DocInfo() {
+        custom_datas = new QVector<QStringList>();
+    }
 public:
     friend class OFDParser;
 

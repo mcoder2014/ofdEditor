@@ -4,10 +4,11 @@
 #include "../../ofd_global.h"   // 生成库文件时需要
 #include "../basic_datatype.h"
 #include "../../ofd_parser.h"
+#include "../Color/CT_Color.h"
 
-class CT_Clip;
-class CT_Color;
-class CT_Action;
+//class CT_Clip;
+//class CT_Color;
+//class CT_Action;
 
 // 基本图元对象定义
 class OFDSHARED_EXPORT CT_GraphicUnit : public CT_Base
@@ -35,7 +36,7 @@ protected:
     CT_Color* stroke_color;       // 勾边颜色
     // CT_Actions Actions;       // 图元对象附带的动作序列。
 
-    QVector<CT_Clip*> * clips;      // 图元对象的裁剪区
+//    QVector<CT_Clip*> * clips;      // 图元对象的裁剪区
     CT_GraphicUnit() {}
 public:
     friend class OFDParser;
@@ -45,6 +46,11 @@ public:
 
     CT_Color * getFillColor() {
         return fill_color;
+    }
+
+    ~CT_GraphicUnit() {
+        delete fill_color;
+        delete stroke_color;
     }
 };
 

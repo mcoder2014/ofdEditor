@@ -13,7 +13,10 @@ class OFDSHARED_EXPORT Res {
     QVector<CT_ColorSpace *> * colorspaces;
     //Other resource collections to be implemented
 
-    Res() {}
+    Res() {
+        fonts = new QVector<CT_Font *>();
+        colorspaces = new QVector<CT_ColorSpace *>();
+    }
 public:
     friend class OFDParser;
     ST_Loc getBaseLoc() {

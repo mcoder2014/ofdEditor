@@ -17,6 +17,7 @@ using std::vector;
 class OFDSHARED_EXPORT CT_ColorSpace : public CT_Base
 {
 public :
+    friend class OFDParser;
     QString getType() {
         return type;
     }

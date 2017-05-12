@@ -8,7 +8,6 @@ OFDParser::OFDParser(QString _path) : current_path("OFD", _path) {
 
 void OFDParser::openFile() {
     QFile ofd_file(current_path.getPath());
-    //qDebug() << "At the very beginning: " << current_path << endl;
     if (!ofd_file.open(QFile::ReadOnly | QFile::Text)) {    //检查文件是否存在&正常打开
             //出现异常！！！to be implemented
         qDebug() << "xml文件打开出现错误。" << endl;
@@ -29,6 +28,7 @@ void OFDParser::openFile() {
 
 OFD * OFDParser::readOFD() {
     openFile();
+//    qDebug() << "Entering readOFD module..." << endl;
     QDomElement new_ofd = document->firstChildElement("ofd:OFD");
     OFD *ofd_data = nullptr;
     if (!new_ofd.isNull()) {
@@ -71,10 +71,8 @@ OFD * OFDParser::readOFD() {
             }
             QDomElement new_docroot = new_docbody.firstChildElement("ofd:DocRoot");
             if (!new_docroot.isNull()) {
-                //qDebug() << current_path << endl;;
                 ST_Loc p("Document", new_docroot.text(), current_path);
                 docbody_data->doc_root = p;
-                //qDebug() << docbody_data->doc_root << endl;
             } else {
                 //qDebug() << "非法的OFD文档格式。" << endl;
                 //Error
@@ -82,6 +80,7 @@ OFD * OFDParser::readOFD() {
             }
             new_docbody = new_ofd.nextSiblingElement("ofd:DocBody");
         }
+
     } else {
         qDebug() << "非法的OFD文档格式。" << endl;
         abort();
@@ -96,8 +95,8 @@ OFD * OFDParser::readOFD() {
 }
 
 Document * OFDParser::readDocument(){
-    //qDebug() << current_path << endl;
     openFile();
+//    qDebug() << "Entering readDocument module..." << endl;
     QDomElement new_document = document->firstChildElement("ofd:Document");
     Document *document_data;
     if (!new_document.isNull()) {
@@ -126,7 +125,7 @@ Document * OFDParser::readDocument(){
             while (!t.isNull()) {
                 ST_Loc p("PublicRes", t.text(), current_path);
                 commondata_data->public_res->push_back(p);
-                t = new_commondata.nextSiblingElement("ofd:PublicRes");
+                t = t.nextSiblingElement("ofd:PublicRes");
             }
 
             if (!(t = new_commondata.firstChildElement("ofd:DefaultCS")).isNull()) {
@@ -188,22 +187,26 @@ Document * OFDParser::readDocument(){
         current_path = document_data->pages->pages->at(i)->base_loc;
         readPage(document_data->pages->pages->at(i));
     }
-
+    //qDebug() << document_data->common_data->public_res->size() << endl;
     for (int i = 0; i < document_data->common_data->public_res->size(); i++) {
+        //qDebug() << "Start to read PublicRes..." << endl;
         current_path = document_data->common_data->public_res->at(i);
         Res * res_data = new Res();
         readResource(res_data);
+        document_data->public_res->push_back(res_data);
     }
     return document_data;
 }
 
 void OFDParser::readPage(Page * page_data) {
     openFile();
+//    qDebug() << "Entering readPage module..." << endl;
     QDomElement new_page = document->firstChildElement("ofd:Page");
     if (!new_page.isNull()) {
         QDomElement t;
         if (!(t = new_page.firstChildElement("ofd:Area")).isNull()) {
-            CT_PageArea * area_data;
+//            qDebug() << "Start to read PageArea..." << endl;
+            CT_PageArea * area_data = new CT_PageArea();
             readPageArea(area_data, t);
             page_data->area = area_data;
         }
@@ -212,15 +215,18 @@ void OFDParser::readPage(Page * page_data) {
         while (!t.isNull()) {
             ST_Loc p("PageRes", t.text(), current_path);
             Res * new_res = new Res();
-            new_res->base_loc = p;
+            current_path = p;
+            readResource(new_res);
             page_data->page_res->push_back(new_res);
-            t = new_page.nextSiblingElement("ofd:PageRes");
+            t = t.nextSiblingElement("ofd:PageRes");
         }
 
         if (!(t = new_page.firstChildElement("ofd:Content")).isNull()) {
+//            qDebug() << "Start to read Content..." << endl;
             QDomElement new_layer = t.firstChildElement("ofd:Layer");
             while (!new_layer.isNull()) {
                 CT_Layer * layer_data = new CT_Layer();
+                page_data->getContent()->push_back(layer_data);
                 if (new_layer.hasAttribute("ID")) {
                     ST_ID i(new_layer.attribute("ID").toInt());
                     layer_data->setID(i);
@@ -235,6 +241,7 @@ void OFDParser::readPage(Page * page_data) {
                 QDomElement t;
                 t = new_layer.firstChildElement("ofd:TextObject");
                 while (!t.isNull()) {
+                    //qDebug() << "Start to read TextObject..." << endl;
                     CT_Text * text_data = new CT_Text();
                     layer_data->text_object->push_back(text_data);
                     readGraphicUnit(text_data, t);
@@ -248,7 +255,7 @@ void OFDParser::readPage(Page * page_data) {
                     }
 
                     if (t.hasAttribute("Size")) {
-                        text_data->size(t.attribute("Size").toDouble());
+                        text_data->size = t.attribute("Size").toDouble();
                     } else {
                         //Error
                         abort();
@@ -285,10 +292,11 @@ void OFDParser::readPage(Page * page_data) {
                         //Error
                         abort();
                     }
-                    t = new_layer.nextSiblingElement("ofd:TextObject");
+                    t = t.nextSiblingElement("ofd:TextObject");
                 }
                 //Other GraphicUnit objects to be implemented
-
+                //qDebug() << "End of reading content..." << endl;
+                new_layer = new_layer.nextSiblingElement("ofd:Layer");
             }
         }
     } else {
@@ -390,6 +398,7 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
 void OFDParser::readResource(Res * res_data) {
     openFile();
     QDomElement new_res = document->firstChildElement("ofd:Res");
+//    qDebug() << "Entering readResource module..." << endl;
     if (!new_res.isNull()) {
         //读取属性
         if (new_res.hasAttribute("BaseLoc")) {
@@ -423,7 +432,7 @@ void OFDParser::readResource(Res * res_data) {
                     font_data->family_name = t2.attribute("FamilyName");
                 }
                 //Other stuff to be implemented
-                t2 = t.nextSiblingElement("ofd:Font");
+                t2 = t2.nextSiblingElement("ofd:Font");
             }
         }
         if (!(t = new_res.firstChildElement("ofd:ColorSpaces")).isNull()) {
@@ -445,6 +454,7 @@ void OFDParser::readResource(Res * res_data) {
                     abort();
                 }
                 //Other stuff to be implemented
+                t2 = t2.nextSiblingElement("ofd:ColorSpace");
             }
         }
         //Other stuff to be implemented
@@ -452,4 +462,5 @@ void OFDParser::readResource(Res * res_data) {
         //Error
         abort();
     }
+    qDebug() << "End of reading Resourse..." << endl;
 }

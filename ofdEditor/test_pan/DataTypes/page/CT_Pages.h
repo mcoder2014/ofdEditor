@@ -15,6 +15,11 @@ public:
     QVector<Page*> *getPages() {
         return pages;
     }
+    ~CT_Pages() {
+        for (int i = 0; i < pages->size(); i++)
+            delete pages->at(i);
+        delete pages;
+    }
 };
 
 #endif // CT_PAGES_H
