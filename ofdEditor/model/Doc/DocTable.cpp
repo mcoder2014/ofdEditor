@@ -1,6 +1,14 @@
 #include "DocTable.h"
 
-DocTable::DocTable()
+
+
+DocTable::DocTable(QWidget *parent)
+    :QTextEdit(parent)
+{
+
+}
+
+DocTable::~DocTable()
 {
 
 }

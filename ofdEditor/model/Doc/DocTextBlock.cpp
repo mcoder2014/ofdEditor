@@ -7,10 +7,10 @@
 DocTextBlock::DocTextBlock(QWidget *parent)
     :QTextEdit(parent)
 {
-    QTextCursor cursor(this->textCursor());
-    cursor.insertText(tr("testsesetstsetestes"));
+//    QTextCursor cursor(this->textCursor());
+//    cursor.insertText(tr("testsesetstsetestes"));
 
-    this->setBackgroundRole(QPalette::Dark);
+//    this->setBackgroundRole(QPalette::Dark);
 }
 
 DocTextBlock::~DocTextBlock()

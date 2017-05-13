@@ -1,6 +1,13 @@
 #include "DocGraph.h"
 
-DocGraph::DocGraph()
+
+DocGraph::DocGraph(QObject *parent)
+    :DocImage(parent)
+{
+
+}
+
+DocGraph::~DocGraph()
 {
 
 }

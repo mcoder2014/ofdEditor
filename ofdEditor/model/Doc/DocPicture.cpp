@@ -1,6 +1,13 @@
 #include "DocPicture.h"
 
-DocPicture::DocPicture()
+
+DocPicture::DocPicture(QObject *parent)
+    :DocImage(parent)
+{
+
+}
+
+DocPicture::~DocPicture()
 {
 
 }

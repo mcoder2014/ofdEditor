@@ -4,13 +4,16 @@
 #include "model_global.h"
 #include "Doc/DocBlock.h"
 
-// 本类型用来表述文章中的图片
+#include <QTextDocument>      // 文档
+
+// 本类型用来表述文章中的图形、图片之类的
 
 class MODELSHARED_EXPORT DocImage
-        :public DocBlock
+        :public QTextDocument
 {
+    Q_OBJECT
 public:
-    DocImage();
+    DocImage(QObject *parent = Q_NULLPTR);
 private:
 
 };
