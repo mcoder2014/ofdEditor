@@ -40,7 +40,8 @@ SOURCES += \
 #    DataTypes/image/CT_Image.cpp \
 #    DataTypes/image/CT_Path.cpp \
     ofd_parser.cpp \
-    DataTypes/basic_datatypes.cpp
+    DataTypes/basic_datatypes.cpp \
+    ofd_writer.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -74,7 +75,8 @@ HEADERS  += \
     DataTypes/text/CT_Font.h \
     DataTypes/text/CT_Text.h \
     DataTypes/text/TextCode.h \
-    ofd_global.h
+    ofd_global.h \
+    ofd_writer.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

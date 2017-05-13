@@ -11,6 +11,8 @@
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/Color/CT_Color.h"
 
+class OFD;
+
 class OFDParser {  //解析OFD.xml
     OFD * data;     //保存了解析出来的数据信息
     ST_Loc current_path;        //当前文档的路径

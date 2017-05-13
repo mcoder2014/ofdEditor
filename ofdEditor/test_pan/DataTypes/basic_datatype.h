@@ -4,7 +4,7 @@
 #include <QStringList>
 #include <QVector>
 #include "../ofd_global.h"   // 生成库文件时需要
-
+#include <QDebug>
 
 //6种基本数据类型
 class OFDSHARED_EXPORT ST_Loc {
@@ -63,6 +63,18 @@ public:
 
     bool isNull() {
         return abs_path.isNull();
+    }
+
+    QString getRelativePath(ST_Loc cur_path) {
+        QString p = getPath();
+        if (p.startsWith(cur_path.getPath())) {
+            p.remove(cur_path.getPath());
+        } else {
+            //Error!
+            qDebug() << "???";
+            abort();
+        }
+        return p.replace("\\", "/");
     }
 };
 

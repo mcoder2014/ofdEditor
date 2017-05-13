@@ -71,6 +71,10 @@ public:
     ST_Loc getCover() {
         return cover;
     }
+
+    QVector<QStringList> * getCustomDatas() {
+        return custom_datas;
+    }
 };
 
 #endif // CT_DOCINFO_H

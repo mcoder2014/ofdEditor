@@ -9,7 +9,7 @@
 
 class OFDSHARED_EXPORT OFD { //主入口文件的根元素
     //成员
-    ST_Loc cur_path;    //ofd.xml的绝对路径，应由应用程序提供
+    ST_Loc root_path;    //ofd.xml的绝对路径，应由应用程序提供
     QString version; //版本号
     QString doc_type;    //文档子集类型
 
@@ -27,6 +27,10 @@ public:
     //外部查询数据的接口
     QVector<DocBody *> * getDocBodies() {
         return docbodys;
+    }
+
+    ST_Loc getRootPath() {
+        return root_path;
     }
 
     QVector<Document *> * getDocuments() {

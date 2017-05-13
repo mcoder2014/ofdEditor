@@ -35,6 +35,7 @@ OFD * OFDParser::readOFD() {
         ofd_data = new OFD();
         ofd_data->doc_type = new_ofd.attribute("DocType");
         ofd_data->version = new_ofd.attribute("Version");
+        ofd_data->root_path = current_path;
         QDomElement new_docbody = new_ofd.firstChildElement("ofd:DocBody");
 
         while (!new_docbody.isNull()) {
@@ -65,6 +66,17 @@ OFD * OFDParser::readOFD() {
                     docinfo_data->creator_version = t.text();
                 if (!(t = new_docinfo.firstChildElement("ofd:DocUsage")).isNull())
                     docinfo_data->doc_usage = t.text();
+                //读取CustomsDatas
+                if (!(t = new_docinfo.firstChildElement("ofd:CustomDatas")).isNull()) {
+                    QDomElement t2 = t.firstChildElement("ofd:CustomData");
+                    while (!t2.isNull()) {
+                        QStringList l;
+                        l.append(t2.attribute("Name"));
+                        l.append(t2.text());
+                        docinfo_data->custom_datas->push_back(l);
+                        t2 = t2.nextSiblingElement("ofd:CustomData");
+                    }
+                }
             } else {
                 //Error
                 abort();
