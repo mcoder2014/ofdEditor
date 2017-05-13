@@ -136,7 +136,7 @@ QGraphicsProxyWidget *DocPage::addWidget(QWidget *widget,
  */
 void DocPage::paintEvent(QPaintEvent *event)
 {
-
+    QGraphicsView::paintEvent(event);
 }
 
 

@@ -44,13 +44,13 @@ int main(int argc, char *argv[])
     QTextEdit * editer = new QTextEdit();
 
 
-//    DocBlock * block = new DocBlock();
+    DocBlock * block = new DocBlock();
 
-//    block->setWidget(label);
-//    block->setPos(0,0);
-//    block->resize(400,300);
-//    block->setVisible(true);
-//    block->setZValue(100);
+    block->setWidget(label);
+    block->setPos(0,0);
+    block->resize(400,300);
+    block->setVisible(true);
+    block->setZValue(100);
 
 
 //    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget();
@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
 //    proxy->resize(400,400);
 //    page1->addItem(proxy);
 
-    QGraphicsProxyWidget * proxy1 = page1->addWidget(editer,Qt::Widget);
-    proxy1->resize(400,500);
-    proxy1->setVisible(true);
-    proxy1->setPos(10,50);
-    proxy1->setZValue(9000);
+//    QGraphicsProxyWidget * proxy1 = page1->addWidget(editer,Qt::Widget);
+//    proxy1->resize(400,500);
+//    proxy1->setVisible(true);
+//    proxy1->setPos(10,50);
+//    proxy1->setZValue(9000);
 
 //    qDebug() << proxy1->pos().x() <<", "<<proxy1->pos().y();
 
@@ -70,9 +70,8 @@ int main(int argc, char *argv[])
 
 
 
-
-//    page1->addBlock(block, DocPage::Foreground);
-//        block->setWidget(label);
+    block->setWidget(label);
+    page1->addBlock(block, DocPage::Foreground);
     //page1->addBlock(new DocTextBlock(page1),DocPage::Body);
 
 
