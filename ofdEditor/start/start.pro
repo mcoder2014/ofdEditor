@@ -26,9 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    ui/PassageMainWindow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    ui/PassageMainWindow.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -50,3 +52,6 @@ win32{
     LIBS += ../bin/model.lib \
             ../bin/ofd.lib
 }
+
+RESOURCES += \
+    icons.qrc

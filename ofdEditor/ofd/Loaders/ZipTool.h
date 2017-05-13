@@ -24,6 +24,7 @@ public:
     static bool compressDir(QString fileCompressed,
                             QString dir,bool deleteDir = false);
         // 压缩目录
+    static void deleteFolder(const QString& folderFullPath);
 private:
     ZipTool();      // 不允许实例化
 

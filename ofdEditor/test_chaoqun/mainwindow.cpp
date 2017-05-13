@@ -108,7 +108,7 @@ void MainWindow::compressDir()
 
     ZipTool::compressDir(
       QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/test.ofd",
-                         this->file);
+                         this->file, true);
 }
 
 void MainWindow::extractDir()
