@@ -25,7 +25,9 @@ DocPassage::DocPassage(QWidget *parent)
 //    this->commonData = new CT_CommonData();
     this->init();       // 初始化界面
 
-    //this->addPage(new DocPage());       // 添加一个空白页面
+    this->addPage(new DocPage());       // 添加一个空白页面
+
+    setAttribute(Qt::WA_DeleteOnClose);
 
 }
 

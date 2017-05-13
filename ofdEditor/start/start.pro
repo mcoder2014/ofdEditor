@@ -52,3 +52,6 @@ win32{
     LIBS += ../bin/model.lib \
             ../bin/ofd.lib
 }
+
+RESOURCES += \
+    icons.qrc
