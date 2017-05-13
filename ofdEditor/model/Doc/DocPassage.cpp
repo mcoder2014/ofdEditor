@@ -157,6 +157,8 @@ void DocPassage::init()
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
+    adjustScrollBarRange();     // 调整进度条长度
+
     // 设置滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), 1);
     adjustScrollBar(this->verticalScrollBar(),1);
@@ -176,6 +178,23 @@ void DocPassage::adjustScrollBar(QScrollBar *scrollBar, double factor)
     // 设置滚动条位置
     scrollBar->setValue(int(factor * scrollBar->value()
                             + ((factor -1) * scrollBar->pageStep()/2)) + 1);
+}
+
+void DocPassage::adjustScrollBarRange()
+{
+    QSize areaSize = this->viewport()->size();  // 视窗大小
+    QSize widgetSize = this->widget->size();    // 面板大小
+
+
+    this->horizontalScrollBar()->setPageStep(areaSize.width());
+    this->horizontalScrollBar()->setRange(0,widgetSize.width()
+                                        - areaSize.width());
+
+    this->verticalScrollBar()->setPageStep(areaSize.height());
+    this->verticalScrollBar()->setRange(0,widgetSize.height()
+                                        - areaSize.height());
+
+
 }
 
 /**
@@ -210,6 +229,8 @@ void DocPassage::adjustWidgetSize()
     this->widgetWidth = width;
     this->widgetHeight = height;
     this->QScrollArea::update();
+
+    adjustScrollBarRange();     // 调整进度条长度
 
     // 调整滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), this->scaleFactor);

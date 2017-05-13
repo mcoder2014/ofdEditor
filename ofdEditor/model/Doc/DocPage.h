@@ -40,13 +40,15 @@ public:
 
     void addBlock(DocBlock* block, DocPage::Layer layer);  // 为页面添加一个新元素
 //    void addBlock(DocTextBlock* textBlock, DocPage::Layer layer);  // 为页面添加一个新元素
-
+    void addItem(QGraphicsItem *item);      // 拓展接口
+    QGraphicsProxyWidget *addWidget(QWidget *widget,
+                          Qt::WindowFlags wFlags = Qt::WindowFlags());
 
 protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    QGraphicsScene* scene;               // 场景数据
+    QGraphicsScene* docScene;               // 场景数据
     //QVector<DocLayer *> layers;        // 一个文档具有很多层
 
     DocLayer* foregroundLayer;           // 前景层

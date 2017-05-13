@@ -62,6 +62,7 @@ private:
     void init();                    // 初始化
     void adjustScrollBar(QScrollBar *scrollBar,
                          double factor); // 调整滑动条
+    void adjustScrollBarRange();    //调整滑动条范围
     void adjustWidgetSize();        // 根据页数来自动调整widget大小
 
 

@@ -50,6 +50,9 @@ void DocPage::setSize(double width, double height)
 
     this->setFixedSize(UnitTool::mmToPixel(width),
                        UnitTool::mmToPixel(height));   // 设置页面大小
+    this->setSceneRect(0,0,
+                       UnitTool::mmToPixel(width),
+                       UnitTool::mmToPixel(height) );
     this->setBackgroundRole(QPalette::BrightText);          // 背景颜色
     this->setAutoFillBackground(true);
 }
@@ -78,8 +81,8 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
 {
 
     qDebug() << "DocPage::addBlock excuted";
-    this->scene->addItem(block);       // 添加元素
-    qDebug() << "DocPage::addBlock excuted this->scene->addItem(block);";
+    this->docScene->addItem(block);       // 添加元素
+    qDebug() << "DocPage::addBlock excuted this->docScene->addItem(block);";
 
     switch (layer) {
     case Body:
@@ -97,6 +100,32 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
 
 
 }
+
+/**
+ * @Author Chaoqun
+ * @brief  将item添加到scene中
+ * @param  QGraphicsItem *item
+ * @return void
+ * @date   2017/05/13
+ */
+void DocPage::addItem(QGraphicsItem *item)
+{
+    this->docScene->addItem(item);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  传递接口
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/03
+ */
+QGraphicsProxyWidget *DocPage::addWidget(QWidget *widget,
+                                         Qt::WindowFlags wFlags)
+{
+    return this->docScene->addWidget(widget,wFlags);
+}
+
 
 /**
  * @Author Chaoqun
@@ -118,11 +147,18 @@ void DocPage::paintEvent(QPaintEvent *event)
  */
 void DocPage::init()
 {
-    this->scene = new QGraphicsScene(); // 新建
-    this->setScene(this->scene);        // 设置场景
+    this->docScene = new QGraphicsScene(); // 新建
+    this->setScene(this->docScene);        // 设置场景
+
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
 
     // 新建三个层
     this->foregroundLayer = new DocLayer(Foreground);
     this->bodyLayer = new DocLayer(DocPage::Body);
     this->backgroundLayer = new DocLayer(Background);
+
+
 }

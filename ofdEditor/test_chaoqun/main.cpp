@@ -8,6 +8,8 @@
 #include <QScreen>
 #include <QSizePolicy>
 #include <QDebug>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsScene>
 
 #include "Doc/DocTextBlock.h"
 
@@ -31,22 +33,43 @@ int main(int argc, char *argv[])
     pas->addPage(page1);
     pas->addPage(page2);
 
-    QLabel * label = new QLabel("testetstests");
+    w.setPassage(pas);
+
+    QLabel * label = new QLabel("gfgfdsgfdsgfdgdsfgfdgfdgfdtestetstests");
+    QWidget * widget = new QWidget();
+    widget->setBackgroundRole(QPalette::Dark);
 
     DocBlock * block = new DocBlock();
-    DocTextBlock * bloc = new DocTextBlock();
-    //bloc->resize(600,600);
-    //block->setWidget(bloc);
-    block->setWidget(label);
-    block->setPos(20,20);
-    block->resize(300,300);
-    block->setVisible(true);
-    block->setZValue(0);
 
-    page1->addBlock(block, DocPage::Body);
+    block->setWidget(label);
+    block->setPos(0,0);
+    block->resize(400,300);
+    block->setVisible(true);
+    block->setZValue(100);
+
+
+//    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget();
+//    proxy->setWidget( widget);
+//    proxy->resize(400,400);
+//    page1->addItem(proxy);
+
+//    QGraphicsProxyWidget * proxy1 = page1->addWidget(label,Qt::Window);
+//    proxy1->resize(400,400);
+//    proxy1->setVisible(true);
+//    proxy1->setPos(10,50);
+
+//    qDebug() << proxy1->pos().x() <<", "<<proxy1->pos().y();
+
+
+
+
+
+
+    page1->addBlock(block, DocPage::Foreground);
+        block->setWidget(label);
     //page1->addBlock(new DocTextBlock(page1),DocPage::Body);
 
-    w.setPassage(pas);
+
 
 
 //    w.setSizePolicy(QSizePolicy(QSizePolicy::Maximum,
@@ -55,7 +78,7 @@ int main(int argc, char *argv[])
 
     w.show();
 
-    qDebug()<<bloc->isVisible();
+    //qDebug()<<bloc->isVisible();
 
     return a.exec();
 }

@@ -3,9 +3,7 @@
 
 #include "model_global.h"       // 导出lib使用
 #include "Doc/DocBasicTypes.h"
-#include <QTextEdit>
 #include <QGraphicsProxyWidget>
-#include <QTimeLine>
 #include <QGraphicsSceneMouseEvent>
 
 class DocLayer;
@@ -23,10 +21,11 @@ class MODELSHARED_EXPORT DocBlock
 {
     Q_OBJECT
 public:
-    DocBlock(QGraphicsItem *parent = 0);
+    DocBlock(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
 
     void setLayer(DocLayer * layer){this->layer = layer;}
     DocLayer * getLayer(){return this->layer;}
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
