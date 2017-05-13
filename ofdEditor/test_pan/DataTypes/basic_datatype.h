@@ -10,10 +10,11 @@
 class OFDSHARED_EXPORT ST_Loc {
     QString title;  //该路径的标签，比如资源路径为"Res"，页面路径为"Page"（与XML的标签等同）
     QString abs_path;   //绝对路径
+    QString rela_path;
 public:
     ST_Loc(){}
     ST_Loc(QString tag, QString relative_path, QString current_path) : //构造方法，包括对路径的解析
-        title(tag) {
+        title(tag), rela_path(relative_path) {
     //        qDebug() << "cur = " << current_path << "rela = " << relative_path << endl;
         current_path.replace("\\", "/");    //路径分隔符标准化
     //        qDebug() << "cur = " << current_path << endl;
@@ -56,6 +57,9 @@ public:
     QString getPath() {     //返回绝对路径，以“\\”为分隔符
         return abs_path;
     }
+    QString getRelativePath() {
+        return rela_path;
+    }
 
     QString getTitle() {    //返回当该路径的标签
         return title;
@@ -65,17 +69,17 @@ public:
         return abs_path.isNull();
     }
 
-    QString getRelativePath(ST_Loc cur_path) {
-        QString p = getPath();
-        if (p.startsWith(cur_path.getPath())) {
-            p.remove(cur_path.getPath());
-        } else {
-            //Error!
-            qDebug() << "???";
-            abort();
-        }
-        return p.replace("\\", "/");
-    }
+//    QString getRelativePath(ST_Loc cur_path) {
+//        QString p = getPath();
+//        if (p.startsWith(cur_path.getPath())) {
+//            p.remove(cur_path.getPath());
+//        } else {
+//            //Error!
+//            qDebug() << "???";
+//            abort();
+//        }
+//        return p.replace("\\", "/");
+//    }
 };
 
 class OFDSHARED_EXPORT ST_Array {   //以QStringList的形式来实现（因为容器类型的多样性，不如返回QString，具体的类型留给调用者去处理）
@@ -83,19 +87,27 @@ class OFDSHARED_EXPORT ST_Array {   //以QStringList的形式来实现（因为�
     QStringList elements;
 public: //对QStringList的一些简单封装（在有需要时再拓展接口）
     ST_Array() {}
+
     ST_Array(QString const & tag, QString const & elements_collection, QString const & separator = " ") :
         title(tag), elements(elements_collection.split(separator)) {}
     int size() {    //元素个数
         return elements.size();
     }
+
     int length() {  //元素个数
         return elements.length();
     }
+
     QString operator[](int index) { //随机访问元素
         return elements[index];
     }
+
     bool contains(QString const & value) {  //判断值为value的元素是否存在
         return elements.contains(value);
+    }
+
+    bool isNull() {
+        return elements.size() == 0;
     }
 };
 

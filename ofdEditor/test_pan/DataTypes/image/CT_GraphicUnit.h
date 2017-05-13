@@ -20,7 +20,6 @@ protected:
     ST_Array ctm;               // 对象坐标系下的变换矩阵。
     ST_RefID draw_param;        // 绘制参数的引用
     double line_width;          // 线宽
-
     QString cap;                // 线帽样式。默认"Butt", 可选"Round"、"Round"、"Square"
     QString join;               //绘制路径时使用的结合点方式
 
@@ -37,15 +36,37 @@ protected:
     // CT_Actions Actions;       // 图元对象附带的动作序列。
 
 //    QVector<CT_Clip*> * clips;      // 图元对象的裁剪区
-    CT_GraphicUnit() {}
+    CT_GraphicUnit() {
+        visible = true;
+    }
 public:
     friend class OFDParser;
     ST_Box getBoundary() {
         return boundary;
     }
 
+    QString getName() {
+        return name;
+    }
+
+    bool getVisible() {
+        return visible;
+    }
+
+    ST_RefID getDrawParam() {
+        return draw_param;
+    }
+
+    double getLineWidth() {
+        return line_width;
+    }
+
     CT_Color * getFillColor() {
         return fill_color;
+    }
+
+    CT_Color * getStrokeColor() {
+        return stroke_color;
     }
 
     ~CT_GraphicUnit() {

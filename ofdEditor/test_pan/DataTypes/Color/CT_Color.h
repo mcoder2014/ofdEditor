@@ -14,6 +14,7 @@ class OFDSHARED_EXPORT CT_Color
 {
     ST_Array value;             // 颜色值， “通道1 ，通道2 ，……”  -可选
     int index;                  // 调色板中颜色的编号    -可选
+    bool index_used;
     ST_RefID    color_space;    // 指向所用的颜色空间
     int alpha;                  // 颜色透明度，取值0~255，   默认值255
 
@@ -24,14 +25,40 @@ class OFDSHARED_EXPORT CT_Color
 //    CT_RadialShd* radial_shd;     // 径向渐变
     int shd_selected;           // 0表示选择轴向，1表示选择径向，默认值-1
 
-    CT_Color() {}
+    CT_Color() {
+        alpha = 255;
+        index_used = false;
+    }
 public:
     friend class OFDParser;
     ST_Array getValue() {
         return value;
     }
+
+    bool indexUsed() {
+        return index_used;
+    }
+
+    int getIndex() {
+        if (index_used)
+            return index;
+        else {
+            //Error! Try to access unused data
+            abort();
+        }
+    }
+
     ST_RefID getColorSpace() {
         return color_space;
+    }
+
+    int getAlpha() {
+        if (alpha >= 0 && alpha < 256)
+            return alpha;
+        else {
+            //Error!    Illegal value
+            abort();
+        }
     }
 };
 

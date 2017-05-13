@@ -136,6 +136,7 @@ Document * OFDParser::readDocument(){
             t = new_commondata.firstChildElement("ofd:PublicRes");
             while (!t.isNull()) {
                 ST_Loc p("PublicRes", t.text(), current_path);
+                //qDebug() << "PublicRes = " << t.text();
                 commondata_data->public_res->push_back(p);
                 t = t.nextSiblingElement("ofd:PublicRes");
             }
@@ -474,5 +475,5 @@ void OFDParser::readResource(Res * res_data) {
         //Error
         abort();
     }
-    qDebug() << "End of reading Resourse..." << endl;
+    //qDebug() << "End of reading Resourse..." << endl;
 }
