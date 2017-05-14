@@ -21,6 +21,9 @@ class OFDSHARED_EXPORT Document {
 
     Document() {
         public_res = new QVector<Res *>();
+        common_data = nullptr;
+        outlines = nullptr;
+        pages = nullptr;
     }
 
 public:

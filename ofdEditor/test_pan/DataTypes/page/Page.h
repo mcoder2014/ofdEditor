@@ -16,6 +16,8 @@ class OFDSHARED_EXPORT Page : public CT_Base{
     Page() {
         content = new QVector<CT_Layer *>;
         page_res = new QVector<Res *>;
+        page_res_locations = new QVector<ST_Loc>;
+        area = nullptr;
     }
 public:
     friend class OFDParser;

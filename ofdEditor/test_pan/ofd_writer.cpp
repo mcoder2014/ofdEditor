@@ -23,7 +23,8 @@ void OFDWriter::writeOFD() {
     //进入正文
     writer.writeStartElement("ofd:OFD");
     writer.writeAttribute("xmlns:ofd", "http://www.ofdspec.org");
-    writer.writeAttributes(getAttributes(data));
+    QXmlStreamAttributes a = getAttributes(data);
+    writer.writeAttributes(a);
     //写DocBody
     for (int i = 0; i < data->getDocBodies()->size(); i++) {
         DocBody * cur_docbody = data->getDocBodies()->at(i);
@@ -204,25 +205,36 @@ void OFDWriter::writePage(Page * data) {
     if (data->getArea()) {
         writer.writeStartElement("ofd:Area");
         writePageArea(data->getArea(), writer);
-        wrier.writeEndElement();    //ofd:Area
+        writer.writeEndElement();    //ofd:Area
     }
+    qDebug() << "Checkpoint 1 reached.";
     //写PageRes
     for (int i = 0; i < data->getPageResLocations()->size(); i++) {
-        writer.writeTextElement("ofd:PageRes", data->getPageResLocations()->at(i));
+        ST_Loc p = data->getPageResLocations()->at(i);
+        writer.writeTextElement("ofd:PageRes", p.getRelativePath());
     }
+    qDebug() << "Checkpoint 2 reached.";
     //写Content
     if (data->getContent()->size()) {
         writer.writeStartElement("ofd:Content");
         for (int i = 0; i < data->getContent()->size(); i++) {
+            qDebug() << data->getContent()->size();
             CT_Layer * cur_layer = data->getContent()->at(i);
             writer.writeStartElement("ofd:Layer");
             writeBase(cur_layer, writer);
-            writer.writeAttributes(getAttributes(cur_layer));
+            qDebug() << "Checkpoint 2.1 reached.";
+            QXmlStreamAttributes a = getAttributes(cur_layer);
+            writer.writeAttributes(a);
+            qDebug() << "Checkpoint 2.2 reached.";
+                        qDebug() << "???";
             //写文档页面的内容（QGraphicUnits的子类集合）
             writePageBlock(cur_layer, writer, true);
         }
         writer.writeEndElement();   //ofd:Content
+        //qDebug() << "????";
     }
+    qDebug() << "Checkpoint 3 reached.";
+    //Actions to be implemented
     writer.writeEndElement();   //ofd:Page
     //正文结束
     writer.writeEndDocument();
@@ -275,7 +287,9 @@ void OFDWriter::writePageArea(CT_PageArea * cur_page_area,
 void OFDWriter::writePageBlock(CT_PageBlock * cur_page_block,
                                QXmlStreamWriter & writer, bool is_layer) {
     writeBase(cur_page_block, writer);
+
     //文字内容
+    qDebug() << "TextObject: " << cur_page_block->getTextObject()->size();
     for (int i = 0; i < cur_page_block->getTextObject()->size(); i++) {
         CT_Text * cur_text = cur_page_block->getTextObject()->at(i);
         writer.writeStartElement("ofd:TextObject");
@@ -283,35 +297,92 @@ void OFDWriter::writePageBlock(CT_PageBlock * cur_page_block,
         writer.writeEndElement();   //ofd:TextObject
     }
     //矢量图内容
+    qDebug() << "PathObject: " << cur_page_block->getPathObject()->size();
     for (int i = 0; i < cur_page_block->getPathObject()->size(); i++) {
-
+        CT_Path * cur_path = cur_page_block->getPathObject()->at(i);
+        writer.writeStartElement("ofd:PathObject");
+        writePathObject(cur_path, writer);
+        writer.writeEndElement();   //ofd:PathObject
     }
     //位图内容
+    qDebug() << "ImageObject: " << cur_page_block->getImageObject()->size();
     for (int i = 0; i < cur_page_block->getImageObject()->size(); i++) {
-
+        CT_Image * cur_image = cur_page_block->getImageObject()->at(i);
+        writer.writeStartElement("ofd:ImageObject");
+        writeImageObject(cur_image, writer);
+        writer.writeEndElement();   //ofd:ImageObject
     }
     //PageBlock嵌套
+    qDebug() << "PageBlock: " << cur_page_block->getPageBlock()->size();
     for (int i = 0; i < cur_page_block->getPageBlock()->size(); i++) {
-
+        CT_PageBlock * cur_inner_page_block = cur_page_block->getPageBlock()->at(i);
+        writer.writeStartElement("ofd:PageBlock");
+        writePageBlock(cur_inner_page_block, writer);
+        writer.writeEndElement();
     }
 }
 
 void OFDWriter::writeTextObject(CT_Text * cur_text, QXmlStreamWriter & writer) {
-    writeGraphicUnit(cur_text, writer);
-    writer.writeAttributes(getAttributes(cur_text));
+    writeGraphicUnitAttributes(cur_text, writer);
+//    qDebug() << "Checkpoint 4 reached.";
+    QXmlStreamAttributes a = getAttributes(cur_text);
+    writer.writeAttributes(a);
+//    qDebug() << "Checkpoint 5 reached.";
+    writeGraphicUnitMemebers(cur_text, writer);
+    //CGTransform to be implemented
+    if (cur_text->getTextCode()) {
+        TextCode * cur_textcode = cur_text->getTextCode();
+        writer.writeStartElement("ofd:TextCode");
+        QXmlStreamAttributes a = getAttributes(cur_textcode);
+//        qDebug() << "Checkpoint 6 reached.";
+        writer.writeAttributes(a);
+//        qDebug() << "Checkpoint 7 reached.";
+        writer.writeCharacters(cur_textcode->getText());
+        writer.writeEndElement();   //ofd:TextCode
+    } else {
+        //Error!
+        abort();
+    }
 }
 
-void OFDWriter::writeGraphicUnit(CT_GraphicUnit * cur_graphic_unit,
+void OFDWriter::writePathObject(CT_Path * cur_path, QXmlStreamWriter & writer) {
+    writeGraphicUnitAttributes(cur_path, writer);
+    QXmlStreamAttributes a = getAttributes(cur_path);
+    writer.writeAttributes(a);
+    writeGraphicUnitMemebers(cur_path, writer);
+//    qDebug() << "???";
+    if (!cur_path->getAbbreviatedData().isNull()) {
+        writer.writeTextElement("ofd:AbbreviatedData",
+                                cur_path->getAbbreviatedData());
+//        qDebug() << "????";
+    } else {
+        //Error!
+        abort();
+    }
+}
+
+void OFDWriter::writeImageObject(CT_Image * cur_image, QXmlStreamWriter & writer) {
+    writeGraphicUnitAttributes(cur_image, writer);
+    QXmlStreamAttributes a = getAttributes(cur_image);
+    writer.writeAttributes(a);
+    writeGraphicUnitMemebers(cur_image, writer);
+}
+
+void OFDWriter::writeGraphicUnitAttributes(CT_GraphicUnit * cur_graphic_unit,
                                  QXmlStreamWriter & writer) {
     writeBase(cur_graphic_unit, writer);
-    writer.writeAttributes(getAttributes(cur_graphic_unit));
+    QXmlStreamAttributes a = getAttributes(cur_graphic_unit);
+    writer.writeAttributes(a);
+}
 
+void OFDWriter::writeGraphicUnitMemebers(CT_GraphicUnit * cur_graphic_unit,
+                                 QXmlStreamWriter & writer) {
     if (cur_graphic_unit->getFillColor()) {
         writer.writeStartElement("ofd:FillColor");
         writeColor(cur_graphic_unit->getFillColor(), writer);
         writer.writeEndElement();   //ofd:FillColor
     }
-
+    //qDebug() << "Checkpoint 5 reached.";
     if (cur_graphic_unit->getStrokeColor()) {
         writer.writeStartElement("ofd:StrokeColor");
         writeColor(cur_graphic_unit->getStrokeColor(), writer);
@@ -320,14 +391,16 @@ void OFDWriter::writeGraphicUnit(CT_GraphicUnit * cur_graphic_unit,
 }
 
 void OFDWriter::writeColor(CT_Color * cur_color, QXmlStreamWriter & writer) {
-    writer.writeAttributes(getAttributes(cur_color));
+    QXmlStreamAttributes a = getAttributes(cur_color);
+    writer.writeAttributes(a);
     //Pattern and AxialShd / RadialShd to be implemented
 }
 
 void OFDWriter::writeBase(CT_Base * cur_base,
                           QXmlStreamWriter & writer) {
+    //qDebug() << "Base???";
     if (!cur_base->getID().isNull()) {
-        writer.writeAttribute("ID", cur_base->getID());
+        writer.writeAttribute("ID", QString::number(cur_base->getID().getID()));
     } else {
         //Error!
         abort();
@@ -353,21 +426,12 @@ QXmlStreamAttributes getAttributes(OFD * data) {
 
 QXmlStreamAttributes getAttributes(CT_Layer * cur_layer) {
     QXmlStreamAttributes a;
-
-    switch(cur_layer->getType()) {
-    case CT_Layer::Body :
-        break;
-    case CT_Layer::Foreground :
-        a.append("Type", "Foreground");
-        break;
-    case CT_Layer::Background :
-        a.append("Type", "Background");
-        break;
-    }
-
+    if (cur_layer->getType() != "Body")
+        a.append("Type", cur_layer->getType());
     if (!cur_layer->getDrawParam().isNull()) {
         a.append("DrawParam",QString::number(cur_layer->getDrawParam().getRefID()));
     }
+    return a;
 }
 
 QXmlStreamAttributes getAttributes(CT_GraphicUnit * cur_graphic_unit) {
@@ -396,7 +460,7 @@ QXmlStreamAttributes getAttributes(CT_GraphicUnit * cur_graphic_unit) {
 
     //CTM to be implemented
 
-    if (!cur_graphic_unit->getDrawParam.isNull()) {
+    if (!cur_graphic_unit->getDrawParam().isNull()) {
         a.append("DrawParam", QString::number(cur_graphic_unit->getDrawParam()));
     }
 
@@ -409,16 +473,10 @@ QXmlStreamAttributes getAttributes(CT_Color *cur_color) {
     QXmlStreamAttributes a;
 
     if (!cur_color->getValue().isNull()) {
-        ST_Array & v = cur_color->getValue();
-        QString str;
-        for (int i = 0; i < v.size(); i++) {
-            if (i)  str.append(" ");
-            str.append(v[i]);
-        }
-        a.append("Value", str);
+        a.append("Value", cur_color->getValue().getAllContent());
     }
     if (cur_color->indexUsed()) {
-        a.append("Index", cur_color->getIndex());
+        a.append("Index", QString::number(cur_color->getIndex()));
     }
     if (!cur_color->getColorSpace().isNull()) {
         a.append("ColorSpace", QString::number(cur_color->getColorSpace().getRefID()));
@@ -435,4 +493,83 @@ QXmlStreamAttributes getAttributes(CT_Color *cur_color) {
 QXmlStreamAttributes getAttributes(CT_Text * cur_text) {
     QXmlStreamAttributes a;
 
+    if (!cur_text->getFont().isNull()) {
+        a.append("Font", QString::number(cur_text->getFont().getRefID()));
+    } else {
+        //Error!
+        abort();
+    }
+
+    if (cur_text->sizeUsed()) {
+        a.append("Size", QString::number(cur_text->getSize()));
+    } else {
+        //Error!
+        abort();
+    }
+    //Stroke属性不为默认值false时才显示
+    if (cur_text->getStroke()) {
+        a.append("Stroke", "true");
+    }
+    //Fill属性不为默认值true时才显示
+    if (!cur_text->getFill()) {
+        a.append("Fill", "false");
+    }
+    //HScale属性不为默认值1.0时才显示
+    if (abs(cur_text->getHScale() - 1.0) > 0.00000001) {
+        a.append("HScale", QString::number(cur_text->getHScale()));
+    }
+    if (cur_text->getReadDirection() != 0) {
+        a.append("ReadDirection", QString::number(cur_text->getReadDirection()));
+    }
+    if (cur_text->getWeight() != 400) {
+        a.append("ReadDirection", QString::number(cur_text->getWeight()));
+    }
+    if (cur_text->getItalic()) {
+        a.append("Italic", "true");
+    }
+    return a;
 }
+
+QXmlStreamAttributes getAttributes(TextCode * cur_textcode) {
+    QXmlStreamAttributes a;
+
+    a.append("X", QString::number(cur_textcode->getX()));
+    a.append("Y", QString::number(cur_textcode->getY()));
+    if (!cur_textcode->getDeltaX().isNull()) {
+        a.append("DeltaX", cur_textcode->getDeltaX().getAllContent());
+    }
+    if (!cur_textcode->getDeltaY().isNull()) {
+        a.append("DeltaY", cur_textcode->getDeltaY().getAllContent());
+    }
+    return a;
+}
+
+QXmlStreamAttributes getAttributes(CT_Path * cur_path) {
+    QXmlStreamAttributes a;
+
+    //Stroke属性为非默认值false时才显示。下同
+    if (!cur_path->getStroke()) {
+        a.append("Stroke", "false");
+    }
+    if (cur_path->getFill()) {
+        a.append("Fill", "true");
+    }
+    if (cur_path->getRule() != "NonZero") {
+        a.append("Rule", cur_path->getRule());
+    }
+    return a;
+}
+
+QXmlStreamAttributes getAttributes(CT_Image * cur_image) {
+    QXmlStreamAttributes a;
+    if (!cur_image->getResourceID().isNull()) {
+        a.append("ResourceID", QString::number(cur_image->getResourceID().getRefID()));
+    } else {
+        //Error!
+        abort();
+    }
+    if (!cur_image->getSubstitution().isNull()) {
+        a.append("Substitution", QString::number(cur_image->getSubstitution().getRefID()));
+    }
+}
+

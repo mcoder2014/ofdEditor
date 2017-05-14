@@ -30,14 +30,19 @@ private:
     void writePageBlock(CT_PageBlock * cur_page_block, QXmlStreamWriter & writer, bool is_layer = false);
     void writeColor(CT_Color * cur_color, QXmlStreamWriter & writer);
     void writeTextObject(CT_Text * cur_text, QXmlStreamWriter & writer);
-    void writeGraphicUnit(CT_GraphicUnit * cur_graphic_unit, QXmlStreamWriter & writer);
+    void writePathObject(CT_Path * cur_path, QXmlStreamWriter & writer);
+    void writeImageObject(CT_Image * cur_image, QXmlStreamWriter & writer);
+    void writeGraphicUnitAttributes(CT_GraphicUnit * cur_graphic_unit, QXmlStreamWriter & writer);
+    void writeGraphicUnitMemebers(CT_GraphicUnit * cur_graphic_unit, QXmlStreamWriter & writer);
     void writeBase(CT_Base * cur_base, QXmlStreamWriter & writer);
 public:
     OFDWriter(OFD * _data, QString _path);
 };
 
-static QXmlStreamAttributes getAttributes(OFD * data);  //返回OFD类型标签的属性，方便书写
-static QXmlStreamAttributes getAttributes(CT_Layer * cur_layer);
-static QXmlStreamAttributes getAttributes(CT_GraphicUnit * cur_graphic_unit);
-static QXmlStreamAttributes getAttributes(CT_Color * cur_color);
+QXmlStreamAttributes getAttributes(OFD * data);  //返回OFD类型标签的属性，方便书写
+QXmlStreamAttributes getAttributes(CT_Layer * cur_layer);
+QXmlStreamAttributes getAttributes(CT_GraphicUnit * cur_graphic_unit);
+QXmlStreamAttributes getAttributes(CT_Color * cur_color);
+QXmlStreamAttributes getAttributes(TextCode * cur_textcode);
+QXmlStreamAttributes getAttributes(CT_Path * cur_path);
 #endif // OFD_WRITER_H

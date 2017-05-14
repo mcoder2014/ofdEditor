@@ -68,28 +68,17 @@ public:
     bool isNull() {
         return abs_path.isNull();
     }
-
-//    QString getRelativePath(ST_Loc cur_path) {
-//        QString p = getPath();
-//        if (p.startsWith(cur_path.getPath())) {
-//            p.remove(cur_path.getPath());
-//        } else {
-//            //Error!
-//            qDebug() << "???";
-//            abort();
-//        }
-//        return p.replace("\\", "/");
-//    }
 };
 
 class OFDSHARED_EXPORT ST_Array {   //以QStringList的形式来实现（因为容器类型的多样性，不如返回QString，具体的类型留给调用者去处理）
     QString title;
     QStringList elements;
+    QString all_content;
 public: //对QStringList的一些简单封装（在有需要时再拓展接口）
     ST_Array() {}
 
     ST_Array(QString const & tag, QString const & elements_collection, QString const & separator = " ") :
-        title(tag), elements(elements_collection.split(separator)) {}
+        title(tag), elements(elements_collection.split(separator)),all_content(elements_collection) {}
     int size() {    //元素个数
         return elements.size();
     }
@@ -108,6 +97,10 @@ public: //对QStringList的一些简单封装（在有需要时再拓展接口�
 
     bool isNull() {
         return elements.size() == 0;
+    }
+
+    QString getAllContent() {
+        return all_content;
     }
 };
 

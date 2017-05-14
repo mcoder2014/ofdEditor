@@ -8,7 +8,7 @@
 class OFDSHARED_EXPORT CT_Layer : public CT_PageBlock {
 public:
     friend class OFDParser;
-    enum LayerType {Body, Foreground, Background};
+    enum LayerType {Body = 1, Foreground, Background};
     QString getType() {
         switch (type) {
         case Body:

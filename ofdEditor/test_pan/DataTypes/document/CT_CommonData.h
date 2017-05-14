@@ -12,6 +12,7 @@ class OFDSHARED_EXPORT CT_CommonData {
     ST_RefID default_cs;    //缺省颜色空间
     CT_CommonData() {
         public_res = new QVector<ST_Loc>();
+        page_area = nullptr;
     }
 public:
     friend class OFDParser;

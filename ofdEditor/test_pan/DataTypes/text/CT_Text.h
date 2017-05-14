@@ -13,6 +13,7 @@ class OFDSHARED_EXPORT CT_Text : public CT_GraphicUnit
     //属性
     ST_RefID font;  //字体
     double size;    //字号
+    bool size_used;
 
     bool stroke;
     bool fill;
@@ -31,6 +32,8 @@ class OFDSHARED_EXPORT CT_Text : public CT_GraphicUnit
         char_direction = 0;
         weight = 400;
         italic = false;
+        size_used = false;
+        text_code = nullptr;
     }
 public:
     friend class OFDParser;
@@ -39,12 +42,19 @@ public:
     }
     ST_RefID getFont() { return font; }
     double getSize() { return size; }
+    bool sizeUsed() { return size_used; }
     bool getStroke() { return stroke; }
     bool getFill() { return fill; }
     double getHScale() { return hscale; }
     int getReadDirection() { return read_direction; }
     int getCharDirection() { return char_direction; }
-    int getWeight() { return weight; }
+    int getWeight() {
+        if (weight == 1000)
+            weight = 900;
+        if (weight % 100 != 0 || weight > 1000 || weight <= 0)
+            weight = 400;
+        return weight;
+    }
     bool getItalic() { return italic; }
     TextCode * getTextCode() { return text_code; }
 

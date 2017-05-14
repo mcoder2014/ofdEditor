@@ -38,6 +38,8 @@ protected:
 //    QVector<CT_Clip*> * clips;      // 图元对象的裁剪区
     CT_GraphicUnit() {
         visible = true;
+        fill_color = nullptr;
+        stroke_color = nullptr;
     }
 public:
     friend class OFDParser;

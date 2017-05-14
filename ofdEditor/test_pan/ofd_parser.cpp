@@ -252,6 +252,9 @@ void OFDParser::readPage(Page * page_data) {
                     layer_data->draw_param = ri;
                 }
                 QDomElement t;
+                //解析文字对象
+                bool is_first_textcode_x = true, is_first_textcode_y = true;
+                double last_x = 0.0, last_y = 0.0;
                 t = new_layer.firstChildElement("ofd:TextObject");
                 while (!t.isNull()) {
                     //qDebug() << "Start to read TextObject..." << endl;
@@ -269,28 +272,40 @@ void OFDParser::readPage(Page * page_data) {
 
                     if (t.hasAttribute("Size")) {
                         text_data->size = t.attribute("Size").toDouble();
+                        text_data->size_used = true;
                     } else {
                         //Error
                         abort();
                     }
 
                     //many optional attributes to be implemented
-
                     QDomElement t2;
                     if (!(t2 = t.firstChildElement("ofd:TextCode")).isNull()) {
                         TextCode * text_code_data = new TextCode();
                         text_data->text_code = text_code_data;
-                        if (t2.hasAttribute("X"))
-                            text_code_data->x = t2.attribute("X").toDouble();
-                        else {
+                        if (t2.hasAttribute("X")) {
+                            last_x = text_code_data->x = t2.attribute("X").toDouble();
+                            if (is_first_textcode_x)
+                                is_first_textcode_x = false;
+                        } else {
+                            if (!is_first_textcode_x && !is_first_textcode_y)
+                                text_code_data->x = last_x;
+                            else {
                             //Error
                             abort();
+                            }
                         }
-                        if (t2.hasAttribute("Y"))
-                            text_code_data->y = t2.attribute("Y").toDouble();
-                        else {
+                        if (t2.hasAttribute("Y")) {
+                            last_y = text_code_data->y = t2.attribute("Y").toDouble();
+                            if (is_first_textcode_y)
+                                is_first_textcode_y = false;
+                        } else {
+                            if (!is_first_textcode_x && !is_first_textcode_y)
+                                text_code_data->y = last_y;
+                            else {
                             //Error
                             abort();
+                            }
                         }
                         if (t2.hasAttribute("DeltaX")) {
                             ST_Array delta_x_data("DeltaX", t2.attribute("DeltaX"));
@@ -307,9 +322,37 @@ void OFDParser::readPage(Page * page_data) {
                     }
                     t = t.nextSiblingElement("ofd:TextObject");
                 }
+
+                //解析矢量图对象
+                t = new_layer.firstChildElement("ofd:PathObject");
+                while (!t.isNull()) {
+                    CT_Path * path_data = new CT_Path();
+                    layer_data->path_object->push_back(path_data);
+                    readGraphicUnit(path_data, t);
+                    if (t.hasAttribute("Stroke")) {
+                        path_data->stroke = t.attribute("Stroke") == "false" ? false : true;
+                    }
+                    if (t.hasAttribute("Fill")) {
+                        path_data->fill = t.attribute("Fill") == "false" ? false : true;
+                    }
+                    if (t.hasAttribute("Rule")) {
+                        if (t.attribute("Rule") == "NonZero")
+                            path_data->rule = "NonZero";
+                        else if (t.attribute("rule") == "Even-Odd")
+                            path_data->rule = "Even-Odd";
+                        else {
+                            //Error!
+                            abort();
+                        }
+                    }
+                    if (!t.firstChildElement("ofd:AbbreviatedData").isNull()) {
+                        path_data->abbreviated_data = t.firstChildElement("ofd:AbbreviatedData").text();
+                    }
+                    t = t.nextSiblingElement("ofd:PathObject");
+                }
                 //Other GraphicUnit objects to be implemented
                 //qDebug() << "End of reading content..." << endl;
-                new_layer = new_layer.nextSiblingElement("ofd:Layer");
+                new_layer = new_layer.nextSiblingElement("ofd:PathObject");
             }
         }
     } else {
@@ -402,7 +445,13 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
             ST_RefID colorspace_data(t.attribute("ColorSpace").toInt());
             fill_color_data->color_space = colorspace_data;
         }
-        //Other attributes to be implemented
+        if (t.hasAttribute("Index")) {
+            fill_color_data->index = t.attribute("Index").toInt();
+            fill_color_data->index_used = true;
+        }
+        if (t.hasAttribute("Alpha")) {
+            fill_color_data->alpha = t.attribute("Alpha").toInt();
+        }
     }
 
     //Other members to be implemented
