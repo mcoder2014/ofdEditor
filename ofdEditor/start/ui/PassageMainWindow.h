@@ -52,6 +52,7 @@ private:
     QAction * pasteAction;              // 粘贴
 
     // 插入
+    QAction * insertNewPageAction;      // 插入新页面
     QAction * insertTextBlockAction;    // 插入文本框
     QAction * insertImageAction;        // 插入图片
     QAction * insertTableAction;        // 插入表格
