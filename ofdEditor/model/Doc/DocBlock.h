@@ -28,7 +28,16 @@ public:
 
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+    void focusInEvent(QFocusEvent *event) override;         // 焦点关注
+    void focusOutEvent(QFocusEvent *event) override;        // 焦点离开
+
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
+
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 private:
     DocBox boundary;        // 该块的外包矩形
     DocLayer * layer;       // 该块在哪一个层之中

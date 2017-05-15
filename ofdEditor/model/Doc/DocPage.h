@@ -45,7 +45,12 @@ public:
                           Qt::WindowFlags wFlags = Qt::WindowFlags());
 
 protected:
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
 
 private:
     QGraphicsScene* docScene;               // 场景数据
@@ -61,9 +66,11 @@ private:
     double width_mm;          // 页面的宽      --单位 mm
     double height_mm;         // 页面的高
 
-    double scaleFactor;            // 表示缩放倍数
+    double scaleFactor;              // 表示缩放倍数
 
-    void init();            // 初始化UI
+    void init();                     // 初始化UI
+
+    QPointF oldPos;                  // 用来移动时使用，计算距离
 
 
 };

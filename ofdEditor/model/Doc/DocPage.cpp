@@ -129,14 +129,62 @@ QGraphicsProxyWidget *DocPage::addWidget(QWidget *widget,
 
 /**
  * @Author Chaoqun
- * @brief  摘要
- * @param  参数
- * @return 返回值
+ * @brief  绘画事件重载
+ * @param  QPaintEvent *event
+ * @return void
  * @date   2017/05/02
  */
 void DocPage::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标双击事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标点击事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mousePressEvent(QMouseEvent *event)
+{
+    QGraphicsView::mousePressEvent(event);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标移动事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mouseMoveEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标释放事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mouseReleaseEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 
