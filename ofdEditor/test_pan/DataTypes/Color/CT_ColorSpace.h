@@ -2,11 +2,6 @@
 #define CT_COLORSPACE_H
 
 #include "../../ofd_global.h"  // 生成库文件需要
-
-#include <string>
-using std::string;
-#include <vector>
-using std::vector;
 #include "../basic_datatype.h"
 
 //class CT_ColorSpace_Palette;
@@ -21,6 +16,13 @@ public :
     QString getType() {
         return type;
     }
+    int getBitsPerComponent() {
+        return bits_per_component;
+    }
+    ST_Loc getProfile() {
+        return profile;
+    }
+
     //Other methods to be implemented
 
 private:
@@ -32,7 +34,9 @@ private:
     // Palette // 调色版描述
     //vector<CT_ColorSpace_Palette> Palette;      // 调色板描述
 
-    CT_ColorSpace() {}
+    CT_ColorSpace() {
+        bits_per_component = 8;
+    }
 };
 
 //class OFDSHARED_EXPORT CT_ColorSpace_Palette{

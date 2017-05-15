@@ -54,13 +54,13 @@ HEADERS  += \
 #    DataTypes/Color/CT_RadialShd.h \
     DataTypes/document/CT_CommonData.h \
     DataTypes/document/CT_DocInfo.h \
-#    DataTypes/document/CT_OutlineElem.h \
-#    DataTypes/document/CT_Outlines.h \
+    DataTypes/document/CT_OutlineElem.h \
+    DataTypes/document/CT_Outlines.h \
     DataTypes/document/DocBody.h \
     DataTypes/document/Document.h \
     DataTypes/document/OFD.h \
 #    DataTypes/image/CT_Clip.h \
-#    DataTypes/image/CT_DrawParam.h \
+    DataTypes/image/CT_DrawParam.h \
     DataTypes/image/CT_GraphicUnit.h \
     DataTypes/image/CT_Image.h \
     DataTypes/image/CT_Path.h \

@@ -437,21 +437,7 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
     if (!(t = root_node.firstChildElement("ofd:FillColor")).isNull()) {
         CT_Color * fill_color_data = new CT_Color();
         data->fill_color = fill_color_data;
-        if (t.hasAttribute("Value")) {
-            ST_Array value_data("Value", t.attribute("Value"));
-            fill_color_data->value = value_data;
-        }
-        if (t.hasAttribute("ColorSpace")) {
-            ST_RefID colorspace_data(t.attribute("ColorSpace").toInt());
-            fill_color_data->color_space = colorspace_data;
-        }
-        if (t.hasAttribute("Index")) {
-            fill_color_data->index = t.attribute("Index").toInt();
-            fill_color_data->index_used = true;
-        }
-        if (t.hasAttribute("Alpha")) {
-            fill_color_data->alpha = t.attribute("Alpha").toInt();
-        }
+        readColor(fill_color_data, t);
     }
 
     //Other members to be implemented
@@ -477,46 +463,28 @@ void OFDParser::readResource(Res * res_data) {
             while (!t2.isNull()) {
                 CT_Font * font_data = new CT_Font();
                 res_data->fonts->push_back(font_data);
-                if (t2.hasAttribute("ID")) {
-                    ST_ID i(t2.attribute("ID").toInt());
-                    font_data->setID(i);
-                } else {
-                    //Error
-                    abort();
-                }
-                if (t2.hasAttribute("FontName")) {
-                    font_data->font_name = t2.attribute("FontName");
-                } else {
-                    //Error
-                    abort();
-                }
-                if (t2.hasAttribute("FamilyName")) {
-                    font_data->family_name = t2.attribute("FamilyName");
-                }
-                //Other stuff to be implemented
+                readFont(font_data, t2);
                 t2 = t2.nextSiblingElement("ofd:Font");
             }
         }
+
         if (!(t = new_res.firstChildElement("ofd:ColorSpaces")).isNull()) {
             QDomElement t2 = t.firstChildElement("ofd:ColorSpace");
             while (!t2.isNull()) {
                 CT_ColorSpace * colorspace_data = new CT_ColorSpace();
                 res_data->colorspaces->push_back(colorspace_data);
-                if (t2.hasAttribute("ID")) {
-                    ST_ID i(t2.attribute("ID").toInt());
-                    colorspace_data->setID(i);
-                } else {
-                    //Error
-                    abort();
-                }
-                if (t2.hasAttribute("Type")) {
-                    colorspace_data->type = t2.attribute("Type");
-                } else {
-                    //Error
-                    abort();
-                }
-                //Other stuff to be implemented
+                readColorSpace(colorspace_data, t2);
                 t2 = t2.nextSiblingElement("ofd:ColorSpace");
+            }
+        }
+
+        if (!(t = new_res.firstChildElement("ofd:DrawParams")).isNull()) {
+            QDomElement t2 = t.firstChildElement("ofd:DrawParam");
+            while (!t2.isNull()) {
+                CT_DrawParam * draw_param_data = new CT_DrawParam();
+                res_data->draw_params->push_back(draw_param_data);
+                readDrawParam(draw_param_data, t2);
+                t2 = t2.nextSiblingElement("ofd:DrawParam");
             }
         }
         //Other stuff to be implemented
@@ -525,4 +493,137 @@ void OFDParser::readResource(Res * res_data) {
         abort();
     }
     //qDebug() << "End of reading Resourse..." << endl;
+}
+
+void OFDParser::readColor(CT_Color *data, QDomElement & root_node) {
+    if (root_node.hasAttribute("Value")) {
+        ST_Array value_data("Value", root_node.attribute("Value"));
+        data->value = value_data;
+    }
+    if (root_node.hasAttribute("ColorSpace")) {
+        ST_RefID colorspace_data(root_node.attribute("ColorSpace").toInt());
+        data->color_space = colorspace_data;
+    }
+    if (root_node.hasAttribute("Index")) {
+        data->index = root_node.attribute("Index").toInt();
+        data->index_used = true;
+    }
+    if (root_node.hasAttribute("Alpha")) {
+        data->alpha = root_node.attribute("Alpha").toInt();
+    }
+    //Other stuff to be implemented
+}
+void OFDParser::readFont(CT_Font * data, QDomElement & root_node) {
+    if (root_node.hasAttribute("ID")) {
+        ST_ID i(root_node.attribute("ID").toInt());
+        data->setID(i);
+    } else {
+        //Error
+        abort();
+    }
+    if (root_node.hasAttribute("FontName")) {
+        data->font_name = root_node.attribute("FontName");
+    } else {
+        //Error
+        abort();
+    }
+    if (root_node.hasAttribute("FamilyName")) {
+        data->family_name = root_node.attribute("FamilyName");
+    }
+    if (root_node.hasAttribute("Charset")) {
+        data->charset = root_node.attribute("Charset");
+    }
+    if (root_node.hasAttribute("Italic")) {
+        data->italic = root_node.attribute("Italic") == "true" ? true : false;
+    }
+    if (root_node.hasAttribute("Bold")) {
+        data->bold = root_node.attribute("Bold") == "true" ? true : false;
+    }if (root_node.hasAttribute("Serif")) {
+        data->serif = root_node.attribute("Serif") == "true" ? true : false;
+    }
+    if (root_node.hasAttribute("FixedWidth")) {
+        data->fixed_width = root_node.attribute("FixedWidth") == "true" ? true : false;
+    }
+}
+void OFDParser::readColorSpace(CT_ColorSpace * data, QDomElement & root_node) {
+    if (root_node.hasAttribute("ID")) {
+        ST_ID i(root_node.attribute("ID").toInt());
+        data->setID(i);
+    } else {
+        //Error
+        abort();
+    }
+    if (root_node.hasAttribute("Type")) {
+        data->type = root_node.attribute("Type");
+    } else {
+        //Error
+        abort();
+    }
+    if (root_node.hasAttribute("BitsPerComponent")) {
+        data->bits_per_component = root_node.attribute("BitsPerComponent").toInt();
+    }
+    if (root_node.hasAttribute("Profile")) {
+        ST_Loc p("Profile", root_node.attribute("Profile"), current_path);
+        data->profile = p;
+    }
+    //Some other stuff to be implemented
+}
+void OFDParser::readDrawParam(CT_DrawParam * data, QDomElement & root_node) {
+    if (root_node.hasAttribute("ID")) {
+        ST_ID i(root_node.attribute("ID").toInt());
+        data->setID(i);
+    } else {
+        //Error!
+        abort();
+    }
+    if (root_node.hasAttribute("Relative")) {
+        ST_RefID i(root_node.attribute("Relative").toInt());
+        data->relative = i;
+    }
+    if (root_node.hasAttribute("LineWidth")) {
+        data->line_width = root_node.attribute("LineWidth").toDouble();
+    }
+    if (root_node.hasAttribute("Join")) {
+        QString j = root_node.attribute("Join");
+        if (j == "Miter" || j == "Round" || j == "Bevel")
+            data->join = j;
+        else {
+            //Error!
+            abort();
+        }
+    }
+    if (root_node.hasAttribute("Cap")) {
+        QString c = root_node.attribute("Cap");
+        if (c == "Butt" || c == "Round" || c == "Square")
+            data->cap = c;
+        else {
+            //Error!
+            abort();
+        }
+    }
+    if (root_node.hasAttribute("DashOffset")) {
+        data->dash_offset = root_node.attribute("DashOffset").toDouble();
+    }
+    if (root_node.hasAttribute("DashPattern")) {
+        ST_Array d("DashPattern", root_node.attribute("DashPattern"));
+        data->dash_pattern = d;
+    }
+    if (root_node.hasAttribute("MiterLimit")) {
+        if (data->getJoin() == "Miter")
+            data->miter_limit = root_node.attribute("MiterLimit").toDouble();
+    }
+    if (!root_node.firstChildElement("ofd:FillColor").isNull()) {
+        CT_Color * fill_color_data = new CT_Color();
+        delete data->fill_color;
+        data->fill_color = fill_color_data;
+        readColor(fill_color_data, root_node);
+        data->fill_color_used = true;
+    }
+    if (!root_node.firstChildElement("ofd:StrokeColor").isNull()) {
+        CT_Color * stroke_color_data = new CT_Color();
+        delete data->stroke_color;
+        data->stroke_color = stroke_color_data;
+        readColor(stroke_color_data, root_node);
+        data->stroke_color_used = true;
+    }
 }

@@ -23,6 +23,10 @@ class OFDParser {  //解析OFD.xml
 
     void readPageArea(CT_PageArea * data, QDomElement & root_node); //读取PageArea部分的子模块
     void readGraphicUnit(CT_GraphicUnit * data, QDomElement & root_node); //读取某个图元对象的GraphicUnit部分
+    void readColor(CT_Color * data, QDomElement & root_node);   //读取某个CT_Color对象的信息
+    void readFont(CT_Font * data, QDomElement & root_node);     //读取某个CT_Font对象的信息
+    void readColorSpace(CT_ColorSpace * data, QDomElement & root_node);     //读取某个CT_ColorSpace对象的信息
+    void readDrawParam(CT_DrawParam * data, QDomElement & root_node);
 
     void openFile();            //打开文件
     OFD *readOFD();             //读取OFD文档信息
