@@ -1,3 +1,24 @@
 <RCC>
-    <qresource prefix="/icons"/>
+    <qresource prefix="/icons">
+        <file>source/icons/AboutQpp.png</file>
+        <file>source/icons/copy.png</file>
+        <file>source/icons/cut.png</file>
+        <file>source/icons/help.png</file>
+        <file>source/icons/ImageFormat.png</file>
+        <file>source/icons/insertImage.png</file>
+        <file>source/icons/insertNewPage.png</file>
+        <file>source/icons/insertTable.png</file>
+        <file>source/icons/insertTextBlock.png</file>
+        <file>source/icons/newFile.png</file>
+        <file>source/icons/openFile.png</file>
+        <file>source/icons/paragraphFormat.png</file>
+        <file>source/icons/paste.png</file>
+        <file>source/icons/print.png</file>
+        <file>source/icons/redo.png</file>
+        <file>source/icons/save.png</file>
+        <file>source/icons/saveAs.png</file>
+        <file>source/icons/tableFormat.png</file>
+        <file>source/icons/TextFormat.png</file>
+        <file>source/icons/undo.png</file>
+    </qresource>
 </RCC>

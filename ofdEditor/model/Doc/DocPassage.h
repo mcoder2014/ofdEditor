@@ -31,7 +31,8 @@ public:
     ~DocPassage();
 
     void addPage(DocPage *page);                    // 添加一个新页面
-    void addPassage(QVector<DocPage* >& passage);    // 添加很多界面
+    void addPassage(QVector<DocPage* >& passage);   // 添加很多界面
+    void appendNewPage(DocPage *page = NULL);       // 如果为空，则代表假如空白页
 
 protected:
     void resizeEvent(QResizeEvent* event);
