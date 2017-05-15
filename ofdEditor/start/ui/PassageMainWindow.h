@@ -9,6 +9,7 @@ class QAction;
 class QMenu;
 class QMdiArea;
 class DocPassage;
+class ActionConnector;      // 函数功能的中间件
 
 // 编辑窗口的主界面
 class PassageMainWindow
@@ -19,7 +20,8 @@ public:
     explicit PassageMainWindow(QWidget *parent = 0);
     ~PassageMainWindow();
 
-    DocPassage *createMdiChild();
+    DocPassage *createMdiChild();       // 创建一个新文档
+    DocPassage *activeMdiChild();       // 获取活动的窗口
 
 private:
 
@@ -70,13 +72,15 @@ private:
 
     QMdiArea * area;            // 多窗口区域
 
+    ActionConnector* connector; // 功能连接中间件
+
 
     void init();                // 初始化
     void initAction();          // 初始化QAction
     void connectAction();       // 链接QAction的相应事件
     void disconnectAction();    // 断开事件响应
 
-    DocPassage *activeMdiChild();
+
 
 
 

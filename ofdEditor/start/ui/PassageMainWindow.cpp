@@ -18,6 +18,7 @@
 
 
 #include "Doc/DocPassage.h"
+#include "ActionConnector/ActionConnector.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -58,11 +59,15 @@ void PassageMainWindow::init()
     this->area = new QMdiArea();
     this->setCentralWidget(this->area);
 
+    this->connector = new ActionConnector(this);        // 新建连接器
+
     initAction();
     connectAction();
 
     QLabel * status = new QLabel();
     this->statusBar()->addWidget(status);
+
+
 
     this->setMinimumSize(960,720);
     this->setBackgroundRole(QPalette::Text);
@@ -238,6 +243,9 @@ void PassageMainWindow::connectAction()
 {
     connect(this->newFileAction, &QAction::triggered,
             this,&PassageMainWindow::createMdiChild);   // 新建窗口
+
+    connect(this->insertNewPageAction, &QAction::triggered,
+            this->connector, &ActionConnector::addNewPage);    // 在文章尾部加入新的一页
 }
 
 /**

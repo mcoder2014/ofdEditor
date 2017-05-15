@@ -126,6 +126,20 @@ void DocPassage::addPassage(QVector<DocPage *>& passage)
 
 /**
  * @Author Chaoqun
+ * @brief  在文章尾添加空白页
+ * @param  DocOage* page = NULL
+ * @return 返回值
+ * @date   2017/05/05
+ */
+void DocPassage::appendNewPage(DocPage *page)
+{
+    if(page == NULL)
+        page = new DocPage();
+    this->addPage(page);            // 此处调用addPage
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置重置响应事件，窗口大小发生调整，将会调用这个函数u
  * @param  QResizeEvent *event
  * @return void
