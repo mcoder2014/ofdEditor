@@ -27,18 +27,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-#    DataTypes/CT_Action.cpp \
-#    DataTypes/CT_Clip.cpp \
-#    DataTypes/Color/CT_AxialShd.cpp \
-#    DataTypes/Color/CT_Color.cpp \
-#    DataTypes/Color/CT_ColorSpace.cpp \
-#    DataTypes/Color/CT_Pattern.cpp \
-#    DataTypes/Color/CT_RadialShd.cpp \
-#    DataTypes/image/CT_Clip.cpp \
-#    DataTypes/image/CT_DrawParam.cpp \
-#    DataTypes/image/CT_GraphicUnit.cpp \
-#    DataTypes/image/CT_Image.cpp \
-#    DataTypes/image/CT_Path.cpp \
     ofd_parser.cpp \
     DataTypes/basic_datatypes.cpp \
     ofd_writer.cpp

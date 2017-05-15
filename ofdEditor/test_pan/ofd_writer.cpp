@@ -8,7 +8,7 @@ OFDWriter::OFDWriter(OFD * _data, QString _path) : data(_data),
 
 void OFDWriter::createFile() {
     current_file = new QFile(current_path.getPath());
-    qDebug() << current_path.getPath() << endl;
+//    qDebug() << current_path.getPath() << endl;
     if (!current_file->open(QFile::WriteOnly | QFile::Text)) {
         qDebug() << "Error: Cannot write file.";
         abort();
@@ -92,12 +92,12 @@ void OFDWriter::writeOFD() {
     //修改current_file
     ST_Loc cur_path = current_path;
     for (int i = 0; i < data->getDocBodies()->size(); i++) {
-        qDebug() << "To write Document.xml..." << endl;
-        qDebug() << "cur_path = " << cur_path << endl;
+//        qDebug() << "To write Document.xml..." << endl;
+//        qDebug() << "cur_path = " << cur_path << endl;
         ST_Loc p("Document",
                  data->getDocBodies()->at(i)->getDocRoot().getRelativePath(), cur_path);
         current_path = p;
-        qDebug() << "current_path = " << current_path << endl;
+//        qDebug() << "current_path = " << current_path << endl;
         QDir dir(cur_path.getPath());
 
         QString str;
@@ -206,33 +206,33 @@ void OFDWriter::writePage(Page * data) {
         writePageArea(data->getArea());
         writer.writeEndElement();    //ofd:Area
     }
-    qDebug() << "Checkpoint 1 reached.";
+//    qDebug() << "Checkpoint 1 reached.";
     //写PageRes
     for (int i = 0; i < data->getPageResLocations()->size(); i++) {
         ST_Loc p = data->getPageResLocations()->at(i);
         writer.writeTextElement("ofd:PageRes", p.getRelativePath());
     }
-    qDebug() << "Checkpoint 2 reached.";
+//    qDebug() << "Checkpoint 2 reached.";
     //写Content
     if (data->getContent()->size()) {
         writer.writeStartElement("ofd:Content");
         for (int i = 0; i < data->getContent()->size(); i++) {
-            qDebug() << data->getContent()->size();
+//            qDebug() << data->getContent()->size();
             CT_Layer * cur_layer = data->getContent()->at(i);
             writer.writeStartElement("ofd:Layer");
             writeBase(cur_layer);
-            qDebug() << "Checkpoint 2.1 reached.";
+//            qDebug() << "Checkpoint 2.1 reached.";
             QXmlStreamAttributes a = getAttributes(cur_layer);
             writer.writeAttributes(a);
-            qDebug() << "Checkpoint 2.2 reached.";
-                        qDebug() << "???";
+//            qDebug() << "Checkpoint 2.2 reached.";
+//                        qDebug() << "???";
             //写文档页面的内容（QGraphicUnits的子类集合）
             writePageBlock(cur_layer, true);
         }
         writer.writeEndElement();   //ofd:Content
         //qDebug() << "????";
     }
-    qDebug() << "Checkpoint 3 reached.";
+//    qDebug() << "Checkpoint 3 reached.";
     //Actions to be implemented
     writer.writeEndElement();   //ofd:Page
     //正文结束
@@ -334,7 +334,7 @@ void OFDWriter::writePageBlock(CT_PageBlock * cur_page_block, bool is_layer) {
     writeBase(cur_page_block);
 
     //文字内容
-    qDebug() << "TextObject: " << cur_page_block->getTextObject()->size();
+//    qDebug() << "TextObject: " << cur_page_block->getTextObject()->size();
     for (int i = 0; i < cur_page_block->getTextObject()->size(); i++) {
         CT_Text * cur_text = cur_page_block->getTextObject()->at(i);
         writer.writeStartElement("ofd:TextObject");
@@ -342,7 +342,7 @@ void OFDWriter::writePageBlock(CT_PageBlock * cur_page_block, bool is_layer) {
         writer.writeEndElement();   //ofd:TextObject
     }
     //矢量图内容
-    qDebug() << "PathObject: " << cur_page_block->getPathObject()->size();
+//    qDebug() << "PathObject: " << cur_page_block->getPathObject()->size();
     for (int i = 0; i < cur_page_block->getPathObject()->size(); i++) {
         CT_Path * cur_path = cur_page_block->getPathObject()->at(i);
         writer.writeStartElement("ofd:PathObject");
@@ -350,7 +350,7 @@ void OFDWriter::writePageBlock(CT_PageBlock * cur_page_block, bool is_layer) {
         writer.writeEndElement();   //ofd:PathObject
     }
     //位图内容
-    qDebug() << "ImageObject: " << cur_page_block->getImageObject()->size();
+//    qDebug() << "ImageObject: " << cur_page_block->getImageObject()->size();
     for (int i = 0; i < cur_page_block->getImageObject()->size(); i++) {
         CT_Image * cur_image = cur_page_block->getImageObject()->at(i);
         writer.writeStartElement("ofd:ImageObject");
@@ -358,7 +358,7 @@ void OFDWriter::writePageBlock(CT_PageBlock * cur_page_block, bool is_layer) {
         writer.writeEndElement();   //ofd:ImageObject
     }
     //PageBlock嵌套
-    qDebug() << "PageBlock: " << cur_page_block->getPageBlock()->size();
+//    qDebug() << "PageBlock: " << cur_page_block->getPageBlock()->size();
     for (int i = 0; i < cur_page_block->getPageBlock()->size(); i++) {
         CT_PageBlock * cur_inner_page_block = cur_page_block->getPageBlock()->at(i);
         writer.writeStartElement("ofd:PageBlock");
