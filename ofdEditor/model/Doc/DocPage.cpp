@@ -2,10 +2,13 @@
 #include "DocLayer.h"
 #include "Tool/UnitTool.h"
 #include "Doc/DocBlock.h"
+#include "Doc/DocTextBlock.h"
 
 #include <QPalette>
 #include <QPaintEvent>
 #include <QDebug>
+#include <QGraphicsProxyWidget>
+#include <QPointF>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
@@ -160,6 +163,23 @@ void DocPage::mouseDoubleClickEvent(QMouseEvent *event)
  */
 void DocPage::mousePressEvent(QMouseEvent *event)
 {
+
+    // 如果是加入新块状态
+    if(this->newBlockFlag == draw)
+    {
+        this->newBlockFlag = moveState;
+
+//        QPointF mousePos(event->buttonDownScenePos(Qt::LeftButton).x(),
+//                         event->buttonDownScenePos(Qt::LeftButton).y());
+        QPointF point = this->mapToScene(event->x(),event->y());
+        this->oldPos.setX(point.x());
+        this->oldPos.setY(point.y());
+        qDebug() << " QMouseEvent * pos: x:" << event->x()
+                 << " y:" << event->y()
+                 << "After convert pos x: " << point.x()
+                 << "y: "<< point.y();
+    }
+
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -173,6 +193,12 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 void DocPage::mouseMoveEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseMoveEvent(event);
+
+    // 绘制画的过程
+    if(this->newBlockFlag == moveState)
+    {
+
+    }
 }
 
 /**
@@ -184,6 +210,29 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
  */
 void DocPage::mouseReleaseEvent(QMouseEvent *event)
 {
+
+
+    if(this->newBlockFlag == moveState)
+    {
+        QPointF newPos = this->mapToScene(event->x(),event->y());
+//        QPointF newPos(event->x(), event->y());
+
+        // 此部分为测试代码
+        DocTextBlock * textBlock = new DocTextBlock();
+        QGraphicsProxyWidget * proxy = this->docScene->addWidget(textBlock);
+        QRectF rect = UnitTool::getBox(this->oldPos,newPos);
+        proxy->setPos(rect.x(),rect.y());
+        proxy->resize(rect.width(),rect.height());
+
+
+    }
+
+    if(this->newBlockFlag != none)
+    {
+        this->newBlockFlag = none;
+        this->setCursor(Qt::ArrowCursor);
+    }
+
     QGraphicsView::mouseReleaseEvent(event);
 }
 

@@ -1,6 +1,10 @@
 #ifndef UNITTOOL_H
 #define UNITTOOL_H
 
+#include <QPointF>
+#include <QRectF>
+
+
 /**
  * @Author Chaoqun
  * @brief  预计用来进行单位换算的工具，如毫米和像素之间的转换
@@ -11,6 +15,7 @@ class UnitTool
 public:
     UnitTool();
     static int mmToPixel(double mm);        // 将毫米单位和像素单位进行换算
+    static QRectF getBox(QPointF& point1, QPointF& point2);     // 获得两个点组成的方形
 };
 
 #endif // UNITTOOL_H

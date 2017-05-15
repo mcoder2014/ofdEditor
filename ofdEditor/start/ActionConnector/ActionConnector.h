@@ -23,6 +23,7 @@ public:
     void setMainWindow(PassageMainWindow * mainWindow);     // 设置主窗口
     void addNewPage();                                      // 添加一个新页面
 
+    void addNewBlock();
 
 private:
     PassageMainWindow * mainWindow;         // 主窗口

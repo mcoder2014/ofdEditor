@@ -246,6 +246,9 @@ void PassageMainWindow::connectAction()
 
     connect(this->insertNewPageAction, &QAction::triggered,
             this->connector, &ActionConnector::addNewPage);    // 在文章尾部加入新的一页
+
+    connect(this->insertTextBlockAction, &QAction::triggered,
+            this->connector, &ActionConnector::addNewBlock);    // 插入新块
 }
 
 /**

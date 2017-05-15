@@ -27,6 +27,7 @@ class MODELSHARED_EXPORT DocPage
     Q_OBJECT
 public:
     enum Layer{Body,Foreground,Background};       // 分为三层
+    enum BlockFlag{none,draw,moveState};                    // 插入时的绘制状态
 
     explicit DocPage(QWidget * parent = 0);
     DocPage(double width,
@@ -43,6 +44,9 @@ public:
     void addItem(QGraphicsItem *item);      // 拓展接口
     QGraphicsProxyWidget *addWidget(QWidget *widget,
                           Qt::WindowFlags wFlags = Qt::WindowFlags());
+
+    void setBlockFlag(BlockFlag flag){this->newBlockFlag = flag;}
+    BlockFlag getBlockFlag(){return this->newBlockFlag;}
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -71,6 +75,8 @@ private:
     void init();                     // 初始化UI
 
     QPointF oldPos;                  // 用来移动时使用，计算距离
+
+    BlockFlag newBlockFlag;             // 是否画块
 
 
 };

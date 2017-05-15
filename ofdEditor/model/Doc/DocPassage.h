@@ -2,6 +2,7 @@
 #define DOCPASSAGE_H
 
 #include "model_global.h"       // 导出lib使用
+#include <QGraphicsView>
 
 #include <QVector>
 #include <QString>

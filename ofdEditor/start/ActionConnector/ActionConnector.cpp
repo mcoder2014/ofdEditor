@@ -1,8 +1,10 @@
 #include "ActionConnector.h"
 #include "Doc/DocPassage.h"
 #include "ui/PassageMainWindow.h"
+#include "Doc/DocPage.h"
 
 #include <QDebug>
+#include <QMetaObject>
 
 
 ActionConnector::ActionConnector()
@@ -33,6 +35,31 @@ void ActionConnector::addNewPage()
     this->updateActivePassage();        // 更新选择的文章。
     this->passage->appendNewPage();     // 在队尾增加一页
 
+}
+
+/**
+ *@Author Chaoqun
+ *@brief  增加一个新块
+ *@param  参数
+ *@return 返回值
+ *@date   2017/05/15
+ */
+void ActionConnector::addNewBlock()
+{
+    this->updateActivePassage();    // 更新文章
+    DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
+    if(page == NULL)
+    {
+        qDebug() <<"No Focus Widget";
+        return;
+    }
+    else
+    {
+        qDebug() << "get Focus Sucess";
+        page->setBlockFlag(DocPage::draw);      // 进入绘画状态
+        page->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
+
+    }
 }
 
 
