@@ -35,13 +35,6 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsProxyWidget::mousePressEvent(event);
 
-    qDebug() << "被鼠标点了一下 "<<(event->pos()).x()
-             << "," << event->pos().y();
-
-    QGraphicsScene * scene = this->scene();
-    qDebug() << scene->width() << ", "
-             << scene->height() ;
-
     //this->setCursor(Qt::ClosedHandCursor);
 }
 

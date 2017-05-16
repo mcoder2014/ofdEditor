@@ -14,11 +14,9 @@
 #include <QDebug>
 #include <QGraphicsProxyWidget>
 #include <QPointF>
+#include <QPainter>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
-
-
-
 
 
 DocPage::DocPage(QWidget *parent)
@@ -169,7 +167,23 @@ void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
  */
 void DocPage::paintEvent(QPaintEvent *event)
 {
-    QGraphicsView::paintEvent(event);
+    QGraphicsView::paintEvent(event);           // 执行原绘图操作
+
+    // 画出动态拖拽的框
+    if(this->newBlockFlag == moveState)
+    {
+        QPainter painter(this);
+        painter.setPen(Qt::blue);
+
+        QRectF rect = UnitTool::getBox(this->oldPos,this->newPos);
+
+        painter.drawRect(rect);
+        painter.end();                                  // 结束
+
+        qDebug()<<"Moving QPainter is Drawing";
+    }
+
+        qDebug()<<"QPainter is Drawing";
 }
 
 /**
@@ -197,11 +211,9 @@ void DocPage::mousePressEvent(QMouseEvent *event)
     // 如果是加入新块状态
     if(this->newBlockFlag == draw)
     {
-        this->newBlockFlag = moveState;
+        this->newBlockFlag = moveState;        // 进入移动状态
 
-//        QPointF mousePos(event->buttonDownScenePos(Qt::LeftButton).x(),
-//                         event->buttonDownScenePos(Qt::LeftButton).y());
-        QPointF point = this->mapToScene(event->x(),event->y());
+        QPointF point = this->mapToScene(event->x(),event->y());    // 将点映射到scene
         this->oldPos.setX(point.x());
         this->oldPos.setY(point.y());
         qDebug() << " QMouseEvent * pos: x:" << event->x()
@@ -222,13 +234,17 @@ void DocPage::mousePressEvent(QMouseEvent *event)
  */
 void DocPage::mouseMoveEvent(QMouseEvent *event)
 {
+
     QGraphicsView::mouseMoveEvent(event);
 
-    // 绘制画的过程
     if(this->newBlockFlag == moveState)
     {
-
+        this->newPos = this->mapToScene(event->x(),event->y());
+        this->update();             // 调用paintEvent画图
+        //this->repaint();
+        //qDebug() << "Moving";
     }
+
 }
 
 /**
@@ -241,11 +257,11 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
 void DocPage::mouseReleaseEvent(QMouseEvent *event)
 {
 
-
     if(this->newBlockFlag == moveState)
     {
+        // 如果是释放
+
         QPointF newPos = this->mapToScene(event->x(),event->y());
-//        QPointF newPos(event->x(), event->y());
 
         // 插入新块
         DocBlock * newBlock = new DocBlock();
@@ -274,7 +290,7 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
     if(this->newBlockFlag != none)
     {
         this->newBlockFlag = none;
-        this->setCursor(Qt::ArrowCursor);
+        this->setCursor(Qt::ArrowCursor);   // 恢复鼠标
     }
 
     QGraphicsView::mouseReleaseEvent(event);

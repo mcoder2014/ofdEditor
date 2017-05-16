@@ -54,7 +54,7 @@ public:
 
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -82,6 +82,7 @@ private:
     void init();                     // 初始化UI
 
     QPointF oldPos;                  // 用来移动时使用，计算距离
+    QPointF newPos;                  // 新点
 
     BlockFlag newBlockFlag;             // 是否画块
 
