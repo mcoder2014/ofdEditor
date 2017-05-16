@@ -9,17 +9,19 @@
 
 ActionConnector::ActionConnector()
 {
-
+    init();
 }
 
 ActionConnector::ActionConnector(PassageMainWindow *mainWindow)
 {
     this->mainWindow = mainWindow;
+    init();
 }
 
 void ActionConnector::setMainWindow(PassageMainWindow *mainWindow)
 {
     this->mainWindow = mainWindow;
+    init();
 }
 
 
@@ -44,8 +46,9 @@ void ActionConnector::addNewPage()
  *@return 返回值
  *@date   2017/05/15
  */
-void ActionConnector::addNewBlock()
+void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
 {
+
     this->updateActivePassage();    // 更新文章
     DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
     if(page == NULL)
@@ -57,10 +60,34 @@ void ActionConnector::addNewBlock()
     {
         qDebug() << "get Focus Sucess";
         page->setBlockFlag(DocPage::draw);      // 进入绘画状态
+
+//        InsertBlockInfo blockInfo(type,layer);  // 设置插入文本框信息
+        page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
+
         page->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
 
     }
 }
+
+void ActionConnector::addTextBlock()
+{
+    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::text);  // 设置插入文本框信息
+    this->addNewBlock(blockInfo);
+}
+
+void ActionConnector::addImageBlock()
+{
+    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::image);  // 设置插入文本框信息
+    this->addNewBlock(blockInfo);
+}
+
+void ActionConnector::addTableBlock()
+{
+    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::table);  // 设置插入文本框信息
+    this->addNewBlock(blockInfo);
+}
+
+
 
 
 /**
@@ -84,4 +111,9 @@ void ActionConnector::updateActivePassage()
         this->passage = temp;
         // 待CT_DocType配置好了，这里可以输出文档名称
     }
+}
+
+void ActionConnector::init()
+{
+    this->defaultLayer = DocPage::Body;
 }

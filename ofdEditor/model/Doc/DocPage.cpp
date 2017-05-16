@@ -3,6 +3,11 @@
 #include "Tool/UnitTool.h"
 #include "Doc/DocBlock.h"
 #include "Doc/DocTextBlock.h"
+#include "Doc/DocPageScene.h"
+#include "Doc/DocImage.h"
+#include "Doc/DocTable.h"
+#include "Doc/DocPicture.h"
+#include "Doc/DocGraph.h"
 
 #include <QPalette>
 #include <QPaintEvent>
@@ -11,6 +16,10 @@
 #include <QPointF>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
+
+
+
+
 
 DocPage::DocPage(QWidget *parent)
     :QGraphicsView(parent)
@@ -129,6 +138,27 @@ QGraphicsProxyWidget *DocPage::addWidget(QWidget *widget,
     return this->docScene->addWidget(widget,wFlags);
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置下一个要插入的块的信息，用来传参，如后期有需要，
+ *         可以拓展假如更多信息
+ * @param  InsertBlockInfo &blockInfo
+ * @return void
+ * @date   2017/05/16
+ */
+void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
+{
+    if(this->insertBlockInfo == NULL)
+    {
+        this->insertBlockInfo = new InsertBlockInfo(DocPage::Body,
+                                                    DocPage::text);
+    }
+
+    this->insertBlockInfo->layer = blockInfo.layer;     // 层
+    this->insertBlockInfo->type = blockInfo.type;       // 类型
+    qDebug()<<"Set InsertBlockInfo successfully!";
+}
+
 
 /**
  * @Author Chaoqun
@@ -217,13 +247,27 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
         QPointF newPos = this->mapToScene(event->x(),event->y());
 //        QPointF newPos(event->x(), event->y());
 
-        // 此部分为测试代码
-        DocTextBlock * textBlock = new DocTextBlock();
-        QGraphicsProxyWidget * proxy = this->docScene->addWidget(textBlock);
-        QRectF rect = UnitTool::getBox(this->oldPos,newPos);
-        proxy->setPos(rect.x(),rect.y());
-        proxy->resize(rect.width(),rect.height());
+        // 插入新块
+        DocBlock * newBlock = new DocBlock();
+        if(this->insertBlockInfo->type == text)
+        {
+            newBlock->setWidget(new DocTextBlock());    // 插入文字框
+        }
+        else if(this->insertBlockInfo->type == image)
+        {
+//            newBlock->setWidget(new DocImage());      // 插入图片框
+        }
+        else if(this->insertBlockInfo->type == table)
+        {
+            newBlock->setWidget(new DocTable());        // 插入表格框
+        }
 
+        // 设置位置大小
+        QRectF rect = UnitTool::getBox(this->oldPos,newPos);
+        newBlock->setPos(rect.x(),rect.y());
+        newBlock->resize(rect.width(),rect.height());
+
+        this->addBlock(newBlock,this->insertBlockInfo->layer);  // 插入到页中
 
     }
 
@@ -244,7 +288,7 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
  */
 void DocPage::init()
 {
-    this->docScene = new QGraphicsScene(); // 新建
+    this->docScene = new DocPageScene(); // 新建
     this->setScene(this->docScene);        // 设置场景
 
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -257,5 +301,6 @@ void DocPage::init()
     this->bodyLayer = new DocLayer(DocPage::Body);
     this->backgroundLayer = new DocLayer(Background);
 
-
+//    this->setBackgroundRole(QPalette::Dark);
+    this->insertBlockInfo = NULL;
 }

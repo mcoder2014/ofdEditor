@@ -247,8 +247,17 @@ void PassageMainWindow::connectAction()
     connect(this->insertNewPageAction, &QAction::triggered,
             this->connector, &ActionConnector::addNewPage);    // 在文章尾部加入新的一页
 
+//    connect(this->insertTextBlockAction, &QAction::triggered,
+//            this->connector, &ActionConnector::addNewBlock);    // 插入新块
+
     connect(this->insertTextBlockAction, &QAction::triggered,
-            this->connector, &ActionConnector::addNewBlock);    // 插入新块
+            this->connector, &ActionConnector::addTextBlock);   // 插入文本框
+
+    connect(this->insertImageAction, &QAction::triggered,
+            this->connector, &ActionConnector::addImageBlock);  // 插入图片
+
+    connect(this->insertTableAction, &QAction::triggered,
+            this->connector, &ActionConnector::addTableBlock);  // 插入表格
 }
 
 /**

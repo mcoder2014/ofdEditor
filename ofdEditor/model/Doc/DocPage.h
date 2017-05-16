@@ -14,7 +14,8 @@ class DocLayer;
 //class CT_PageArea;
 class DocBlock;
 class DocTextBlock;
-
+class InsertBlockInfo;
+class DocPageScene;
 
 /**
  * @Author Chaoqun
@@ -26,8 +27,9 @@ class MODELSHARED_EXPORT DocPage
 {
     Q_OBJECT
 public:
-    enum Layer{Body,Foreground,Background};       // 分为三层
+    enum Layer{Body,Foreground,Background};                 // 分为三层
     enum BlockFlag{none,draw,moveState};                    // 插入时的绘制状态
+    enum BlockType{text,image,table};                       // 插入时的类型
 
     explicit DocPage(QWidget * parent = 0);
     DocPage(double width,
@@ -47,6 +49,9 @@ public:
 
     void setBlockFlag(BlockFlag flag){this->newBlockFlag = flag;}
     BlockFlag getBlockFlag(){return this->newBlockFlag;}
+    void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
+
+
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -57,12 +62,14 @@ protected:
 
 
 private:
-    QGraphicsScene* docScene;               // 场景数据
+    DocPageScene* docScene;               // 场景数据
     //QVector<DocLayer *> layers;        // 一个文档具有很多层
 
     DocLayer* foregroundLayer;           // 前景层
     DocLayer* bodyLayer;                 // 正文层
     DocLayer* backgroundLayer;           // 背景层
+
+    InsertBlockInfo * insertBlockInfo;    // 下一个插入的Block的类型
 
     // 还应该有模板页
     //CT_PageArea* area;                  // 页面大小描述
@@ -80,5 +87,27 @@ private:
 
 
 };
+
+/**
+ * @Author Chaoqun
+ * @brief  希望用它来传递插入block的具体信息，包含层、类型等概念
+ *         因为，获取鼠标信息的函数是继承于那些特定函数的，不方便
+ *         传参数
+ * @date   2017/05/16
+ */
+class MODELSHARED_EXPORT InsertBlockInfo
+{
+public:
+    DocPage::Layer layer;
+    DocPage::BlockType type;
+
+    InsertBlockInfo(DocPage::Layer layers,
+                    DocPage::BlockType types)
+    {
+        this->layer = layers;
+        this->type = types;
+    }
+};
+
 
 #endif // DOCPAGE_H
