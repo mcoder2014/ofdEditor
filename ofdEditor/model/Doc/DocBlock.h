@@ -7,6 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 class DocLayer;
+class QPainter;
 
 
 /**
@@ -25,6 +26,8 @@ public:
 
     void setLayer(DocLayer * layer){this->layer = layer;}
     DocLayer * getLayer(){return this->layer;}
+
+    void paintHandle(QPainter& painter);        // 绘制负责变换的控制器
 
 
 protected:

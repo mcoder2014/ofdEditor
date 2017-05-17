@@ -16,6 +16,23 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
 
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  绘制控制器
+ * @param  QPainter &painter
+ * @return void
+ * @date   2017/05/17
+ */
+void DocBlock::paintHandle(QPainter &painter)
+{
+    QRectF rect = this->geometry();             // 获得该部件的大小
+    QPointF leftTop = rect.topLeft();           // 左上角的点
+
+    double width = rect.width();
+    double height = rect.height();
+
+}
+
 void DocBlock::focusInEvent(QFocusEvent *event)
 {
     QGraphicsProxyWidget::focusInEvent(event);
