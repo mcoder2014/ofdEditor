@@ -172,7 +172,7 @@ void DocPage::paintEvent(QPaintEvent *event)
     // 画出动态拖拽的框
     if(this->newBlockFlag == moveState)
     {
-        QPainter painter(this);
+        QPainter painter(this->viewport());     // 坑，要画在viewport上
         painter.setPen(Qt::blue);
 
         QRectF rect = UnitTool::getBox(this->oldPos,this->newPos);
@@ -183,7 +183,7 @@ void DocPage::paintEvent(QPaintEvent *event)
         qDebug()<<"Moving QPainter is Drawing";
     }
 
-        qDebug()<<"QPainter is Drawing";
+    qDebug()<<"QPainter is Drawing";
 }
 
 /**
@@ -223,6 +223,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
     }
 
     QGraphicsView::mousePressEvent(event);
+    this->update();
 }
 
 /**
@@ -240,7 +241,8 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
     if(this->newBlockFlag == moveState)
     {
         this->newPos = this->mapToScene(event->x(),event->y());
-        this->update();             // 调用paintEvent画图
+//        this->update();             // 这个接口用不了不在文档里说明！！！
+        this->viewport()->update();   // 调用刷新
         //this->repaint();
         //qDebug() << "Moving";
     }

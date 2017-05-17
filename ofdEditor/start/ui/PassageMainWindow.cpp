@@ -40,7 +40,7 @@ PassageMainWindow::~PassageMainWindow()
  */
 DocPassage *PassageMainWindow::createMdiChild()
 {
-    DocPassage * child = new DocPassage;
+    DocPassage * child = new DocPassage(this);
     this->area->addSubWindow(child);
     child->setVisible(true);            // 设置可见
     child->showMaximized();
