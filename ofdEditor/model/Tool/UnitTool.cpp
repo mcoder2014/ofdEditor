@@ -25,6 +25,21 @@ int UnitTool::mmToPixel(double mm)
 }
 
 /**
+ * @Author Chaoqun
+ * @brief  将应用中的像素单位转换为毫米单位
+ * @param  double pixel
+ * @return double mm
+ * @date   2017/05/17
+ */
+double UnitTool::pixelToMM(double pixel)
+{
+    QScreen* screen = QApplication::primaryScreen();    // 获取系统中默认显示器
+    double dotsPerInch = screen->physicalDotsPerInch(); // 每英寸屏幕多少像素
+    double inch = pixel / dotsPerInch;          // 获取像素单位对应的英寸单位
+    return inch * 25.4;                 // 返回毫米单位
+}
+
+/**
  *@Author Chaoqun
  *@brief  获得由两个点构成的方形
  *@param  QPointF &point1

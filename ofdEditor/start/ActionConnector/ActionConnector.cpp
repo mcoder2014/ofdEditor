@@ -64,7 +64,7 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
 //        InsertBlockInfo blockInfo(type,layer);  // 设置插入文本框信息
         page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
 
-        page->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
+        page->viewport()->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
 
     }
 }

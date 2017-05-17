@@ -292,8 +292,10 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
     if(this->newBlockFlag != none)
     {
         this->newBlockFlag = none;
-        this->setCursor(Qt::ArrowCursor);   // 恢复鼠标
+        this->viewport()->setCursor(Qt::ArrowCursor);   // 恢复鼠标
     }
+
+    this->viewport()->update();     // 释放时，刷新一下
 
     QGraphicsView::mouseReleaseEvent(event);
 }
