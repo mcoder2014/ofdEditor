@@ -2,12 +2,22 @@
 #include "DocLayer.h"
 #include "Tool/UnitTool.h"
 #include "Doc/DocBlock.h"
+#include "Doc/DocTextBlock.h"
+#include "Doc/DocPageScene.h"
+#include "Doc/DocImage.h"
+#include "Doc/DocTable.h"
+#include "Doc/DocPicture.h"
+#include "Doc/DocGraph.h"
 
 #include <QPalette>
 #include <QPaintEvent>
 #include <QDebug>
+#include <QGraphicsProxyWidget>
+#include <QPointF>
+#include <QPainter>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
+
 
 DocPage::DocPage(QWidget *parent)
     :QGraphicsView(parent)
@@ -126,17 +136,171 @@ QGraphicsProxyWidget *DocPage::addWidget(QWidget *widget,
     return this->docScene->addWidget(widget,wFlags);
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置下一个要插入的块的信息，用来传参，如后期有需要，
+ *         可以拓展假如更多信息
+ * @param  InsertBlockInfo &blockInfo
+ * @return void
+ * @date   2017/05/16
+ */
+void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
+{
+    if(this->insertBlockInfo == NULL)
+    {
+        this->insertBlockInfo = new InsertBlockInfo(DocPage::Body,
+                                                    DocPage::text);
+    }
+
+    this->insertBlockInfo->layer = blockInfo.layer;     // 层
+    this->insertBlockInfo->type = blockInfo.type;       // 类型
+//    qDebug()<<"Set InsertBlockInfo successfully!";
+}
+
 
 /**
  * @Author Chaoqun
- * @brief  摘要
- * @param  参数
- * @return 返回值
+ * @brief  绘画事件重载
+ * @param  QPaintEvent *event
+ * @return void
  * @date   2017/05/02
  */
 void DocPage::paintEvent(QPaintEvent *event)
 {
-    QGraphicsView::paintEvent(event);
+    QGraphicsView::paintEvent(event);           // 执行原绘图操作
+
+    // 画出动态拖拽的框
+    if(this->newBlockFlag == moveState)
+    {
+        QPainter painter(this->viewport());     // 坑，要画在viewport上
+        painter.setPen(Qt::blue);
+
+        QRectF rect = UnitTool::getBox(this->oldPos,this->newPos);
+
+        painter.drawRect(rect);
+        painter.end();                                  // 结束
+
+//        qDebug()<<"Moving QPainter is Drawing";
+    }
+
+//    qDebug()<<"QPainter is Drawing";
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标双击事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标点击事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mousePressEvent(QMouseEvent *event)
+{
+
+    // 如果是加入新块状态
+    if(this->newBlockFlag == draw)
+    {
+        this->newBlockFlag = moveState;        // 进入移动状态
+
+        QPointF point = this->mapToScene(event->x(),event->y());    // 将点映射到scene
+        this->oldPos.setX(point.x());
+        this->oldPos.setY(point.y());
+        qDebug() << " QMouseEvent * pos: x:" << event->x()
+                 << " y:" << event->y()
+                 << "After convert pos x: " << point.x()
+                 << "y: "<< point.y();
+    }
+    else if(this->newBlockFlag == none)
+    {
+        // 先找出鼠标是否有点击
+
+    }
+    QGraphicsView::mousePressEvent(event);
+    this->viewport()->update();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标移动事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mouseMoveEvent(QMouseEvent *event)
+{
+
+    QGraphicsView::mouseMoveEvent(event);
+
+    if(this->newBlockFlag == moveState)
+    {
+        this->newPos = this->mapToScene(event->x(),event->y());
+//        this->update();             // 这个接口用不了不在文档里说明！！！
+        this->viewport()->update();   // 调用刷新
+        //qDebug() << "Moving";
+    }
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  鼠标释放事件重载
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/15
+ */
+void DocPage::mouseReleaseEvent(QMouseEvent *event)
+{
+
+    if(this->newBlockFlag == moveState)
+    {
+        // 如果是释放
+
+        QPointF newPos = this->mapToScene(event->x(),event->y());
+
+        // 插入新块
+        DocBlock * newBlock = new DocBlock();
+        if(this->insertBlockInfo->type == text)
+        {
+            newBlock->setWidget(new DocTextBlock());    // 插入文字框
+        }
+        else if(this->insertBlockInfo->type == image)
+        {
+//            newBlock->setWidget(new DocImage());      // 插入图片框
+        }
+        else if(this->insertBlockInfo->type == table)
+        {
+            newBlock->setWidget(new DocTable());        // 插入表格框
+        }
+
+        // 设置位置大小
+        QRectF rect = UnitTool::getBox(this->oldPos,newPos);
+        newBlock->setPos(rect.x(),rect.y());
+        newBlock->resize(rect.width(),rect.height());
+
+        this->addBlock(newBlock,this->insertBlockInfo->layer);  // 插入到页中
+
+    }
+
+    if(this->newBlockFlag != none)
+    {
+        this->newBlockFlag = none;
+        this->viewport()->setCursor(Qt::ArrowCursor);   // 恢复鼠标
+    }
+
+    this->viewport()->update();     // 释放时，刷新一下
+
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 
@@ -147,7 +311,7 @@ void DocPage::paintEvent(QPaintEvent *event)
  */
 void DocPage::init()
 {
-    this->docScene = new QGraphicsScene(); // 新建
+    this->docScene = new DocPageScene(); // 新建
     this->setScene(this->docScene);        // 设置场景
 
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -160,5 +324,6 @@ void DocPage::init()
     this->bodyLayer = new DocLayer(DocPage::Body);
     this->backgroundLayer = new DocLayer(Background);
 
-
+//    this->setBackgroundRole(QPalette::Dark);
+    this->insertBlockInfo = NULL;
 }

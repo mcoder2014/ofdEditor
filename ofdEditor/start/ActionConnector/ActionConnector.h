@@ -2,9 +2,10 @@
 #define ACTIONCONNECTOR_H
 
 #include <QObject>
+#include "Doc/DocPage.h"
 
-class PassageMainWindow;
 class DocPassage;
+class PassageMainWindow;
 
 
 /*******************************************************
@@ -23,13 +24,23 @@ public:
     void setMainWindow(PassageMainWindow * mainWindow);     // 设置主窗口
     void addNewPage();                                      // 添加一个新页面
 
+    void addNewBlock(InsertBlockInfo &blockInfo);           // 插入一个块
+
+    void addTextBlock();                    // 插入文本框
+    void addImageBlock();                   // 插入图片框
+    void addTableBlock();                   // 插入表格
+
+    void setDefaultLayer(DocPage::Layer layer){this->defaultLayer = layer;}
+    DocPage::Layer getDefaultLayer(){return this->defaultLayer;}
 
 private:
-    PassageMainWindow * mainWindow;         // 主窗口
+    PassageMainWindow * mainWindow;        // 主窗口
     DocPassage * passage;                  // 当前活跃文档
+    DocPage::Layer defaultLayer;           // 当前默认插入的层
 
     void updateActivePassage();             // 更新，确保当前操作的对象是活动的窗口
 
+    void init();                            // 初始化
 
 
 
