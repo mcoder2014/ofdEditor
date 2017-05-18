@@ -28,12 +28,8 @@ public:
     DocLayer * getLayer(){return this->layer;}
 
     void paintHandle(QPainter& painter);        // 绘制负责变换的控制器
-    enum ResizeStatus{normal,Top,Left,Bottom,Right,
-                     TopLeft,TopRight,BottomLeft,BottomRight,
-                     move};// 调整大小状态
-    ResizeStatus resizeStatus;                  // 用来表示调整大小状态
-    ResizeStatus isResizeable(const QPointF &point);   // 是否是用来调节大小的状态
-
+    void resize(qreal w, qreal h);      // 继承函数
+    void resize(const QSizeF &size);    // 继承函数
 
 protected:
 
@@ -43,6 +39,7 @@ protected:
     void focusInEvent(QFocusEvent *event) override;         // 焦点关注
     void focusOutEvent(QFocusEvent *event) override;        // 焦点离开
 
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
@@ -53,7 +50,11 @@ private:
     DocBox boundary;        // 该块的外包矩形
     DocLayer * layer;       // 该块在哪一个层之中
 
+    QSizeF blockSize;       // 用来纪录大小
+
     bool isFocused;         // 是否被聚焦
+    bool blockIsResizing;     // 是否正在改变大小
+    bool isInResizeArea(const QPointF& pos);    // 检查鼠标是否在重置大小区域
 
 };
 

@@ -86,6 +86,7 @@ private:
 
     BlockFlag newBlockFlag;             // 是否画块
 
+    QList<QGraphicsItem *> items;
 
 
 };

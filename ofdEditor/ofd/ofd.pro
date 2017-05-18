@@ -6,7 +6,8 @@
 
 # 这个文件是为了建立ofd的文件解析，读取相关的
 
-QT       += widgets xml xmlpatterns
+QT       += widgets xmlpatterns \
+            xml
 
 TARGET = ofd
 TEMPLATE = lib
