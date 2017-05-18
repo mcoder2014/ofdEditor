@@ -28,10 +28,18 @@ public:
     DocLayer * getLayer(){return this->layer;}
 
     void paintHandle(QPainter& painter);        // 绘制负责变换的控制器
+    enum ResizeStatus{normal,Top,Left,Bottom,Right,
+                     TopLeft,TopRight,BottomLeft,BottomRight,
+                     move};// 调整大小状态
+    ResizeStatus resizeStatus;                  // 用来表示调整大小状态
+    ResizeStatus isResizeable(const QPointF &point);   // 是否是用来调节大小的状态
 
 
 protected:
 
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
     void focusInEvent(QFocusEvent *event) override;         // 焦点关注
     void focusOutEvent(QFocusEvent *event) override;        // 焦点离开
 
@@ -45,6 +53,7 @@ private:
     DocBox boundary;        // 该块的外包矩形
     DocLayer * layer;       // 该块在哪一个层之中
 
+    bool isFocused;         // 是否被聚焦
 
 };
 

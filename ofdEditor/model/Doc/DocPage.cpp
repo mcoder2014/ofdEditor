@@ -154,7 +154,7 @@ void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
 
     this->insertBlockInfo->layer = blockInfo.layer;     // 层
     this->insertBlockInfo->type = blockInfo.type;       // 类型
-    qDebug()<<"Set InsertBlockInfo successfully!";
+//    qDebug()<<"Set InsertBlockInfo successfully!";
 }
 
 
@@ -180,10 +180,10 @@ void DocPage::paintEvent(QPaintEvent *event)
         painter.drawRect(rect);
         painter.end();                                  // 结束
 
-        qDebug()<<"Moving QPainter is Drawing";
+//        qDebug()<<"Moving QPainter is Drawing";
     }
 
-    qDebug()<<"QPainter is Drawing";
+//    qDebug()<<"QPainter is Drawing";
 }
 
 /**
@@ -221,9 +221,13 @@ void DocPage::mousePressEvent(QMouseEvent *event)
                  << "After convert pos x: " << point.x()
                  << "y: "<< point.y();
     }
+    else if(this->newBlockFlag == none)
+    {
+        // 先找出鼠标是否有点击
 
+    }
     QGraphicsView::mousePressEvent(event);
-    this->update();
+    this->viewport()->update();
 }
 
 /**
@@ -243,7 +247,6 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
         this->newPos = this->mapToScene(event->x(),event->y());
 //        this->update();             // 这个接口用不了不在文档里说明！！！
         this->viewport()->update();   // 调用刷新
-        //this->repaint();
         //qDebug() << "Moving";
     }
 
