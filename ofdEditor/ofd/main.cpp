@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     OFDParser t("F:/第六届中软杯/OFD Document/OFD.xml");
     OFD * i = t.getData();
-    OFDWriter w(i, "F:/第六届中软杯/writing_test/");
+    OFDWriter w(i, "F:/第六届中软杯/writing_test/AnotherTest/");
 //    QString str1("F:/第六届中软杯/OFD Document/OFD.xml");
 //    QString str2("F:/第六届中软杯/OFD Document/");
 //    ST_Loc t1("1",str1), t2("1", str2);
