@@ -25,30 +25,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    DataTypes/CT_Action.cpp \
-    DataTypes/image/CT_Clip.cpp \
-    DataTypes/image/CT_DrawParam.cpp \
-    DataTypes/image/CT_GraphicUnit.cpp \
-    DataTypes/image/CT_Image.cpp \
-    DataTypes/image/CT_Path.cpp \
-    DataTypes/page/CT_PageArea.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    ofd_parser.cpp \
+    DataTypes/basic_datatypes.cpp \
+    ofd_writer.cpp
     Loaders/ZipTool.cpp
 
 
 HEADERS +=\
-        ofd_global.h \
+    mainwindow.h \
     DataTypes/basic_datatype.h \
-    DataTypes/Color/CT_AxialShd.h \
+#    DataTypes/CT_Action.h \
+#    DataTypes/Color/CT_AxialShd.h \
     DataTypes/Color/CT_Color.h \
     DataTypes/Color/CT_ColorSpace.h \
-    DataTypes/Color/CT_Pattern.h \
-    DataTypes/Color/CT_RadialShd.h \
-    DataTypes/CT_Action.h \
-    DataTypes/image/CT_Clip.h \
-    DataTypes/image/CT_DrawParam.h \
-    DataTypes/image/CT_GraphicUnit.h \
-    DataTypes/image/CT_Image.h \
-    DataTypes/image/CT_Path.h \
+#    DataTypes/Color/CT_Pattern.h \
+#    DataTypes/Color/CT_RadialShd.h \
     DataTypes/document/CT_CommonData.h \
     DataTypes/document/CT_DocInfo.h \
     DataTypes/document/CT_OutlineElem.h \
@@ -56,15 +49,25 @@ HEADERS +=\
     DataTypes/document/DocBody.h \
     DataTypes/document/Document.h \
     DataTypes/document/OFD.h \
-    DataTypes/page/CT_PageArea.h \
+#    DataTypes/image/CT_Clip.h \
+    DataTypes/image/CT_DrawParam.h \
+    DataTypes/image/CT_GraphicUnit.h \
+    DataTypes/image/CT_Image.h \
+    DataTypes/image/CT_Path.h \
     DataTypes/page/CT_Layer.h \
+    DataTypes/page/CT_PageArea.h \
     DataTypes/page/CT_PageBlock.h \
     DataTypes/page/CT_Pages.h \
     DataTypes/page/Page.h \
-    DataTypes/text/CT_CGTransform.h \
+    ofd_parser.h \
+    DataTypes/document/res.h\
+#    DataTypes/text/CT_CGTransform.h \
     DataTypes/text/CT_Font.h \
     DataTypes/text/CT_Text.h \
     DataTypes/text/TextCode.h \
+    ofd_global.h \
+    ofd_writer.h \
+    DataTypes/document/CustomTags.h
     Loaders/ZipTool.h
 
 
@@ -75,6 +78,9 @@ OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 
 INCLUDEPATH += $$PWD/../libs/quazip/includes            # 引用quazip库
     # $$PWD表示当前pro对应的文件夹路径
+
+FORMS    += mainwindow.ui \
+    mainwindow.ui
 
 unix {
     target.path = /usr/lib
