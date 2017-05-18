@@ -2,38 +2,46 @@
 #define CT_COLORSPACE_H
 
 #include "../../ofd_global.h"  // 生成库文件需要
-
-#include <string>
-using std::string;
-#include <vector>
-using std::vector;
 #include "../basic_datatype.h"
 
-class CT_ColorSpace_Palette;
+//class CT_ColorSpace_Palette;
 
 // 颜色空间描述
 
 
-class OFDSHARED_EXPORT CT_ColorSpace
+class OFDSHARED_EXPORT CT_ColorSpace : public CT_Base
 {
-public:
+public :
+    friend class OFDParser;
+    QString getType() {
+        return type;
+    }
+    int getBitsPerComponent() {
+        return bits_per_component;
+    }
+    ST_Loc getProfile() {
+        return profile;
+    }
 
-    ST_ID ID;               // 声明该颜色空间的标识，不能与已有标识重复
-    //string Type;            // 颜色空间类型，支持 "Gray", "RGB", "CMYK"
-    enum Type_Def{Gray,RGB,CMYK};
-    Type_Def Type;
-    int BitsPerComponent;   // 颜色通道数，默认为 8
-    ST_Loc Profile;         // 指向包内的文件描述文件
+    //Other methods to be implemented
+
+private:
+    //属性
+    QString type;
+    int bits_per_component;   // 颜色通道数，默认为 8
+    ST_Loc profile;         // 指向包内的文件描述文件
+
     // Palette // 调色版描述
-    vector<CT_ColorSpace_Palette> Palette;      // 调色板描述
+    //vector<CT_ColorSpace_Palette> Palette;      // 调色板描述
 
-
-    CT_ColorSpace();
+    CT_ColorSpace() {
+        bits_per_component = 8;
+    }
 };
 
-class OFDSHARED_EXPORT CT_ColorSpace_Palette{
-    ST_Array CV;            // 调色板中预定义颜色
-};
+//class OFDSHARED_EXPORT CT_ColorSpace_Palette{
+//    ST_Array CV;            // 调色板中预定义颜色
+//};
 
 
 

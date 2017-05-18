@@ -64,7 +64,8 @@ HEADERS  += \
     DataTypes/text/CT_Text.h \
     DataTypes/text/TextCode.h \
     ofd_global.h \
-    ofd_writer.h
+    ofd_writer.h \
+    DataTypes/document/CustomTags.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

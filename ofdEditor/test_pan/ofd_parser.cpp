@@ -195,18 +195,23 @@ Document * OFDParser::readDocument(){
         //Error
         abort();
     }
-
+    //访问页面
     for (int i = 0; i < document_data->pages->pages->size(); i++) {
         current_path = document_data->pages->pages->at(i)->base_loc;
         readPage(document_data->pages->pages->at(i));
     }
-    //qDebug() << document_data->common_data->public_res->size() << endl;
+    //访问资源
     for (int i = 0; i < document_data->common_data->public_res->size(); i++) {
         //qDebug() << "Start to read PublicRes..." << endl;
         current_path = document_data->common_data->public_res->at(i);
         Res * res_data = new Res();
         readResource(res_data);
         document_data->public_res->push_back(res_data);
+    }
+    //访问自定义标签
+    if (!document_data->custom_tags.isNull()) {
+        current_path = document_data->custom_tags;
+
     }
     return document_data;
 }
@@ -350,9 +355,29 @@ void OFDParser::readPage(Page * page_data) {
                     }
                     t = t.nextSiblingElement("ofd:PathObject");
                 }
+
+                //解析位图对象
+                t = new_layer.firstChildElement("ofd:ImageObject");
+                while (!t.isNull()) {
+                    CT_Image * image_data = new CT_Image();
+                    layer_data->image_object->push_back(image_data);
+                    readGraphicUnit(image_data, t);
+                    if (t.hasAttribute("ResourceID")) {
+                        ST_RefID ri(t.attribute("ResourceID").toInt());
+                        image_data->resource_id = ri;
+                    } else {
+                        //Error!
+                        abort();
+                    }
+                    if (t.hasAttribute("Substitution")) {
+                        ST_RefID ri(t.attribute("Substitution").toInt());
+                        image_data->substitution = ri;
+                    }
+                    t = t.nextSiblingElement("ofd:ImageObject");
+                }
                 //Other GraphicUnit objects to be implemented
                 //qDebug() << "End of reading content..." << endl;
-                new_layer = new_layer.nextSiblingElement("ofd:PathObject");
+                new_layer = new_layer.nextSiblingElement("ofd:Layer");
             }
         }
     } else {
