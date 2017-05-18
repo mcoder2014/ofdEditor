@@ -25,25 +25,70 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += model.cpp \
-    DocImage.cpp \
-    DocMainBody.cpp \
-    DocParagraph.cpp \
-    DocTable.cpp
+    Doc/DocBlock.cpp \
+    Doc/DocGraph.cpp \
+    Doc/DocImage.cpp \
+    Doc/DocLayer.cpp \
+    Doc/DocPage.cpp \
+    Doc/DocParagraph.cpp \
+    Doc/DocPassage.cpp \
+    Doc/DocPicture.cpp \
+    Doc/DocTable.cpp \
+    Doc/DocTableCell.cpp \
+    Doc/DocTableRow.cpp \
+    Doc/DocTemplate.cpp \
+    Doc/DocText.cpp \
+    Doc/DocTextBlock.cpp \
+    Doc/DocDrawParam.cpp \
+    Doc/DocParaStyle.cpp \
+    Doc/DocTextStyle.cpp \
+    Widget/PassageWidget.cpp \
+    Tool/UnitTool.cpp \
+    Doc/DocPageScene.cpp
 
 HEADERS += model.h\
         model_global.h \
-    DocImage.h \
-    DocMainBody.h \
-    DocParagraph.h \
-    DocTable.h
+    Doc/DocBlock.h \
+    Doc/DocGraph.h \
+    Doc/DocImage.h \
+    Doc/DocLayer.h \
+    Doc/DocPage.h \
+    Doc/DocParagraph.h \
+    Doc/DocPassage.h \
+    Doc/DocPicture.h \
+    Doc/DocTable.h \
+    Doc/DocTableCell.h \
+    Doc/DocTableRow.h \
+    Doc/DocTemplate.h \
+    Doc/DocText.h \
+    Doc/DocTextBlock.h \
+    Doc/DocDrawParam.h \
+    Doc/DocBasicTypes.h \
+    Doc/DocParaStyle.h \
+    Doc/DocTextStyle.h \
+    Widget/PassageWidget.h \
+    Tool/UnitTool.h \
+    Doc/DocPageScene.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
 RCC_DIR = ./rcc     # .qrc 文件转换后存放路径
 OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 
+INCLUDEPATH += $$PWD/../ofd \
+               $$PWD/../model
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
+
+unix{
+    LIBS += ../bin/libofd.so
+
+}
+
+win32{
+    LIBS += ../bin/ofd.lib
+}

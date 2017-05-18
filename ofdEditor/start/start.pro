@@ -26,9 +26,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    ui/PassageMainWindow.cpp \
+    ActionConnector/ActionConnector.cpp \
+    ui/ParagraphFormatWidget.cpp \
+    ui/TextFormatWidget.cpp \
+    ui/ImageFormatWidget.cpp \
+    ui/TableFormatWidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    ui/PassageMainWindow.h \
+    ActionConnector/ActionConnector.h \
+    ui/ParagraphFormatWidget.h \
+    ui/TextFormatWidget.h \
+    ui/ImageFormatWidget.h \
+    ui/TableFormatWidget.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -50,3 +62,12 @@ win32{
     LIBS += ../bin/model.lib \
             ../bin/ofd.lib
 }
+
+RESOURCES += \
+    icons.qrc
+
+FORMS += \
+    ui/ParagraphFormatWidget.ui \
+    ui/TextFormatWidget.ui \
+    ui/ImageFormatWidget.ui \
+    ui/TableFormatWidget.ui
