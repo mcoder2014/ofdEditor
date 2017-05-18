@@ -225,6 +225,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
     {
         // 先找出鼠标是否有点击
 
+
     }
     QGraphicsView::mousePressEvent(event);
     this->viewport()->update();
