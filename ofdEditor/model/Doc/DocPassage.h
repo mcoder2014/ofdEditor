@@ -43,7 +43,7 @@ private:
     // 数据区
     QString version;             // OFD 版本默认 1.0
     QString docType;             // 类型默认是 OFD
-    CT_DocInfo* docInfo;         // 文档元数据结构 ofd/CT_DocInfo
+//    CT_DocInfo* docInfo;         // 文档元数据结构 ofd/CT_DocInfo
     //CT_CommonData* commonData; // 文档公用文档数据
 
     QVector<DocPage *> pages;    // 既作为数据，也作为渲染

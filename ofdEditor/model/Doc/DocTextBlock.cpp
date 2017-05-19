@@ -11,6 +11,7 @@ DocTextBlock::DocTextBlock(QWidget *parent)
 //    cursor.insertText(tr("testsesetstsetestes"));
 
 //    this->setBackgroundRole(QPalette::Dark);
+    this->setMinimumSize(5,5);
 }
 
 DocTextBlock::~DocTextBlock()

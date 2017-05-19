@@ -170,7 +170,7 @@ void DocPage::paintEvent(QPaintEvent *event)
     QGraphicsView::paintEvent(event);           // 执行原绘图操作
 
     // 画出动态拖拽的框
-    if(this->newBlockFlag == moveState)
+    if(this->newBlockFlag == drawMove)
     {
         QPainter painter(this->viewport());     // 坑，要画在viewport上
         painter.setPen(Qt::blue);
@@ -211,7 +211,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
     // 如果是加入新块状态
     if(this->newBlockFlag == draw)
     {
-        this->newBlockFlag = moveState;        // 进入移动状态
+        this->newBlockFlag = drawMove;        // 进入移动状态
 
         QPointF point = this->mapToScene(event->x(),event->y());    // 将点映射到scene
         this->oldPos.setX(point.x());
@@ -224,7 +224,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
     else if(this->newBlockFlag == none)
     {
         // 先找出鼠标是否有点击
-
+        this->oldPos = event->pos();
 
     }
     QGraphicsView::mousePressEvent(event);
@@ -243,13 +243,14 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
 
     QGraphicsView::mouseMoveEvent(event);
 
-    if(this->newBlockFlag == moveState)
+    if(this->newBlockFlag == drawMove)
     {
         this->newPos = this->mapToScene(event->x(),event->y());
 //        this->update();             // 这个接口用不了不在文档里说明！！！
         this->viewport()->update();   // 调用刷新
         //qDebug() << "Moving";
     }
+
 
 }
 
@@ -263,7 +264,7 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
 void DocPage::mouseReleaseEvent(QMouseEvent *event)
 {
 
-    if(this->newBlockFlag == moveState)
+    if(this->newBlockFlag == drawMove)
     {
         // 如果是释放
 

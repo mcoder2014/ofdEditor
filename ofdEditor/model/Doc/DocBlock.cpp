@@ -17,11 +17,12 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->isFocused = false;            // 初始时设为false
 
     this->blockIsResizing = false;
+    this->rectAdjust = this->blockNone;     // 一开始处于空状态
 
 
-    this->setFlag(QGraphicsItem::ItemIsMovable, true);  // 可移动
+    this->setFlag(QGraphicsItem::ItemIsMovable, true);       // 可移动
     this->setFlag(QGraphicsItem::ItemIsSelectable, true);    // 可选择
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);  // 可关注
+    this->setFlag(QGraphicsItem::ItemIsFocusable, true);     // 可关注
 }
 
 /**
@@ -34,33 +35,6 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
 void DocBlock::paintHandle(QPainter &painter)
 {
 
-//    // 坐标系统是相对于该部件的
-//    QPointF leftTop(0,0);
-//    double x = leftTop.x();
-//    double y = leftTop.y();
-
-//    double width = this->size().width();
-//    double height = this->size().height();
-//    double halfWidth = width/2;
-//    double halfHeight = height/2;
-
-//    if(width > 50 && height > 50)
-//    {
-//        // 小于50像素，不要显示边缩放
-
-//        painter.drawRect(x-5+halfWidth,y-5,20,10);        // 顶部缩放
-//        painter.drawRect(x-5,y+halfHeight-5,10,20);       // 左侧缩放
-//        painter.drawRect(x+halfWidth-10,y+height-5,20,10);  // 底部缩放
-//        painter.drawRect(x+width-5,y+halfHeight-10,10,20);// 右侧缩放
-
-//    }
-
-//    painter.drawRect(x-5,y-5,10,10);                        // 左上角
-//    painter.drawRect(x-5 + width,y-5,10,10);                // 右上角
-//    painter.drawRect(x-5,y-5+height,10,10);                 // 左下角
-//    painter.drawRect(x-5+width,y-5+height,10,10);           // 右下角
-
-
     painter.setPen(Qt::black);
 
     painter.setRenderHint(QPainter::Antialiasing, true);  // 反走样
@@ -70,12 +44,12 @@ void DocBlock::paintHandle(QPainter &painter)
     qreal h = this->blockSize.height();
 
     // 简单的绘制调整大小的句柄
-    painter.drawLine(w - 20, h,
-                             w, h - 20);
-    painter.drawLine(w - 15, h,
-                             w, h - 15);
-    painter.drawLine(w - 10, h,
-                             w, h - 10);
+    painter.drawLine(w - 15, h-1,
+                             w-1, h - 15);
+    painter.drawLine(w - 10, h-1,
+                             w-1, h - 10);
+    painter.drawLine(w - 5, h-1,
+                             w-1, h - 5);
 
     painter.setRenderHint(QPainter::Antialiasing, false);  // 关闭反走样
 
@@ -136,10 +110,12 @@ void DocBlock::focusOutEvent(QFocusEvent *event)
 void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
 
-    if (blockIsResizing || (isInResizeArea(event->pos()) && isSelected()))
-        setCursor(Qt::SizeFDiagCursor);
+    if (this->rectAdjust == blockResize
+            || (this->currentStatus(event->pos()) == blockResize
+                && isSelected()))
+        this->setCursor(Qt::SizeFDiagCursor);
     else
-        setCursor(Qt::ArrowCursor);
+        this->setCursor(Qt::ArrowCursor);
 
     QGraphicsProxyWidget::hoverMoveEvent(event);
 
@@ -150,6 +126,13 @@ void DocBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsProxyWidget::mouseDoubleClickEvent(event);
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  鼠标按下时处理函数
+ * @param  QGraphicsSceneMouseEvent *event
+ * @return void
+ * @date   2017/05/19
+ */
 void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
@@ -157,11 +140,17 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
     qDebug()<<"DocBlock Mouse Postion" << pos.x()
            << ", "<<pos.y();
 
-        if (event->button() == Qt::LeftButton &&
-                isInResizeArea(event->pos()))
-            blockIsResizing = true;
-        else
-            QGraphicsProxyWidget::mousePressEvent(event);
+//        if (event->button() == Qt::LeftButton &&
+//                isInResizeArea(event->pos()))
+    if (event->button() == Qt::LeftButton )
+    {
+        // 如果按下的是鼠标左键，检测是否是可以修改大小或位置的状态
+        this->rectAdjust = this->currentStatus(event->pos());
+        if(this->rectAdjust == blockMove)
+            this->setAcceptDrops(true);
+    }
+     else
+         QGraphicsProxyWidget::mousePressEvent(event);
 
 }
 
@@ -175,23 +164,35 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    if (blockIsResizing)
-        {
-            qreal w = event->pos().x();
-            qreal h = event->pos().y();
+    if (this->rectAdjust == blockResize)
+    {
+        qreal w = event->pos().x();
+        qreal h = event->pos().y();
 
-            if (w > this->minimumWidth())
-                blockSize.setWidth(w);
-            if (h > this->minimumHeight())
-                blockSize.setHeight(h);
+        if (w > this->minimumWidth())
+            blockSize.setWidth(w);
+        if (h > this->minimumHeight())
+            blockSize.setHeight(h);
 
-            this->resize(blockSize);        // 调整大小
+        this->resize(blockSize);        // 调整大小
 
-        }
-        else
-        {
-            QGraphicsProxyWidget::mouseMoveEvent(event);    // 调用基类的函数
-        }
+    }
+    else if(this->rectAdjust == blockMove)
+    {
+//        QPointF newPos = event->pos();
+//        newPos = newPos - this->blockOldPos + this->pos();  // 计算平移后坐标
+//        newPos.setX(newPos.x() - this->blockOldPos.x() + this->pos().x());
+//        newPos.setY(newPos.y() - this->blockOldPos.y() + this->pos().y());
+//        this->setPos(newPos);    // 设置坐标
+//        this->setX(event->pos().x() - this->blockOldPos.x() + this->x());
+//        this->setY(event->pos().y() - this->blockOldPos.y() + this->y());
+
+//        this->blockOldPos = event->pos();
+    }
+    else
+    {
+        QGraphicsProxyWidget::mouseMoveEvent(event);    // 调用基类的函数
+    }
 
 }
 
@@ -204,11 +205,14 @@ void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
  */
 void DocBlock::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-//    QGraphicsProxyWidget::mouseReleaseEvent(event);
-    //this->setCursor(Qt::ArrowCursor);
 
-    if (event->button() == Qt::LeftButton && blockIsResizing)
-        blockIsResizing = false;
+//    if (event->button() == Qt::LeftButton && blockIsResizing)
+    if (event->button() == Qt::LeftButton &&
+            this->rectAdjust != blockNone)
+    {
+        this->rectAdjust = blockNone;
+        this->setAcceptDrops(false);
+    }
     else
         QGraphicsProxyWidget::mouseReleaseEvent(event);
 }
@@ -237,7 +241,42 @@ void DocBlock::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  */
 bool DocBlock::isInResizeArea(const QPointF &pos)
 {
-    return (pos.x() - this->size().width() + 20) >
+    return (pos.x() - this->size().width() + 15) >
             (this->size().height() - pos.y());
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  检测当前状态是否可以移动块
+ * @param  const QPointF &pos
+ * @return RectAdjustStatus
+ * @date   2017/05/19
+ */
+DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
+{
+    if((pos.x() - this->size().width() + 15) >
+            (this->size().height() - pos.y()))
+        return blockResize;
+
+    // 画出可以移动的边缘
+    qreal moveMargin = 5;   // 边缘多少像素内可以移动
+    QRectF left(0,0,
+                moveMargin,this->blockSize.height());
+    QRectF right(this->blockSize.width()-moveMargin,0,
+                 moveMargin,this->blockSize.height());
+    QRectF top(0,0,
+               this->blockSize.width(),moveMargin);
+    QRectF bottom(0,this->blockSize.height() - moveMargin,
+              this->blockSize.width(),moveMargin);
+
+    if(left.contains(pos)
+            || right.contains(pos)
+            || top.contains(pos)
+            || bottom.contains(pos))
+        return blockMove;
+
+
+    // 如果未得出结果，则可以移动
+    return blockNone;
 }
 

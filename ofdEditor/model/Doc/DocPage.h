@@ -28,7 +28,7 @@ class MODELSHARED_EXPORT DocPage
     Q_OBJECT
 public:
     enum Layer{Body,Foreground,Background};                 // 分为三层
-    enum BlockFlag{none,draw,moveState,resizeState};        // 插入时的绘制状态
+    enum BlockFlag{none,draw,drawMove,};        // 插入时的绘制状态
     enum BlockType{text,image,table};                       // 插入时的类型
 
     explicit DocPage(QWidget * parent = 0);

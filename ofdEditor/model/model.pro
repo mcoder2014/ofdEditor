@@ -6,7 +6,7 @@
 
 # 这个文件是为了建立ofd文件的模型,是一个静态类库
 
-QT       += widgets
+QT       += widgets xmlpatterns xml
 
 TARGET = model
 TEMPLATE = lib

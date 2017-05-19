@@ -6,7 +6,7 @@
 
 # 这个工程是用于我们放置程序的入口的
 
-QT       += core gui
+QT       += core gui xml xmlpatterns
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

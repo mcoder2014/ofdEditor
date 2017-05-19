@@ -21,7 +21,7 @@ DocPassage::DocPassage(QWidget *parent)
     :docType("OFD"),version("1.0"),QScrollArea(parent)
 {
     this->scaleFactor = 1.0;            // 缩放100%
-    this->docInfo = new CT_DocInfo();
+    //this->docInfo = new CT_DocInfo();
 //    this->commonData = new CT_CommonData();
     this->init();       // 初始化界面
 
@@ -48,11 +48,11 @@ DocPassage::DocPassage(QWidget *parent,
 DocPassage::~DocPassage()
 {
     // 释放根节点内容
-    if(this->docInfo != NULL)
-    {
-        delete this->docInfo;
-        this->docInfo = NULL;
-    }
+//    if(this->docInfo != NULL)
+//    {
+//        delete this->docInfo;
+//        this->docInfo = NULL;
+//    }
 
     // 释放公共数据
 //    if(this->commonData != NULL)
