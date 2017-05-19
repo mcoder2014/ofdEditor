@@ -15,6 +15,7 @@
 #include <QGraphicsProxyWidget>
 #include <QPointF>
 #include <QPainter>
+#include <QObject>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
@@ -213,20 +214,60 @@ void DocPage::mousePressEvent(QMouseEvent *event)
     {
         this->newBlockFlag = drawMove;        // 进入移动状态
 
-        QPointF point = this->mapToScene(event->x(),event->y());    // 将点映射到scene
-        this->oldPos.setX(point.x());
-        this->oldPos.setY(point.y());
-        qDebug() << " QMouseEvent * pos: x:" << event->x()
-                 << " y:" << event->y()
-                 << "After convert pos x: " << point.x()
-                 << "y: "<< point.y();
+        this->oldPos = this->mapToScene(event->pos());  // 记录鼠标
+//        qDebug() << " QMouseEvent * pos: x:" << event->x()
+//                 << " y:" << event->y()
+//                 << "After convert pos x: " << this->oldPos.x()
+//                 << "y: "<< this->oldPos.y();
     }
     else if(this->newBlockFlag == none)
     {
         // 先找出鼠标是否有点击
-        this->oldPos = event->pos();
+        this->oldPos = this->mapToScene(event->pos());
+        QList<QGraphicsItem *> items = this->scene()->items(this->oldPos);
+        if( items.size()> 0)
+        {
+            QGraphicsItem* tempItem = items[0];
+
+            // 不清楚为什么，造型函数在这里编译出错，因此我采取了强制类型转换
+//            DocBlock * block = qobject_cast<DocBlock *>(tempItem);
+            DocBlock * block = (DocBlock *)tempItem;
+
+            if(block != NULL)
+            {
+                 this->activeBlock = block;         // 存下 block
+
+                 QPointF tempPoint = this->mapToScene(this->oldPos.rx(),
+                                                      this->oldPos.ry());
+//                 qDebug() <<"temp Point"<<tempPoint.rx()
+//                         << ","<<tempPoint.ry();
+
+                 if(block->currentStatus(
+                             block->mapFromScene(tempPoint))
+                         == DocBlock::blockMove)
+                 {
+//                     qDebug()<<" Accepted Signal is blockMove";
+                     this->newBlockFlag = blockMove;
+                 }
+                 else
+                 {
+//                     qDebug()<<"not Move";
+                 }
+            }
+            else
+            {
+//                qDebug() << "block == NULL";
+            }
+        }
+        else
+        {
+//            qDebug() << "items.size:" <<items.size();
+        }
+
+
 
     }
+
     QGraphicsView::mousePressEvent(event);
     this->viewport()->update();
 }
@@ -247,10 +288,25 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
     {
         this->newPos = this->mapToScene(event->x(),event->y());
 //        this->update();             // 这个接口用不了不在文档里说明！！！
-        this->viewport()->update();   // 调用刷新
-        //qDebug() << "Moving";
-    }
 
+        this->viewport()->update();   // 调用刷新
+    }
+    else if(this->newBlockFlag == blockMove)
+    {
+        this->newPos = this->mapToScene(event->pos());
+        if(this->activeBlock == NULL)
+        {
+            this->newBlockFlag = none;
+            this->viewport()->update();   // 调用刷新
+            return;     // 终止函数
+        }
+
+        QPointF point = this->newPos - this->oldPos;
+        this->activeBlock->moveBy(point.rx(),point.ry());
+        this->oldPos = this->mapToScene(event->pos());
+
+        this->viewport()->update();   // 调用刷新
+    }
 
 }
 

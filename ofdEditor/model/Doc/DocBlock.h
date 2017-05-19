@@ -39,11 +39,12 @@ protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
+    // 用来绘制变化
     void focusInEvent(QFocusEvent *event) override;         // 焦点关注
     void focusOutEvent(QFocusEvent *event) override;        // 焦点离开
 
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    // 用来修改鼠标
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);   // 鼠标悬浮响应
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
@@ -60,7 +61,7 @@ private:
     bool blockIsResizing;     // 是否正在改变大小
     bool isInResizeArea(const QPointF& pos);    // 检查鼠标是否在重置大小区域
 
-
+public:
     RectAdjustStatus currentStatus(const QPointF& pos);     // 鼠标所在位置可以进行什么调整
 };
 

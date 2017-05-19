@@ -17,12 +17,11 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->isFocused = false;            // 初始时设为false
 
     this->blockIsResizing = false;
-    this->rectAdjust = this->blockNone;     // 一开始处于空状态
+    this->rectAdjust = blockNone;       // 一开始处于空状态
 
-
-    this->setFlag(QGraphicsItem::ItemIsMovable, true);       // 可移动
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);    // 可选择
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);     // 可关注
+    this->setFlag(QGraphicsProxyWidget::ItemIsSelectable, true);    // 可选择
+    this->setFlag(QGraphicsProxyWidget::ItemIsFocusable, true);     // 可关注
+    this->setAcceptHoverEvents(true);
 }
 
 /**
@@ -55,7 +54,13 @@ void DocBlock::paintHandle(QPainter &painter)
 
 }
 
-
+/**
+ * @Author Chaoqun
+ * @brief  调整大小
+ * @param  qreal x,qreal y
+ * @return void
+ * @date   2017/05/19
+ */
 void DocBlock::resize(qreal w, qreal h)
 {
     QGraphicsProxyWidget::resize(w,h);
@@ -63,6 +68,13 @@ void DocBlock::resize(qreal w, qreal h)
     this->blockSize.setHeight(h);
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  重新调整大小
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/19
+ */
 void DocBlock::resize(const QSizeF &size)
 {
     QGraphicsProxyWidget::resize(size);
@@ -84,7 +96,7 @@ void DocBlock::paint(QPainter *painter,
 {
     // 绘制的坐标系统是相对于该Widget的
     QGraphicsProxyWidget::paint(painter,option,widget);     // 先画原部分
-    if(this->isFocused)
+    if(this->isFocused && this->rectAdjust != blockMove)
     {
         this->paintHandle(*painter);        // 画出调整框
     }
@@ -107,23 +119,35 @@ void DocBlock::focusOutEvent(QFocusEvent *event)
 
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置鼠标悬浮操作，主要负责改变鼠标样式
+ * @param  QGraphicsSceneHoverEvent *event
+ * @return void
+ * @date   2017/05/19
+ */
 void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
 
     if (this->rectAdjust == blockResize
             || (this->currentStatus(event->pos()) == blockResize
-                && isSelected()))
-        this->setCursor(Qt::SizeFDiagCursor);
-    else
-        this->setCursor(Qt::ArrowCursor);
+                && this->isFocused))
+    {
+        this->setCursor(Qt::SizeFDiagCursor);   // 设置为角落缩放
+    }
+    else if(this->rectAdjust == blockMove
+            || (this->currentStatus(event->pos()) == blockMove
+                && this->isFocused))
+    {
+        this->setCursor(Qt::SizeAllCursor);     // 设置为移动样式
+    }
+    else if(this->cursor().shape() != Qt::IBeamCursor)
+    {
+//        this->unsetCursor();                    // 取消设置鼠标-效果不好
+        QGraphicsProxyWidget::hoverEnterEvent(event);   // 执行重新进入，设置鼠标
+    }
+        QGraphicsProxyWidget::hoverMoveEvent(event);    // 调用父类的调整函数
 
-    QGraphicsProxyWidget::hoverMoveEvent(event);
-
-}
-
-void DocBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsProxyWidget::mouseDoubleClickEvent(event);
 }
 
 /**
@@ -137,20 +161,16 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
     QPointF pos = event->pos();     // 获取鼠标位置
-    qDebug()<<"DocBlock Mouse Postion" << pos.x()
-           << ", "<<pos.y();
+//    qDebug()<<"DocBlock Mouse Postion" << pos.x()
+//           << ", "<<pos.y();
 
-//        if (event->button() == Qt::LeftButton &&
-//                isInResizeArea(event->pos()))
     if (event->button() == Qt::LeftButton )
     {
         // 如果按下的是鼠标左键，检测是否是可以修改大小或位置的状态
         this->rectAdjust = this->currentStatus(event->pos());
-        if(this->rectAdjust == blockMove)
-            this->setAcceptDrops(true);
     }
-     else
-         QGraphicsProxyWidget::mousePressEvent(event);
+
+    QGraphicsProxyWidget::mousePressEvent(event);
 
 }
 
@@ -175,24 +195,10 @@ void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             blockSize.setHeight(h);
 
         this->resize(blockSize);        // 调整大小
-
+        this->setCursor(Qt::SizeFDiagCursor);
     }
-    else if(this->rectAdjust == blockMove)
-    {
-//        QPointF newPos = event->pos();
-//        newPos = newPos - this->blockOldPos + this->pos();  // 计算平移后坐标
-//        newPos.setX(newPos.x() - this->blockOldPos.x() + this->pos().x());
-//        newPos.setY(newPos.y() - this->blockOldPos.y() + this->pos().y());
-//        this->setPos(newPos);    // 设置坐标
-//        this->setX(event->pos().x() - this->blockOldPos.x() + this->x());
-//        this->setY(event->pos().y() - this->blockOldPos.y() + this->y());
-
-//        this->blockOldPos = event->pos();
-    }
-    else
-    {
         QGraphicsProxyWidget::mouseMoveEvent(event);    // 调用基类的函数
-    }
+
 
 }
 
@@ -206,15 +212,13 @@ void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void DocBlock::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 
-//    if (event->button() == Qt::LeftButton && blockIsResizing)
     if (event->button() == Qt::LeftButton &&
             this->rectAdjust != blockNone)
     {
         this->rectAdjust = blockNone;
-        this->setAcceptDrops(false);
     }
-    else
-        QGraphicsProxyWidget::mouseReleaseEvent(event);
+
+    QGraphicsProxyWidget::mouseReleaseEvent(event);
 }
 
 /**
@@ -276,7 +280,7 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
         return blockMove;
 
 
-    // 如果未得出结果，则可以移动
+    // 如果未得出结果，则默认无操作
     return blockNone;
 }
 
