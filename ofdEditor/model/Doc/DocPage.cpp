@@ -215,6 +215,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
         this->newBlockFlag = drawMove;        // 进入移动状态
 
         this->oldPos = this->mapToScene(event->pos());  // 记录鼠标
+        this->newPos = this->mapToScene(event->pos());  // 记录鼠标
 //        qDebug() << " QMouseEvent * pos: x:" << event->x()
 //                 << " y:" << event->y()
 //                 << "After convert pos x: " << this->oldPos.x()

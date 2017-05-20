@@ -144,6 +144,7 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     else if(this->cursor().shape() != Qt::IBeamCursor)
     {
 //        this->unsetCursor();                    // 取消设置鼠标-效果不好
+//        qDebug() <<"Redo hoverEnterEvent";
         QGraphicsProxyWidget::hoverEnterEvent(event);   // 执行重新进入，设置鼠标
     }
         QGraphicsProxyWidget::hoverMoveEvent(event);    // 调用父类的调整函数
