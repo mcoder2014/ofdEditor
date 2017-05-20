@@ -38,6 +38,8 @@ public:
 protected:
     void resizeEvent(QResizeEvent* event);
 
+    void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
+
 
 private:
     // 数据区

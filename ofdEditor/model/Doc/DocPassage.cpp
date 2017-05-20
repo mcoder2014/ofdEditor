@@ -151,6 +151,18 @@ void DocPassage::resizeEvent(QResizeEvent *event)
     qDebug() << "DocPassage::resizeEvent Runs";
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  此函数可以用来实现关闭前提示保存的功能
+ * @param  QCloseEvent *event
+ * @return void
+ * @date   2017/05/20
+ */
+void DocPassage::closeEvent(QCloseEvent *event)
+{
+    QScrollArea::closeEvent(event);
+}
+
 void DocPassage::init()
 {
     this->layout = new QVBoxLayout;             // 新建布局

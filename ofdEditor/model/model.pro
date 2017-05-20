@@ -42,7 +42,6 @@ SOURCES += model.cpp \
     Doc/DocDrawParam.cpp \
     Doc/DocParaStyle.cpp \
     Doc/DocTextStyle.cpp \
-    Widget/PassageWidget.cpp \
     Tool/UnitTool.cpp \
     Doc/DocPageScene.cpp
 
@@ -66,7 +65,6 @@ HEADERS += model.h\
     Doc/DocBasicTypes.h \
     Doc/DocParaStyle.h \
     Doc/DocTextStyle.h \
-    Widget/PassageWidget.h \
     Tool/UnitTool.h \
     Doc/DocPageScene.h
 
