@@ -17,6 +17,9 @@ public:
     DocTextBlock(QWidget *parent = Q_NULLPTR);
     ~DocTextBlock();
 
+protected:
+
+    void contextMenuEvent(QContextMenuEvent *event);    // 右键菜单重载
 
 private:
 

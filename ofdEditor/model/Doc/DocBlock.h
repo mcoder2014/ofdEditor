@@ -24,6 +24,9 @@ class MODELSHARED_EXPORT DocBlock
 public:
     DocBlock(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
 
+    enum RectAdjustStatus{blockNone , blockResize , blockMove};     // 对块的大小状态进行调整
+    RectAdjustStatus rectAdjust;        // 用来标识当前修改尺寸的状态
+
     void setLayer(DocLayer * layer){this->layer = layer;}
     DocLayer * getLayer(){return this->layer;}
 
@@ -36,11 +39,12 @@ protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
+    // 用来绘制变化
     void focusInEvent(QFocusEvent *event) override;         // 焦点关注
     void focusOutEvent(QFocusEvent *event) override;        // 焦点离开
 
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    // 用来修改鼠标
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);   // 鼠标悬浮响应
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
@@ -51,11 +55,14 @@ private:
     DocLayer * layer;       // 该块在哪一个层之中
 
     QSizeF blockSize;       // 用来纪录大小
+    QPointF blockOldPos;    // 用来记录旧的位置
 
     bool isFocused;         // 是否被聚焦
     bool blockIsResizing;     // 是否正在改变大小
     bool isInResizeArea(const QPointF& pos);    // 检查鼠标是否在重置大小区域
 
+public:
+    RectAdjustStatus currentStatus(const QPointF& pos);     // 鼠标所在位置可以进行什么调整
 };
 
 #endif // DOCBLOCK_H

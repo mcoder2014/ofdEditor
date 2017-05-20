@@ -30,7 +30,7 @@ SOURCES += \
     mainwindow.cpp \
     ofd_parser.cpp \
     DataTypes/basic_datatypes.cpp \
-    ofd_writer.cpp
+    ofd_writer.cpp  \
     Loaders/ZipTool.cpp
 
 
@@ -68,7 +68,7 @@ HEADERS +=\
     DataTypes/text/TextCode.h \
     ofd_global.h \
     ofd_writer.h \
-    DataTypes/document/CustomTags.h
+    DataTypes/document/CustomTags.h \
     Loaders/ZipTool.h
 
 
