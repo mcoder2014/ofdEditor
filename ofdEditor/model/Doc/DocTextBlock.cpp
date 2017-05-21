@@ -1,5 +1,6 @@
 #include "DocTextBlock.h"
 #include "Doc/DocParagraph.h"
+#include "Widget/ParagraphFormatWidget.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -7,6 +8,8 @@
 #include <QAction>
 #include <QString>
 #include <QDebug>
+#include <QFontDialog>
+
 
 DocTextBlock::DocTextBlock(QWidget *parent)
     :QTextEdit(parent)
@@ -82,7 +85,16 @@ void DocTextBlock::currentCharFormatChangedEvent(
  */
 void DocTextBlock::cursorPositionChangedEvent()
 {
-//    qDebug() << "Cursor Position Changed!";
+    //    qDebug() << "Cursor Position Changed!";
+}
+
+void DocTextBlock::setFont(const QFont &font)
+{
+    QTextCharFormat currentFormat =
+            this->currentCharFormat();      // 当前选择文字的样式
+    currentFormat.setFont(font);            // 设置字体
+
+    mergeCurrentCharFormat(currentFormat);
 }
 
 /**
@@ -114,15 +126,9 @@ void DocTextBlock::textUnderline()
 {
     QTextCharFormat fmt;
     QTextCharFormat currentFormat = this->currentCharFormat();      // 当前选择文字的样式
-    if(currentFormat.fontUnderline())
-    {
-        fmt.setFontUnderline(false);
-    }
-    else
-    {
-        fmt.setFontUnderline(true);
-    }
-//    fmt.setFontUnderline(currentFormat.FontUnderline()?false:true);
+
+    fmt.setFontUnderline(currentFormat.fontUnderline()?
+                             false:true);
 
     mergeFormatOnWordOrSelection(fmt);      // 合并格式
 }
@@ -146,6 +152,51 @@ void DocTextBlock::textItalic()
 
 /**
  * @Author Chaoqun
+ * @brief  弹出一个段落属性设置的Widget，设置好了后，
+ *          将该属性应用在选中的段落上
+ * @param  void
+ * @return void
+ * @date   2017/05/21
+ */
+void DocTextBlock::textParagraphWidget()
+{
+    ParagraphFormatWidget * para = new ParagraphFormatWidget();
+    para->show();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  通过字体小窗口设置字体
+ * @param  void
+ * @return void
+ * @date   2017/05/21
+ */
+void DocTextBlock::textFontDialog()
+{
+    bool btn_ok;    // 确认按键
+    QTextCharFormat currentFormat =
+            this->currentCharFormat();      // 当前选择文字的样式
+    QFont oldFont = currentFormat.font();   // 获取之前的字体样式
+
+    QFont newFont = QFontDialog::getFont(
+                &btn_ok, oldFont,NULL,tr("Set the font"),
+                QFontDialog::ScalableFonts);    // 选择字体框
+
+    if(btn_ok)
+    {
+        this->setFont(newFont);     // 设置字体
+    }
+    else
+    {
+        // 用户取消了操作，不做处理
+        qDebug() << "Cancel select Font!";
+    }
+
+
+}
+
+/**
+ * @Author Chaoqun
  * @brief  显示右键菜单
  * @param  QContextMenuEvent *event
  * @return void
@@ -154,6 +205,7 @@ void DocTextBlock::textItalic()
 void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
 {
 
+    // 展示菜单
     this->ContextMenu->exec(event->globalPos());
 
 }
@@ -222,9 +274,24 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionUnderline, &QAction::triggered,
                   this,&DocTextBlock::textUnderline);
 
+    // 字体
+    this->actionFontSet = new QAction(tr("Font"));
+    this->actionFontSet->setPriority(QAction::LowPriority);
+
+    this->connect(this->actionFontSet,&QAction::triggered,
+                  this,&DocTextBlock::textFontDialog);
+
+    this->actionParagraph = new QAction(tr("Font"));
+
+    this->connect(this->actionParagraph,&QAction::triggered,
+                  this,&DocTextBlock::textParagraphWidget);
+
     // 右键菜单
     this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
     this->ContextMenu->addAction(this->actionBold);
     this->ContextMenu->addAction(this->actionItalic);
     this->ContextMenu->addAction(this->actionUnderline);
+    this->ContextMenu->addSeparator();
+    this->ContextMenu->addAction(this->actionFontSet);
+    this->ContextMenu->addAction(this->actionParagraph);
 }

@@ -13,6 +13,7 @@ class QTextBlockFormat;     // 块格式
 class QTextFrameFormat;     // 框架格式
 class QTextCharFormat;      // 字节格式
 class QFont;                // 字体格式
+class ParagraphFormatWidget;
 
 class MODELSHARED_EXPORT DocTextBlock
         :public QTextEdit
@@ -29,11 +30,13 @@ public slots:
     void textBold();            // 粗体
     void textUnderline();
     void textItalic();
+    void textParagraphWidget();     // 设置段落
 //    void textFamily(const QString &f);
 //    void textSize(const QString &p);
 //    void textStyle(int styleIndex);
 //    void textColor();
 //    void textAlign(QAction *a);
+    void textFontDialog();      // 通过字体小窗口设置字体
 
 
 protected:
@@ -48,6 +51,7 @@ private slots:
     void currentCharFormatChangedEvent(
             const QTextCharFormat &format);     // 选中的文字格式发生了变化
     void cursorPositionChangedEvent( );         // 光标位置发生改变
+    void setFont(const QFont &font);            // 设置格式
 
 
 private:
@@ -60,7 +64,11 @@ private:
     QAction * actionBold;       // 加粗
     QAction * actionUnderline;  // 下划线
     QAction * actionItalic;     // 斜体
+    QAction * actionFontSet;    // 设置字体
+    QAction * actionParagraph;  // 设置段落
+
     QMenu * ContextMenu;        // 右键菜单
+
 
 
 };
