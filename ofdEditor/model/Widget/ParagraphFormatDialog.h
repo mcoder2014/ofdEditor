@@ -1,13 +1,14 @@
 #ifndef PARAGRAPHFORMATDIALOG_H
 #define PARAGRAPHFORMATDIALOG_H
 
+#include "model_global.h"
 #include <QDialog>
 
-namespace Ui {
-class ParagraphFormatDialog;
+namespace MODELSHARED_EXPORT Ui {
+class MODELSHARED_EXPORT ParagraphFormatDialog;
 }
 
-class ParagraphFormatDialog : public QDialog
+class MODELSHARED_EXPORT ParagraphFormatDialog : public QDialog
 {
     Q_OBJECT
 
