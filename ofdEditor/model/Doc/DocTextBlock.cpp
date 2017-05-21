@@ -1,6 +1,6 @@
 #include "DocTextBlock.h"
 #include "Doc/DocParagraph.h"
-#include "Widget/ParagraphFormatWidget.h"
+#include "Widget/ParagraphFormatDialog.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -160,8 +160,8 @@ void DocTextBlock::textItalic()
  */
 void DocTextBlock::textParagraphWidget()
 {
-    ParagraphFormatWidget * para = new ParagraphFormatWidget();
-    para->show();
+    ParagraphFormatDialog * para = new ParagraphFormatDialog();
+    para->exec();
 }
 
 /**

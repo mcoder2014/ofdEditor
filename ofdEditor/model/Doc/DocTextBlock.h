@@ -13,7 +13,7 @@ class QTextBlockFormat;     // 块格式
 class QTextFrameFormat;     // 框架格式
 class QTextCharFormat;      // 字节格式
 class QFont;                // 字体格式
-class ParagraphFormatWidget;
+class ParagraphFormatDialog;
 
 class MODELSHARED_EXPORT DocTextBlock
         :public QTextEdit

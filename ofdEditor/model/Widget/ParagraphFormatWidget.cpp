@@ -7,6 +7,7 @@ ParagraphFormatWidget::ParagraphFormatWidget(QWidget *parent) :
 {
     ui->setupUi(this);      // 安装ui文件
     this->init();
+    this->setWindowFlags(Qt::Dialog);
 }
 
 ParagraphFormatWidget::~ParagraphFormatWidget()
