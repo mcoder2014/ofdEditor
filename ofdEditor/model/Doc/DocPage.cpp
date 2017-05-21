@@ -158,11 +158,6 @@ void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
     //    qDebug()<<"Set InsertBlockInfo successfully!";
 }
 
-void DocPage::closeEvent(QCloseEvent *event)
-{
-
-}
-
 
 /**
  * @Author Chaoqun

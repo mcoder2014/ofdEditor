@@ -27,8 +27,8 @@ public:
 
 public slots:
     void textBold();            // 粗体
-//    void textUnderline();
-//    void textItalic();
+    void textUnderline();
+    void textItalic();
 //    void textFamily(const QString &f);
 //    void textSize(const QString &p);
 //    void textStyle(int styleIndex);
@@ -40,18 +40,28 @@ protected:
 
     void contextMenuEvent(QContextMenuEvent *event);    // 右键菜单重载
 
-private:
-    QString content;        // 文字内容
+private slots:
+
 
     void mergeFormatOnWordOrSelection(
             const QTextCharFormat &format);     // 合并格式
-    void currentCharFormatChanged(
+    void currentCharFormatChangedEvent(
             const QTextCharFormat &format);     // 选中的文字格式发生了变化
+    void cursorPositionChangedEvent( );         // 光标位置发生改变
 
 
-
-
+private:
+    QString content;        // 文字内容
+    QTextCharFormat* currentTextCharFormat;     // 当前 QTextCharFormat样式
     void init();            // 初始化
+    void initAcitons();     // 初始化事件
+
+    // QActions
+    QAction * actionBold;       // 加粗
+    QAction * actionUnderline;  // 下划线
+    QAction * actionItalic;     // 斜体
+    QMenu * ContextMenu;        // 右键菜单
+
 
 };
 
