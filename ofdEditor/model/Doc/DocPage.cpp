@@ -155,7 +155,7 @@ void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
 
     this->insertBlockInfo->layer = blockInfo.layer;     // 层
     this->insertBlockInfo->type = blockInfo.type;       // 类型
-//    qDebug()<<"Set InsertBlockInfo successfully!";
+    //    qDebug()<<"Set InsertBlockInfo successfully!";
 }
 
 

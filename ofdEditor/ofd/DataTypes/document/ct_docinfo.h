@@ -21,6 +21,7 @@ class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
     CT_DocInfo() {
         custom_datas = new QVector<QStringList>();
     }
+
 public:
     friend class OFDParser;
 

@@ -42,9 +42,10 @@ SOURCES += model.cpp \
     Doc/DocDrawParam.cpp \
     Doc/DocParaStyle.cpp \
     Doc/DocTextStyle.cpp \
-    Widget/PassageWidget.cpp \
     Tool/UnitTool.cpp \
-    Doc/DocPageScene.cpp
+    Doc/DocPageScene.cpp \
+    Widget/ParagraphFormatWidget.cpp \
+    Widget/ParagraphFormatDialog.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -66,9 +67,10 @@ HEADERS += model.h\
     Doc/DocBasicTypes.h \
     Doc/DocParaStyle.h \
     Doc/DocTextStyle.h \
-    Widget/PassageWidget.h \
     Tool/UnitTool.h \
-    Doc/DocPageScene.h
+    Doc/DocPageScene.h \
+    Widget/ParagraphFormatWidget.h \
+    Widget/ParagraphFormatDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -92,3 +94,7 @@ unix{
 win32{
     LIBS += ../bin/ofd.lib
 }
+
+FORMS += \
+    Widget/ParagraphFormatWidget.ui \
+    Widget/ParagraphFormatDialog.ui
