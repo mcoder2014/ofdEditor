@@ -97,6 +97,8 @@ void DocTextBlock::setFont(const QFont &font)
     mergeCurrentCharFormat(currentFormat);
 }
 
+
+
 /**
  * @Author Chaoqun
  * @brief  文字加粗
@@ -152,15 +154,16 @@ void DocTextBlock::textItalic()
 
 /**
  * @Author Chaoqun
- * @brief  弹出一个段落属性设置的Widget，设置好了后，
+ * @brief  弹出一个段落属性设置的QDialog，设置好了后，
  *          将该属性应用在选中的段落上
  * @param  void
  * @return void
  * @date   2017/05/21
  */
-void DocTextBlock::textParagraphWidget()
+void DocTextBlock::textParagraph()
 {
     ParagraphFormatDialog * para = new ParagraphFormatDialog();
+
     para->exec();
 }
 
@@ -191,6 +194,30 @@ void DocTextBlock::textFontDialog()
         // 用户取消了操作，不做处理
         qDebug() << "Cancel select Font!";
     }
+
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置当前选中的段落的格式
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/22
+ */
+void DocTextBlock::setTextBlockFormat(
+        const QTextBlockFormat &blockFormat)
+{
+    QTextCursor cursor = this->textCursor(); // 新建光标
+    if(!cursor.hasSelection())
+    {
+        // 如果没有选择文字段落
+        cursor.select(QTextCursor::WordUnderCursor);
+        qDebug() << "cursor has no selection!";
+    }
+
+    cursor.setBlockFormat(blockFormat);
+    qDebug()<<"Change the selected QTextBlock' Format. Test";
 
 
 }

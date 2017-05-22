@@ -30,13 +30,15 @@ public slots:
     void textBold();            // 粗体
     void textUnderline();
     void textItalic();
-    void textParagraphWidget();     // 设置段落
+    void textParagraph();     // 设置段落
 //    void textFamily(const QString &f);
 //    void textSize(const QString &p);
 //    void textStyle(int styleIndex);
 //    void textColor();
 //    void textAlign(QAction *a);
     void textFontDialog();      // 通过字体小窗口设置字体
+    void setTextBlockFormat(
+            const QTextBlockFormat& blockFormat);   // 设置块格式
 
 
 protected:
