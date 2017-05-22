@@ -8,7 +8,7 @@
 
 class DocTextBlock;
 
-namespace MODELSHARED_EXPORT Ui {
+namespace  Ui {
 class MODELSHARED_EXPORT ParagraphFormatDialog;
 }
 

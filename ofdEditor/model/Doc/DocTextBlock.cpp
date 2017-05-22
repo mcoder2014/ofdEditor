@@ -162,7 +162,11 @@ void DocTextBlock::textItalic()
  */
 void DocTextBlock::textParagraph()
 {
-    ParagraphFormatDialog * para = new ParagraphFormatDialog();
+    QTextCursor cursor = this->textCursor();
+    QTextBlockFormat blockFormat = cursor.blockFormat();
+
+    ParagraphFormatDialog * para = new ParagraphFormatDialog(
+                blockFormat,this);
 
     para->exec();
 }
@@ -308,10 +312,10 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionFontSet,&QAction::triggered,
                   this,&DocTextBlock::textFontDialog);
 
-    this->actionParagraph = new QAction(tr("Font"));
+    this->actionParagraph = new QAction(tr("Paragraph"));
 
     this->connect(this->actionParagraph,&QAction::triggered,
-                  this,&DocTextBlock::textParagraphWidget);
+                  this,&DocTextBlock::textParagraph);
 
     // 右键菜单
     this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
