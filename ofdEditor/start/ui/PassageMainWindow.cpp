@@ -19,6 +19,9 @@
 
 #include "Doc/DocPassage.h"
 #include "ActionConnector/ActionConnector.h"
+#include "Loaders/ZipTool.h"                // 压缩文件工具
+#include "ofd_parser.h"
+#include "DataTypes/document/ofd.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -244,6 +247,9 @@ void PassageMainWindow::connectAction()
     connect(this->newFileAction, &QAction::triggered,
             this,&PassageMainWindow::createMdiChild);   // 新建窗口
 
+    connect(this->openFileAtcion, &QAction::triggered,
+            this, &PassageMainWindow::openFile);  //打开文件
+
     connect(this->insertNewPageAction, &QAction::triggered,
             this->connector, &ActionConnector::addNewPage);    // 在文章尾部加入新的一页
 
@@ -270,6 +276,45 @@ void PassageMainWindow::connectAction()
 void PassageMainWindow::disconnectAction()
 {
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  打开 *.ofd 文件
+ * @param  void
+ * @return void
+ * @date   2017/05/22
+ */
+void PassageMainWindow::openFile()
+{
+    QFileDialog * fileDialog = new QFileDialog(this);           // 新建一个QFileDialog
+//    fileDialog->setWindowIcon(QIcon(":/icon/source/open.png")); // 设置打开文件图标
+    fileDialog->setAcceptMode(QFileDialog::AcceptOpen);         // 设置对话框为打开文件类型
+    fileDialog->setFileMode(QFileDialog::ExistingFile);         // 设置文件对话框能够存在的文件
+    fileDialog->setViewMode(QFileDialog::Detail);               // 文件以细节形式显示出来
+    fileDialog->setNameFilter(tr("JSON files(*.ofd)"));            // 设置文件过滤器
+    fileDialog->setWindowTitle(tr("Choose an ofd document file!"));
+
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
+        qDebug() << path;
+
+        ZipTool zipTool;
+        QString tempPath = zipTool.FilePathToFloderPath(path);
+        qDebug() << "Temp path is :" << tempPath;
+
+        ZipTool::extractDir(path,tempPath);     // 解压到临时文件夹
+
+        // 解读文件
+//        OFDParser ofdParser("C:\\Users\\User\\AppData\\Local\\Temp\\%表格.ofd%\\OFD.xml");
+        OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
+        OFD* data = ofdParser.getData();    // 读取出OFD文件
+
+
+
+
+    }
 }
 
 /**

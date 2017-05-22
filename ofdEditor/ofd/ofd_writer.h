@@ -11,8 +11,9 @@
 #include "DataTypes/page/Page.h"
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/Color/CT_Color.h"
+#include "ofd_global.h"
 
-class OFDWriter
+class OFDSHARED_EXPORT OFDWriter
 {
 private:
     OFD * data;                 //OFD文档的数据

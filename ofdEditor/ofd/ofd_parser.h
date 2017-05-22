@@ -10,10 +10,11 @@
 #include "DataTypes/page/Page.h"
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/Color/CT_Color.h"
+#include "ofd_global.h"
 
 class OFD;
 
-class OFDParser {               //解析OFD.xml
+class OFDSHARED_EXPORT OFDParser {               //解析OFD.xml
     OFD * data;                 //保存了解析出来的数据信息
     ST_Loc current_path;        //当前文档的路径
     QDomDocument *document;     //保存了ofd文档信息的树形结构

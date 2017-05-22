@@ -80,6 +80,8 @@ private:
     void connectAction();       // 链接QAction的相应事件
     void disconnectAction();    // 断开事件响应
 
+    void openFile();            // 打开新文件
+
 
 
 

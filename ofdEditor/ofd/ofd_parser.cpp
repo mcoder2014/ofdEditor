@@ -1,7 +1,9 @@
 #include "ofd_parser.h"
 #include <QDebug>
 
-OFDParser::OFDParser(QString _path) : current_path("OFD", _path) {
+OFDParser::OFDParser(QString _path) :
+    current_path("OFD", _path)
+{
     document = new QDomDocument();
     data = readOFD();
 }
