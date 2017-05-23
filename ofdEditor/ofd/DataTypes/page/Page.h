@@ -7,6 +7,7 @@
 #include "../document/res.h"
 
 class OFDSHARED_EXPORT Page : public CT_Base{
+public:
     ST_Loc base_loc;
     CT_PageArea * area;
     QVector<Res *> * page_res;

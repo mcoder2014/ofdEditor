@@ -5,6 +5,7 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT CT_CommonData {
+public:
     ST_ID max_unit_id;                      //当前文档中所有对象使用的最大标识
     CT_PageArea *page_area;                 //指定多个页面区域的大小和位置
     QVector<ST_Loc> *public_res;            //公共资源序列，每个资源指向OFD包内部的一个XML文件
@@ -23,6 +24,18 @@ public:
     ~CT_CommonData() {
         delete public_res;
         delete page_area;
+    }
+
+    /**
+ * @Author Chaoqun
+ * @brief  CT_CommonData 深拷贝函数
+ * @param  CT_CommonData * commonData
+ * @return void
+ * @date   2017/05/23
+ */
+    void copy(CT_CommonData * commonData)
+    {
+        // 预计5月30日前实现
     }
 };
 

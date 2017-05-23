@@ -23,6 +23,9 @@ public:
     DocPassage *createMdiChild();       // 创建一个新文档
     DocPassage *activeMdiChild();       // 获取活动的窗口
 
+public slots:
+    DocPassage *addDocPassage(DocPassage * passage);
+
 private:
 
     // 菜单栏

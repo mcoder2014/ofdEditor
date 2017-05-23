@@ -4,6 +4,7 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT TextCode {    //文字内容，也就是一段字符编码串。需要进行XML转义
+public:
     double x, y;    //首字形的绘制点的横纵坐标
     ST_Array delta_x, delta_y;  //字形绘制点横纵方向偏移
     QString text; //！！！！！文本内容

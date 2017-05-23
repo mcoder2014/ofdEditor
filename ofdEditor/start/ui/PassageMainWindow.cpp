@@ -22,6 +22,7 @@
 #include "Loaders/ZipTool.h"                // 压缩文件工具
 #include "ofd_parser.h"
 #include "DataTypes/document/ofd.h"
+#include "Convert/OFD_DocConvertor.h"       // OFD 转 Doc 工具
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -44,10 +45,12 @@ PassageMainWindow::~PassageMainWindow()
 DocPassage *PassageMainWindow::createMdiChild()
 {
     DocPassage * child = new DocPassage(this);
+    child->addPage(new DocPage());      // 添加一个空白页
+
     this->area->addSubWindow(child);
     child->setVisible(true);            // 设置可见
     child->showMaximized();
-    return NULL;
+    return child;
 }
 
 /**
@@ -311,6 +314,10 @@ void PassageMainWindow::openFile()
         OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
 //        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
         OFD* data = ofdParser.getData();    // 读取出OFD文件
+        OFD_DocConvertor convert;
+        DocPassage* passage = convert.ofd_to_doc(data);
+
+        this->addDocPassage(passage);       // 添加文章
 
 
 
@@ -330,4 +337,25 @@ DocPassage *PassageMainWindow::activeMdiChild()
     if (QMdiSubWindow *activeSubWindow = this->area->activeSubWindow())
         return qobject_cast<DocPassage *>(activeSubWindow->widget());
     return 0;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  添加一个文章
+ * @param  DocPassage *passage
+ * @return DocPassage *
+ * @date   2017/05/23
+ */
+DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
+{
+    if(passage == NULL)     // 如果参数为NULL 不执行并返回NULL
+    {
+        qDebug() << "DocPassage Pointer is NULL.";
+        return NULL;
+    }
+
+    this->area->addSubWindow(passage);
+    passage->setVisible(true);            // 设置可见
+    passage->showMaximized();
+    return passage;
 }

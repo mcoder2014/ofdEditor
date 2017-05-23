@@ -250,7 +250,7 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
  */
 void DocTextBlock::init()
 {
-    this->setMinimumSize(15,15);        // 为了正确显示缩放标识
+    this->setMinimumSize(5,5);        // 为了正确显示缩放标识
 
     this->currentTextCharFormat = new QTextCharFormat();        // 初始化
 

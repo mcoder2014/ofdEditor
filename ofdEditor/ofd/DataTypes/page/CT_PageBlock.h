@@ -8,7 +8,7 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT CT_PageBlock : public CT_Base{
-protected:
+public:
     QVector<CT_Text *> * text_object;
     QVector<CT_Path *> * path_object;
     QVector<CT_Image *> * image_object;

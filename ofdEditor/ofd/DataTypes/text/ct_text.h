@@ -10,6 +10,7 @@
 
 class OFDSHARED_EXPORT CT_Text : public CT_GraphicUnit
 {    //文字对象
+public:
     //属性
     ST_RefID font;  //字体
     double size;    //字号

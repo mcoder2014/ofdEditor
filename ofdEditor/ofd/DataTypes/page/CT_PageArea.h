@@ -8,6 +8,7 @@
 
 class OFDSHARED_EXPORT CT_PageArea
 {
+public:
     ST_Box physical_box;              // 页面物理区域，
         // 以其左上角为页面空间坐标系的原点。
     ST_Box application_box;           // （可选）显示区域，

@@ -6,6 +6,7 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT CT_Pages {
+public:
     QVector<Page *> * pages;
     CT_Pages() {
         pages = new QVector<Page*>();

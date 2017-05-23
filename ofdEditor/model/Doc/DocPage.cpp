@@ -23,7 +23,7 @@
 DocPage::DocPage(QWidget *parent)
     :QGraphicsView(parent)
 {
-    this->setSize(210,297);
+    this->setSize(210,297);     // 默认A4纸张大小
     this->scaleFactor = 1.0;
     this->init();
 
@@ -98,12 +98,15 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
     switch (layer) {
     case Body:
         this->bodyLayer->addBlock(block);
+        block->setZValue(0);
         break;
     case Foreground:
         this->foregroundLayer->addBlock(block);
+        block->setZValue(1000);
         break;
     case Background:
         this->backgroundLayer->addBlock(block);
+        block->setZValue(-1000);
         break;
     default:
         break;
@@ -370,6 +373,8 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
  */
 void DocPage::init()
 {
+    this->setWindowFlags(Qt::Widget);
+
     this->docScene = new DocPageScene(); // 新建
     this->setScene(this->docScene);        // 设置场景
 

@@ -13,7 +13,7 @@
 // 基本图元对象定义
 class OFDSHARED_EXPORT CT_GraphicUnit : public CT_Base
 {
-protected:
+public:
     ST_Box boundary;            // 被引用图元对象的外接矩形，采用当前空间坐标系。
     QString name;               // 图元对象的名字。
     bool visible;               // 图元是否可见。

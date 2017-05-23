@@ -5,7 +5,9 @@
 
 #include "../../ofd_global.h"  // 生成库文件需要
 
-class OFDSHARED_EXPORT CT_Layer : public CT_PageBlock {
+class OFDSHARED_EXPORT CT_Layer
+        : public CT_PageBlock
+{
 public:
     friend class OFDParser;
     enum LayerType {Body = 1, Foreground, Background};
@@ -24,7 +26,7 @@ public:
     }
 
     //从CT_PageBlock继承了几个接口
-private:
+public:
     LayerType type;
     ST_RefID draw_param;
     CT_Layer() : CT_PageBlock(){

@@ -2,6 +2,7 @@
 
 #include "DocPage.h"
 #include "DataTypes/document/CT_DocInfo.h"
+#include "DataTypes/document/ct_commondata.h"
 
 #include <QDebug>
 #include <QDesktopWidget>
@@ -10,7 +11,6 @@
 #include <QScrollBar>
 #include <QMainWindow>
 
-//#include "DataTypes/document/CT_CommonData.h"
 
 /**
  * @Author Chaoqun
@@ -25,7 +25,7 @@ DocPassage::DocPassage(QWidget *parent)
 //    this->commonData = new CT_CommonData();
     this->init();       // 初始化界面
 
-    this->addPage(new DocPage());       // 添加一个空白页面
+//    this->addPage(new DocPage());       // 添加一个空白页面
 
     setAttribute(Qt::WA_DeleteOnClose);
 
@@ -61,19 +61,19 @@ DocPassage::~DocPassage()
 //        this->commonData = NULL;
 //    }
 
-    // 释放this->pages
-    int pages_length = this->pages.size();
-    for(int i = 0; i < pages_length; i++)
-    {
-        // 需要挨个释放内存空间
-        DocPage* temp = this->pages.at(i);
-        if(temp != NULL)
-        {
-            delete temp;
-            (this->pages)[i] = NULL;
-        }
-    }
-    this->pages.clear();
+//     释放this->pages
+//    int pages_length = this->pages.size();
+//    for(int i = 0; i < pages_length; i++)
+//    {
+//        // 需要挨个释放内存空间
+//        DocPage* temp = this->pages.at(i);
+//        if(temp != NULL)
+//        {
+//            delete temp;
+//            (this->pages)[i] = NULL;
+//        }
+//    }
+//    this->pages.clear();
 
 }
 
@@ -163,6 +163,33 @@ CT_DocInfo DocPassage::getDocInfo()
     docInfo.copy( *this->docInfo);
     return docInfo;
 }
+
+/**
+ * @Author Chaoqun
+ * @brief  设置CommonData,深拷贝
+ * @param  CT_CommonData &commonData
+ * @return void
+ * @date   2017/05/23
+ */
+//void DocPassage::setCommonData(CT_CommonData* commonData)
+//{
+//    (this->commonData)->copy(commonData);
+//}
+
+/**
+ * @Author Chaoqun
+ * @brief  获取CommonData，新建立对象
+ * @param  void
+ * @return CT_CommonData
+ * @date   2017/05/23
+ */
+//CT_CommonData DocPassage::getCommonData()
+//{
+//    CT_CommonData common;
+//    common.copy(this->commonData);
+
+//    return common;
+//}
 
 /**
  * @Author Chaoqun
