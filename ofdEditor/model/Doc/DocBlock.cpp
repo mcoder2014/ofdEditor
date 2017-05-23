@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QAction>
 #include <QPainter>
+#include <QGraphicsEffect>
+#include <QGraphicsOpacityEffect>
 
 DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     :QGraphicsProxyWidget(parent,wFlags)

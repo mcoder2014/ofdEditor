@@ -309,6 +309,7 @@ void PassageMainWindow::openFile()
         // 解读文件
 //        OFDParser ofdParser("C:\\Users\\User\\AppData\\Local\\Temp\\%表格.ofd%\\OFD.xml");
         OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
+//        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
         OFD* data = ofdParser.getData();    // 读取出OFD文件
 
 

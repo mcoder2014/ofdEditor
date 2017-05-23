@@ -6,6 +6,7 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT DocBody {        //文档对象入口，在一个文件中可以有多个文档
+public:
     CT_DocInfo *doc_info;               //文档元数据信息描述
     ST_Loc doc_root;                    //指向文档根节点
     ST_Loc signatures;                  //数字签名 to be implemented

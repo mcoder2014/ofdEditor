@@ -4,8 +4,11 @@
 OFDParser::OFDParser(QString _path) :
     current_path("OFD", _path)
 {
+    this->error_msg = "Analysis dom file failed";
+
     document = new QDomDocument();
     data = readOFD();
+    qDebug()<<"OFD file read finished";
 }
 
 void OFDParser::openFile() {
@@ -15,12 +18,20 @@ void OFDParser::openFile() {
         qDebug() << "xml文件打开出现错误。  " << endl;
         abort();
     }
+
+    qDebug() <<"xml File Open Successfully:"
+            <<current_path.getPath();
+
     if (document->setContent(&ofd_file,         //解析OFD文档并将树状内容存在document文件中
                              false,
                              &error_msg,
                              &error_line,
                              &error_column)) {
         ofd_file.close();
+
+        qDebug() <<"xml File analysis Successfully:"
+                <<current_path.getPath();
+
     } else {
         //出现异常！！！to be implemented
         qDebug() << "xml解析出现错误。  " << endl;
@@ -30,7 +41,7 @@ void OFDParser::openFile() {
 
 OFD * OFDParser::readOFD() {
     openFile();
-//    qDebug() << "Entering readOFD module..." << endl;
+    qDebug() << "Entering readOFD module..." << endl;
     QDomElement new_ofd = document->firstChildElement("ofd:OFD");
     OFD *ofd_data = nullptr;
     if (!new_ofd.isNull()) {
@@ -110,7 +121,7 @@ OFD * OFDParser::readOFD() {
 
 Document * OFDParser::readDocument(){
     openFile();
-//    qDebug() << "Entering readDocument module..." << endl;
+    qDebug() << "Entering readDocument module..." << endl;
     QDomElement new_document = document->firstChildElement("ofd:Document");
     Document *document_data;
     if (!new_document.isNull()) {
@@ -219,20 +230,25 @@ Document * OFDParser::readDocument(){
 }
 
 void OFDParser::readPage(Page * page_data) {
+
+    qDebug() << "Entering readPage module..." << endl;
     openFile();
-//    qDebug() << "Entering readPage module..." << endl;
+
     QDomElement new_page = document->firstChildElement("ofd:Page");
-    if (!new_page.isNull()) {
+    if (!new_page.isNull())
+    {
         QDomElement t;
-        if (!(t = new_page.firstChildElement("ofd:Area")).isNull()) {
-//            qDebug() << "Start to read PageArea..." << endl;
+        if (!(t = new_page.firstChildElement("ofd:Area")).isNull())
+        {
+            qDebug() << "Start to read PageArea..." << endl;
             CT_PageArea * area_data = new CT_PageArea();
             readPageArea(area_data, t);
             page_data->area = area_data;
         }
 
         t = new_page.firstChildElement("ofd:PageRes");
-        while (!t.isNull()) {
+        while (!t.isNull())
+        {
             ST_Loc p("PageRes", t.text(), current_path);
             Res * new_res = new Res();
             current_path = p;
@@ -241,8 +257,9 @@ void OFDParser::readPage(Page * page_data) {
             t = t.nextSiblingElement("ofd:PageRes");
         }
 
-        if (!(t = new_page.firstChildElement("ofd:Content")).isNull()) {
-//            qDebug() << "Start to read Content..." << endl;
+        if (!(t = new_page.firstChildElement("ofd:Content")).isNull())
+        {
+            qDebug() << "Start to read Content..." << endl;
             QDomElement new_layer = t.firstChildElement("ofd:Layer");
             while (!new_layer.isNull()) {
                 CT_Layer * layer_data = new CT_Layer();
@@ -263,100 +280,127 @@ void OFDParser::readPage(Page * page_data) {
                 bool is_first_textcode_x = true, is_first_textcode_y = true;
                 double last_x = 0.0, last_y = 0.0;
                 t = new_layer.firstChildElement("ofd:TextObject");
-                while (!t.isNull()) {
-                    //qDebug() << "Start to read TextObject..." << endl;
+                while (!t.isNull())
+                {
+                    qDebug() << "Start to read TextObject" << endl;
                     CT_Text * text_data = new CT_Text();
                     layer_data->text_object->push_back(text_data);
                     readGraphicUnit(text_data, t);
                     //Read TextObject attributes
-                    if (t.hasAttribute("Font")) {
+                    if (t.hasAttribute("Font"))
+                    {
                         ST_RefID ri(t.attribute("Font").toInt());
                         text_data->font = ri;
-                    } else {
+                    }
+                    else
+                    {
                         //Error
                         abort();
                     }
 
-                    if (t.hasAttribute("Size")) {
+                    if (t.hasAttribute("Size"))
+                    {
                         text_data->size = t.attribute("Size").toDouble();
                         text_data->size_used = true;
-                    } else {
+                    }
+                    else
+                    {
                         //Error
+                        qDebug() <<"t don't has attribute size";
                         abort();
                     }
 
                     //many optional attributes to be implemented
                     QDomElement t2;
-                    if (!(t2 = t.firstChildElement("ofd:TextCode")).isNull()) {
+                    if (!(t2 = t.firstChildElement("ofd:TextCode")).isNull())
+                    {
+                        qDebug() << "ofd:TextCode";
+
                         TextCode * text_code_data = new TextCode();
                         text_data->text_code = text_code_data;
-                        if (t2.hasAttribute("X")) {
+                        if (t2.hasAttribute("X"))
+                        {
                             last_x = text_code_data->x = t2.attribute("X").toDouble();
                             if (is_first_textcode_x)
                                 is_first_textcode_x = false;
-                        } else {
+                        }
+                        else
+                        {
                             if (!is_first_textcode_x && !is_first_textcode_y)
                                 text_code_data->x = last_x;
-                            else {
+                            else
+                            {
                             //Error
+                                qDebug() << "ofd:TextCode"
+                                         << "if (!is_first_textcode_x && !is_first_textcode_y)";
                             abort();
                             }
                         }
-                        if (t2.hasAttribute("Y")) {
+                        if (t2.hasAttribute("Y"))
+                        {
                             last_y = text_code_data->y = t2.attribute("Y").toDouble();
                             if (is_first_textcode_y)
                                 is_first_textcode_y = false;
-                        } else {
+                        } else
+                        {
                             if (!is_first_textcode_x && !is_first_textcode_y)
                                 text_code_data->y = last_y;
-                            else {
+                            else
+                            {
                             //Error
+                                qDebug() << "ofd:TextCode if (!is_first_textcode_x && !is_first_textcode_y)";
                             abort();
                             }
                         }
-                        if (t2.hasAttribute("DeltaX")) {
+                        if (t2.hasAttribute("DeltaX"))
+                        {
                             ST_Array delta_x_data("DeltaX", t2.attribute("DeltaX"));
                             text_code_data->delta_x = delta_x_data;
                         }
-                        if (t2.hasAttribute("DeltaY")) {
+
+                        if (t2.hasAttribute("DeltaY"))
+                        {
                             ST_Array delta_y_data("DeltaX", t2.attribute("DeltaY"));
                             text_code_data->delta_y = delta_y_data;
                         }
                         text_code_data->text = t2.text();
-                    } else {
+                    }
+                    else
+                    {
                         //Error
+                        qDebug() << "if (!(t2 = t.firstChildElement(\"ofd:TextCode\")).isNull())";
                         abort();
                     }
                     t = t.nextSiblingElement("ofd:TextObject");
                 }
 
-                //解析矢量图对象
-                t = new_layer.firstChildElement("ofd:PathObject");
-                while (!t.isNull()) {
-                    CT_Path * path_data = new CT_Path();
-                    layer_data->path_object->push_back(path_data);
-                    readGraphicUnit(path_data, t);
-                    if (t.hasAttribute("Stroke")) {
-                        path_data->stroke = t.attribute("Stroke") == "false" ? false : true;
-                    }
-                    if (t.hasAttribute("Fill")) {
-                        path_data->fill = t.attribute("Fill") == "false" ? false : true;
-                    }
-                    if (t.hasAttribute("Rule")) {
-                        if (t.attribute("Rule") == "NonZero")
-                            path_data->rule = "NonZero";
-                        else if (t.attribute("rule") == "Even-Odd")
-                            path_data->rule = "Even-Odd";
-                        else {
-                            //Error!
-                            abort();
-                        }
-                    }
-                    if (!t.firstChildElement("ofd:AbbreviatedData").isNull()) {
-                        path_data->abbreviated_data = t.firstChildElement("ofd:AbbreviatedData").text();
-                    }
-                    t = t.nextSiblingElement("ofd:PathObject");
-                }
+//                //解析矢量图对象
+//                t = new_layer.firstChildElement("ofd:PathObject");
+//                while (!t.isNull()) {
+//                    CT_Path * path_data = new CT_Path();
+//                    layer_data->path_object->push_back(path_data);
+//                    readGraphicUnit(path_data, t);
+//                    if (t.hasAttribute("Stroke")) {
+//                        path_data->stroke = t.attribute("Stroke") == "false" ? false : true;
+//                    }
+//                    if (t.hasAttribute("Fill")) {
+//                        path_data->fill = t.attribute("Fill") == "false" ? false : true;
+//                    }
+//                    if (t.hasAttribute("Rule")) {
+//                        if (t.attribute("Rule") == "NonZero")
+//                            path_data->rule = "NonZero";
+//                        else if (t.attribute("rule") == "Even-Odd")
+//                            path_data->rule = "Even-Odd";
+//                        else {
+//                            //Error!
+//                            abort();
+//                        }
+//                    }
+//                    if (!t.firstChildElement("ofd:AbbreviatedData").isNull()) {
+//                        path_data->abbreviated_data = t.firstChildElement("ofd:AbbreviatedData").text();
+//                    }
+//                    t = t.nextSiblingElement("ofd:PathObject");
+//                }
 
                 //解析位图对象
                 t = new_layer.firstChildElement("ofd:ImageObject");
@@ -378,7 +422,7 @@ void OFDParser::readPage(Page * page_data) {
                     t = t.nextSiblingElement("ofd:ImageObject");
                 }
                 //Other GraphicUnit objects to be implemented
-                //qDebug() << "End of reading content..." << endl;
+                qDebug() << "End of reading content..." << endl;
                 new_layer = new_layer.nextSiblingElement("ofd:Layer");
             }
         }
@@ -473,7 +517,7 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
 void OFDParser::readResource(Res * res_data) {
     openFile();
     QDomElement new_res = document->firstChildElement("ofd:Res");
-//    qDebug() << "Entering readResource module..." << endl;
+    qDebug() << "Entering readResource module..." << endl;
     if (!new_res.isNull()) {
         //读取属性
         if (new_res.hasAttribute("BaseLoc")) {
@@ -519,7 +563,7 @@ void OFDParser::readResource(Res * res_data) {
         //Error
         abort();
     }
-    //qDebug() << "End of reading Resourse..." << endl;
+    qDebug() << "End of reading Resourse..." << endl;
 }
 
 void OFDParser::readColor(CT_Color *data, QDomElement & root_node) {

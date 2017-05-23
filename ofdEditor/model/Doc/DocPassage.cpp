@@ -21,7 +21,7 @@ DocPassage::DocPassage(QWidget *parent)
     :docType("OFD"),version("1.0"),QScrollArea(parent)
 {
     this->scaleFactor = 1.0;            // 缩放100%
-    //this->docInfo = new CT_DocInfo();
+    this->docInfo = new CT_DocInfo();   // 文档元信息
 //    this->commonData = new CT_CommonData();
     this->init();       // 初始化界面
 
@@ -136,6 +136,32 @@ void DocPassage::appendNewPage(DocPage *page)
     if(page == NULL)
         page = new DocPage();
     this->addPage(page);            // 此处调用addPage
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置文档原信息
+ * @param  CT_DocInfo &docInfo
+ * @return void
+ * @date   2017/05/23
+ */
+void DocPassage::setDocInfo(CT_DocInfo &docInfo)
+{
+    this->docInfo->copy(docInfo);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得文档原信息
+ * @param  void
+ * @return CT_DocInfo
+ * @date   2017/05/23
+ */
+CT_DocInfo DocPassage::getDocInfo()
+{
+    CT_DocInfo docInfo;
+    docInfo.copy( *this->docInfo);
+    return docInfo;
 }
 
 /**

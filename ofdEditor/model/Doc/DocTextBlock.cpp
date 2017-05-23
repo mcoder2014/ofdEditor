@@ -254,6 +254,16 @@ void DocTextBlock::init()
 
     this->currentTextCharFormat = new QTextCharFormat();        // 初始化
 
+    // 关闭滑动条
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    // 设置为背景透明
+    this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
+    // 无边框
+//    this->setFrameStyle(QFrame::NoFrame);
+
+
 
     // 连接当前charFormat改变函数
     connect(this, &DocTextBlock::currentCharFormatChanged,

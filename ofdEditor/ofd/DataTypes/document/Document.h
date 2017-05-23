@@ -9,6 +9,7 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT Document {
+public:
     CT_CommonData * common_data;  //文档公共数据，定义了默认页面单位、页面区域定义、公共资源等数据
     CT_Outlines * outlines;   //大纲树
     ST_Loc custom_tags; //指向自定义标引文件

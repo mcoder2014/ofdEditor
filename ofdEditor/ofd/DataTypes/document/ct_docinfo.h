@@ -5,6 +5,8 @@
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
+
+public:
     QString doc_id;         //由32位字符组成的文件标识
     QString creation_date;  //创建日期
     QString mod_date;       //修改日期
@@ -18,6 +20,8 @@ class OFDSHARED_EXPORT CT_DocInfo {  //文档员数据信息
     ST_Loc cover;           //文档的封面，此路径指向一个图片文件
     //ST_Array keywords;  //关键词集合
     QVector<QStringList> *custom_datas;  //每个CustomData元素为2元QStringList，其中[0]为"Name"属性，[1]为值
+
+public:
     CT_DocInfo() {
         custom_datas = new QVector<QStringList>();
     }
@@ -76,6 +80,23 @@ public:
     QVector<QStringList> * getCustomDatas() {
         return custom_datas;
     }
+
+    void copy(const CT_DocInfo & docInfo)
+    {
+        this->abstract = docInfo.abstract;
+        this->author = docInfo.author;
+        this->cover = docInfo.cover;
+        this->creation_date = docInfo.creation_date;
+        this->creator = docInfo.creator;
+        this->creator_version = docInfo.creator_version;
+        this->custom_datas = docInfo.custom_datas;
+        this->doc_id = docInfo.doc_id;
+        this->doc_usage = docInfo.doc_usage;
+        this->mod_date = docInfo.mod_date;
+        this->subject = docInfo.subject;
+        this->title = docInfo.title;
+    }
+
 };
 
 #endif // CT_DOCINFO_H

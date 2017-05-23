@@ -7,7 +7,9 @@
 #include "Document.h"
 
 
-class OFDSHARED_EXPORT OFD { //主入口文件的根元素
+class OFDSHARED_EXPORT OFD
+{ //主入口文件的根元素
+public:
     //成员
     ST_Loc root_path;    //ofd.xml的绝对路径，应由应用程序提供
     QString version; //版本号
@@ -22,6 +24,7 @@ class OFDSHARED_EXPORT OFD { //主入口文件的根元素
         docbodys = new QVector<DocBody *>();
         docs = new QVector<Document *>();
     }
+
 public:
     friend class OFDParser;
     //外部查询数据的接口
