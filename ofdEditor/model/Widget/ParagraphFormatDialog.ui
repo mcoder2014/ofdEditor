@@ -150,7 +150,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>竖直</string>
+     <string>文字方向</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboTextDirection">
@@ -329,7 +329,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>行高值</string>
+     <string>值</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboLineHeight">
@@ -375,7 +375,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>行高策略</string>
+     <string>行距策略</string>
     </property>
    </widget>
   </widget>

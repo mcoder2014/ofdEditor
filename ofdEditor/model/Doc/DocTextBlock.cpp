@@ -1,6 +1,7 @@
 #include "DocTextBlock.h"
 #include "Doc/DocParagraph.h"
 #include "Widget/ParagraphFormatDialog.h"
+#include "Widget/FontSettingDialog.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -73,6 +74,14 @@ void DocTextBlock::mergeFormatOnWordOrSelection(
 void DocTextBlock::currentCharFormatChangedEvent(
         const QTextCharFormat &format)
 {
+
+    QTextCursor cursor = this->textCursor();
+    QTextBlockFormat blockFormat = cursor.blockFormat();
+
+    ParagraphFormatDialog * para = new ParagraphFormatDialog(
+                blockFormat,this);
+
+    para->exec();
 
 }
 
@@ -202,6 +211,13 @@ void DocTextBlock::textFontDialog()
 
 }
 
+void DocTextBlock::customFontDialog()
+{
+
+    FontSettingDialog * font = new FontSettingDialog();
+    font->exec();
+}
+
 /**
  * @Author Chaoqun
  * @brief  设置当前选中的段落的格式
@@ -228,6 +244,27 @@ void DocTextBlock::setTextBlockFormat(
 
 /**
  * @Author Chaoqun
+ * @brief  直接修改选中的文字的CharFormat
+ * @param  const QTextCharFormat &format
+ * @return void
+ * @date   2017/05/25
+ */
+void DocTextBlock::setCharFormatOnWordOrSelection(
+        const QTextCharFormat &format)
+{
+    QTextCursor cursor = this->textCursor(); // 新建光标
+    if(!cursor.hasSelection())
+    {
+        // 如果没有选择文字段落
+        cursor.select(QTextCursor::WordUnderCursor);
+        qDebug() << "cursor has no selection!";
+    }
+    cursor.setCharFormat(format);         // 设置光标下的 QTextCharFormat
+    this->setCurrentCharFormat(format);   // 合并当前的 QTextCharFormat
+}
+
+/**
+ * @Author Chaoqun
  * @brief  显示右键菜单
  * @param  QContextMenuEvent *event
  * @return void
@@ -243,6 +280,32 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
 
 /**
  * @Author Chaoqun
+ * @brief  焦点聚焦，显示边框
+ * @param  QFocusEvent *e
+ * @return void
+ * @date   2017/05/25
+ */
+void DocTextBlock::focusInEvent(QFocusEvent *e)
+{
+    this->setFrameStyle(QFrame::Box);
+    QTextEdit::focusInEvent(e);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  焦点移出，隐藏边框
+ * @param  QFocusEvent *e
+ * @return void
+ * @date   2017/05/25
+ */
+void DocTextBlock::focusOutEvent(QFocusEvent *e)
+{
+    this->setFrameStyle(QFrame::NoFrame);
+    QTextEdit::focusOutEvent(e);
+}
+
+/**
+ * @Author Chaoqun
  * @brief  初始化函数
  * @param  void
  * @return void
@@ -252,8 +315,6 @@ void DocTextBlock::init()
 {
     this->setMinimumSize(5,5);        // 为了正确显示缩放标识
 
-    this->currentTextCharFormat = new QTextCharFormat();        // 初始化
-
     // 关闭滑动条
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -261,7 +322,9 @@ void DocTextBlock::init()
     // 设置为背景透明
     this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
     // 无边框
-//    this->setFrameStyle(QFrame::NoFrame);
+    this->setFrameStyle(QFrame::NoFrame);
+
+    this->initFormat();         // 初始化格式
 
 
 
@@ -322,10 +385,16 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionFontSet,&QAction::triggered,
                   this,&DocTextBlock::textFontDialog);
 
+    // 段落
     this->actionParagraph = new QAction(tr("Paragraph"));
-
     this->connect(this->actionParagraph,&QAction::triggered,
                   this,&DocTextBlock::textParagraph);
+
+
+    // 字体窗口测试
+    this->actionFontSetTest = new QAction(tr("FontDialogTest"));
+    this->connect(this->actionFontSetTest, &QAction::triggered,
+                  this, &DocTextBlock::customFontDialog);
 
     // 右键菜单
     this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
@@ -335,4 +404,25 @@ void DocTextBlock::initAcitons()
     this->ContextMenu->addSeparator();
     this->ContextMenu->addAction(this->actionFontSet);
     this->ContextMenu->addAction(this->actionParagraph);
+
+    this->ContextMenu->addAction(this->actionFontSetTest);
+}
+
+
+/**
+ * @Author Chaoqun
+ * @brief  初始化文字的样式
+ * @param  void
+ * @return void
+ * @date   2017/05/25
+ */
+void DocTextBlock::initFormat()
+{
+    QTextCursor cursor = this->textCursor();            // 获得当前光标
+
+    QTextCharFormat charFormat = cursor.charFormat();   // 字符格式
+    charFormat.setVerticalAlignment(QTextCharFormat::AlignMiddle);
+
+    this->mergeCurrentCharFormat(charFormat);
+
 }
