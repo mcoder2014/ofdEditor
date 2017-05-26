@@ -15,27 +15,75 @@ class OFDSHARED_EXPORT Res {
     QVector<CT_DrawParam *> * draw_params;
     //Other resource collections to be implemented
 
-    Res() {
-        fonts = new QVector<CT_Font *>();
-        colorspaces = new QVector<CT_ColorSpace *>();
-        draw_params = new QVector<CT_DrawParam *>();
-    }
 public:
     friend class OFDParser;
+
+    Res(QString _base_loc = "",
+        QVector<CT_Font *> * _fonts = nullptr,
+        QVector<CT_ColorSpace *> * _colorspaces = nullptr,
+        QVector<CT_DrawParam *> * _draw_params = nullptr) {
+        if (!_base_loc.isNull())
+            setBaseLoc(_base_loc);
+        if (!_fonts)
+            fonts = new QVector<CT_Font *>();
+        else
+            fonts = _fonts;
+        if (!_colorspaces)
+            colorspaces = new QVector<CT_ColorSpace *>();
+        else
+            colorspaces = _colorspaces;
+        if (!_draw_params)
+            draw_params = new QVector<CT_DrawParam *>();
+        else
+            draw_params = _draw_params;
+    }
+
     ST_Loc getBaseLoc() {
         return base_loc;
+    }
+
+    void setBaseLoc(QString _base_loc_abs) {
+        ST_Loc p("Resource", _base_loc_abs);
+        base_loc = p;
     }
 
     QVector<CT_Font *> * getFonts() {
         return fonts;
     }
 
+    void setFonts(QVector<CT_Font *> * _fonts) {
+        if (!_fonts)
+            throw InvalidValueException("Invalid value in Fonts in Res: null pointer");
+        for (int i = 0; i < fonts->size(); i++)
+            delete fonts->at(i);
+        delete fonts;
+        fonts = _fonts;
+    }
+
     QVector<CT_ColorSpace *> * getColorSpaces() {
         return colorspaces;
     }
 
+    void setColorSpaces(QVector<CT_ColorSpace *> * _colorspaces) {
+        if (!_colorspaces)
+            throw InvalidValueException("Invalid value in ColorSpaces in Res: null pointer");
+        for (int i = 0; i < colorspaces->size(); i++)
+            delete colorspaces->at(i);
+        delete colorspaces;
+        colorspaces = _colorspaces;
+    }
+
     QVector<CT_DrawParam *> * getDrawParams() {
         return draw_params;
+    }
+
+    void setDrawParams(QVector<CT_DrawParam *> * _draw_params) {
+        if (!_draw_params)
+            throw InvalidValueException("Invalid value in DrawParams in Res: null pointer");
+        for (int i = 0; i < draw_params->size(); i++)
+            delete draw_params->at(i);
+        delete draw_params;
+        draw_params = _draw_params;
     }
 
     ~Res() {

@@ -27,23 +27,58 @@ public:
     QString getFontName() {
         return font_name;
     }
+    void setFontName(QString _font_name) {
+        if (_font_name.isNull())
+            throw InvalidValueException("Invalid value in FontName in CT_Font: null");
+        font_name = _font_name;
+    }
+
     QString getFamilyName() {
         return family_name;
     }
+
+    void setFamilyName(QString _family_name) {
+        family_name = _family_name;
+    }
+
     QString getCharset() {
         return charset;
     }
+
+    void setCharset(QString _charset) {
+        charset = _charset;
+    }
+
     bool getItalic() {
         return italic;
     }
+
+    void setItalic(bool _italic) {
+        italic = _italic;
+    }
+
     bool getBold() {
         return bold;
     }
+
+    void setBold(bool _bold) {
+        bold = _bold;
+    }
+
     bool getSerif() {
         return serif;
     }
+
+    void setSerif(bool _serif) {
+        serif = _serif;
+    }
+
     bool getFixedWidth() {
         return fixed_width;
+    }
+
+    void setFixedWidth(bool _fixed_width) {
+        fixed_width = _fixed_width;
     }
 };
 

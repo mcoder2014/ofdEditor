@@ -10,7 +10,7 @@
 #include "DataTypes/page/Page.h"
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/Color/CT_Color.h"
-#include "ofd_global.h"
+#include "ofdexceptions.h"
 
 class OFD;
 
@@ -19,6 +19,8 @@ class OFDSHARED_EXPORT OFDParser {               //解析OFD.xml
     ST_Loc current_path;        //当前文档的路径
     QDomDocument *document;     //保存了ofd文档信息的树形结构
     QString error_msg;          //当xml文档格式不当、解析错误时的错误信息
+    ID_Table * id_table;
+
     int error_line;
     int error_column;
 
@@ -47,7 +49,7 @@ class OFDSHARED_EXPORT OFDParser {               //解析OFD.xml
     void readResource(Res *);   //读取Res文档信息
 
 public:
-    OFDParser(QString _path); //!!!!!!!!!!!!!!!应设为private
+    OFDParser(QString _path);
     OFD * getData() {
         return data;
     }

@@ -11,16 +11,58 @@ public:
     QVector<ST_Loc> *public_res;            //公共资源序列，每个资源指向OFD包内部的一个XML文件
     //vector<CT_TemplatePage> template_page; //模板页序列
     ST_RefID default_cs;                    //缺省颜色空间
+public:
+    friend class OFDParser;
+
     CT_CommonData() {
         public_res = new QVector<ST_Loc>();
         page_area = nullptr;
     }
-public:
-    friend class OFDParser;
-    ST_ID getMaxUnitID() { return max_unit_id; }
-    CT_PageArea *getPageArea() { return page_area; }
-    QVector<ST_Loc> *getPublicRes() { return public_res; }
-    ST_RefID getDefaultCS() { return default_cs; }
+
+    ST_ID getMaxUnitID() {
+        return max_unit_id;
+    }
+
+    void setMaxUnitID(int _max_unit_id) {
+        if (_max_unit_id < 0)
+            throw InvalidValueException("Invalid Value in MaxUnitID in CT_CommonData: " + QString::number(_max_unit_id));
+        ST_ID i(_max_unit_id);
+        max_unit_id = i;
+    }
+
+    CT_PageArea *getPageArea() {
+        return page_area;
+    }
+
+    void setPageArea(CT_PageArea * _page_area) {
+        if (!_page_area)
+            throw InvalidValueException("Invalid Value in PageArea in CT_CommonData: null pointer");
+        delete page_area;
+        page_area = _page_area;
+    }
+
+    QVector<ST_Loc> *getPublicRes() {
+        return public_res;
+    }
+
+    void setPublicRes(QVector<ST_Loc> * _public_res) {
+        if (!_public_res)
+           throw InvalidValueException("Invalid Value in PublicRes in CT_CommonData: null pointer");
+        delete public_res;
+        public_res = _public_res;
+    }
+
+    ST_RefID getDefaultCS() {
+        return default_cs;
+    }
+
+    void setDefaultCS(int _default_cs, ID_Table * id_table) {
+        if (!id_table->contains(_default_cs))
+            throw InvalidIDException("Unregistered ID in DefaultCS in CT_CommonData: " + QString::number(_default_cs));
+        ST_RefID ri(_default_cs);
+        default_cs = ri;
+    }
+
     ~CT_CommonData() {
         delete public_res;
         delete page_area;

@@ -31,7 +31,8 @@ SOURCES += \
     ofd_parser.cpp \
     DataTypes/basic_datatypes.cpp \
     ofd_writer.cpp  \
-    Loaders/ZipTool.cpp
+    Loaders/ZipTool.cpp \
+    ofdexceptions.cpp
 
 
 HEADERS +=\
@@ -43,33 +44,34 @@ HEADERS +=\
     DataTypes/Color/CT_ColorSpace.h \
 #    DataTypes/Color/CT_Pattern.h \
 #    DataTypes/Color/CT_RadialShd.h \
-    DataTypes/document/ct_commondata.h \
-    DataTypes/document/ct_docinfo.h \
-    DataTypes/document/ct_outlineelem.h \
-    DataTypes/document/ct_outlines.h \
-    DataTypes/document/docbody.h \
-    DataTypes/document/document.h \
-    DataTypes/document/ofd.h \
+    DataTypes/document/CT_CommonData.h \
+    DataTypes/document/CT_DocInfo.h \
+    DataTypes/document/CT_OutlineElem.h \
+    DataTypes/document/CT_Outlines.h \
+    DataTypes/document/DocBody.h \
+    DataTypes/document/Document.h \
+    DataTypes/document/OFD.h \
 #    DataTypes/image/CT_Clip.h \
     DataTypes/image/CT_DrawParam.h \
     DataTypes/image/CT_GraphicUnit.h \
     DataTypes/image/CT_Image.h \
     DataTypes/image/CT_Path.h \
-    DataTypes/page/ct_layer.h \
+    DataTypes/page/CT_Layer.h \
     DataTypes/page/CT_PageArea.h \
-    DataTypes/page/ct_pageblock.h \
-    DataTypes/page/ct_pages.h \
-    DataTypes/page/page.h \
+    DataTypes/page/CT_PageBlock.h \
+    DataTypes/page/CT_Pages.h \
+    DataTypes/page/Page.h \
     ofd_parser.h \
     DataTypes/document/res.h\
 #    DataTypes/text/CT_CGTransform.h \
-    DataTypes/text/ct_font.h \
-    DataTypes/text/ct_text.h \
-    DataTypes/text/textcode.h \
+    DataTypes/text/CT_Font.h \
+    DataTypes/text/CT_Text.h \
+    DataTypes/text/TextCode.h \
     ofd_global.h \
     ofd_writer.h \
-    DataTypes/document/customtags.h \
-    Loaders/ZipTool.h
+    DataTypes/document/CustomTags.h \
+    Loaders/ZipTool.h \
+    ofdexceptions.h
 
 
 DESTDIR = ../bin     # 生成文件在这

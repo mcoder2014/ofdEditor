@@ -11,7 +11,7 @@
 #include "DataTypes/page/Page.h"
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/Color/CT_Color.h"
-#include "ofd_global.h"
+#include "ofdexceptions.h"
 
 class OFDSHARED_EXPORT OFDWriter
 {
@@ -20,7 +20,7 @@ private:
     ST_Loc current_path;        //当前文档节点的路径
     QFile * current_file;        //当前输出的文件
     QXmlStreamWriter writer;
-
+    void makePath(ST_Loc path);
     void createFile();
     void writeOFD();
     void writeDocument(Document * data);

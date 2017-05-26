@@ -10,7 +10,7 @@ void OFDParser::openFile() {
     QFile ofd_file(current_path.getPath());
     if (!ofd_file.open(QFile::ReadOnly | QFile::Text)) {    //检查文件是否存在&正常打开
             //出现异常！！！to be implemented
-        qDebug() << "xml文件打开出现错误。" << endl;
+//        qDebug() << "xml文件打开出现错误。" << endl;
         abort();
     }
     if (document->setContent(&ofd_file,         //解析OFD文档并将树状内容存在document文件中
@@ -21,7 +21,7 @@ void OFDParser::openFile() {
         ofd_file.close();
     } else {
         //出现异常！！！to be implemented
-        qDebug() << "xml解析出现错误。" << endl;
+//        qDebug() << "xml解析出现错误。" << endl;
         abort();
     }
 }
@@ -94,7 +94,7 @@ OFD * OFDParser::readOFD() {
         }
 
     } else {
-        qDebug() << "非法的OFD文档格式。" << endl;
+//        qDebug() << "非法的OFD文档格式。" << endl;
         abort();
     }
     if (ofd_data) {

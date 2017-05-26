@@ -12,9 +12,9 @@ TEMPLATE = subdirs      # 工程类型，多工程
 SUBDIRS += \
     ofd   \
     model \
-    start \
+#    start \
     #test_chaoqun\
-#    test_pan \
+    test_pan \
     #test_yang
 
 CONFIG += ordered warn_on  qt
