@@ -113,7 +113,7 @@
          </widget>
         </item>
         <item row="4" column="4">
-         <widget class="QCheckBox" name="checkBox_2">
+         <widget class="QCheckBox" name="checkUnderline">
           <property name="text">
            <string>下划线</string>
           </property>
@@ -527,18 +527,29 @@ p, li { white-space: pre-wrap; }
          </spacer>
         </item>
         <item row="0" column="2">
-         <widget class="QDoubleSpinBox" name="doubleFontSpace"/>
-        </item>
-        <item row="1" column="2">
-         <widget class="QDoubleSpinBox" name="doubleFontStretch"/>
+         <widget class="QDoubleSpinBox" name="doubleFontSpace">
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item row="2" column="2">
-         <widget class="QSpinBox" name="intFontWeidht"/>
+         <widget class="QSpinBox" name="intFontWeight"/>
         </item>
         <item row="1" column="3">
          <widget class="QCheckBox" name="checkFixedWidth">
           <property name="text">
            <string>等宽字体</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QSpinBox" name="doubleFontStretch">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>4000</number>
           </property>
          </widget>
         </item>

@@ -75,14 +75,6 @@ void DocTextBlock::currentCharFormatChangedEvent(
         const QTextCharFormat &format)
 {
 
-    QTextCursor cursor = this->textCursor();
-    QTextBlockFormat blockFormat = cursor.blockFormat();
-
-    ParagraphFormatDialog * para = new ParagraphFormatDialog(
-                blockFormat,this);
-
-    para->exec();
-
 }
 
 /**
@@ -99,11 +91,15 @@ void DocTextBlock::cursorPositionChangedEvent()
 
 void DocTextBlock::setFont(const QFont &font)
 {
-    QTextCharFormat currentFormat =
-            this->currentCharFormat();      // 当前选择文字的样式
+//    QTextCharFormat currentFormat =
+//            this->currentCharFormat();      // 当前选择文字的样式
+    QTextCursor cursor = this->textCursor();
+    QTextCharFormat currentFormat = cursor.charFormat();
+
     currentFormat.setFont(font);            // 设置字体
 
-    mergeCurrentCharFormat(currentFormat);
+//    mergeCurrentCharFormat(currentFormat);
+    mergeFormatOnWordOrSelection(currentFormat);
 }
 
 
@@ -190,13 +186,16 @@ void DocTextBlock::textParagraph()
 void DocTextBlock::textFontDialog()
 {
     bool btn_ok;    // 确认按键
-    QTextCharFormat currentFormat =
-            this->currentCharFormat();      // 当前选择文字的样式
+    QTextCursor cursor = this->textCursor();
+    QTextCharFormat currentFormat = cursor.charFormat();
+//    QTextCharFormat currentFormat =
+//            this->currentCharFormat();      // 当前选择文字的样式
     QFont oldFont = currentFormat.font();   // 获取之前的字体样式
 
     QFont newFont = QFontDialog::getFont(
                 &btn_ok, oldFont,NULL,tr("Set the font"),
-                QFontDialog::ScalableFonts);    // 选择字体框
+                QFontDialog::ScalableFonts|QFontDialog::NonScalableFonts
+    |QFontDialog::MonospacedFonts|QFontDialog::ProportionalFonts);    // 选择字体框
 
     if(btn_ok)
     {
@@ -214,7 +213,7 @@ void DocTextBlock::textFontDialog()
 void DocTextBlock::customFontDialog()
 {
 
-    FontSettingDialog * font = new FontSettingDialog();
+    FontSettingDialog * font = new FontSettingDialog(this,0);
     font->exec();
 }
 
@@ -321,7 +320,7 @@ void DocTextBlock::init()
 
     // 设置为背景透明
     this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
-    // 无边框
+//    // 无边框
     this->setFrameStyle(QFrame::NoFrame);
 
     this->initFormat();         // 初始化格式

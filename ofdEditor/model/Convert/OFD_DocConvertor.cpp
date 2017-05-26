@@ -177,9 +177,13 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page, CT_Layer *layer, CT_PageBl
  */
 void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Text *text)
 {
+//    qDebug() << "execute insert CT_Text";
+
     TextCode* textCode = text->text_code;   // 获得text_code;
     // 先简单点
     QString content = textCode->text;     // 文本内容
+
+//    qDebug() << "insert Content:" << content;
 
     DocTextBlock *textBlock = new DocTextBlock();
     DocBlock *block = new DocBlock();
@@ -225,6 +229,8 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
     charFormat.setFont(font);               // 应用字体格式
     cursor.setCharFormat(charFormat);       // 应用字符格式
     cursor.setBlockFormat(blockFormat);     // 应用文字块样式
+
+//    qDebug() <<"Set Format";
 
     cursor.insertText(content);
 

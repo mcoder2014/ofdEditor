@@ -93,7 +93,7 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
 
     qDebug() << "DocPage::addBlock excuted";
     this->docScene->addItem(block);       // 添加元素
-    qDebug() << "DocPage::addBlock excuted this->docScene->addItem(block);";
+//    qDebug() << "DocPage::addBlock excuted this->docScene->addItem(block);";
 
     switch (layer) {
     case Body:

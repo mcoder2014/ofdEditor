@@ -19,7 +19,17 @@ FontSettingDialog::FontSettingDialog(DocTextBlock *textBlock
     ui(new Ui::FontSettingDialog)
 {
     ui->setupUi(this);
-    this->textBlock = textBlock;
+    this->textBlock = textBlock;        // 记录下负责的DocTextBlock
+
+    this->connect(this,&FontSettingDialog::signal_updatePreview,
+                  this,&FontSettingDialog::updatePreview);                  // 更新预览的链接
+
+    QTextCursor cursor = this->textBlock->textCursor();     // 获得文本的光标
+    QTextCharFormat charFormat = cursor.charFormat();       // 获得光标的charFormat
+    this->init(charFormat);                                 // 初始化字体窗口
+
+    initConnect();                                          // 初始化信号连接
+
 }
 
 FontSettingDialog::~FontSettingDialog()
@@ -50,8 +60,48 @@ double FontSettingDialog::pointSizeF(int comboIndex)
 int FontSettingDialog::comboIndex(double pointSizeF)
 {
     // 如果查询不到，则返回-1
-    int index = this->pointSizeTable.key(pointSizeF, -1);
-    return index;
+//    int index = this->pointSizeTable.key(pointSizeF, -1);
+//    return index;
+
+    QMapIterator<int,double> iter(this->pointSizeTable);        // 迭代器
+    int key = -1;
+
+    while(iter.hasNext())
+    {
+       iter.next();
+       if((iter.value() - pointSizeF) > -0.01
+               && (iter.value() - pointSizeF) < 0.01)   // 当两个差值绝对值小于0.01即可判断相等
+       {
+           // 判断相等
+           key = iter.key();    // 赋值
+           break;
+       }
+    }
+
+    return key;
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  初始化链接
+ * @param  void
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::initConnect()
+{
+    this->connect(this->ui->comboFont, &QFontComboBox::currentFontChanged,
+                  this,&FontSettingDialog::updateFontFamily);               // 链接字体
+
+    this->connect(this->ui->comboFontSize,
+                  static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                  this, &FontSettingDialog::updateFontSizeF);                // 链接字体大小
+
+    connect(this->ui->checkBold, &QCheckBox::stateChanged,
+            this,&FontSettingDialog::updateBold);                             // 链接加粗
+
+
 }
 
 /**
@@ -63,7 +113,9 @@ int FontSettingDialog::comboIndex(double pointSizeF)
  */
 void FontSettingDialog::updatePreview(const QTextCharFormat &charFormat)
 {
-
+    QTextCursor cursor = this->ui->textBrowser->textCursor();
+    cursor.select(QTextCursor::Document);                       // 选择这篇文章
+    cursor.setCharFormat(charFormat);                           // 设置格式
 }
 
 /**
@@ -77,8 +129,11 @@ void FontSettingDialog::init(const QTextCharFormat &charFormat)
 {
     this->charFormat = new QTextCharFormat(charFormat);         // 存下这个charFormat，后面可以使用
 
-    QFont font = charFormat.font();     // 获得字体
+    // 字体框
+    QFont font = charFormat.font();         // 获得字体
+    this->ui->comboFont->setCurrentFont(font);     // 设置显示
 
+    // 字体大小框
     // 点大小与Index的对应关系
     this->pointSizeTable.insert(0,42);      // 初号
     this->pointSizeTable.insert(1,36);      // 小初
@@ -108,21 +163,145 @@ void FontSettingDialog::init(const QTextCharFormat &charFormat)
     this->pointSizeTable.insert(25,12);
     this->pointSizeTable.insert(26,14);
     this->pointSizeTable.insert(27,16);
-    this->pointSizeTable.insert(29,18);
-    this->pointSizeTable.insert(30,20);
-    this->pointSizeTable.insert(31,22);
-    this->pointSizeTable.insert(32,24);
-    this->pointSizeTable.insert(33,26);
-    this->pointSizeTable.insert(34,28);
-    this->pointSizeTable.insert(35,36);
-    this->pointSizeTable.insert(36,48);
-    this->pointSizeTable.insert(37,72);
+    this->pointSizeTable.insert(28,18);
+    this->pointSizeTable.insert(29,20);
+    this->pointSizeTable.insert(30,22);
+    this->pointSizeTable.insert(31,24);
+    this->pointSizeTable.insert(32,26);
+    this->pointSizeTable.insert(33,28);
+    this->pointSizeTable.insert(34,36);
+    this->pointSizeTable.insert(35,48);
+    this->pointSizeTable.insert(36,72);
 
 
+    int fontsizeIndex = this->comboIndex(font.pointSizeF());        // 设置对应的字体大小
+    this->ui->comboFontSize->setCurrentIndex(fontsizeIndex);
 
-    // 设置字体栏
-    this->ui->comboFont->setCurrentFont(font);
+    // 粗体
+    if(font.bold())
+    {
+        this->ui->checkBold->setChecked(true);
+    }
+    else
+    {
+        this->ui->checkBold->setChecked(false);
+    }
+
+    // 斜体
+    if(font.italic())
+    {
+        this->ui->checkItalic->setChecked(true);
+    }
+    else
+    {
+        this->ui->checkItalic->setChecked(false);
+    }
+
+    // 下划线
+    if(font.underline())
+    {
+        this->ui->checkUnderline->setChecked(true);
+    }
+    else
+    {
+        this->ui->checkUnderline->setChecked(false);
+    }
+
+    // 字间距
+    double wordSpcing = font.wordSpacing();
+    this->ui->doubleFontSpace->setValue(wordSpcing);
+
+    // 拉伸字体
+    int wordStrech = font.stretch();
+    this->ui->doubleFontStretch->setValue(wordStrech);
+
+    // weight
+    int weight = font.weight();
+    this->ui->intFontWeight->setValue(weight);
+
+    // 等宽字体
+    if(font.fixedPitch())
+    {
+        this->ui->checkFixedWidth->setChecked(true);
+    }
+    else
+    {
+        this->ui->checkFixedWidth->setChecked(false);
+    }
+
+    emit signal_updatePreview(*this->charFormat);           // 更新预览窗口
 
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  槽函数，更新字体类别
+ * @param  const QFont &font
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updateFontFamily(const QFont &font)
+{
+    this->charFormat->setFontFamily(font.family());         // 设置字体
+
+    emit this->signal_updatePreview(*this->charFormat);     // 发送信号
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  槽函数，更新字体大小
+ * @param  double pointSizef
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updateFontSizeF(int index)
+{
+    QFont font = this->charFormat->font();      // 获得字体
+
+    double pointsizef = this->pointSizeF(index);// 计算出点大小
+    font.setPointSizeF(pointsizef);             // 设置字体大小
+    this->charFormat->setFont(font);            // 更新字体
+
+    emit this->signal_updatePreview(*this->charFormat);     // 发射更新预览信号
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  槽函数，处理加粗
+ * @param  int state 0 uncheck 2checked
+ * @return 返回值
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updateBold(int state)
+{
+    QFont font = this->charFormat->font();  // 获得字体
+
+    if(state == 0)
+    {
+        font.setBold(false);
+    }
+    else if(state == 2)
+    {
+        font.setBold(true);
+    }
+    else
+    {
+        font.setBold(false);
+    }
+
+    this->charFormat->setFont(font);
+
+    emit this->signal_updatePreview(*this->charFormat);
+}
+
+void FontSettingDialog::updateItalic(int state)
+{
+
+}
+
+void FontSettingDialog::updateUnderline(int state)
+{
 
 }
