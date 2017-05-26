@@ -101,6 +101,29 @@ void FontSettingDialog::initConnect()
     connect(this->ui->checkBold, &QCheckBox::stateChanged,
             this,&FontSettingDialog::updateBold);                             // 链接加粗
 
+    connect(this->ui->checkItalic, &QCheckBox::stateChanged,
+            this,&FontSettingDialog::updateItalic);                            // 链接斜体
+
+    connect(this->ui->checkUnderline, &QCheckBox::stateChanged,
+            this,&FontSettingDialog::updateUnderline);                          // 链接下划线
+
+    connect(this->ui->checkFixedWidth, &QCheckBox::stateChanged,
+            this,&FontSettingDialog::updatefixedPitch);                          // 固定字宽
+
+    connect(this->ui->intFontWeight,
+            static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this,&FontSettingDialog::updateWeight);                         // 字体粗细
+
+    connect(this->ui->doubleFontSpace,
+            static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this,&FontSettingDialog::updateWordSpacing);                    // 字间距
+
+
+    connect(this, &FontSettingDialog::accepted,
+            this, &FontSettingDialog::accept_slots);                        // 窗口接受确认的信号
+
+    connect(this,&FontSettingDialog::sendFont,
+            this->textBlock,&DocTextBlock::setCharFormatOnWordOrSelection);    // 发送字体
 
 }
 
@@ -208,12 +231,17 @@ void FontSettingDialog::init(const QTextCharFormat &charFormat)
     }
 
     // 字间距
-    double wordSpcing = font.wordSpacing();
+//    double wordSpcing = font.wordSpacing();
+    double wordSpcing = font.letterSpacing();
     this->ui->doubleFontSpace->setValue(wordSpcing);
 
     // 拉伸字体
-    int wordStrech = font.stretch();
-    this->ui->doubleFontStretch->setValue(wordStrech);
+//    int wordStrech = font.stretch();
+//    this->ui->doubleFontStretch->setValue(wordStrech);
+    this->ui->label_5->setVisible(false);
+    this->ui->doubleFontStretch->setVisible(false);
+    this->ui->checkFixedWidth->setVisible(false);
+
 
     // weight
     int weight = font.weight();
@@ -280,11 +308,13 @@ void FontSettingDialog::updateBold(int state)
 
     if(state == 0)
     {
-        font.setBold(false);
+        if(font.bold())
+            font.setBold(false);
     }
     else if(state == 2)
     {
-        font.setBold(true);
+        if(!font.bold())
+            font.setBold(true);
     }
     else
     {
@@ -293,15 +323,148 @@ void FontSettingDialog::updateBold(int state)
 
     this->charFormat->setFont(font);
 
+    // 更新字重
+    int weight = font.weight();
+    this->ui->intFontWeight->setValue(weight);
+
     emit this->signal_updatePreview(*this->charFormat);
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  槽函数，检测斜体
+ * @param  int state 0 uncheck 2 checked
+ * @return void
+ * @date   2017/05/26
+ */
 void FontSettingDialog::updateItalic(int state)
 {
 
+    if(state == 0)
+    {
+        this->charFormat->setFontItalic(false);
+    }
+    else if(state == 2)
+    {
+        this->charFormat->setFontItalic(true);
+    }
+    else
+    {
+        this->charFormat->setFontItalic(false);
+    }
+
+    emit this->signal_updatePreview(*this->charFormat);
 }
 
+
+/**
+ * @Author Chaoqun
+ * @brief  检测下划线选项
+ * @param  int state
+ * @return void
+ * @date   2017/05/26
+ */
 void FontSettingDialog::updateUnderline(int state)
 {
 
+    if(state == 0)
+    {
+        this->charFormat->setFontUnderline(false);
+    }
+    else if(state == 2)
+    {
+        this->charFormat->setFontUnderline(true);
+    }
+    else
+    {
+        this->charFormat->setFontUnderline(false);
+    }
+
+    emit this->signal_updatePreview(*this->charFormat);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  更新字间距
+ * @param  double d
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updateWordSpacing(double d)
+{
+    QFont font = this->charFormat->font();
+//    font.setWordSpacing(d);
+    font.setLetterSpacing(QFont::PercentageSpacing,d);
+    this->charFormat->setFont(font);
+
+    emit this->signal_updatePreview(*this->charFormat);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置字符比例
+ * @param  int i
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updateFontStrech(int i)
+{
+    QFont font = this->charFormat->font();
+    font.setStretch(i);
+    this->charFormat->setFont(font);
+
+    emit this->signal_updatePreview(*this->charFormat);
+}
+
+
+/**
+ * @Author Chaoqun
+ * @brief  是否选择了固定字宽
+ * @param  int state
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updatefixedPitch(int state)
+{
+    if(state == 0)
+        this->charFormat->setFontFixedPitch(false);
+    else if(state == 2)
+        this->charFormat->setFontFixedPitch(true);
+    else
+        this->charFormat->setFontFixedPitch(false);
+
+    emit this->signal_updatePreview(*this->charFormat);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  对字体粗细做出反应
+ * @param  int i
+ * @return void
+ * @date   2017/05/26
+ */
+void FontSettingDialog::updateWeight(int i)
+{
+    this->charFormat->setFontWeight(i);
+
+    // 更新加粗框
+    QFont font = this->charFormat->font();
+    if(font.bold())
+        this->ui->checkBold->setChecked(true);
+    else
+        this->ui->checkBold->setChecked(false);
+
+    emit this->signal_updatePreview(*this->charFormat);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  用户确定事件
+ * @param  void
+ * @return void
+* @date   2017/05/26
+ */
+void FontSettingDialog::accept_slots()
+{
+    emit this->sendFont(*this->charFormat);
 }

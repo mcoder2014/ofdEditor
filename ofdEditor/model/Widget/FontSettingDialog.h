@@ -55,6 +55,12 @@ private slots:
     void updateBold(int state);             // 加粗
     void updateItalic(int state);           // 斜体
     void updateUnderline(int state);        // 下划线
+    void updateWordSpacing(double d);       // 更新字间距s
+    void updateFontStrech(int i);           // 更新字比例
+    void updatefixedPitch(int state);       // 固定字宽
+    void updateWeight(int i);               // 字体粗细
+
+    void accept_slots();                    // 向DocTextBlock传递成功事件
 
 
 };
