@@ -37,19 +37,26 @@ public slots:
 //    void textColor();
 //    void textAlign(QAction *a);
     void textFontDialog();      // 通过字体小窗口设置字体
+    void customFontDialog();    // 自定义的字体窗口设置
     void setTextBlockFormat(
             const QTextBlockFormat& blockFormat);   // 设置块格式
+
+    void setCharFormatOnWordOrSelection(
+            const QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
+
+    void mergeFormatOnWordOrSelection(
+            const QTextCharFormat &format);     // 合并格式
 
 
 protected:
 
     void contextMenuEvent(QContextMenuEvent *event);    // 右键菜单重载
+    void focusInEvent(QFocusEvent *e);
+    void focusOutEvent(QFocusEvent *e);
 
 private slots:
 
 
-    void mergeFormatOnWordOrSelection(
-            const QTextCharFormat &format);     // 合并格式
     void currentCharFormatChangedEvent(
             const QTextCharFormat &format);     // 选中的文字格式发生了变化
     void cursorPositionChangedEvent( );         // 光标位置发生改变
@@ -58,9 +65,9 @@ private slots:
 
 private:
     QString content;        // 文字内容
-    QTextCharFormat* currentTextCharFormat;     // 当前 QTextCharFormat样式
     void init();            // 初始化
     void initAcitons();     // 初始化事件
+    void initFormat();      // 初始化文字样式
 
     // QActions
     QAction * actionBold;       // 加粗
@@ -68,6 +75,8 @@ private:
     QAction * actionItalic;     // 斜体
     QAction * actionFontSet;    // 设置字体
     QAction * actionParagraph;  // 设置段落
+
+    QAction * actionFontSetTest;    // 新字体窗口测试
 
     QMenu * ContextMenu;        // 右键菜单
 

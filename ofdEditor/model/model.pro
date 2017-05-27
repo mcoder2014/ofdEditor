@@ -45,7 +45,9 @@ SOURCES += model.cpp \
     Tool/UnitTool.cpp \
     Doc/DocPageScene.cpp \
     Widget/ParagraphFormatWidget.cpp \
-    Widget/ParagraphFormatDialog.cpp
+    Widget/ParagraphFormatDialog.cpp \
+    Widget/FontSettingDialog.cpp \
+    Convert/OFD_DocConvertor.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -70,7 +72,9 @@ HEADERS += model.h\
     Tool/UnitTool.h \
     Doc/DocPageScene.h \
     Widget/ParagraphFormatWidget.h \
-    Widget/ParagraphFormatDialog.h
+    Widget/ParagraphFormatDialog.h \
+    Widget/FontSettingDialog.h \
+    Convert/OFD_DocConvertor.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -97,4 +101,5 @@ win32{
 
 FORMS += \
     Widget/ParagraphFormatWidget.ui \
-    Widget/ParagraphFormatDialog.ui
+    Widget/ParagraphFormatDialog.ui \
+    Widget/FontSettingDialog.ui

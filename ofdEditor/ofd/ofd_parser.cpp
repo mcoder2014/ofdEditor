@@ -9,9 +9,7 @@ OFDParser::OFDParser(QString _path) : current_path("OFD", _path) {
 void OFDParser::openFile() {
     QFile ofd_file(current_path.getPath());
     if (!ofd_file.open(QFile::ReadOnly | QFile::Text)) {    //检查文件是否存在&正常打开
-            //出现异常！！！to be implemented
-        qDebug() << "xml文件打开出现错误。  " << endl;
-        abort();
+        throw ParsingFileException("无法打开XML文件: " + current_path.getPath());
     }
     if (document->setContent(&ofd_file,         //解析OFD文档并将树状内容存在document文件中
                              false,
@@ -20,21 +18,24 @@ void OFDParser::openFile() {
                              &error_column)) {
         ofd_file.close();
     } else {
-        //出现异常！！！to be implemented
-        qDebug() << "xml解析出现错误。  " << endl;
-        abort();
+        throw ParsingFileException("XML文件格式有错误: " + current_path.getPath());
     }
 }
 
 OFD * OFDParser::readOFD() {
     openFile();
-//    qDebug() << "Entering readOFD module..." << endl;
     QDomElement new_ofd = document->firstChildElement("ofd:OFD");
     OFD *ofd_data = nullptr;
     if (!new_ofd.isNull()) {
         ofd_data = new OFD();
-        ofd_data->doc_type = new_ofd.attribute("DocType");
-        ofd_data->version = new_ofd.attribute("Version");
+        if (new_ofd.hasAttribute("DocType"))
+            ofd_data->doc_type = new_ofd.attribute("DocType");
+        else
+            throw ParsingFormatException("OFD类型的数据中中缺少必要的DocType属性\n位于" + current_path.getRelativePath());
+        if (new_ofd.hasAttribute("Version"))
+            ofd_data->version = new_ofd.attribute("Version");
+        else
+            throw ParsingFormatException("OFD类型的数据中中缺少必要的Version属性\n位于" + current_path.getRelativePath());
         ofd_data->root_path = current_path;
         QDomElement new_docbody = new_ofd.firstChildElement("ofd:DocBody");
 
@@ -78,24 +79,20 @@ OFD * OFDParser::readOFD() {
                     }
                 }
             } else {
-                //Error
-                abort();
+                throw ParsingFormatException("DocBody类型的数据中中缺少必要的DocInfo成员\n位于" + current_path.getRelativePath());
             }
             QDomElement new_docroot = new_docbody.firstChildElement("ofd:DocRoot");
             if (!new_docroot.isNull()) {
                 ST_Loc p("Document", new_docroot.text(), current_path);
                 docbody_data->doc_root = p;
             } else {
-                //qDebug() << "非法的OFD文档格式。" << endl;
-                //Error
-                abort();
+                throw ParsingFormatException("DocBody类型的数据中中缺少必要的DocInfo成员\n位于" + current_path.getRelativePath());
             }
             new_docbody = new_ofd.nextSiblingElement("ofd:DocBody");
         }
 
     } else {
-        qDebug() << "非法的OFD文档格式。  " << endl;
-        abort();
+        throw ParsingFormatException("OFD类型的数据中中缺少必要的DocBody成员\n位于" + current_path.getRelativePath());
     }
     if (ofd_data) {
         for (int i = 0; i < ofd_data->docbodys->length(); i++) {
@@ -106,13 +103,14 @@ OFD * OFDParser::readOFD() {
     return ofd_data;
 }
 
-Document * OFDParser::readDocument(){
+Document * OFDParser::readDocument() {
     openFile();
-//    qDebug() << "Entering readDocument module..." << endl;
+//    qDebug() << "Checkpoint 1";
     QDomElement new_document = document->firstChildElement("ofd:Document");
     Document *document_data;
     if (!new_document.isNull()) {
         document_data = new Document();
+        id_table = document_data->id_table;
         QDomElement new_commondata = new_document.firstChildElement("ofd:CommonData");
         if (!new_commondata.isNull()) {
             CT_CommonData * commondata_data = new CT_CommonData();
@@ -146,7 +144,7 @@ Document * OFDParser::readDocument(){
             }
 
         } else {
-            //Error
+            throw ParsingFormatException("Document类型的数据中中缺少必要的CommonData成员\n位于Document.xml");
         }
 
         QDomElement new_pages = new_document.firstChildElement("ofd:Pages");
@@ -158,15 +156,14 @@ Document * OFDParser::readDocument(){
             while (!new_page.isNull()) {
                 Page *p = new Page();
                 ST_ID i(new_page.attribute("ID").toLong());
-                p->setID(i);
+                p->setID(i, id_table);
                 ST_Loc path("Page", new_page.attribute("BaseLoc"), current_path);
                 p->base_loc = path;
                 pages_data->pages->push_back(p);
                 new_page = new_page.nextSiblingElement("ofd:Page");
             }
         } else {
-            //Error
-            abort();
+            throw ParsingFormatException("Document类型的数据中中缺少必要的Pages成员\n位于Document.xml");
         }
         document_data->pages = pages_data;
 
@@ -192,22 +189,22 @@ Document * OFDParser::readDocument(){
         }
 
     } else {
-        //Error
-        abort();
-    }
-    //访问页面
-    for (int i = 0; i < document_data->pages->pages->size(); i++) {
-        current_path = document_data->pages->pages->at(i)->base_loc;
-        readPage(document_data->pages->pages->at(i));
+        throw ParsingFormatException("Document.xml文档中缺少必要的Document标签\n位于" + current_path.getRelativePath());
     }
     //访问资源
     for (int i = 0; i < document_data->common_data->public_res->size(); i++) {
-        //qDebug() << "Start to read PublicRes..." << endl;
         current_path = document_data->common_data->public_res->at(i);
         Res * res_data = new Res();
         readResource(res_data);
         document_data->public_res->push_back(res_data);
     }
+
+    //访问页面
+    for (int i = 0; i < document_data->pages->pages->size(); i++) {
+        current_path = document_data->pages->pages->at(i)->base_loc;
+        readPage(document_data->pages->pages->at(i));
+    }
+
     //访问自定义标签
     if (!document_data->custom_tags.isNull()) {
         current_path = document_data->custom_tags;
@@ -218,12 +215,11 @@ Document * OFDParser::readDocument(){
 
 void OFDParser::readPage(Page * page_data) {
     openFile();
-//    qDebug() << "Entering readPage module..." << endl;
     QDomElement new_page = document->firstChildElement("ofd:Page");
+//    qDebug() << "Checkpoint 2";
     if (!new_page.isNull()) {
         QDomElement t;
         if (!(t = new_page.firstChildElement("ofd:Area")).isNull()) {
-//            qDebug() << "Start to read PageArea..." << endl;
             CT_PageArea * area_data = new CT_PageArea();
             readPageArea(area_data, t);
             page_data->area = area_data;
@@ -240,22 +236,26 @@ void OFDParser::readPage(Page * page_data) {
         }
 
         if (!(t = new_page.firstChildElement("ofd:Content")).isNull()) {
-//            qDebug() << "Start to read Content..." << endl;
+//            qDebug() << "Checkpoint 2.1";
             QDomElement new_layer = t.firstChildElement("ofd:Layer");
             while (!new_layer.isNull()) {
                 CT_Layer * layer_data = new CT_Layer();
                 page_data->getContent()->push_back(layer_data);
                 if (new_layer.hasAttribute("ID")) {
                     ST_ID i(new_layer.attribute("ID").toInt());
-                    layer_data->setID(i);
+                    layer_data->setID(i, id_table);
                 } else {
-                    //Error
-                    abort();
+                    throw ParsingFormatException("CT_Layer类型数据中缺少必要的ID属性\n位于" + current_path.getRelativePath());
                 }
                 if (new_layer.hasAttribute("DrawParam")) {
                     ST_RefID ri(new_layer.attribute("DrawParam").toInt());
-                    layer_data->draw_param = ri;
+                    if (id_table->contains(ri.getRefID()))
+                        layer_data->draw_param = ri;
+                    else {
+                        throw ParsingIDException("Layer类型数据的DrawParam属性引用了未注册的ID 位于" + current_path.getRelativePath());
+                    }
                 }
+//                qDebug() << "Checkpoint 2.2";
                 QDomElement t;
                 //解析文字对象
                 bool is_first_textcode_x = true, is_first_textcode_y = true;
@@ -269,25 +269,33 @@ void OFDParser::readPage(Page * page_data) {
                     //Read TextObject attributes
                     if (t.hasAttribute("Font")) {
                         ST_RefID ri(t.attribute("Font").toInt());
-                        text_data->font = ri;
+                        if (id_table->contains(ri.getRefID()))
+                            text_data->font = ri;
+                        else {
+                            throw ParsingIDException("CT_Text类型数据的Font属性引用了未注册的ID:" + QString::number(ri.getRefID()) + " 位于" + current_path.getRelativePath());
+                        }
                     } else {
-                        //Error
-                        abort();
+                        throw ParsingFormatException("CT_Text类型数据中缺少必要的Font属性\n位于" + current_path.getRelativePath());
                     }
 
                     if (t.hasAttribute("Size")) {
                         text_data->size = t.attribute("Size").toDouble();
                         text_data->size_used = true;
                     } else {
-                        //Error
-                        abort();
+                        throw ParsingFormatException("CT_Text类型数据中缺少必要的Size属性\n位于" + current_path.getRelativePath());
                     }
-
+//                    qDebug() << "Checkpoint 2.3";
                     //many optional attributes to be implemented
-                    QDomElement t2;
-                    if (!(t2 = t.firstChildElement("ofd:TextCode")).isNull()) {
+                    QDomElement t2 = t.firstChildElement("ofd:TextCode");
+                    if (t2.isNull()) {
+                        throw ParsingFormatException("CT_Text类型数据中缺少必要的TextCode成员\n位于" + current_path.getRelativePath());
+                    }
+//                    qDebug() << "Checkpoint 2.3.1";
+                    while(!t2.isNull()) {
                         TextCode * text_code_data = new TextCode();
-                        text_data->text_code = text_code_data;
+//                        qDebug() << "Checkpoint 2.3.1.0";
+                        text_data->text_code->push_back(text_code_data);
+//                        qDebug() << "Checkpoint 2.3.1.1";
                         if (t2.hasAttribute("X")) {
                             last_x = text_code_data->x = t2.attribute("X").toDouble();
                             if (is_first_textcode_x)
@@ -296,10 +304,10 @@ void OFDParser::readPage(Page * page_data) {
                             if (!is_first_textcode_x && !is_first_textcode_y)
                                 text_code_data->x = last_x;
                             else {
-                            //Error
-                            abort();
+                            throw ParsingFormatException("TextCode类型数据中缺少第一个X值\n位于" + current_path.getRelativePath());
                             }
                         }
+//                    qDebug() << "Checkpoint 2.3.2";
                         if (t2.hasAttribute("Y")) {
                             last_y = text_code_data->y = t2.attribute("Y").toDouble();
                             if (is_first_textcode_y)
@@ -308,8 +316,7 @@ void OFDParser::readPage(Page * page_data) {
                             if (!is_first_textcode_x && !is_first_textcode_y)
                                 text_code_data->y = last_y;
                             else {
-                            //Error
-                            abort();
+                            throw ParsingFormatException("TextCode类型数据中缺少第一个Y值\n位于" + current_path.getRelativePath());
                             }
                         }
                         if (t2.hasAttribute("DeltaX")) {
@@ -321,13 +328,12 @@ void OFDParser::readPage(Page * page_data) {
                             text_code_data->delta_y = delta_y_data;
                         }
                         text_code_data->text = t2.text();
-                    } else {
-                        //Error
-                        abort();
+
+                        t2 = t2.nextSiblingElement("ofd:TextCode");
                     }
                     t = t.nextSiblingElement("ofd:TextObject");
                 }
-
+//                qDebug() << "Checkpoint 2.4";
                 //解析矢量图对象
                 t = new_layer.firstChildElement("ofd:PathObject");
                 while (!t.isNull()) {
@@ -343,15 +349,16 @@ void OFDParser::readPage(Page * page_data) {
                     if (t.hasAttribute("Rule")) {
                         if (t.attribute("Rule") == "NonZero")
                             path_data->rule = "NonZero";
-                        else if (t.attribute("rule") == "Even-Odd")
+                        else if (t.attribute("Rule") == "Even-Odd")
                             path_data->rule = "Even-Odd";
                         else {
-                            //Error!
-                            abort();
+                            throw ParsingFormatException("CT_Path类型数据中的Rule属性值为非法值\n位于" + current_path.getRelativePath() + " 值为" + t.attribute("Rule"));
                         }
                     }
                     if (!t.firstChildElement("ofd:AbbreviatedData").isNull()) {
                         path_data->abbreviated_data = t.firstChildElement("ofd:AbbreviatedData").text();
+                    } else {
+                        throw ParsingFormatException("CT_Path类型数据中缺少必要的AbbreviatedData成员\n位于" + current_path.getRelativePath());
                     }
                     t = t.nextSiblingElement("ofd:PathObject");
                 }
@@ -364,14 +371,21 @@ void OFDParser::readPage(Page * page_data) {
                     readGraphicUnit(image_data, t);
                     if (t.hasAttribute("ResourceID")) {
                         ST_RefID ri(t.attribute("ResourceID").toInt());
-                        image_data->resource_id = ri;
+                        if (id_table->contains(ri.getRefID()))
+                            image_data->resource_id = ri;
+                        else {
+                            throw ParsingIDException("CT_Image类型数据的ResourceID属性引用了未注册的ID 位于" + current_path.getRelativePath());
+                        }
                     } else {
-                        //Error!
-                        abort();
+                        throw ParsingFormatException("CT_Image类型数据中缺少必要的ResourceID属性\n位于" + current_path.getRelativePath());
                     }
                     if (t.hasAttribute("Substitution")) {
                         ST_RefID ri(t.attribute("Substitution").toInt());
-                        image_data->substitution = ri;
+                        if (id_table->contains(ri.getRefID()))
+                            image_data->substitution = ri;
+                        else {
+                            throw ParsingIDException("CT_Image类型数据的Substitution属性引用了未注册的ID 位于" + current_path.getRelativePath());
+                        }
                     }
                     t = t.nextSiblingElement("ofd:ImageObject");
                 }
@@ -381,9 +395,9 @@ void OFDParser::readPage(Page * page_data) {
             }
         }
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("Content.xml文档中缺少必要的Page标签\n位于" + current_path.getRelativePath());
     }
+//    qDebug() << "Checkpoint 3";
 }
 
 void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
@@ -395,11 +409,10 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
             data->physical_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         }
         else {
-            //Error
-            abort();
+            throw ParsingFormatException("CT_PageArea类型数据的PhysicalBox成员的值的数目错误\n位于" + current_path.getRelativePath());
         }
     } else {
-        //Error
+        throw ParsingFormatException("CT_PageArea类型的数据中中缺少必要的PhysicalBox成员\n位于" + current_path.getRelativePath());
     }
 
     if (!(t = root_node.firstChildElement("ofd:ApplicationBox")).isNull()) {
@@ -407,8 +420,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
         if (values.size() == 4)
             data->application_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         else {
-            //Error
-            abort();
+            throw ParsingFormatException("CT_PageArea类型数据的ApplicationBox成员的值的数目错误\n位于" + current_path.getRelativePath());
         }
     }
 
@@ -416,10 +428,8 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
         QStringList values = t.text().split(" ");
         if (values.size() == 4)
             data->content_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
-        else {
-            //Error
-            abort();
-        }
+        else
+            throw ParsingFormatException("CT_PageArea类型数据的ContentBox成员的值的数目错误\n位于" + current_path.getRelativePath());
     }
 
     if (!(t = root_node.firstChildElement("ofd:BleedBox")).isNull()) {
@@ -427,8 +437,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
         if (values.size() == 4)
             data->bleed_box = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         else {
-            //Error
-            abort();
+            throw ParsingFormatException("CT_PageArea类型数据的BleedBox成员的值的数目错误\n位于" + current_path.getRelativePath());
         }
     }
 }
@@ -437,10 +446,10 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
     //读取属性
     if (root_node.hasAttribute("ID")) {
         ST_ID i(root_node.attribute("ID").toInt());
-        data->setID(i);
+        data->setID(i, id_table);
+
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("CT_GraphicUnit类型数据中缺少必要的ID属性\n位于" + current_path.getRelativePath());
     }
 
     if (root_node.hasAttribute("Boundary")) {
@@ -449,12 +458,10 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
             data->boundary = ST_Box(values[0].toDouble(), values[1].toDouble(), values[2].toDouble(), values[3].toDouble());
         }
         else {
-            //Error
-            abort();
+            throw ParsingFormatException("CT_GraphicUnit类型数据的Boundary成员的值的数目错误\n位于" + current_path.getRelativePath());
         }
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("CT_GraphicUnit类型数据中缺少必要的ID属性\n位于" + current_path.getRelativePath());
     }
 
     //读取成员
@@ -471,15 +478,13 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
 void OFDParser::readResource(Res * res_data) {
     openFile();
     QDomElement new_res = document->firstChildElement("ofd:Res");
-//    qDebug() << "Entering readResource module..." << endl;
     if (!new_res.isNull()) {
         //读取属性
         if (new_res.hasAttribute("BaseLoc")) {
             ST_Loc new_baseloc("BaseLoc", new_res.attribute("BaseLoc"), current_path);
             res_data->base_loc = new_baseloc;
         } else {
-            //Error
-            abort();
+            throw ParsingFormatException("Res类型数据中缺少必要的BaseLoc属性\n位于" + current_path.getRelativePath());
         }
         //读取成员
         QDomElement t;
@@ -514,8 +519,7 @@ void OFDParser::readResource(Res * res_data) {
         }
         //Other stuff to be implemented
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("Resource.xml文档中缺少必要的Res标签\n位于" + current_path.getRelativePath());
     }
     //qDebug() << "End of reading Resourse..." << endl;
 }
@@ -527,7 +531,12 @@ void OFDParser::readColor(CT_Color *data, QDomElement & root_node) {
     }
     if (root_node.hasAttribute("ColorSpace")) {
         ST_RefID colorspace_data(root_node.attribute("ColorSpace").toInt());
-        data->color_space = colorspace_data;
+        if (id_table->contains(colorspace_data.getRefID()))
+            data->color_space = colorspace_data;
+        else {
+            throw ParsingIDException("CT_Color类型数据的ColorSpace属性引用了未注册的ID:" + QString::number(colorspace_data.getRefID()) + " 位于" + current_path.getRelativePath());
+        }
+
     }
     if (root_node.hasAttribute("Index")) {
         data->index = root_node.attribute("Index").toInt();
@@ -541,16 +550,14 @@ void OFDParser::readColor(CT_Color *data, QDomElement & root_node) {
 void OFDParser::readFont(CT_Font * data, QDomElement & root_node) {
     if (root_node.hasAttribute("ID")) {
         ST_ID i(root_node.attribute("ID").toInt());
-        data->setID(i);
+        data->setID(i, id_table);
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("CT_Font类型数据中缺少必要的ID属性\n位于" + current_path.getRelativePath());
     }
     if (root_node.hasAttribute("FontName")) {
         data->font_name = root_node.attribute("FontName");
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("CT_Font类型数据中缺少必要的FontName属性\n位于" + current_path.getRelativePath());
     }
     if (root_node.hasAttribute("FamilyName")) {
         data->family_name = root_node.attribute("FamilyName");
@@ -573,16 +580,14 @@ void OFDParser::readFont(CT_Font * data, QDomElement & root_node) {
 void OFDParser::readColorSpace(CT_ColorSpace * data, QDomElement & root_node) {
     if (root_node.hasAttribute("ID")) {
         ST_ID i(root_node.attribute("ID").toInt());
-        data->setID(i);
+        data->setID(i, id_table);
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("CT_ColorSpace类型数据中缺少必要的ID属性\n位于" + current_path.getRelativePath());
     }
     if (root_node.hasAttribute("Type")) {
         data->type = root_node.attribute("Type");
     } else {
-        //Error
-        abort();
+        throw ParsingFormatException("CT_ColorSpace类型数据中缺少必要的Type属性\n位于" + current_path.getRelativePath());
     }
     if (root_node.hasAttribute("BitsPerComponent")) {
         data->bits_per_component = root_node.attribute("BitsPerComponent").toInt();
@@ -596,14 +601,18 @@ void OFDParser::readColorSpace(CT_ColorSpace * data, QDomElement & root_node) {
 void OFDParser::readDrawParam(CT_DrawParam * data, QDomElement & root_node) {
     if (root_node.hasAttribute("ID")) {
         ST_ID i(root_node.attribute("ID").toInt());
-        data->setID(i);
+        data->setID(i, id_table);
     } else {
-        //Error!
-        abort();
+        throw ParsingFormatException("CT_DrawParam类型数据中缺少必要的ID属性\n位于" + current_path.getRelativePath());
     }
     if (root_node.hasAttribute("Relative")) {
         ST_RefID i(root_node.attribute("Relative").toInt());
-        data->relative = i;
+        if (id_table->contains(i.getRefID()))
+            data->relative = i;
+        else {
+            throw ParsingIDException("CT_DrawParam类型数据的Relative属性引用了未注册的ID 位于" + current_path.getRelativePath());
+        }
+
     }
     if (root_node.hasAttribute("LineWidth")) {
         data->line_width = root_node.attribute("LineWidth").toDouble();
@@ -613,8 +622,7 @@ void OFDParser::readDrawParam(CT_DrawParam * data, QDomElement & root_node) {
         if (j == "Miter" || j == "Round" || j == "Bevel")
             data->join = j;
         else {
-            //Error!
-            abort();
+            throw ParsingFormatException("CT_DrawParam类型数据中的Join属性值为非法值\n位于" + current_path.getRelativePath());
         }
     }
     if (root_node.hasAttribute("Cap")) {
@@ -622,8 +630,7 @@ void OFDParser::readDrawParam(CT_DrawParam * data, QDomElement & root_node) {
         if (c == "Butt" || c == "Round" || c == "Square")
             data->cap = c;
         else {
-            //Error!
-            abort();
+            throw ParsingFormatException("CT_DrawParam类型数据中的Cap属性值为非法值\n位于" + current_path.getRelativePath());
         }
     }
     if (root_node.hasAttribute("DashOffset")) {

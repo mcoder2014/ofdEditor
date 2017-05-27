@@ -27,45 +27,45 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    ofd_parser.cpp \
-    DataTypes/basic_datatypes.cpp \
-    ofd_writer.cpp
+#    ofd_parser.cpp \
+#    DataTypes/basic_datatypes.cpp \
+#    ofd_writer.cpp
 
 HEADERS  += \
     mainwindow.h \
-    DataTypes/basic_datatype.h \
+#    DataTypes/basic_datatype.h \
 #    DataTypes/CT_Action.h \
 #    DataTypes/Color/CT_AxialShd.h \
-    DataTypes/Color/CT_Color.h \
-    DataTypes/Color/CT_ColorSpace.h \
+#    DataTypes/Color/CT_Color.h \
+#    DataTypes/Color/CT_ColorSpace.h \
 #    DataTypes/Color/CT_Pattern.h \
 #    DataTypes/Color/CT_RadialShd.h \
-    DataTypes/document/CT_CommonData.h \
-    DataTypes/document/CT_DocInfo.h \
-    DataTypes/document/CT_OutlineElem.h \
-    DataTypes/document/CT_Outlines.h \
-    DataTypes/document/DocBody.h \
-    DataTypes/document/Document.h \
-    DataTypes/document/OFD.h \
+#    DataTypes/document/CT_CommonData.h \
+#    DataTypes/document/CT_DocInfo.h \
+#    DataTypes/document/CT_OutlineElem.h \
+#    DataTypes/document/CT_Outlines.h \
+#    DataTypes/document/DocBody.h \
+#    DataTypes/document/Document.h \
+#    DataTypes/document/OFD.h \
 #    DataTypes/image/CT_Clip.h \
-    DataTypes/image/CT_DrawParam.h \
-    DataTypes/image/CT_GraphicUnit.h \
-    DataTypes/image/CT_Image.h \
-    DataTypes/image/CT_Path.h \
-    DataTypes/page/CT_Layer.h \
-    DataTypes/page/CT_PageArea.h \
-    DataTypes/page/CT_PageBlock.h \
-    DataTypes/page/CT_Pages.h \
-    DataTypes/page/Page.h \
-    ofd_parser.h \
-    DataTypes/document/res.h\
+#    DataTypes/image/CT_DrawParam.h \
+#    DataTypes/image/CT_GraphicUnit.h \
+#    DataTypes/image/CT_Image.h \
+#    DataTypes/image/CT_Path.h \
+#    DataTypes/page/CT_Layer.h \
+#    DataTypes/page/CT_PageArea.h \
+#    DataTypes/page/CT_PageBlock.h \
+#    DataTypes/page/CT_Pages.h \
+#    DataTypes/page/Page.h \
+#    ofd_parser.h \
+#    DataTypes/document/res.h\
 #    DataTypes/text/CT_CGTransform.h \
-    DataTypes/text/CT_Font.h \
-    DataTypes/text/CT_Text.h \
-    DataTypes/text/TextCode.h \
+#    DataTypes/text/CT_Font.h \
+#    DataTypes/text/CT_Text.h \
+#    DataTypes/text/TextCode.h \
     ofd_global.h \
-    ofd_writer.h \
-    DataTypes/document/CustomTags.h
+#    ofd_writer.h \
+#    DataTypes/document/CustomTags.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -86,6 +86,6 @@ unix{
 }
 
 win32{
-    #LIBS += ../bin/model.lib \
-    #        ../bin/ofd.lib
+    LIBS += ../bin/model.lib \
+            ../bin/ofd.lib
 }

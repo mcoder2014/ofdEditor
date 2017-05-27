@@ -81,3 +81,18 @@ QRectF UnitTool::getBox(QPointF &point1, QPointF &point2)
 
     return QRectF(x,y,w,h);
 }
+
+/**
+ * @Author Chaoqun
+ * @brief  判断两个数是否相等，因为公文的误差要求是 1mm，
+ *      对于边框的要求没有那么高。
+ *      因此，我这里两者差的绝对值小于 0.05mm即视为相等。
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/23
+ */
+bool UnitTool::equal(double a, double b)
+{
+    return ((a-b) > -0.05
+            && (a-b) < 0.05);
+}

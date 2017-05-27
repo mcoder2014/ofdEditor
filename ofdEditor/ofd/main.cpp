@@ -2,17 +2,23 @@
 #include <QApplication>
 #include <iostream>
 #include <QDebug>
-#include "DataTypes/basic_datatype.h"
-#include "ofd_parser.h"
-#include "ofd_writer.h"
+#include "../ofd/DataTypes/basic_datatype.h"
+#include "../ofd/ofd_parser.h"
+#include "../ofd/ofd_writer.h"
 #include <QGraphicsView>
 
 using namespace std;
 int main(int argc, char *argv[])
 {
-    OFDParser t("F:/第六届中软杯/OFD Document/OFD.xml");
+    try {
+    OFDParser t("F:/第六届中软杯/OFD Document 3/OFD.xml");
     OFD * i = t.getData();
     OFDWriter w(i, "F:/第六届中软杯/writing_test/AnotherTest/");
+    //qDebug() << i->getDocuments()->at(0)->getIDTable()->size();
+    } catch (Exception e) {
+        qDebug() << e.getMessage();
+    }
+
 //    QString str1("F:/第六届中软杯/OFD Document/OFD.xml");
 //    QString str2("F:/第六届中软杯/OFD Document/");
 //    ST_Loc t1("1",str1), t2("1", str2);

@@ -25,16 +25,18 @@ QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
     QTextBlockFormat blockFormat;           // 用来纪录格式的
 
     Qt::Alignment horizontalFlag;
-    Qt::Alignment verticalFlag;
+//    Qt::Alignment verticalFlag;
 
     // 水平布局
     int comboHAlignIndex = ui->comboHAlignment->currentIndex();
     switch (comboHAlignIndex) {
     case 0:
-        horizontalFlag = (Qt::AlignLeft | Qt::AlignAbsolute);
+//        horizontalFlag = (Qt::AlignLeft | Qt::AlignAbsolute);
+         horizontalFlag = (Qt::AlignLeft);
         break;
     case 1:
-        horizontalFlag = (Qt::AlignRight | Qt::AlignAbsolute);
+//        horizontalFlag = (Qt::AlignRight | Qt::AlignAbsolute);
+        horizontalFlag = (Qt::AlignRight);
         break;
     case 2:
         horizontalFlag = Qt::AlignHCenter;
@@ -47,40 +49,42 @@ QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
 
     }
 
-    // 竖直布局
-    int comboVAlignIndex = ui->comboVAlignment->currentIndex();
-    switch (comboVAlignIndex) {
-    case 0:
-        verticalFlag = Qt::AlignTop;
-        break;
-    case 1:
-        verticalFlag = Qt::AlignBottom;
-        break;
-    case 2:
-        verticalFlag = Qt::AlignVCenter;
-        break;
-    default:
-        break;
-    }
+//    // 竖直布局
+//    int comboVAlignIndex = ui->comboVAlignment->currentIndex();
+//    switch (comboVAlignIndex) {
+//    case 0:
+//        verticalFlag = Qt::AlignTop;
+//        break;
+//    case 1:
+//        verticalFlag = Qt::AlignBottom;
+//        break;
+//    case 2:
+//        verticalFlag = Qt::AlignVCenter;
+//        break;
+//    default:
+//        break;
+//    }
 
     // 设置布局规则
-    blockFormat.setAlignment(horizontalFlag | verticalFlag);
+//    blockFormat.setAlignment(verticalFlag | horizontalFlag);
+    blockFormat.setAlignment(horizontalFlag);
 
-    // 设置文字方向
-    Qt::LayoutDirection textDirection;
-    int textDirectionIndex = ui->comboTextDirection->currentIndex();
-    switch (textDirectionIndex) {
-    case 0:
-        textDirection = Qt::LeftToRight;
-        break;
-    case 1:
-        textDirection = Qt::RightToLeft;
-        break;
-    default:
-        textDirection = Qt::LeftToRight;
-        break;
-    }
-    blockFormat.setLayoutDirection(textDirection);
+//    // 设置文字方向
+    // 无法使用，仅对部分语言有效
+//    Qt::LayoutDirection textDirection;
+//    int textDirectionIndex = ui->comboTextDirection->currentIndex();
+//    switch (textDirectionIndex) {
+//    case 0:
+//        textDirection = Qt::LeftToRight;
+//        break;
+//    case 1:
+//        textDirection = Qt::RightToLeft;
+//        break;
+//    default:
+//        textDirection = Qt::LeftToRight;
+//        break;
+//    }
+//    blockFormat.setLayoutDirection(textDirection);
 
     // 缩进规则
     int paraIndent = ui->paraIndent->value();
@@ -97,9 +101,9 @@ QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
     blockFormat.setTopMargin(spaceBefore);
     blockFormat.setBottomMargin(spaceAfter);
 
-    // 设置行距
-    int comboLineHeightIndex = ui->comboLineHeight->currentIndex();
-    double lineHeight = ui->doubleLineHight->value();
+    // 设置行高
+    int comboLineHeightIndex = ui->comboLineHeight->currentIndex(); // 判断行高类型
+    double lineHeight = ui->doubleLineHight->value();               // 获得行高
 
     switch (comboLineHeightIndex) {
     case 0:
@@ -155,77 +159,66 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
     // 设置对齐部分
     Qt::Alignment flag = blockFormat.alignment();       // 先获取对齐的样式
     Qt::Alignment horizontalFlag;
-    Qt::Alignment verticalFlag;
+//    Qt::Alignment verticalFlag;
 
-    // 水平样式
-    if((flag&(Qt::AlignLeft | Qt::AlignAbsolute))
-            == (Qt::AlignLeft | Qt::AlignAbsolute))
-    {
-        // 如果水平居左
+    horizontalFlag = flag & Qt::AlignHorizontal_Mask;
+//    verticalFlag = flag & Qt::AlignVertical_Mask;
+
+    // 水平对齐
+    switch (horizontalFlag) {
+    case Qt::AlignLeft:
         ui->comboHAlignment->setCurrentIndex(0);
-    }
-    else if((flag & (Qt::AlignRight | Qt::AlignAbsolute))
-            == (Qt::AlignRight | Qt::AlignAbsolute))
-    {
-        // 如果水平居右
-        ui->comboHAlignment->setCurrentIndex(1);
-    }
-    else if((flag & Qt::AlignHCenter)
-            == Qt::AlignHCenter)
-    {
-        // 如果水平居中
-        ui->comboHAlignment->setCurrentIndex(2);
-    }
-    else if((flag & Qt::AlignJustify)
-            == Qt::AlignJustify)
-    {
-        // 如果是两端对齐模式
-        ui->comboHAlignment->setCurrentIndex(3);
-    }
-    else
-    {
-        // 如果样式未设置水平样式
-        ui->comboHAlignment->setCurrentIndex(-1);
-    }
-
-    // 竖直样式
-    if((flag & Qt::AlignTop)
-            == Qt::AlignTop)
-    {
-        // 如果设置的是居上对齐
-        ui->comboVAlignment->setCurrentIndex(0);
-    }
-    else if((flag & Qt::AlignBottom)
-            == Qt::AlignBottom)
-    {
-        // 如果设置的是居下对齐
-        ui->comboVAlignment->setCurrentIndex(1);
-    }
-    else if((flag & Qt::AlignVCenter)
-            == Qt::AlignVCenter)
-    {
-        // 如果设置的是竖直居中对齐
-        ui->comboVAlignment->setCurrentIndex(2);
-    }
-    else
-    {
-        // 如果未设置竖直对齐样式
-        ui->comboVAlignment->setCurrentIndex(3);
-    }
-
-    //文字方向
-    Qt::LayoutDirection textDirection = blockFormat.layoutDirection();
-    switch (textDirection) {
-    case Qt::LeftToRight:
-        ui->comboTextDirection->setCurrentIndex(0);
         break;
-    case Qt::RightToLeft:
-        ui->comboTextDirection->setCurrentIndex(1);
+    case Qt::AlignRight:
+        ui->comboHAlignment->setCurrentIndex(1);
+        break;
+    case Qt::AlignHCenter:
+        ui->comboHAlignment->setCurrentIndex(2);
+        break;
+    case Qt::AlignJustify:
+        ui->comboHAlignment->setCurrentIndex(3);
         break;
     default:
-        ui->comboTextDirection->setCurrentIndex(0);
+        ui->comboHAlignment->setCurrentIndex(-1);
         break;
     }
+
+//    // 竖直对齐
+//    switch (verticalFlag) {
+//    case Qt::AlignTop:
+//        ui->comboVAlignment->setCurrentIndex(0);
+//        break;
+//    case Qt::AlignBottom:
+//        ui->comboVAlignment->setCurrentIndex(1);
+//        break;
+//    case Qt::AlignCenter:
+//        ui->comboVAlignment->setCurrentIndex(2);
+//        break;
+//    default:
+//        ui->comboVAlignment->setCurrentIndex(-1);
+//        break;
+//    }
+
+    // 因竖直对齐的调整并没有效果，这里选择去掉
+    this->ui->comboVAlignment->setVisible(false);
+    this->ui->label_12->setVisible(false);
+
+// 因为文字方向无法使用，所以将其隐藏掉
+//    //文字方向
+//    Qt::LayoutDirection textDirection = blockFormat.layoutDirection();
+//    switch (textDirection) {
+//    case Qt::LeftToRight:
+//        ui->comboTextDirection->setCurrentIndex(0);
+//        break;
+//    case Qt::RightToLeft:
+//        ui->comboTextDirection->setCurrentIndex(1);
+//        break;
+//    default:
+//        ui->comboTextDirection->setCurrentIndex(0);
+//        break;
+//    }
+    this->ui->comboTextDirection->setVisible(false);
+    this->ui->label_13->setVisible(false);
 
     // 整段缩进
     int indent = blockFormat.indent();

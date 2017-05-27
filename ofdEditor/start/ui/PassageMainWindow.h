@@ -23,6 +23,9 @@ public:
     DocPassage *createMdiChild();       // 创建一个新文档
     DocPassage *activeMdiChild();       // 获取活动的窗口
 
+public slots:
+    DocPassage *addDocPassage(DocPassage * passage);
+
 private:
 
     // 菜单栏
@@ -79,6 +82,8 @@ private:
     void initAction();          // 初始化QAction
     void connectAction();       // 链接QAction的相应事件
     void disconnectAction();    // 断开事件响应
+
+    void openFile();            // 打开新文件
 
 
 

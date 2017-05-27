@@ -16,6 +16,7 @@
 class OFDSHARED_EXPORT ZipTool
 {
 public:
+    ZipTool();
 
     static QStringList getFileList(QString fileCompressed);
         // 获取压缩文件中的所有文件名
@@ -25,8 +26,10 @@ public:
                             QString dir,bool deleteDir = false);
         // 压缩目录
     static void deleteFolder(const QString& folderFullPath);
-private:
-    ZipTool();      // 不允许实例化
+
+    QString FilePathToFloderPath(const QString& filePath);
+
+
 
 
 };

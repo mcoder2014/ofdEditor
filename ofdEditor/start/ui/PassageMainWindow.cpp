@@ -19,6 +19,10 @@
 
 #include "Doc/DocPassage.h"
 #include "ActionConnector/ActionConnector.h"
+#include "Loaders/ZipTool.h"                // 压缩文件工具
+#include "ofd_parser.h"
+#include "DataTypes/document/ofd.h"
+#include "Convert/OFD_DocConvertor.h"       // OFD 转 Doc 工具
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -41,10 +45,12 @@ PassageMainWindow::~PassageMainWindow()
 DocPassage *PassageMainWindow::createMdiChild()
 {
     DocPassage * child = new DocPassage(this);
+    child->addPage(new DocPage());      // 添加一个空白页
+
     this->area->addSubWindow(child);
     child->setVisible(true);            // 设置可见
     child->showMaximized();
-    return NULL;
+    return child;
 }
 
 /**
@@ -244,6 +250,9 @@ void PassageMainWindow::connectAction()
     connect(this->newFileAction, &QAction::triggered,
             this,&PassageMainWindow::createMdiChild);   // 新建窗口
 
+    connect(this->openFileAtcion, &QAction::triggered,
+            this, &PassageMainWindow::openFile);  //打开文件
+
     connect(this->insertNewPageAction, &QAction::triggered,
             this->connector, &ActionConnector::addNewPage);    // 在文章尾部加入新的一页
 
@@ -274,6 +283,50 @@ void PassageMainWindow::disconnectAction()
 
 /**
  * @Author Chaoqun
+ * @brief  打开 *.ofd 文件
+ * @param  void
+ * @return void
+ * @date   2017/05/22
+ */
+void PassageMainWindow::openFile()
+{
+    QFileDialog * fileDialog = new QFileDialog(this);           // 新建一个QFileDialog
+//    fileDialog->setWindowIcon(QIcon(":/icon/source/open.png")); // 设置打开文件图标
+    fileDialog->setAcceptMode(QFileDialog::AcceptOpen);         // 设置对话框为打开文件类型
+    fileDialog->setFileMode(QFileDialog::ExistingFile);         // 设置文件对话框能够存在的文件
+    fileDialog->setViewMode(QFileDialog::Detail);               // 文件以细节形式显示出来
+    fileDialog->setNameFilter(tr("JSON files(*.ofd)"));            // 设置文件过滤器
+    fileDialog->setWindowTitle(tr("Choose an ofd document file!"));
+
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
+        qDebug() << path;
+
+        ZipTool zipTool;
+        QString tempPath = zipTool.FilePathToFloderPath(path);
+        qDebug() << "Temp path is :" << tempPath;
+
+        ZipTool::extractDir(path,tempPath);     // 解压到临时文件夹
+
+        // 解读文件
+//        OFDParser ofdParser("C:\\Users\\User\\AppData\\Local\\Temp\\%表格.ofd%\\OFD.xml");
+        OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
+//        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
+        OFD* data = ofdParser.getData();    // 读取出OFD文件
+        OFD_DocConvertor convert;
+        DocPassage* passage = convert.ofd_to_doc(data);
+
+        this->addDocPassage(passage);       // 添加文章
+
+
+
+
+    }
+}
+
+/**
+ * @Author Chaoqun
  * @brief  获取激活的窗口
  * @param  void
  * @return DocPassage *
@@ -284,4 +337,25 @@ DocPassage *PassageMainWindow::activeMdiChild()
     if (QMdiSubWindow *activeSubWindow = this->area->activeSubWindow())
         return qobject_cast<DocPassage *>(activeSubWindow->widget());
     return 0;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  添加一个文章
+ * @param  DocPassage *passage
+ * @return DocPassage *
+ * @date   2017/05/23
+ */
+DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
+{
+    if(passage == NULL)     // 如果参数为NULL 不执行并返回NULL
+    {
+        qDebug() << "DocPassage Pointer is NULL.";
+        return NULL;
+    }
+
+    this->area->addSubWindow(passage);
+    passage->setVisible(true);            // 设置可见
+    passage->showMaximized();
+    return passage;
 }

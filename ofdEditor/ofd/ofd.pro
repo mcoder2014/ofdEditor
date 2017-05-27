@@ -31,7 +31,8 @@ SOURCES += \
     ofd_parser.cpp \
     DataTypes/basic_datatypes.cpp \
     ofd_writer.cpp  \
-    Loaders/ZipTool.cpp
+    Loaders/ZipTool.cpp \
+    ofdexceptions.cpp
 
 
 HEADERS +=\
@@ -69,7 +70,8 @@ HEADERS +=\
     ofd_global.h \
     ofd_writer.h \
     DataTypes/document/CustomTags.h \
-    Loaders/ZipTool.h
+    Loaders/ZipTool.h \
+    ofdexceptions.h
 
 
 DESTDIR = ../bin     # 生成文件在这

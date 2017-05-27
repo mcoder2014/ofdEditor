@@ -8,6 +8,7 @@
 
 class OFDSHARED_EXPORT CT_PageArea
 {
+public:
     ST_Box physical_box;              // 页面物理区域，
         // 以其左上角为页面空间坐标系的原点。
     ST_Box application_box;           // （可选）显示区域，
@@ -21,10 +22,41 @@ class OFDSHARED_EXPORT CT_PageArea
 public:
     friend class OFDParser;
     CT_PageArea(){}
-    ST_Box getPhysicalBox() { return physical_box; }
-    ST_Box getApplicationBox() { return application_box; }
-    ST_Box getContentBox() { return content_box; }
-    ST_Box getBleedBox() { return bleed_box; }
+    ST_Box getPhysicalBox() {
+        return physical_box;
+    }
+
+    void setPhysicalBox(double _start_x, double _start_y, double _delta_x, double _delta_y) {
+        ST_Box b(_start_x, _start_y, _delta_x, _delta_y);
+        physical_box = b;
+    }
+
+    ST_Box getApplicationBox() {
+        return application_box;
+    }
+
+    void setApplicationBox(double _start_x, double _start_y, double _delta_x, double _delta_y) {
+        ST_Box b(_start_x, _start_y, _delta_x, _delta_y);
+        application_box = b;
+    }
+
+    ST_Box getContentBox() {
+        return content_box;
+    }
+
+    void setContentBox(double _start_x, double _start_y, double _delta_x, double _delta_y) {
+        ST_Box b(_start_x, _start_y, _delta_x, _delta_y);
+        content_box = b;
+    }
+
+    ST_Box getBleedBox() {
+        return bleed_box;
+    }
+
+    void setBleedBox(double _start_x, double _start_y, double _delta_x, double _delta_y) {
+        ST_Box b(_start_x, _start_y, _delta_x, _delta_y);
+        bleed_box = b;
+    }
 };
 
 #endif // CT_PAGEAREA_H

@@ -5,6 +5,8 @@
 #include <QVector>
 #include "../ofd_global.h"   // 生成库文件时需要
 #include <QDebug>
+#include <QMap>
+#include "../ofdexceptions.h"
 
 //6种基本数据类型
 class OFDSHARED_EXPORT ST_Loc {
@@ -104,14 +106,8 @@ public: //对QStringList的一些简单封装（在有需要时再拓展接口�
     }
 };
 
-class ID_Table {    //为方便ID的管理，为两者建一个基类
-protected:
-    static QVector<int> id_set;     //凡是出现过的ID，全都在其中记录
-};
 
-
-
-class OFDSHARED_EXPORT ST_ID : public ID_Table {
+class OFDSHARED_EXPORT ST_ID {
     long id;
     bool is_null;
 public:
@@ -121,20 +117,19 @@ public:
     }
 
     ST_ID(int _id) {
-        if (id_set.contains(_id)){
-            //！！！出现重复ID，报错处理
-        }
         id = _id;
         is_null = false;
+
     }
     operator long() { return id; }
     long getID() { return id; }
     bool isNull() {
         return is_null;
     }
+
 };
 
-class OFDSHARED_EXPORT ST_RefID : public ID_Table {
+class OFDSHARED_EXPORT ST_RefID {
     long ref_id;
     bool is_null;
 public:
@@ -143,10 +138,8 @@ public:
         ref_id = 0;
     }
     ST_RefID(int _ref_id) {
-        if (!id_set.contains(_ref_id)){
-            //！！！不存在的ID，报错处理
-        }
         ref_id = _ref_id;
+        is_null = false;
     }
     operator long() { return ref_id; }
     long getRefID() { return ref_id; }
@@ -187,15 +180,47 @@ public:
     bool isNull() { return is_null; }
 };
 
+class CT_Base;
+
+class OFDSHARED_EXPORT ID_Table {    //为方便ID的管理，为两者建一个基类
+private:
+    QMap<int, CT_Base *> id_pool;     //凡是出现过的ID，全都在其中记录
+public:
+    friend class ST_ID;
+    friend class ST_RefID;
+
+    CT_Base * getItem(int key);        //若该key对应的东西不存在，则返回空指针
+
+    bool contains(int key);
+
+    int key(CT_Base * value);         //返回以value为值的键值。若不存在，则返回0
+
+    CT_Base * remove(int key);         //从集合中删去键值为key的元素，并将其返回。若不存在，则返回空指针
+
+    //bool insert(int key, CT_Base * value);         //向集合中添加一项，若成功则返回true,否则返回false
+
+    int size();                         //返回集合中项的个数
+
+    bool registerItem(ST_ID key, CT_Base * value);        //在集合中注册一个新的ID，若成功返回true，否则返回false
+    bool registerItem(int key, CT_Base * value);          //重载
+};
 
 class OFDSHARED_EXPORT CT_Base { //所有含有ID属性的元素的基类
     ST_ID id;
 public:
+
     ST_ID getID() {
         return id;
     }
-    void setID(ST_ID new_id) {
+
+    void setID(ST_ID new_id, ID_Table * _id_table) {
+        if (_id_table->contains(new_id.getID()))
+            throw InvalidIDException("试图注册重复的ID: " + QString::number(new_id));
         id = new_id;
+        _id_table->registerItem(new_id.getID(), this);
     }
+
 };
+
+
 #endif // COMMONDT_H

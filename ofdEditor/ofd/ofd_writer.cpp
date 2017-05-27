@@ -10,8 +10,7 @@ void OFDWriter::createFile() {
     current_file = new QFile(current_path.getPath());
 //    qDebug() << current_path.getPath() << endl;
     if (!current_file->open(QFile::WriteOnly | QFile::Text)) {
-        qDebug() << "Error: Cannot write file.";
-        abort();
+        throw WritingFileException("无法打开或创建XML文件: " + current_path.getPath());
     }
     writer.setDevice(current_file);
 }
@@ -35,8 +34,7 @@ void OFDWriter::writeOFD() {
         if (!cur_docinfo->getDocID().isNull()) {
             writer.writeTextElement("ofd:DocID", cur_docinfo->getDocID());
         } else {
-            //Error!
-            abort();
+            throw WritingFormatException("DocInfo类型数据缺少必要的成员DocID");
         }
         if (!cur_docinfo->getTitle().isNull()) {
             writer.writeTextElement("ofd:Title", cur_docinfo->getTitle());
@@ -92,16 +90,10 @@ void OFDWriter::writeOFD() {
     //修改current_file
     ST_Loc cur_path = current_path;
     for (int i = 0; i < data->getDocBodies()->size(); i++) {
-//        qDebug() << "To write Document.xml..." << endl;
-//        qDebug() << "cur_path = " << cur_path << endl;
         ST_Loc p("Document",
                  data->getDocBodies()->at(i)->getDocRoot().getRelativePath(), cur_path);
         current_path = p;
-//        qDebug() << "current_path = " << current_path << endl;
-        QDir dir(cur_path.getPath());
-
-        QString str;
-        dir.mkdir("Doc_" + str.setNum(i));
+        makePath(current_path);
         writeDocument(data->getDocuments()->at(i));
     }
 }
@@ -122,16 +114,14 @@ void OFDWriter::writeDocument(Document * data) {
             writer.writeTextElement("ofd:MaxUnitID",
                                     QString::number(cur_common_data->getMaxUnitID().getID()));
         } else {
-            //Error!
-            abort();
+            throw WritingFormatException("CT_CommonData类型数据缺少必要的成员MaxUnitID");
         }
         if (cur_common_data->getPageArea()) {
             writer.writeStartElement("ofd:PageArea");
             writePageArea(cur_common_data->getPageArea());
             writer.writeEndElement();   //ofd:PageArea
         } else {
-            //Error!
-            abort();
+            throw WritingFormatException("CT_CommonData类型数据缺少必要的成员PageArea");
         }
 
         for (int i = 0; i < data->getCommonData()->getPublicRes()->size(); i++) {
@@ -141,8 +131,7 @@ void OFDWriter::writeDocument(Document * data) {
         //TemplatePage & DefaultCS to be implemented
         writer.writeEndElement();   //ofd:CommonData
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("Document类型数据缺少必要的成员CommonData");
     }
     //写Pages
     if (data->getPages()) {
@@ -157,8 +146,7 @@ void OFDWriter::writeDocument(Document * data) {
         }
         writer.writeEndElement();   //ofd:Pages
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("Document类型数据缺少必要的成员Pages");
     }
     //写CustomTags
     if (!data->getCustomTags().isNull()) {
@@ -170,23 +158,16 @@ void OFDWriter::writeDocument(Document * data) {
     current_file->close();
     ST_Loc cur_path = current_path;
     for (int i = 0; i < data->getPages()->getPages()->size(); i++) {
-//        qDebug() << "To write Page.xml..." << endl;
-//        qDebug() << "cur_path = " << cur_path << endl;
-        if (i == 0) {
-            QDir dir(cur_path.getPath().remove("Document.xml"));
-            dir.mkdir("Pages");
-        }
         ST_Loc p("Page", data->getPages()->getPages()->at(i)->
                  getBaseLoc().getRelativePath(), cur_path);
         current_path = p;
-//        qDebug() << "current_path = " << current_path << endl;
-        QDir dir(cur_path.getPath().remove("Document.xml").append("Pages\\"));
-        dir.mkdir("Page_" + QString::number(i));
+        makePath(current_path);
         writePage(data->getPages()->getPages()->at(i));
     }
     for (int i = 0; i < data->getPublicRes()->size(); i++) {
         ST_Loc p("PublicRes", data->getPublicRes()->at(i)->getBaseLoc().getRelativePath(), cur_path);
         current_path = p;
+        makePath(current_path);
         writeRes(data->getPublicRes()->at(i));
     }
     //write CustomTags to be implemented
@@ -251,8 +232,7 @@ void OFDWriter::writeRes(Res * data) {
     if (!data->getBaseLoc().isNull()) {
         writer.writeAttribute("BaseLoc", data->getBaseLoc().getRelativePath());
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("Res类型数据缺少必要的属性BaseLoc");
     }
     //写成员
     if (data->getColorSpaces()->size()) {
@@ -301,8 +281,7 @@ void OFDWriter::writePageArea(CT_PageArea * cur_page_area) {
                                 QString::number(b.getDeltaX())+ " " +
                                 QString::number(b.getDeltaY()));
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_PageArea类型数据缺少必要的成员PhysicalBox");
     }
     if (!cur_page_area->getApplicationBox().isNull()) {
         ST_Box b = cur_page_area->getApplicationBox();
@@ -376,17 +355,16 @@ void OFDWriter::writeTextObject(CT_Text * cur_text) {
     writeGraphicUnitMemebers(cur_text);
     //CGTransform to be implemented
     if (cur_text->getTextCode()) {
-        TextCode * cur_textcode = cur_text->getTextCode();
-        writer.writeStartElement("ofd:TextCode");
-        QXmlStreamAttributes a = getAttributes(cur_textcode);
-//        qDebug() << "Checkpoint 6 reached.";
-        writer.writeAttributes(a);
-//        qDebug() << "Checkpoint 7 reached.";
-        writer.writeCharacters(cur_textcode->getText());
-        writer.writeEndElement();   //ofd:TextCode
+        QVector<TextCode *> * cur_textcode = cur_text->getTextCode();
+        for (int i = 0; i < cur_textcode->size(); i++) {
+            writer.writeStartElement("ofd:TextCode");
+            QXmlStreamAttributes a = getAttributes(cur_textcode->at(i));
+            writer.writeAttributes(a);
+            writer.writeCharacters(cur_textcode->at(i)->getText());
+            writer.writeEndElement();   //ofd:TextCode
+        }
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Text类型数据缺少必要的成员TextObject");
     }
 }
 
@@ -401,8 +379,7 @@ void OFDWriter::writePathObject(CT_Path * cur_path) {
                                 cur_path->getAbbreviatedData());
 //        qDebug() << "????";
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Path类型数据缺少必要的成员AbbreviatedData");
     }
 }
 
@@ -444,8 +421,7 @@ void OFDWriter::writeBase(CT_Base * cur_base) {
     if (!cur_base->getID().isNull()) {
         writer.writeAttribute("ID", QString::number(cur_base->getID().getID()));
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Base类型数据缺少必要的属性ID");
     }
 }
 
@@ -485,14 +461,12 @@ QXmlStreamAttributes getAttributes(OFD * data) {
     if (!data->getDocType().isNull()) {
         a.append("DocType", data->getDocType());
     } else {
-        //Error
-        abort();
+        throw WritingFormatException("OFD类型数据缺少必要的属性DocType");
     }
     if (!data->getOfdVersion().isNull()) {
         a.append("Version", data->getOfdVersion());
     } else {
-        //Error
-        abort();
+        throw WritingFormatException("OFD类型数据缺少必要的属性Version");
     }
     return a;
 }
@@ -518,8 +492,7 @@ QXmlStreamAttributes getAttributes(CT_GraphicUnit * cur_graphic_unit) {
                  QString::number(b.getDeltaX()) + " " +
                  QString::number(b.getDeltaY()));
     } else {
-        //Error
-        abort();
+        throw WritingFormatException("CT_GraphicUnit类型数据缺少必要的属性Boundary");
     }
 
     if (!cur_graphic_unit->getName().isNull()) {
@@ -568,15 +541,13 @@ QXmlStreamAttributes getAttributes(CT_Text * cur_text) {
     if (!cur_text->getFont().isNull()) {
         a.append("Font", QString::number(cur_text->getFont().getRefID()));
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Text类型数据缺少必要的属性Font");
     }
 
     if (cur_text->sizeUsed()) {
         a.append("Size", QString::number(cur_text->getSize()));
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Text类型数据缺少必要的属性Size");
     }
     //Stroke属性不为默认值false时才显示
     if (cur_text->getStroke()) {
@@ -637,8 +608,7 @@ QXmlStreamAttributes getAttributes(CT_Image * cur_image) {
     if (!cur_image->getResourceID().isNull()) {
         a.append("ResourceID", QString::number(cur_image->getResourceID().getRefID()));
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Image类型数据缺少必要的属性ResourceID");
     }
     if (!cur_image->getSubstitution().isNull()) {
         a.append("Substitution", QString::number(cur_image->getSubstitution().getRefID()));
@@ -650,8 +620,7 @@ QXmlStreamAttributes getAttributes(CT_ColorSpace * cur_colorspace) {
     if (!cur_colorspace->getType().isNull()) {
         a.append("Type", cur_colorspace->getType());
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_ColorSpace类型数据缺少必要的属性Type");
     }
     if (cur_colorspace->getBitsPerComponent() != 8) {
         a.append("BitsPerComponent", QString::number(cur_colorspace->getBitsPerComponent()));
@@ -695,8 +664,7 @@ QXmlStreamAttributes getAttributes(CT_Font * cur_font) {
     if (!cur_font->getFontName().isNull()) {
         a.append("FontName", cur_font->getFontName());
     } else {
-        //Error!
-        abort();
+        throw WritingFormatException("CT_Font类型数据缺少必要的属性FontName");
     }
     if (!cur_font->getFamilyName().isNull()) {
         a.append("FamilyName", cur_font->getFamilyName());
@@ -717,4 +685,16 @@ QXmlStreamAttributes getAttributes(CT_Font * cur_font) {
         a.append("FixedWidth", "true");
     }
     return a;
+}
+
+void OFDWriter::makePath(ST_Loc path) {
+    QString path_str = path.getPath();
+    int n = 0;
+    while (path_str[path_str.length() - n - 1] != '\\')
+        n++;
+    path_str.chop(n);
+    //qDebug() << path_str;
+    if (!QDir().mkpath(path_str)) {
+        throw WritingFileException("无法创建文件路径: " + path.getPath());
+    }
 }

@@ -1,6 +1,8 @@
 #include "ZipTool.h"
 #include <QFile>
+#include <QDir>
 #include <QFileInfoList>
+#include <QDebug>
 
 #include "JlCompress.h"     // 压缩文件库
 
@@ -137,6 +139,28 @@ void ZipTool::deleteFolder(const QString &folderFullPath)
     /*删除目标文件夹,
      * 如果只是清空文件夹folderFullPath的内容
      * 而不删除folderFullPath本身,则删掉本行即可  */
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  将文件名按照一定规则转换成文件夹名
+ * @param  const QString &filePath
+ * @return QString
+ * @date   2017/05/22
+ */
+QString ZipTool::FilePathToFloderPath(const QString &filePath)
+{
+
+    QString fileName = filePath.section('/',-1);  // 依据分隔符获得文件名
+    fileName = fileName.replace(QString("."),QString("_")); // 将 . 替换成　＿
+//    qDebug() << fileName;
+    QDir temp = QDir::temp();
+    temp.mkdir(fileName );          // 创建临时文件夹
+    temp.cd(fileName );             // 进入临时文件夹
+//    qDebug() << temp.cd("%"+fileName +"%");
+//    qDebug() << temp.path();    // 测试临时目录
+    return temp.path();
+
 }
 
 
