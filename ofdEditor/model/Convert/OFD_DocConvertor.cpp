@@ -136,7 +136,7 @@ void OFD_DocConvertor::insertLayer(DocPage *page, CT_Layer *layer)
  * @param  CT_Layer *layer
  * @param  CT_PageBlock*
  * @return 返回值
- * @date   2017/xx/xx
+ * @date   2017/05/23
  */
 void OFD_DocConvertor::insertPageBlock(DocPage *page,
                                        CT_Layer *layer,
@@ -146,18 +146,6 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
     QString cttype = layer->getType();        // 首先获得层
 
     DocPage::Layer doctype;
-//    switch (cttype) {
-//    case "Foreground":
-//        doctype = DocPage::Foreground;
-//        break;
-//    case "Body":
-//        doctype = DocPage::Body;
-//        break;
-//    case "Background":
-//        doctype = DocPage::Background;
-//    default:
-//        break;
-//    }
 
     // 获得关于层的概念
     if(cttype == "Foreground")

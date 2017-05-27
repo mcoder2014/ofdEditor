@@ -10,6 +10,7 @@
 #include <QString>
 #include <QDebug>
 #include <QFontDialog>
+#include <QColorDialog>
 
 
 DocTextBlock::DocTextBlock(QWidget *parent)
@@ -175,6 +176,28 @@ void DocTextBlock::textParagraph()
 
     para->exec();
 }
+/**
+ * @Author Chaoqun
+ * @brief  弹出一个框，设置字体颜色，设置好了以后，将该属性应用到选中的文字中
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/27
+ */
+void DocTextBlock::setTextColor()
+{
+
+    QColor color = QColorDialog::getColor(this->textColor(),
+                                          nullptr,
+                                          tr("Choose a Color"),
+                                          QColorDialog::ShowAlphaChannel);
+
+    if(!color.isValid())
+        return;
+    QTextCharFormat charFormat;
+    charFormat.setForeground(color);        // 设置颜色
+    mergeCurrentCharFormat(charFormat);
+
+}
 
 /**
  * @Author Chaoqun
@@ -271,6 +294,16 @@ void DocTextBlock::setCharFormatOnWordOrSelection(
  */
 void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
 {
+
+    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
+    this->ContextMenu->addAction(this->actionBold);      // 加粗
+    this->ContextMenu->addAction(this->actionItalic);    // 斜体
+    this->ContextMenu->addAction(this->actionUnderline); // 下划线
+    this->ContextMenu->addAction(this->actionColor);     // 颜色
+    this->ContextMenu->addSeparator();  // 分界线
+    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
+    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
+    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
 
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
@@ -377,6 +410,13 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionUnderline, &QAction::triggered,
                   this,&DocTextBlock::textUnderline);
 
+    // 设置字体颜色
+    this->actionColor = new QAction(tr("Color"));
+    this->actionColor->setPriority(QAction::LowPriority);
+
+    this->connect(this->actionColor,&QAction::triggered,
+                  this,&DocTextBlock::setTextColor);
+
     // 字体
     this->actionFontSet = new QAction(tr("Font"));
     this->actionFontSet->setPriority(QAction::LowPriority);
@@ -396,15 +436,16 @@ void DocTextBlock::initAcitons()
                   this, &DocTextBlock::customFontDialog);
 
     // 右键菜单
-    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
-    this->ContextMenu->addAction(this->actionBold);
-    this->ContextMenu->addAction(this->actionItalic);
-    this->ContextMenu->addAction(this->actionUnderline);
-    this->ContextMenu->addSeparator();
-    this->ContextMenu->addAction(this->actionFontSet);
-    this->ContextMenu->addAction(this->actionParagraph);
+//    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
+//    this->ContextMenu->addAction(this->actionBold);      // 加粗
+//    this->ContextMenu->addAction(this->actionItalic);    // 斜体
+//    this->ContextMenu->addAction(this->actionUnderline); // 下划线
+//    this->ContextMenu->addAction(this->actionColor);     // 颜色
+//    this->ContextMenu->addSeparator();  // 分界线
+//    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
+//    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
+//    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
 
-    this->ContextMenu->addAction(this->actionFontSetTest);
 }
 
 

@@ -28,13 +28,13 @@ public:
 
 public slots:
     void textBold();            // 粗体
-    void textUnderline();
-    void textItalic();
-    void textParagraph();     // 设置段落
+    void textUnderline();       // 下划线
+    void textItalic();          // 斜体
+    void textParagraph();       // 设置段落
 //    void textFamily(const QString &f);
 //    void textSize(const QString &p);
 //    void textStyle(int styleIndex);
-//    void textColor();
+    void setTextColor();           // 设置字体颜色
 //    void textAlign(QAction *a);
     void textFontDialog();      // 通过字体小窗口设置字体
     void customFontDialog();    // 自定义的字体窗口设置
@@ -73,6 +73,7 @@ private:
     QAction * actionBold;       // 加粗
     QAction * actionUnderline;  // 下划线
     QAction * actionItalic;     // 斜体
+    QAction * actionColor;      // 设置颜色
     QAction * actionFontSet;    // 设置字体
     QAction * actionParagraph;  // 设置段落
 

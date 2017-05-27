@@ -47,7 +47,8 @@ SOURCES += model.cpp \
     Widget/ParagraphFormatWidget.cpp \
     Widget/ParagraphFormatDialog.cpp \
     Widget/FontSettingDialog.cpp \
-    Convert/OFD_DocConvertor.cpp
+    Convert/OFD_DocConvertor.cpp \
+    Convert/MergeCT_Texts.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -74,7 +75,8 @@ HEADERS += model.h\
     Widget/ParagraphFormatWidget.h \
     Widget/ParagraphFormatDialog.h \
     Widget/FontSettingDialog.h \
-    Convert/OFD_DocConvertor.h
+    Convert/OFD_DocConvertor.h \
+    Convert/MergeCT_Texts.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
