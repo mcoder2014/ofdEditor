@@ -57,6 +57,30 @@ public:
         delete custom_datas;
     }
 
+/**
+ * @Author Chaoqun
+ * @brief  深拷贝函数，暂时没有去管custom_data
+ * @param  CT_DocInfo &info
+ * @return void
+ * @date   2017/05/27
+ */
+    void copy(CT_DocInfo &info)
+    {
+        this->doc_id = info.doc_id;
+        this->title = info.title;
+        this->author = info.author;
+        this->subject = info.subject;
+        this->abstract = info.abstract;
+        this->creation_date = info.creation_date;
+        this->mod_date = info.mod_date;
+        this->doc_usage = info.doc_usage;
+        this->cover = info.cover;
+        this->creator = info.creator;
+        this->creator_version = info.creator_version;
+
+        // custom_datas暂时不考虑
+    }
+
     QString getDocID() {
         return doc_id;
     }

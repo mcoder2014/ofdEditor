@@ -34,18 +34,20 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         passage = new DocPassage();
 
         // version
-        passage->setVersion(ofd->version);
-        passage->setDocType(ofd->doc_type);
+        passage->setVersion(ofd->getOfdVersion());
+        passage->setDocType(ofd->getDocType());
 
-        DocBody * docBody = (*ofd->docbodys)[0];        // DocBody
-        passage->setDocInfo(*(docBody->doc_info));
+        QVector<DocBody* > * bodys = ofd->getDocBodies();
+        DocBody * docBody = (*bodys)[0];        // DocBody
+        passage->setDocInfo(*(docBody->getDocInfo()));
 
-        Document * document = (*ofd->docs)[0];          // Document
+        Document * document = (*(ofd->getDocuments()))[0];          // Document
 
-        CT_CommonData * commonData = document->getCommonData();     // 获取common_data
+//        CT_CommonData * commonData = document->getCommonData();     // 获取common_data
 
         //    CT_Pages pages = document->pages;               // 获得文档中的页
-        QVector<Page * > * pages = document->pages->pages; // 获得页属性
+        QVector<Page * > * pages = document->getPages()->getPages(); // 获得页属性
+
         for(int i = 0; i <pages->length(); i++)
         {
 
@@ -71,9 +73,12 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
         if(ct_page->area != NULL)
         {
             // 如果定义了纸张尺寸
-            ST_Box physical_box = ct_page->area->physical_box;
-            page = new DocPage(physical_box.getDeltaX(),
-                               physical_box.getDeltaY(),
+
+            CT_PageArea* area = ct_page->getArea();      // 获得空间
+
+            // 物理空间
+            page = new DocPage(area->getPhysicalBox().getDeltaX(),
+                               area->getPhysicalBox().getDeltaY(),
                                1.0);       // 设置纸张大小
         }
         else
@@ -84,7 +89,7 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
         page->setVisible(false);        // 先隐藏显示
 
         // 将每一层加入到页中
-        QVector<CT_Layer *>* layers = ct_page->content;     // 获得文章中的层信息
+        QVector<CT_Layer *>* layers = ct_page->getContent();     // 获得文章中的层信息
         for(int i = 0; i < layers->size(); i++)
         {
             CT_Layer* layer = (*layers)[i];
@@ -133,23 +138,41 @@ void OFD_DocConvertor::insertLayer(DocPage *page, CT_Layer *layer)
  * @return 返回值
  * @date   2017/xx/xx
  */
-void OFD_DocConvertor::insertPageBlock(DocPage *page, CT_Layer *layer, CT_PageBlock *pageBlock)
+void OFD_DocConvertor::insertPageBlock(DocPage *page,
+                                       CT_Layer *layer,
+                                       CT_PageBlock *pageBlock)
 {
 
-    CT_Layer::LayerType cttype = layer->type;        // 首先获得层
+    QString cttype = layer->getType();        // 首先获得层
+
     DocPage::Layer doctype;
-    switch (cttype) {
-    case CT_Layer::Foreground:
+//    switch (cttype) {
+//    case "Foreground":
+//        doctype = DocPage::Foreground;
+//        break;
+//    case "Body":
+//        doctype = DocPage::Body;
+//        break;
+//    case "Background":
+//        doctype = DocPage::Background;
+//    default:
+//        break;
+//    }
+
+    // 获得关于层的概念
+    if(cttype == "Foreground")
+    {
         doctype = DocPage::Foreground;
-        break;
-    case CT_Layer::Body:
-        doctype = DocPage::Body;
-        break;
-    case CT_Layer::Background:
-        doctype = DocPage::Background;
-    default:
-        break;
     }
+    else if(cttype == "Body")
+    {
+        doctype = DocPage::Body;
+    }
+    else if(cttype == "Background")
+    {
+        doctype = DocPage::Background;
+    }
+
 
     // 处理 CT_Text
     QVector <CT_Text *> * texts = pageBlock->getTextObject();
@@ -179,9 +202,12 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 {
 //    qDebug() << "execute insert CT_Text";
 
-    TextCode* textCode = text->text_code;   // 获得text_code;
+    QVector<TextCode *>* textCodes = text->getTextCode();
+
+    TextCode* textCode = (*textCodes)[0];   // 获得text_code[0];
+
     // 先简单点
-    QString content = textCode->text;     // 文本内容
+    QString content = textCode->getText();     // 文本内容
 
 //    qDebug() << "insert Content:" << content;
 
@@ -189,7 +215,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
     DocBlock *block = new DocBlock();
     block->setWidget(textBlock);
 
-    ST_Box box = text->boundary;
+    ST_Box box = text->getBoundary();
     block->resize(UnitTool::mmToPixel(box.getDeltaX()),
                   UnitTool::mmToPixel(box.getDeltaY()));
     block->setPos(UnitTool::mmToPixel(box.getX()),
@@ -215,7 +241,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
     QFont font = charFormat.font();         // 字体
 
     // 字号
-    font.setPixelSize(UnitTool::mmToPixel(text->size));            // 字号
+    font.setPixelSize(UnitTool::mmToPixel(text->getSize()));            // 字号
 
     // 上下间距
     blockFormat.setTopMargin(0);

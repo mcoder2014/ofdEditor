@@ -34,6 +34,8 @@ public:
     void resize(qreal w, qreal h);      // 继承函数
     void resize(const QSizeF &size);    // 继承函数
 
+    void setZValue(qreal z);            // 继承该函数
+
 protected:
 
     void paint(QPainter *painter,
@@ -60,6 +62,7 @@ private:
     bool isFocused;         // 是否被聚焦
     bool blockIsResizing;     // 是否正在改变大小
     bool isInResizeArea(const QPointF& pos);    // 检查鼠标是否在重置大小区域
+    qreal realZValue;       //真是的z值
 
 public:
     RectAdjustStatus currentStatus(const QPointF& pos);     // 鼠标所在位置可以进行什么调整

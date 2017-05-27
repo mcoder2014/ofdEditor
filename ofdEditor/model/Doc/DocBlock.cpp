@@ -84,6 +84,19 @@ void DocBlock::resize(const QSizeF &size)
     this->blockSize.setHeight(size.height());
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置Z坐标的同时存下记录
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/27
+ */
+void DocBlock::setZValue(qreal z)
+{
+    QGraphicsProxyWidget::setZValue(z);
+    this->realZValue = z;                   // 设置本地记录
+}
+
 
 /**
  * @Author Chaoqun
@@ -105,18 +118,35 @@ void DocBlock::paint(QPainter *painter,
 
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  被聚焦后的操作
+ * @param  QFocusEvent *event
+ * @return void
+ * @date   2017/05/27
+ */
 void DocBlock::focusInEvent(QFocusEvent *event)
 {
     QGraphicsProxyWidget::focusInEvent(event);
     this->isFocused = true;
+
+    QGraphicsProxyWidget::setZValue(2000);          // 临时呼叫到最高层
     this->update();     // 呼叫更新
 
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  聚焦移出事件响应
+ * @param  QFocusEvent *event
+ * @return void
+ * @date   2017/05/27
+ */
 void DocBlock::focusOutEvent(QFocusEvent *event)
 {
     QGraphicsProxyWidget::focusOutEvent(event);
     this->isFocused = false;
+    QGraphicsProxyWidget::setZValue(this->realZValue);    // 还原到真实的Z坐标
     this->update();
 
 }
