@@ -51,7 +51,7 @@ public :
     //Other methods to be implemented
 
     CT_ColorSpace(int _id = 0,
-                  ID_Table * id_table = nullptr,
+                  ID_Table * id_table = NULL,
                   QString _type = "RGB",
                   int _bits_per_component = 8,
                   QString _profile = "") {

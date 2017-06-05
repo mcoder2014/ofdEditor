@@ -10,6 +10,7 @@
 #include <QString>
 #include <QDebug>
 #include <QFontDialog>
+#include <QColorDialog>
 
 
 DocTextBlock::DocTextBlock(QWidget *parent)
@@ -175,6 +176,28 @@ void DocTextBlock::textParagraph()
 
     para->exec();
 }
+/**
+ * @Author Chaoqun
+ * @brief  弹出一个框，设置字体颜色，设置好了以后，将该属性应用到选中的文字中
+ * @param  参数
+ * @return 返回值
+ * @date   2017/05/27
+ */
+void DocTextBlock::setTextColor()
+{
+
+    QColor color = QColorDialog::getColor(this->textColor(),
+                                          NULL,
+                                          tr("Choose a Color"),
+                                          QColorDialog::ShowAlphaChannel);
+
+    if(!color.isValid())
+        return;
+    QTextCharFormat charFormat;
+    charFormat.setForeground(color);        // 设置颜色
+    mergeCurrentCharFormat(charFormat);
+
+}
 
 /**
  * @Author Chaoqun
@@ -193,9 +216,8 @@ void DocTextBlock::textFontDialog()
     QFont oldFont = currentFormat.font();   // 获取之前的字体样式
 
     QFont newFont = QFontDialog::getFont(
-                &btn_ok, oldFont,NULL,tr("Set the font"),
-                QFontDialog::ScalableFonts|QFontDialog::NonScalableFonts
-    |QFontDialog::MonospacedFonts|QFontDialog::ProportionalFonts);    // 选择字体框
+                &btn_ok, oldFont,NULL,tr("Set the font")
+                );    // 选择字体框
 
     if(btn_ok)
     {
@@ -272,6 +294,16 @@ void DocTextBlock::setCharFormatOnWordOrSelection(
 void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
 {
 
+    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
+    this->ContextMenu->addAction(this->actionBold);      // 加粗
+    this->ContextMenu->addAction(this->actionItalic);    // 斜体
+    this->ContextMenu->addAction(this->actionUnderline); // 下划线
+    this->ContextMenu->addAction(this->actionColor);     // 颜色
+    this->ContextMenu->addSeparator();  // 分界线
+    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
+    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
+    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
+
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
 
@@ -328,12 +360,12 @@ void DocTextBlock::init()
 
 
     // 连接当前charFormat改变函数
-    connect(this, &DocTextBlock::currentCharFormatChanged,
-            this, &DocTextBlock::currentCharFormatChangedEvent);
+    connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)),
+            this, SLOT(currentCharFormatChangedEvent(QTextCharFormat)));
 
     // 连接当前光标位置改变事件
-    connect(this, &DocTextBlock::cursorPositionChanged,
-            this, &DocTextBlock::cursorPositionChangedEvent);
+    connect(this, SIGNAL(cursorPositionChanged()),
+            this, SLOT(cursorPositionChangedEvent()));
 
     this->initAcitons();    // 初始化QAction相关
 }
@@ -348,63 +380,71 @@ void DocTextBlock::init()
 void DocTextBlock::initAcitons()
 {
     // 粗体
-    this->actionBold = new QAction(tr("Bold"));
+    this->actionBold = new QAction(tr("Bold"),NULL);
     this->actionBold->setPriority(QAction::LowPriority);
     QFont bold;
     bold.setBold(true);
     this->actionBold->setFont(bold);
 
-    this->connect(this->actionBold,&QAction::triggered,
-                  this,&DocTextBlock::textBold);
+    this->connect(this->actionBold,SIGNAL(triggered()),
+                  this,SLOT(textBold()));
 
     // 斜体
-    this->actionItalic = new QAction(tr("Italic"));
+    this->actionItalic = new QAction(tr("Italic"),NULL);
     this->actionItalic->setPriority(QAction::LowPriority);
     QFont italic;
     italic.setItalic(true);
     this->actionItalic->setFont(italic);
 
-    this->connect(this->actionItalic,&QAction::triggered,
-                  this,&DocTextBlock::textItalic);
+    this->connect(this->actionItalic,SIGNAL(triggered()),
+                  this,SLOT(textItalic()));
 
     // 下划线
-    this->actionUnderline = new QAction(tr("Underline"));
+    this->actionUnderline = new QAction(tr("Underline"),NULL);
     this->actionUnderline->setPriority(QAction::LowPriority);
     QFont underline;
     underline.setUnderline(true);
     this->actionUnderline->setFont(underline);
 
-    this->connect(this->actionUnderline, &QAction::triggered,
-                  this,&DocTextBlock::textUnderline);
+    this->connect(this->actionUnderline, SIGNAL(triggered()),
+                  this,SLOT(textUnderline()));
+
+    // 设置字体颜色
+    this->actionColor = new QAction(tr("Color"),NULL);
+    this->actionColor->setPriority(QAction::LowPriority);
+
+    this->connect(this->actionColor,SIGNAL(triggered()),
+                  this,SLOT(setTextColor()));
 
     // 字体
-    this->actionFontSet = new QAction(tr("Font"));
+    this->actionFontSet = new QAction(tr("Font"),NULL);
     this->actionFontSet->setPriority(QAction::LowPriority);
 
-    this->connect(this->actionFontSet,&QAction::triggered,
-                  this,&DocTextBlock::textFontDialog);
+    this->connect(this->actionFontSet,SIGNAL(triggered()),
+                  this,SLOT(textFontDialog()));
 
     // 段落
-    this->actionParagraph = new QAction(tr("Paragraph"));
-    this->connect(this->actionParagraph,&QAction::triggered,
-                  this,&DocTextBlock::textParagraph);
+    this->actionParagraph = new QAction(tr("Paragraph"),NULL);
+    this->connect(this->actionParagraph,SIGNAL(triggered()),
+                  this,SLOT(textParagraph()));
 
 
     // 字体窗口测试
-    this->actionFontSetTest = new QAction(tr("FontDialogTest"));
-    this->connect(this->actionFontSetTest, &QAction::triggered,
-                  this, &DocTextBlock::customFontDialog);
+    this->actionFontSetTest = new QAction(tr("FontDialogTest"),NULL);
+    this->connect(this->actionFontSetTest, SIGNAL(triggered()),
+                  this, SLOT(customFontDialog()));
 
     // 右键菜单
-    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
-    this->ContextMenu->addAction(this->actionBold);
-    this->ContextMenu->addAction(this->actionItalic);
-    this->ContextMenu->addAction(this->actionUnderline);
-    this->ContextMenu->addSeparator();
-    this->ContextMenu->addAction(this->actionFontSet);
-    this->ContextMenu->addAction(this->actionParagraph);
+//    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
+//    this->ContextMenu->addAction(this->actionBold);      // 加粗
+//    this->ContextMenu->addAction(this->actionItalic);    // 斜体
+//    this->ContextMenu->addAction(this->actionUnderline); // 下划线
+//    this->ContextMenu->addAction(this->actionColor);     // 颜色
+//    this->ContextMenu->addSeparator();  // 分界线
+//    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
+//    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
+//    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
 
-    this->ContextMenu->addAction(this->actionFontSetTest);
 }
 
 

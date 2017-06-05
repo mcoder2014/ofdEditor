@@ -31,7 +31,7 @@ public:
     CT_Color(QString _value = "",
              int _index = 0,
              int _color_space = 0,
-             ID_Table * _id_table = nullptr,
+             ID_Table * _id_table = NULL,
              int _alpha = 255) {
         if (!_value.isNull())
             setValue(_value);
@@ -138,15 +138,15 @@ public:
     friend class OFDParser;
 
     CT_DrawParam(int _relative = 0,
-                 ID_Table * _id_table = nullptr,
+                 ID_Table * _id_table = NULL,
                  double _line_width = 0.353,
                  QString _join = "Miter",
                  QString _cap = "Butt",
                  double _miter_limit = 3.528,
                  double _dash_offset = 0,
                  QString _dash_pattern = "",
-                 CT_Color * _fill_color = nullptr,
-                 CT_Color * _stroke_color = nullptr
+                 CT_Color * _fill_color = NULL,
+                 CT_Color * _stroke_color = NULL
                  ) {
         if (_relative && _id_table)
             setRelative(_relative, _id_table);

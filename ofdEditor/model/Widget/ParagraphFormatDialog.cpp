@@ -137,8 +137,8 @@ ParagraphFormatDialog::ParagraphFormatDialog(
     this->init(blockFormat);
     this->textBlock = textBlock;        // 留下引用，仅用来连接信号槽
 
-    connect(this, &ParagraphFormatDialog::finished,
-            this->textBlock,&DocTextBlock::setTextBlockFormat); // 连接信号和信号槽
+    connect(this, SIGNAL(finished(int)),
+            this->textBlock, SLOT(setTextBlockFormat(QTextBlockFormat))); // 连接信号和信号槽
 }
 
 /**
@@ -153,8 +153,8 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
     ui->setupUi(this);
 
     // 此信号槽用来将accepted信号接收，然后通过函数发送finished信号
-    connect(this,&ParagraphFormatDialog::accepted,
-            this,&ParagraphFormatDialog::accept_slots);
+    connect(this,SIGNAL(accepted()),
+            this,SLOT(accept_slots()));
 
     // 设置对齐部分
     Qt::Alignment flag = blockFormat.alignment();       // 先获取对齐的样式

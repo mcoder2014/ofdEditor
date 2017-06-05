@@ -1,6 +1,18 @@
 #include "ofd_writer.h"
 #include <QDebug>
 
+#include "DataTypes/document/OFD.h"
+#include "DataTypes/document/DocBody.h"
+#include "DataTypes/document/CT_DocInfo.h"
+#include "DataTypes/document/Document.h"
+#include "DataTypes/page/Page.h"
+#include "DataTypes/Color/CT_Color.h"
+#include "DataTypes/image/CT_GraphicUnit.h"
+#include "DataTypes/text/TextCode.h"
+#include "DataTypes/text/CT_Text.h"
+#include "DataTypes/image/CT_Path.h"
+#include "DataTypes/image/CT_Image.h"
+
 OFDWriter::OFDWriter(OFD * _data, QString _path) : data(_data),
                          current_path("OFD", _path + "OFD.xml") {
     writeOFD();
@@ -107,7 +119,7 @@ void OFDWriter::writeDocument(Document * data) {
     writer.writeStartElement("ofd:Document");
     writer.writeAttribute("xmlns:ofd", "http://www.ofdspec.org");
     //写CommonData
-    if (data->getCommonData() != nullptr) {
+    if (data->getCommonData() != NULL) {
         writer.writeStartElement("ofd:CommonData");
         CT_CommonData * cur_common_data = data->getCommonData();
         if (!cur_common_data->getMaxUnitID().isNull()) {

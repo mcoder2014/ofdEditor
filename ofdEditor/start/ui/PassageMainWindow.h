@@ -19,11 +19,9 @@ class PassageMainWindow
 public:
     explicit PassageMainWindow(QWidget *parent = 0);
     ~PassageMainWindow();
-
+public slots:
     DocPassage *createMdiChild();       // 创建一个新文档
     DocPassage *activeMdiChild();       // 获取活动的窗口
-
-public slots:
     DocPassage *addDocPassage(DocPassage * passage);
 
 private:
@@ -83,6 +81,7 @@ private:
     void connectAction();       // 链接QAction的相应事件
     void disconnectAction();    // 断开事件响应
 
+private slots:
     void openFile();            // 打开新文件
 
 

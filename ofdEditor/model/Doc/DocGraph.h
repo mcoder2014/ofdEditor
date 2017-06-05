@@ -10,7 +10,7 @@ class MODELSHARED_EXPORT DocGraph
 {
     Q_OBJECT
 public:
-    DocGraph(QObject *parent = Q_NULLPTR);
+    DocGraph(QObject *parent = NULL);
     ~DocGraph();
 };
 

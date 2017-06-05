@@ -21,8 +21,8 @@ FontSettingDialog::FontSettingDialog(DocTextBlock *textBlock
     ui->setupUi(this);
     this->textBlock = textBlock;        // 记录下负责的DocTextBlock
 
-    this->connect(this,&FontSettingDialog::signal_updatePreview,
-                  this,&FontSettingDialog::updatePreview);                  // 更新预览的链接
+    this->connect(this,SIGNAL(signal_updatePreview(QTextCharFormat)),
+                  this,SLOT(updatePreview(QTextCharFormat)));                  // 更新预览的链接
 
     QTextCursor cursor = this->textBlock->textCursor();     // 获得文本的光标
     QTextCharFormat charFormat = cursor.charFormat();       // 获得光标的charFormat
@@ -91,39 +91,40 @@ int FontSettingDialog::comboIndex(double pointSizeF)
  */
 void FontSettingDialog::initConnect()
 {
-    this->connect(this->ui->comboFont, &QFontComboBox::currentFontChanged,
-                  this,&FontSettingDialog::updateFontFamily);               // 链接字体
+    this->connect(this->ui->comboFont,
+                  SIGNAL(currentFontChanged(QFont)),
+                  this,SLOT(updateFontFamily(QFont)));       // 链接字体
 
     this->connect(this->ui->comboFontSize,
-                  static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-                  this, &FontSettingDialog::updateFontSizeF);                // 链接字体大小
+                  SIGNAL(currentIndexChanged(int)),
+                  this, SLOT(updateFontSizeF(int)));                // 链接字体大小
 
-    connect(this->ui->checkBold, &QCheckBox::stateChanged,
-            this,&FontSettingDialog::updateBold);                             // 链接加粗
+    connect(this->ui->checkBold, SIGNAL(stateChanged(int)),
+            this,SLOT(updateBold(int)));                             // 链接加粗
 
-    connect(this->ui->checkItalic, &QCheckBox::stateChanged,
-            this,&FontSettingDialog::updateItalic);                            // 链接斜体
+    connect(this->ui->checkItalic, SIGNAL(stateChanged(int)),
+            this,SLOT(updateItalic(int)));                            // 链接斜体
 
-    connect(this->ui->checkUnderline, &QCheckBox::stateChanged,
-            this,&FontSettingDialog::updateUnderline);                          // 链接下划线
+    connect(this->ui->checkUnderline, SIGNAL(stateChanged(int)),
+            this,SLOT(updateUnderline(int)));                          // 链接下划线
 
-    connect(this->ui->checkFixedWidth, &QCheckBox::stateChanged,
-            this,&FontSettingDialog::updatefixedPitch);                          // 固定字宽
+    connect(this->ui->checkFixedWidth, SIGNAL(stateChanged(int)),
+            this,SLOT(updatefixedPitch(int)));                          // 固定字宽
 
     connect(this->ui->intFontWeight,
-            static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-            this,&FontSettingDialog::updateWeight);                         // 字体粗细
+            SIGNAL(valueChanged(int)),
+            this,SLOT(updateWeight(int)));                         // 字体粗细
 
     connect(this->ui->doubleFontSpace,
-            static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-            this,&FontSettingDialog::updateWordSpacing);                    // 字间距
+            SIGNAL(valueChanged(double)),
+            this,SLOT(updateWordSpacing(double)));                    // 字间距
 
 
-    connect(this, &FontSettingDialog::accepted,
-            this, &FontSettingDialog::accept_slots);                        // 窗口接受确认的信号
+    connect(this, SIGNAL(accepted()),
+            this, SLOT(accept_slots()));                        // 窗口接受确认的信号
 
-    connect(this,&FontSettingDialog::sendFont,
-            this->textBlock,&DocTextBlock::setCharFormatOnWordOrSelection);    // 发送字体
+    connect(this,SIGNAL(sendFont(QTextCharFormat)),
+            this->textBlock,SLOT(setCharFormatOnWordOrSelection(QTextCharFormat)));    // 发送字体
 
 }
 

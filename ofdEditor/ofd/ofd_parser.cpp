@@ -1,6 +1,18 @@
 #include "ofd_parser.h"
 #include <QDebug>
 
+
+#include "DataTypes/document/OFD.h"
+#include "DataTypes/document/DocBody.h"
+#include "DataTypes/document/CT_DocInfo.h"
+#include "DataTypes/document/Document.h"
+#include "DataTypes/page/Page.h"
+#include "DataTypes/Color/CT_Color.h"
+#include "DataTypes/image/CT_GraphicUnit.h"
+#include "DataTypes/text/CT_Text.h"
+#include "DataTypes/image/CT_Path.h"
+#include "DataTypes/image/CT_Image.h"
+
 OFDParser::OFDParser(QString _path) : current_path("OFD", _path) {
     document = new QDomDocument();
     data = readOFD();
@@ -25,7 +37,7 @@ void OFDParser::openFile() {
 OFD * OFDParser::readOFD() {
     openFile();
     QDomElement new_ofd = document->firstChildElement("ofd:OFD");
-    OFD *ofd_data = nullptr;
+    OFD *ofd_data = NULL;
     if (!new_ofd.isNull()) {
         ofd_data = new OFD();
         if (new_ofd.hasAttribute("DocType"))
@@ -95,7 +107,7 @@ OFD * OFDParser::readOFD() {
         throw ParsingFormatException("OFD类型的数据中中缺少必要的DocBody成员\n位于" + current_path.getRelativePath());
     }
     if (ofd_data) {
-        for (int i = 0; i < ofd_data->docbodys->length(); i++) {
+        for (int i = 0; i < ofd_data->docbodys->size(); i++) {
             current_path = ofd_data->docbodys->at(i)->doc_root;
             ofd_data->docs->push_back(readDocument());
         }

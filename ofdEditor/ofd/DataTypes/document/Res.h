@@ -19,9 +19,9 @@ public:
     friend class OFDParser;
 
     Res(QString _base_loc = "",
-        QVector<CT_Font *> * _fonts = nullptr,
-        QVector<CT_ColorSpace *> * _colorspaces = nullptr,
-        QVector<CT_DrawParam *> * _draw_params = nullptr) {
+        QVector<CT_Font *> * _fonts = NULL,
+        QVector<CT_ColorSpace *> * _colorspaces = NULL,
+        QVector<CT_DrawParam *> * _draw_params = NULL) {
         if (!_base_loc.isNull())
             setBaseLoc(_base_loc);
         if (!_fonts)

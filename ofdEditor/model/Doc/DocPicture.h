@@ -12,7 +12,7 @@ class MODELSHARED_EXPORT DocPicture
 {
     Q_OBJECT
 public:
-    DocPicture(QObject *parent = Q_NULLPTR);
+    DocPicture(QObject *parent = NULL);
     ~DocPicture();
 };
 
