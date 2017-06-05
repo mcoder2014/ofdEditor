@@ -4,8 +4,8 @@
 #include "../basic_datatype.h"
 #include "CT_CommonData.h"
 #include "../page/CT_Pages.h"
-#include "ct_outlines.h"
-#include "res.h"
+#include "CT_Outlines.h"
+#include "Res.h"
 #include "../../ofd_global.h"  // 生成库文件需要
 
 class OFDSHARED_EXPORT Document {
@@ -23,14 +23,14 @@ public:
 public:
     friend class OFDParser;
 
-    Document( CT_CommonData * _common_data = nullptr,
-              CT_Pages * _pages = nullptr,
-              CT_Outlines * _outlines = nullptr,
+    Document( CT_CommonData * _common_data = NULL,
+              CT_Pages * _pages = NULL,
+              CT_Outlines * _outlines = NULL,
               QString _custom_tags = "",
               QString _extensions = "",
               QString _annotations = "",
-              QVector<Res *> * _public_res = nullptr,
-              ID_Table * _id_table = nullptr
+              QVector<Res *> * _public_res = NULL,
+              ID_Table * _id_table = NULL
               ) {
         if (_common_data)
             setCommonData(_common_data);
@@ -131,7 +131,7 @@ public:
     }
 
     ~Document() {
-        for (int i = 0; i < public_res->length(); i++)
+        for (int i = 0; i < public_res->size(); i++)
             delete public_res->at(i);
         delete common_data;
         delete outlines;

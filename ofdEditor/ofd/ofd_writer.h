@@ -4,14 +4,26 @@
 #include <QFile>
 #include <QDir>
 #include "DataTypes/basic_datatype.h"
-#include "DataTypes/document/OFD.h"
-#include "DataTypes/document/DocBody.h"
-#include "DataTypes/document/CT_DocInfo.h"
-#include "DataTypes/document/Document.h"
-#include "DataTypes/page/Page.h"
-#include "DataTypes/basic_datatype.h"
-#include "DataTypes/Color/CT_Color.h"
 #include "ofdexceptions.h"
+
+class OFD;
+class DocBody;
+class CT_DocInfo;
+class Document;
+class Page;
+class CT_Color;
+class CT_PageBlock;
+class CT_Text;
+class CT_Path;
+class CT_Image;
+class CT_Layer;
+class CT_GraphicUnit;
+class TextCode;
+class CT_ColorSpace;
+class CT_DrawParam;
+class CT_Font;
+class Res;
+class CT_PageArea;
 
 class OFDSHARED_EXPORT OFDWriter
 {

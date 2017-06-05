@@ -44,6 +44,8 @@ PassageMainWindow::~PassageMainWindow()
  */
 DocPassage *PassageMainWindow::createMdiChild()
 {
+    qDebug()<<"execute";
+
     DocPassage * child = new DocPassage(this);
     child->addPage(new DocPage());      // 添加一个空白页
 
@@ -89,94 +91,94 @@ void PassageMainWindow::init()
  */
 void PassageMainWindow::initAction()
 {
-    this->newFileAction = new QAction(tr("New File"));      // 新建文件
+    this->newFileAction = new QAction(tr("New File"),NULL);      // 新建文件
     this->newFileAction->setStatusTip(tr("Create a new ofd file"));
     this->newFileAction->setShortcut(QKeySequence::New);
     this->newFileAction->setIcon(QIcon(":/icons/source/icons/newFile.png"));
 
-    this->openFileAtcion = new QAction(tr("Open File"));    // 打开文件
+    this->openFileAtcion = new QAction(tr("Open File"),NULL);    // 打开文件
     this->openFileAtcion->setStatusTip(tr("Open an existing ofd file"));
     this->openFileAtcion->setShortcut(QKeySequence::Open);
     this->openFileAtcion->setIcon(QIcon(":/icons/source/icons/openFile.png"));
 
-    this->saveAction = new QAction(tr("Save"));             // 保存
+    this->saveAction = new QAction(tr("Save"),NULL);             // 保存
     this->saveAction->setStatusTip(tr("Save file"));
     this->saveAction->setShortcut(QKeySequence::Save);
     this->saveAction->setIcon(QIcon(":/icons/source/icons/save.png"));
 
-    this->saveAsAction = new QAction(tr("Save as"));        // 另存为
+    this->saveAsAction = new QAction(tr("Save as"),NULL);        // 另存为
     this->saveAsAction->setStatusTip(tr("Save as"));
     this->saveAsAction->setShortcut(QKeySequence::SaveAs);
     this->saveAsAction->setIcon(QIcon(":/icons/source/icons/saveAs.png"));
 
-    this->printAction = new QAction(tr("Print"));       // 打印
+    this->printAction = new QAction(tr("Print"),NULL);       // 打印
     this->printAction->setStatusTip(tr("Print your document"));
     this->printAction->setIcon(QIcon(":/icons/source/icons/print.png"));
 
-    this->undoAction = new QAction(tr("Undo"));             // 撤销操作
+    this->undoAction = new QAction(tr("Undo"),NULL);             // 撤销操作
     this->undoAction->setStatusTip(tr("Undo your last action"));
     this->undoAction->setShortcut(QKeySequence::Undo);
     this->undoAction->setIcon(QIcon(":/icons/source/icons/undo.png"));
 
-    this->redoAction = new QAction(tr("Redo"));             // 重新操作
+    this->redoAction = new QAction(tr("Redo"),NULL);             // 重新操作
     this->redoAction->setStatusTip(tr("Redo the action you undo"));
     this->redoAction->setShortcut(QKeySequence::Redo);
     this->redoAction->setIcon(QIcon(":/icons/source/icons/redo.png"));
 
-    this->copyAction = new QAction(tr("Copy"));             // 复制文本
+    this->copyAction = new QAction(tr("Copy"),NULL);             // 复制文本
     this->copyAction->setStatusTip(tr("Copy the content you selected"));
     this->copyAction->setShortcut(QKeySequence::Copy);
     this->copyAction->setIcon(QIcon(":/icons/source/icons/copy.png"));
 
-    this->cutAction = new QAction(tr("Cut"));             // 剪切
+    this->cutAction = new QAction(tr("Cut"),NULL);             // 剪切
     this->cutAction->setStatusTip(tr("Cut the content you selected"));
     this->cutAction->setShortcut(QKeySequence::Cut);
     this->cutAction->setIcon(QIcon(":/icons/source/icons/cut.png"));
 
-    this->pasteAction = new QAction(tr("Paste"));           // 粘贴
+    this->pasteAction = new QAction(tr("Paste"),NULL);           // 粘贴
     this->pasteAction->setStatusTip(tr("Paste your pasteboard content"));
     this->pasteAction->setShortcut(QKeySequence::Paste);
     this->pasteAction->setIcon(QIcon(":/icons/source/icons/paste.png"));
 
-    this->insertNewPageAction = new QAction("Insert New Page");     // 插入新页面
+    this->insertNewPageAction = new QAction(tr("Insert New Page"),NULL);     // 插入新页面
     this->insertNewPageAction->setStatusTip(tr("Insert a new Page into document"));
     this->insertNewPageAction->setIcon(QIcon(":/icons/source/icons/insertNewPage.png"));
 
-    this->insertTextBlockAction = new QAction("Insert TextBlock");  // 插入文本框
+    this->insertTextBlockAction = new QAction(tr("Insert TextBlock"),NULL);  // 插入文本框
     this->insertTextBlockAction->setStatusTip(tr("Insert a new TextBlock"));
     this->insertTextBlockAction->setIcon(QIcon(":/icons/source/icons/insertTextBlock.png"));
 
-    this->insertImageAction = new QAction("Insert Image");           // 插入图片
+    this->insertImageAction = new QAction(tr("Insert Image"),NULL);           // 插入图片
     this->insertImageAction->setStatusTip(tr("Insert a image"));
     this->insertImageAction->setIcon(QIcon(":/icons/source/icons/insertImage.png"));
 
-    this->insertTableAction = new QAction("Insert Table");          // 插入一个表格
+    this->insertTableAction = new QAction(tr("Insert Table"),NULL);          // 插入一个表格
     this->insertTableAction->setStatusTip(tr("Insert a table"));
     this->insertTableAction->setIcon(QIcon(":/icons/source/icons/insertTable.png"));
 
-    this->textFormat = new QAction(tr("Text Format"));      // 文字格式
+    this->textFormat = new QAction(tr("Text Format"),NULL);      // 文字格式
     this->textFormat->setStatusTip(tr("Set the selected texts' Format"));
     this->textFormat->setIcon(QIcon(":/icons/source/icons/TextFormat.png"));
 
-    this->paragraphFormat = new QAction(tr("Paragraph Format"));    // 段落格式
+    this->paragraphFormat = new QAction(tr("Paragraph Format"),NULL);    // 段落格式
     this->paragraphFormat->setStatusTip(tr("Set this paragarph format"));
     this->paragraphFormat->setIcon(QIcon(":/icons/source/icons/paragraphFormat.png"));
 
-    this->imageFormat = new QAction(tr("Image Format"));        // 图片格式
+    this->imageFormat = new QAction(tr("Image Format"),NULL);        // 图片格式
     this->imageFormat->setStatusTip(tr("Set the Selected image's format"));
     this->imageFormat->setIcon(QIcon(":/icons/source/icons/ImageFormat.png"));
 
-    this->tableFormat = new QAction(tr("Table Format"));    // 表格格式
+    this->tableFormat = new QAction(tr("Table Format"),NULL);    // 表格格式
     this->tableFormat->setStatusTip(tr("Set the selected table's format"));
     this->tableFormat->setIcon(QIcon(":/icons/source/icons/tableFormat.png"));
 
-    this->aboutQtAction = new QAction(tr("about Qt"));      // 关于QT
+    this->aboutQtAction = new QAction(tr("about Qt"),NULL);      // 关于QT
 
-    this->aboutAppAction = new QAction(tr("About App"));    // 关于本应用
+    this->aboutAppAction = new QAction(tr("About App"),NULL);    // 关于本应用
     this->aboutAppAction->setStatusTip(tr("About this Application"));
     this->aboutAppAction->setIcon(QIcon(":/icons/source/icons/AboutQpp.png"));
 
-    this->helpAciton = new QAction(tr("Help"));
+    this->helpAciton = new QAction(tr("Help"),NULL);
     this->helpAciton->setStatusTip(tr("Show the help Window"));
     this->helpAciton->setIcon(QIcon(":/icons/source/icons/help.png"));
 
@@ -247,26 +249,26 @@ void PassageMainWindow::initAction()
  */
 void PassageMainWindow::connectAction()
 {
-    connect(this->newFileAction, &QAction::triggered,
-            this,&PassageMainWindow::createMdiChild);   // 新建窗口
+    connect(this->newFileAction, SIGNAL(triggered(bool)),
+            this,SLOT(createMdiChild()));   // 新建窗口
 
-    connect(this->openFileAtcion, &QAction::triggered,
-            this, &PassageMainWindow::openFile);  //打开文件
+    connect(this->openFileAtcion, SIGNAL(triggered(bool)),
+            this, SLOT(openFile()));  //打开文件
 
-    connect(this->insertNewPageAction, &QAction::triggered,
-            this->connector, &ActionConnector::addNewPage);    // 在文章尾部加入新的一页
+    connect(this->insertNewPageAction, SIGNAL(triggered(bool)),
+            this->connector, SLOT(addNewPage()));    // 在文章尾部加入新的一页
 
 //    connect(this->insertTextBlockAction, &QAction::triggered,
 //            this->connector, &ActionConnector::addNewBlock);    // 插入新块
 
-    connect(this->insertTextBlockAction, &QAction::triggered,
-            this->connector, &ActionConnector::addTextBlock);   // 插入文本框
+    connect(this->insertTextBlockAction, SIGNAL(triggered()),
+            this->connector, SLOT(addTextBlock()));   // 插入文本框
 
-    connect(this->insertImageAction, &QAction::triggered,
-            this->connector, &ActionConnector::addImageBlock);  // 插入图片
+    connect(this->insertImageAction, SIGNAL(triggered()),
+            this->connector, SLOT(addImageBlock()));  // 插入图片
 
-    connect(this->insertTableAction, &QAction::triggered,
-            this->connector, &ActionConnector::addTableBlock);  // 插入表格
+    connect(this->insertTableAction, SIGNAL(triggered()),
+            this->connector, SLOT(addTableBlock()));  // 插入表格
 }
 
 /**

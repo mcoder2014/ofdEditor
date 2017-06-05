@@ -16,7 +16,7 @@ public:
 
     CT_CommonData() {
         public_res = new QVector<ST_Loc>();
-        page_area = nullptr;
+        page_area = NULL;
     }
 
     ST_ID getMaxUnitID() {

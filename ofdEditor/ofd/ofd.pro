@@ -32,7 +32,8 @@ SOURCES += \
     DataTypes/basic_datatypes.cpp \
     ofd_writer.cpp  \
     Loaders/ZipTool.cpp \
-    ofdexceptions.cpp
+    ofdexceptions.cpp \
+    DataTypes/page/CT_PageBlock.cpp
 
 
 HEADERS +=\
@@ -46,8 +47,6 @@ HEADERS +=\
 #    DataTypes/Color/CT_RadialShd.h \
     DataTypes/document/CT_CommonData.h \
     DataTypes/document/CT_DocInfo.h \
-    DataTypes/document/CT_OutlineElem.h \
-    DataTypes/document/CT_Outlines.h \
     DataTypes/document/DocBody.h \
     DataTypes/document/Document.h \
     DataTypes/document/OFD.h \
@@ -58,20 +57,22 @@ HEADERS +=\
     DataTypes/image/CT_Path.h \
     DataTypes/page/CT_Layer.h \
     DataTypes/page/CT_PageArea.h \
+    DataTypes/text/CT_Text.h \
     DataTypes/page/CT_PageBlock.h \
     DataTypes/page/CT_Pages.h \
     DataTypes/page/Page.h \
     ofd_parser.h \
-    DataTypes/document/res.h\
 #    DataTypes/text/CT_CGTransform.h \
-    DataTypes/text/CT_Font.h \
-    DataTypes/text/CT_Text.h \
     DataTypes/text/TextCode.h \
     ofd_global.h \
     ofd_writer.h \
-    DataTypes/document/CustomTags.h \
     Loaders/ZipTool.h \
-    ofdexceptions.h
+    ofdexceptions.h \
+    DataTypes/document/CT_OutlineElem.h \
+    DataTypes/document/CT_Outlines.h \
+    DataTypes/document/CustomTags.h \
+    DataTypes/document/Res.h \
+    DataTypes/text/CT_Font.h
 
 
 DESTDIR = ../bin     # 生成文件在这
@@ -88,6 +89,7 @@ FORMS    += mainwindow.ui \
 unix {
     target.path = /usr/lib
     INSTALLS += target
+    LIBS += -L$$PWD/../libs/quazip/libs -lquazip
 }
 
 win32 {

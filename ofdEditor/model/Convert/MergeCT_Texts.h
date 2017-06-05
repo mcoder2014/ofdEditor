@@ -4,16 +4,23 @@
 #include <QVector>
 #include <QObject>
 
+#include <QTextBlockFormat>
+#include <QTextCharFormat>
+#include <QFont>
+
+
 #include "DataTypes/text/CT_Text.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocBlock.h"
+
+#include "model_global.h"
 
 /**
  * @Author Chaoqun
  * @brief  本类型用来进行分割、合并CT_Text框框
  * @date   2017/05/27
  */
-class MergeCT_Texts
+class MODELSHARED_EXPORT MergeCT_Texts
         :public QObject
 {
     Q_OBJECT

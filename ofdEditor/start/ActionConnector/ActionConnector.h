@@ -21,11 +21,10 @@ public:
     ActionConnector();
     ActionConnector(PassageMainWindow * mainWindow);
 
+public slots:
     void setMainWindow(PassageMainWindow * mainWindow);     // 设置主窗口
     void addNewPage();                                      // 添加一个新页面
-
     void addNewBlock(InsertBlockInfo &blockInfo);           // 插入一个块
-
     void addTextBlock();                    // 插入文本框
     void addImageBlock();                   // 插入图片框
     void addTableBlock();                   // 插入表格

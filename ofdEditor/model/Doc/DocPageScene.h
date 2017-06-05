@@ -8,7 +8,7 @@ class DocPageScene
 {
     Q_OBJECT
 public:
-    DocPageScene(QObject *parent = Q_NULLPTR);      // 构造函数
+    DocPageScene(QObject *parent = NULL);      // 构造函数
 
 
 };

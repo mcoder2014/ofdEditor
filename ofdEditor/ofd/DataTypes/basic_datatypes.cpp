@@ -4,7 +4,7 @@
 CT_Base * ID_Table::getItem(int key) {
     if (id_pool.contains(key))
         return id_pool[key];
-    else return nullptr;
+    else return NULL;
 }
 
 bool ID_Table::contains(int key) {
@@ -18,7 +18,7 @@ int ID_Table::key(CT_Base * value) {
 CT_Base * ID_Table::remove(int key) {
     if (id_pool.contains(key))
         return id_pool.take(key);
-    else return nullptr;
+    else return NULL;
 }
 
 bool ID_Table::registerItem(int key, CT_Base * value) {

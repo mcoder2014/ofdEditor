@@ -11,7 +11,7 @@ public:
 
     CT_Layer(QString _type = "Body",
              int _draw_param = 0,
-             ID_Table * _id_table = nullptr) {
+             ID_Table * _id_table = NULL) {
         setType(_type);
         if (_draw_param && _id_table)
             setDrawParam(_draw_param, _id_table);

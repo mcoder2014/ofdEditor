@@ -11,6 +11,8 @@
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocBlock.h"
 #include "Tool/UnitTool.h"
+#include "DataTypes/text/TextCode.h"
+#include "DataTypes/text/CT_Text.h"
 
 
 OFD_DocConvertor::OFD_DocConvertor()
@@ -48,7 +50,7 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         //    CT_Pages pages = document->pages;               // 获得文档中的页
         QVector<Page * > * pages = document->getPages()->getPages(); // 获得页属性
 
-        for(int i = 0; i <pages->length(); i++)
+        for(int i = 0; i <pages->size(); i++)
         {
 
             //  生成每一页
@@ -164,7 +166,7 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
 
     // 处理 CT_Text
     QVector <CT_Text *> * texts = pageBlock->getTextObject();
-    for(int i = 0; i<texts->length(); i++)
+    for(int i = 0; i<texts->size(); i++)
     {
         this->insertCT_Text(page,doctype,(*texts)[i]);  // 插入文字
     }

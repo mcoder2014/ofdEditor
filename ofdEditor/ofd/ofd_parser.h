@@ -3,16 +3,23 @@
 #include <QDomDocument>
 #include <QFile>
 #include "DataTypes/basic_datatype.h"
-#include "DataTypes/document/OFD.h"
-#include "DataTypes/document/DocBody.h"
-#include "DataTypes/document/CT_DocInfo.h"
-#include "DataTypes/document/Document.h"
-#include "DataTypes/page/Page.h"
-#include "DataTypes/basic_datatype.h"
-#include "DataTypes/Color/CT_Color.h"
 #include "ofdexceptions.h"
 
+
 class OFD;
+class DocBody;
+class CT_DocBody;
+class CT_DocInfo;
+class Document;
+class Page;
+class CT_Color;
+class CT_GraphicUnit;
+class CT_PageArea;
+class CT_Font;
+class CT_ColorSpace;
+class CT_DrawParam;
+class Res;
+
 
 class OFDSHARED_EXPORT OFDParser {               //解析OFD.xml
     OFD * data;                 //保存了解析出来的数据信息

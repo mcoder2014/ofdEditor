@@ -34,7 +34,7 @@ public:
                //QString _keywords = "",
                QString _creator = "",
                QString _creator_version = "",
-               QVector<QStringList> * _custom_datas = nullptr) {
+               QVector<QStringList> * _custom_datas = NULL) {
         if (!_doc_id.isNull())
             setDocID(_doc_id);
         setTitle(_title);

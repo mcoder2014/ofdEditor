@@ -45,14 +45,11 @@ INCLUDEPATH += ../model \
 
 
 unix{
-    LIBS += ../bin/libmodel.so\
-            ../bin/libofd.so
-
+    LIBS += -L../bin -lmodel -lofd
 }
 
 win32{
-    LIBS += ../bin/model.lib \
-            ../bin/ofd.lib
+    LIBS += -L../bin -lmodel -lofd
 }
 
 RESOURCES += \

@@ -4,7 +4,7 @@
 #include "CT_Layer.h"
 #include "CT_PageArea.h"
 #include "../../ofd_global.h"  // 生成库文件需要
-#include "../document/res.h"
+#include "../document/Res.h"
 
 class OFDSHARED_EXPORT Page : public CT_Base{
 public:
@@ -21,7 +21,7 @@ public:
         content = new QVector<CT_Layer *>;
         page_res = new QVector<Res *>;
         page_res_locations = new QVector<ST_Loc>;
-        area = nullptr;
+        area = NULL;
     }
 
     ST_Loc getBaseLoc() {
@@ -85,9 +85,9 @@ public:
     }
 
     ~Page() {
-        for (int i = 0; i < page_res->length(); i++)
+        for (int i = 0; i < page_res->size(); i++)
             delete page_res->at(i);
-        for (int i = 0; i < content->length(); i++)
+        for (int i = 0; i < content->size(); i++)
             delete content->at(i);
         delete area;
         delete page_res;

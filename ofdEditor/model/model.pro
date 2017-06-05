@@ -91,14 +91,13 @@ unix {
     INSTALLS += target
 }
 
-
 unix{
-    LIBS += ../bin/libofd.so
+    LIBS += -L../bin -lofd
 
 }
 
 win32{
-    LIBS += ../bin/ofd.lib
+    LIBS += -L../bin -lofd
 }
 
 FORMS += \

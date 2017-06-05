@@ -17,7 +17,7 @@ public:
     friend class OFDParser;
 
     CT_Image(int _resource_id = 0,
-             ID_Table * _id_table = nullptr,
+             ID_Table * _id_table = NULL,
              int _substitution = 0) {
         if (_resource_id && _id_table)
             setResourceID(_resource_id, _id_table);

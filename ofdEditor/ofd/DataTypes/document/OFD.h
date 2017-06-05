@@ -23,8 +23,8 @@ public:
     OFD(QString _root_path = "",
         QString _version = "",
         QString _doc_type = "",
-        QVector<DocBody *> * _docbodys = nullptr,
-        QVector<Document *> * _docs = nullptr
+        QVector<DocBody *> * _docbodys = NULL,
+        QVector<Document *> * _docs = NULL
         ) {
         if (!_root_path.isNull())
             setRootPath(_root_path);
@@ -100,9 +100,9 @@ public:
 
 
     ~OFD() {
-        for (int i = 0; i < docbodys->length(); i++)
+        for (int i = 0; i < docbodys->size(); i++)
             delete docbodys->at(i);
-        for (int i = 0; i < docs->length(); i++)
+        for (int i = 0; i < docs->size(); i++)
             delete docs->at(i);
         delete docbodys;
         delete docs;

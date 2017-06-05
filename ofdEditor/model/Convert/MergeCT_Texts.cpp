@@ -12,9 +12,9 @@ MergeCT_Texts::MergeCT_Texts()
  * @return 返回值
  * @date   2017/xx/xx
  */
-void MergeCT_Texts::execute(QVector<CT_Text *> *texts)
+QVector<DocBlock *> *MergeCT_Texts::execute(QVector<CT_Text *> *texts)
 {
-
+    return NULL;
 }
 
 void MergeCT_Texts::splitTextCode()

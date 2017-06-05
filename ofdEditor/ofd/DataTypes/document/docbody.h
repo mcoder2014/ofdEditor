@@ -13,7 +13,7 @@ public:
 public:
     friend class OFDParser;
 
-    DocBody(CT_DocInfo * _doc_info = nullptr, QString _doc_root = "", QString _signatures = "") {
+    DocBody(CT_DocInfo * _doc_info = NULL, QString _doc_root = "", QString _signatures = "") {
         if (_doc_info)
             setDocInfo(_doc_info);
         if (!_doc_root.isNull())

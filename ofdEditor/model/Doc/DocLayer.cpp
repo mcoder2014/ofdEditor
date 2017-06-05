@@ -110,7 +110,7 @@ void DocLayer::removeBlock(DocBlock *block)
 QVector<DocBlock *>* DocLayer::getBlocks()
 {
     QVector<DocBlock* > *vector = new QVector<DocBlock* >();
-    int length = this->blocks.length();
+    int length = this->blocks.size();
 
     for(int i = 0; i<length; i++)
     {

@@ -47,7 +47,7 @@ public:
                    QString _name = "",
                    bool _visible = true,
                    int _draw_param = 0,
-                   ID_Table * _id_table = nullptr,
+                   ID_Table * _id_table = NULL,
                    double _line_width = 0.353,
                    QString _cap = "Butt",
                    QString _join = "Miter",
@@ -55,8 +55,8 @@ public:
                    double _dash_offset = 0.0,
                    QString _dash_pattern = "",
                    int _alpha = 255,
-                   CT_Color * _fill_color = nullptr,
-                   CT_Color * _stroke_color = nullptr
+                   CT_Color * _fill_color = NULL,
+                   CT_Color * _stroke_color = NULL
                    ) {
         if (_start_x || _start_y || _delta_x || _delta_y)
             setBoundary(_start_x, _start_y, _delta_x, _delta_y);

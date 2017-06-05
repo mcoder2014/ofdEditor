@@ -1,14 +1,16 @@
 #ifndef CT_TEXT_H
 #define CT_TEXT_H
+
 #include "../basic_datatype.h"
-#include "TextCode.h"
+#include "./TextCode.h"
 #include "../../ofd_parser.h"
 #include "../image/CT_GraphicUnit.h"
 #include "../Color/CT_Color.h"
 
-#include "../../ofd_global.h"  // 生成库文件需要
+#include "ofd_global.h"  // 生成库文件需要
 
-class OFDSHARED_EXPORT CT_Text : public CT_GraphicUnit
+class OFDSHARED_EXPORT CT_Text
+        : public CT_GraphicUnit
 {    //文字对象
 public:
     //属性
@@ -25,7 +27,9 @@ public:
     bool italic;    //是否是斜体
     //CT_CGTransform to be implemented
     QVector<TextCode *> * text_code;
-    CT_Text(){
+
+    CT_Text()
+    {
         stroke = false;
         fill = true;
         hscale = 1.0;
@@ -36,6 +40,7 @@ public:
         size_used = false;
         text_code = new QVector<TextCode *>;
     }
+
 public:
     friend class OFDParser;
     ~CT_Text() {
@@ -141,4 +146,5 @@ public:
             throw InvalidValueException("Invalid value in TextCode in Page: null pointer");
     }
 };
+
 #endif // CT_TEXT_H

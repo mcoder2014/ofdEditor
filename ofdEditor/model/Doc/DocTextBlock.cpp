@@ -187,7 +187,7 @@ void DocTextBlock::setTextColor()
 {
 
     QColor color = QColorDialog::getColor(this->textColor(),
-                                          nullptr,
+                                          NULL,
                                           tr("Choose a Color"),
                                           QColorDialog::ShowAlphaChannel);
 
@@ -216,9 +216,8 @@ void DocTextBlock::textFontDialog()
     QFont oldFont = currentFormat.font();   // 获取之前的字体样式
 
     QFont newFont = QFontDialog::getFont(
-                &btn_ok, oldFont,NULL,tr("Set the font"),
-                QFontDialog::ScalableFonts|QFontDialog::NonScalableFonts
-    |QFontDialog::MonospacedFonts|QFontDialog::ProportionalFonts);    // 选择字体框
+                &btn_ok, oldFont,NULL,tr("Set the font")
+                );    // 选择字体框
 
     if(btn_ok)
     {
@@ -361,12 +360,12 @@ void DocTextBlock::init()
 
 
     // 连接当前charFormat改变函数
-    connect(this, &DocTextBlock::currentCharFormatChanged,
-            this, &DocTextBlock::currentCharFormatChangedEvent);
+    connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)),
+            this, SLOT(currentCharFormatChangedEvent(QTextCharFormat)));
 
     // 连接当前光标位置改变事件
-    connect(this, &DocTextBlock::cursorPositionChanged,
-            this, &DocTextBlock::cursorPositionChangedEvent);
+    connect(this, SIGNAL(cursorPositionChanged()),
+            this, SLOT(cursorPositionChangedEvent()));
 
     this->initAcitons();    // 初始化QAction相关
 }
@@ -381,59 +380,59 @@ void DocTextBlock::init()
 void DocTextBlock::initAcitons()
 {
     // 粗体
-    this->actionBold = new QAction(tr("Bold"));
+    this->actionBold = new QAction(tr("Bold"),NULL);
     this->actionBold->setPriority(QAction::LowPriority);
     QFont bold;
     bold.setBold(true);
     this->actionBold->setFont(bold);
 
-    this->connect(this->actionBold,&QAction::triggered,
-                  this,&DocTextBlock::textBold);
+    this->connect(this->actionBold,SIGNAL(triggered()),
+                  this,SLOT(textBold()));
 
     // 斜体
-    this->actionItalic = new QAction(tr("Italic"));
+    this->actionItalic = new QAction(tr("Italic"),NULL);
     this->actionItalic->setPriority(QAction::LowPriority);
     QFont italic;
     italic.setItalic(true);
     this->actionItalic->setFont(italic);
 
-    this->connect(this->actionItalic,&QAction::triggered,
-                  this,&DocTextBlock::textItalic);
+    this->connect(this->actionItalic,SIGNAL(triggered()),
+                  this,SLOT(textItalic()));
 
     // 下划线
-    this->actionUnderline = new QAction(tr("Underline"));
+    this->actionUnderline = new QAction(tr("Underline"),NULL);
     this->actionUnderline->setPriority(QAction::LowPriority);
     QFont underline;
     underline.setUnderline(true);
     this->actionUnderline->setFont(underline);
 
-    this->connect(this->actionUnderline, &QAction::triggered,
-                  this,&DocTextBlock::textUnderline);
+    this->connect(this->actionUnderline, SIGNAL(triggered()),
+                  this,SLOT(textUnderline()));
 
     // 设置字体颜色
-    this->actionColor = new QAction(tr("Color"));
+    this->actionColor = new QAction(tr("Color"),NULL);
     this->actionColor->setPriority(QAction::LowPriority);
 
-    this->connect(this->actionColor,&QAction::triggered,
-                  this,&DocTextBlock::setTextColor);
+    this->connect(this->actionColor,SIGNAL(triggered()),
+                  this,SLOT(setTextColor()));
 
     // 字体
-    this->actionFontSet = new QAction(tr("Font"));
+    this->actionFontSet = new QAction(tr("Font"),NULL);
     this->actionFontSet->setPriority(QAction::LowPriority);
 
-    this->connect(this->actionFontSet,&QAction::triggered,
-                  this,&DocTextBlock::textFontDialog);
+    this->connect(this->actionFontSet,SIGNAL(triggered()),
+                  this,SLOT(textFontDialog()));
 
     // 段落
-    this->actionParagraph = new QAction(tr("Paragraph"));
-    this->connect(this->actionParagraph,&QAction::triggered,
-                  this,&DocTextBlock::textParagraph);
+    this->actionParagraph = new QAction(tr("Paragraph"),NULL);
+    this->connect(this->actionParagraph,SIGNAL(triggered()),
+                  this,SLOT(textParagraph()));
 
 
     // 字体窗口测试
-    this->actionFontSetTest = new QAction(tr("FontDialogTest"));
-    this->connect(this->actionFontSetTest, &QAction::triggered,
-                  this, &DocTextBlock::customFontDialog);
+    this->actionFontSetTest = new QAction(tr("FontDialogTest"),NULL);
+    this->connect(this->actionFontSetTest, SIGNAL(triggered()),
+                  this, SLOT(customFontDialog()));
 
     // 右键菜单
 //    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单

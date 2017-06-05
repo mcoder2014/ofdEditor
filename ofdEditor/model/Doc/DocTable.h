@@ -14,7 +14,7 @@ class MODELSHARED_EXPORT DocTable
 {
     Q_OBJECT
 public:
-    DocTable(QWidget *parent = Q_NULLPTR);
+    DocTable(QWidget *parent = NULL);
     ~DocTable();
 
 private:

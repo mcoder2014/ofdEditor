@@ -1,6 +1,7 @@
 #include "UnitTool.h"
 #include <QScreen>
 #include <QApplication>
+#include <QDesktopWidget>
 
 UnitTool::UnitTool()
 {
@@ -18,8 +19,16 @@ UnitTool::UnitTool()
 int UnitTool::mmToPixel(double mm)
 {
     double inch = mm * 0.0393700787;        // 转换成英寸
-    QScreen* screen = QApplication::primaryScreen();
-    double dotsPerInch = screen->physicalDotsPerInch(); // 每英寸多少像素
+// Qt 5
+//    QScreen* screen = QApplication::primaryScreen();
+//    double dotsPerInch = screen->physicalDotsPerInch(); // 每英寸多少像素
+
+    // qt 4
+//    QDesktopWidget *desktopWidget = QApplication::desktop();    // 获取桌面信息
+    double dotsPerInch = 96;            // 暂时不知道如何获得屏幕具体信息
+
+
+
 
     return (int)(inch * dotsPerInch);       // 返回像素大小
 }
@@ -33,8 +42,13 @@ int UnitTool::mmToPixel(double mm)
  */
 double UnitTool::pixelToMM(double pixel)
 {
-    QScreen* screen = QApplication::primaryScreen();    // 获取系统中默认显示器
-    double dotsPerInch = screen->physicalDotsPerInch(); // 每英寸屏幕多少像素
+    // Qt5
+//    QScreen* screen = QApplication::primaryScreen();    // 获取系统中默认显示器
+//    double dotsPerInch = screen->physicalDotsPerInch(); // 每英寸屏幕多少像素
+
+    // qt 4
+    double dotsPerInch = 96;
+
     double inch = pixel / dotsPerInch;          // 获取像素单位对应的英寸单位
     return inch * 25.4;                 // 返回毫米单位
 }

@@ -20,7 +20,7 @@ class MODELSHARED_EXPORT DocTextBlock
 {
     Q_OBJECT
 public:
-    DocTextBlock(QWidget *parent = Q_NULLPTR);
+    DocTextBlock(QWidget *parent = NULL);
     ~DocTextBlock();
     void setContent(QString str);               // 设置内容
 
