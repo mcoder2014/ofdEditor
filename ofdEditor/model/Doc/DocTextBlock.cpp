@@ -16,10 +16,6 @@
 DocTextBlock::DocTextBlock(QWidget *parent)
     :QTextEdit(parent)
 {
-//    QTextCursor cursor(this->textCursor());
-//    cursor.insertText(tr("testsesetstsetestes"));
-
-//    this->setBackgroundRole(QPalette::Dark);
     this->init();   // 调用初始化函数
 
 }
@@ -101,6 +97,18 @@ void DocTextBlock::setFont(const QFont &font)
 
 //    mergeCurrentCharFormat(currentFormat);
     mergeFormatOnWordOrSelection(currentFormat);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  通知DocBlock，从DocPage中移除本文本框
+ * @param  void
+ * @return void
+ * @date   2017/06/20
+ */
+void DocTextBlock::remove()
+{
+    emit signals_remove();      // 发送信号，remove
 }
 
 
@@ -293,15 +301,18 @@ void DocTextBlock::setCharFormatOnWordOrSelection(
 void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
 {
 
-    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
-    this->ContextMenu->addAction(this->actionBold);      // 加粗
-    this->ContextMenu->addAction(this->actionItalic);    // 斜体
-    this->ContextMenu->addAction(this->actionUnderline); // 下划线
-    this->ContextMenu->addAction(this->actionColor);     // 颜色
-    this->ContextMenu->addSeparator();  // 分界线
-    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
-    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
-    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
+    this->ContextMenu = createStandardContextMenu();        // 拓展标准菜单
+    this->ContextMenu->addAction(this->actionBold);         // 加粗
+    this->ContextMenu->addAction(this->actionItalic);       // 斜体
+    this->ContextMenu->addAction(this->actionUnderline);    // 下划线
+    this->ContextMenu->addAction(this->actionColor);        // 颜色
+    this->ContextMenu->addSeparator();                      // 分界线
+    this->ContextMenu->addAction(this->actionFontSet);      // 字体设置
+    this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
+    this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
+    this->ContextMenu->addAction(this->actionRemove);       // 移除操作
+
+    emit this->signals_setZValue(2000);                     // 将位置提升至最高层
 
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
@@ -317,7 +328,7 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
  */
 void DocTextBlock::focusInEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::Box);
+    this->setFrameStyle(QFrame::Box);           // 显示边框
     QTextEdit::focusInEvent(e);
 }
 
@@ -330,7 +341,7 @@ void DocTextBlock::focusInEvent(QFocusEvent *e)
  */
 void DocTextBlock::focusOutEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::NoFrame);
+    this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
     QTextEdit::focusOutEvent(e);
 }
 
@@ -351,7 +362,7 @@ void DocTextBlock::init()
 
     // 设置为背景透明
     this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
-//    // 无边框
+    // 无边框
     this->setFrameStyle(QFrame::NoFrame);
 
     this->initFormat();         // 初始化格式
@@ -427,22 +438,16 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionParagraph,SIGNAL(triggered()),
                   this,SLOT(textParagraph()));
 
+    // 移除文本框
+    this->actionRemove = new QAction(tr("Remove"),NULL);
+
+    this->connect(this->actionRemove,SIGNAL(triggered(bool)),
+                  this,SLOT(remove()));         // 链接信号，可以移除文本框
 
     // 字体窗口测试
     this->actionFontSetTest = new QAction(tr("FontDialogTest"),NULL);
     this->connect(this->actionFontSetTest, SIGNAL(triggered()),
                   this, SLOT(customFontDialog()));
-
-    // 右键菜单
-//    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
-//    this->ContextMenu->addAction(this->actionBold);      // 加粗
-//    this->ContextMenu->addAction(this->actionItalic);    // 斜体
-//    this->ContextMenu->addAction(this->actionUnderline); // 下划线
-//    this->ContextMenu->addAction(this->actionColor);     // 颜色
-//    this->ContextMenu->addSeparator();  // 分界线
-//    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
-//    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
-//    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
 
 }
 
