@@ -26,7 +26,7 @@ public:
     ~FontSettingDialog();
 
 signals:
-    void sendFont(const QTextCharFormat& charFormat);   // 返回结果给DocTextBlock的信号
+    void sendFont(QTextCharFormat& charFormat);   // 返回结果给DocTextBlock的信号
     void signal_updatePreview(const QTextCharFormat& charFormat);   // 更新预览框的信号
 
 private:

@@ -50,7 +50,7 @@ void DocTextBlock::setContent(QString str)
  * @date   2017/05/20
  */
 void DocTextBlock::mergeFormatOnWordOrSelection(
-        const QTextCharFormat &format)
+        QTextCharFormat &format)
 {
     QTextCursor cursor = this->textCursor(); // 新建光标
     if(!cursor.hasSelection())
@@ -246,8 +246,7 @@ void DocTextBlock::customFontDialog()
  * @return 返回值
  * @date   2017/05/22
  */
-void DocTextBlock::setTextBlockFormat(
-        const QTextBlockFormat &blockFormat)
+void DocTextBlock::setTextBlockFormat(QTextBlockFormat &blockFormat)
 {
     QTextCursor cursor = this->textCursor(); // 新建光标
     if(!cursor.hasSelection())
@@ -271,7 +270,7 @@ void DocTextBlock::setTextBlockFormat(
  * @date   2017/05/25
  */
 void DocTextBlock::setCharFormatOnWordOrSelection(
-        const QTextCharFormat &format)
+         QTextCharFormat &format)
 {
     QTextCursor cursor = this->textCursor(); // 新建光标
     if(!cursor.hasSelection())

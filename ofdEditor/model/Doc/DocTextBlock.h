@@ -39,13 +39,13 @@ public slots:
     void textFontDialog();      // 通过字体小窗口设置字体
     void customFontDialog();    // 自定义的字体窗口设置
     void setTextBlockFormat(
-            const QTextBlockFormat& blockFormat);   // 设置块格式
+            QTextBlockFormat& blockFormat);   // 设置块格式
 
     void setCharFormatOnWordOrSelection(
-            const QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
+            QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
 
     void mergeFormatOnWordOrSelection(
-            const QTextCharFormat &format);     // 合并格式
+            QTextCharFormat &format);     // 合并格式
 
 
 protected:
