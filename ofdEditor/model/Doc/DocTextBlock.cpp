@@ -133,6 +133,18 @@ void DocTextBlock::textBold()
 
 /**
  * @Author Chaoqun
+ * @brief  QTextCursor &
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/20
+ */
+void DocTextBlock::textBold(QTextCursor &cursor)
+{
+
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置下划线
  * @param  void
  * @return void

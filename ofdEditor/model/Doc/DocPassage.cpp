@@ -166,6 +166,18 @@ CT_DocInfo DocPassage::getDocInfo()
 
 /**
  * @Author Chaoqun
+ * @brief  获得文档中所有的页面
+ * @param  void
+ * @return 返回值
+ * @date   2017/06/20
+ */
+QVector<DocPage *> &DocPassage::getPages()
+{
+    return this->pages;
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置CommonData,深拷贝
  * @param  CT_CommonData &commonData
  * @return void
@@ -316,8 +328,6 @@ void DocPassage::adjustWidgetSize()
     // 调整滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), this->scaleFactor);
     adjustScrollBar(this->verticalScrollBar(), this->scaleFactor);
-
-
 
 
     qDebug() <<"widget's Size"<<this->widget->size();

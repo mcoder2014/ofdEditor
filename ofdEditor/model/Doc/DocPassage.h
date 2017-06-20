@@ -15,6 +15,8 @@
 class DocPage;
 class CT_DocInfo;
 class CT_CommonData;
+class DocBlock;
+class DocTextBlock;
 
 /**
  * @Author Chaoqun
@@ -51,10 +53,12 @@ public:
     void setDocType(QString docType){this->docType = docType;}
     QString getDocType( ){return this->docType;}
 
+    QVector<DocPage* >& getPages();         // 获得文档中包含的所有页面
+
+
 
 protected:
     void resizeEvent(QResizeEvent* event);
-
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
 
 
@@ -80,11 +84,11 @@ private:
 
 
 private:
-    void init();                            // 初始化
+    void init();                                // 初始化
     void adjustScrollBar(QScrollBar *scrollBar,
-                         double factor);    // 调整滑动条
-    void adjustScrollBarRange();    //调整滑动条范围
-    void adjustWidgetSize();        // 根据页数来自动调整widget大小
+                         double factor);        // 调整滑动条
+    void adjustScrollBarRange();                //调整滑动条范围
+    void adjustWidgetSize();                    // 根据页数来自动调整widget大小
 
 
 

@@ -27,7 +27,8 @@ public:
 
 
 public slots:
-    void textBold();            // 粗体
+    void textBold();            // 将光标选择的文字粗体
+    void textBold(QTextCursor& cursor);     // 将给定光标选择的文字设置为粗体
     void textUnderline();       // 下划线
     void textItalic();          // 斜体
     void textParagraph();       // 设置段落
