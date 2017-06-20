@@ -95,14 +95,13 @@ void DocPassage::addPage(DocPage *page)
 
     // 先添加到 vector
     this->pages.append(page);
-
-    // 再添加到ScrollArea
-
+    // 添加到ScrollArea
     this->adjustWidgetSize();   // 调整大小
-
     this->layout->addWidget(page,0,Qt::AlignCenter);
         // 向layout中增加一页，并居中显示
     this->layout->update();             // 更新
+    page->setPassage(this);             // 设置页所属的文章
+
 
     qDebug() << "You have added an new page";
 
@@ -140,6 +139,37 @@ void DocPassage::appendNewPage(DocPage *page)
 
 /**
  * @Author Chaoqun
+ * @brief  移除指定的页
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/20
+ */
+void DocPassage::removePage(int index)
+{
+    DocPage* page = this->pages[index];     // 获取该页面数据
+
+    this->layout->removeWidget(page);       // 从场景中移除页面
+    this->pages.remove(index);              // 从数据中移除页面
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  移除指定的页面
+ * @param  DocPage *page
+ * @return void
+ * @date   2017/06/20
+ */
+void DocPassage::removePage(DocPage *page)
+{
+    int index = this->pages.indexOf(page);      // 获取到该页所在的位置
+    this->pages.remove(index);
+    this->layout->removeWidget(page);
+
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置文档原信息
  * @param  CT_DocInfo &docInfo
  * @return void
@@ -148,6 +178,18 @@ void DocPassage::appendNewPage(DocPage *page)
 void DocPassage::setDocInfo(CT_DocInfo &docInfo)
 {
     this->docInfo->copy(docInfo);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  测试
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/xx
+ */
+void DocPassage::testMessage()
+{
+    qDebug()<<"passage success";
 }
 
 /**
@@ -174,6 +216,18 @@ CT_DocInfo DocPassage::getDocInfo()
 QVector<DocPage *> &DocPassage::getPages()
 {
     return this->pages;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得某一页
+ * @param  int index
+ * @return DocPage *
+ * @date   2017/06/20
+ */
+DocPage *DocPassage::getPage(int index)
+{
+    return this->pages[index];
 }
 
 /**

@@ -8,6 +8,7 @@
 #include "Doc/DocTable.h"
 #include "Doc/DocPicture.h"
 #include "Doc/DocGraph.h"
+#include "Doc/DocPassage.h"
 
 #include <QPalette>
 #include <QPaintEvent>
@@ -43,6 +44,18 @@ DocPage::~DocPage()
 {
     // area空间释放
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置文章引用
+ * @param  DocPassage *passage
+ * @return void
+ * @date   2017/06/20
+ */
+void DocPage::setPassage(DocPassage *passage)
+{
+    this->passage = passage;    // 设置 passage
 }
 
 
