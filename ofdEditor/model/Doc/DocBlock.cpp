@@ -11,6 +11,9 @@
 #include <QGraphicsOpacityEffect>
 
 #include "Doc/DocTextBlock.h"
+#include "Doc/DocLayer.h"
+#include "Doc/DocPage.h"
+#include "Doc/DocPassage.h"
 
 DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     :QGraphicsProxyWidget(parent,wFlags)
@@ -26,6 +29,34 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setFlag(QGraphicsProxyWidget::ItemIsSelectable, true);    // 可选择
     this->setFlag(QGraphicsProxyWidget::ItemIsFocusable, true);     // 可关注
     this->setAcceptHoverEvents(true);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得所在的页
+ * @param  void
+ * @return DocPage*
+ * @date   2017/06/21
+ */
+DocPage *DocBlock::getPage()
+{
+    DocLayer* layer = this->getLayer();
+    return layer->getPage();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得文章
+ * @param  void
+ * @return DocPassage *
+ * @date   2017/06/21
+ */
+DocPassage *DocBlock::getPassage()
+{
+    DocPage* page = this->getPage();
+    if(page == NULL)
+        return NULL;
+    return page->getPassage();
 }
 
 /**
@@ -320,6 +351,7 @@ void DocBlock::setWidget(DocTextBlock *textBlock)
             this,SLOT(remove()));                // 和块做移除连接
     connect(textBlock,SIGNAL(signals_setZValue(qreal)),
             this,SLOT(setZValue(qreal)));       // 建立设置Z值的信号连接
+    textBlock->setBlock(this);                  // 设置引用
 
     QGraphicsProxyWidget::setWidget(textBlock);
 }

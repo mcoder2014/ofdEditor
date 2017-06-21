@@ -46,6 +46,11 @@ DocPage::~DocPage()
 
 }
 
+DocPassage *DocPage::getPassage()
+{
+    return this->passage;
+}
+
 /**
  * @Author Chaoqun
  * @brief  设置文章引用
@@ -398,8 +403,13 @@ void DocPage::init()
 
     // 新建三个层
     this->foregroundLayer = new DocLayer(Foreground);
+    this->foregroundLayer->setPage(this);
+
     this->bodyLayer = new DocLayer(DocPage::Body);
+    this->bodyLayer->setPage(this);
+
     this->backgroundLayer = new DocLayer(Background);
+    this->backgroundLayer->setPage(this);
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;

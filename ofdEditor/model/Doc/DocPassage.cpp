@@ -147,9 +147,7 @@ void DocPassage::appendNewPage(DocPage *page)
 void DocPassage::removePage(int index)
 {
     DocPage* page = this->pages[index];     // 获取该页面数据
-
-    this->layout->removeWidget(page);       // 从场景中移除页面
-    this->pages.remove(index);              // 从数据中移除页面
+    this->removePage(page);                 // 移除页面
 
 }
 
@@ -162,9 +160,17 @@ void DocPassage::removePage(int index)
  */
 void DocPassage::removePage(DocPage *page)
 {
-    int index = this->pages.indexOf(page);      // 获取到该页所在的位置
-    this->pages.remove(index);
-    this->layout->removeWidget(page);
+    int index = this->pages.indexOf(page);  // 获取到该页所在的位置
+//    qDebug()<<"pages size" << this->pages.size();
+
+    this->layout->removeWidget(page);       // 从场景中移除页面
+    page->deleteLater();                    // 移除页面
+
+    this->pages.remove(index);              // 从数据中移除页面
+//    qDebug()<<"pages size" << this->pages.size();
+
+    this->adjustWidgetSize();               // 调整大小
+    this->layout->update();                 // 更新
 
 }
 
@@ -370,7 +376,8 @@ void DocPassage::adjustWidgetSize()
     height += verticalWhite;
     width += 2*horizontalWhite;
 
-    this->widget->setMinimumSize(width, height);    // 设置内容大小
+//    this->widget->setMinimumSize(width, height);    // 设置内容大小
+    this->widget->resize(width,height);
 
     // 保存计算结果
     this->widgetWidth = width;

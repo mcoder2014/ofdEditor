@@ -9,6 +9,8 @@
 class DocLayer;
 class QPainter;
 class DocTextBlock;
+class DocPage;
+class DocPassage;
 
 
 /**
@@ -26,13 +28,14 @@ public:
     DocBlock(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
 
     enum RectAdjustStatus{blockNone , blockResize , blockMove};     // 对块的大小状态进行调整
-    RectAdjustStatus rectAdjust;              // 用来标识当前修改尺寸的状态
-    DocLayer * getLayer(){return this->layer;}
+    RectAdjustStatus rectAdjust;                // 用来标识当前修改尺寸的状态
+    DocLayer * getLayer(){return this->layer;}  // 获得所在的层
+    DocPage * getPage();                        // 获得所在页
+    DocPassage *getPassage();                   // 获得所在文章
     void paintHandle(QPainter& painter);        // 绘制负责变换的控制器
     qreal getZValue(){return this->realZValue;} // 获得当前块所在的Z值
     RectAdjustStatus currentStatus(const QPointF& pos);    // 鼠标所在位置可以进行什么调整
-    void setWidget(QWidget* widget);        // 旧的函数
-    void setWidget(DocTextBlock *textBlock);            // SetWidget
+
 
 public slots:           // 槽函数
     void setLayer(DocLayer * layer){this->layer = layer;}
@@ -42,6 +45,9 @@ public slots:           // 槽函数
     void setPos(qreal x, qreal y);      // 设置位置
     // 移动位置应该在所在的DocPage中吧……
     void remove();                      // 从场景中移除本框
+    void setWidget(QWidget* widget);           // 旧的函数
+    void setWidget(DocTextBlock *textBlock);   // SetWidget
+
 
 protected:
 

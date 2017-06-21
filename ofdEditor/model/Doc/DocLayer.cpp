@@ -2,7 +2,8 @@
 #include "Doc/DocBlock.h"       // 块
 #include "Doc/DocTable.h"       // 表格
 #include "Doc/DocDrawParam.h"
-
+#include "Doc/DocPage.h"
+#include "Doc/DocPassage.h"
 
 DocLayer::DocLayer()
 {
@@ -79,6 +80,7 @@ void DocLayer::setZValue(qreal z)
 void DocLayer::addBlock(DocBlock *block)
 {
     this->blocks.append(block);     // 追加到队尾
+    block->setLayer(this);          // 设置引用
 }
 
 /**
@@ -103,6 +105,18 @@ void DocLayer::removeBlock(DocBlock *block)
 
 /**
  * @Author Chaoqun
+ * @brief  设置页
+ * @param  DocPage * page
+ * @return void
+ * @date   2017/06/21
+ */
+void DocLayer::setPage(DocPage *page)
+{
+    this->parent = page;
+}
+
+/**
+ * @Author Chaoqun
  * @brief  获得本层的所有blocks
  * @return QVector<DocBlock *>
  * @date   2017/05/06
@@ -118,4 +132,31 @@ QVector<DocBlock *>* DocLayer::getBlocks()
     }
 
     return vector;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得页
+ * @param  void
+ * @return DocPage*
+ * @date   2017/06/21
+ */
+DocPage *DocLayer::getPage()
+{
+    return this->parent;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得文章
+ * @param  void
+ * @return DocPassage *
+ * @date   2017/06/21
+ */
+DocPassage *DocLayer::getPassage()
+{
+    DocPage *page = this->getPage();
+    if(page == NULL)
+        return NULL;
+    return page->getPassage();
 }

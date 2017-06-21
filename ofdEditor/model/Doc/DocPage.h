@@ -36,9 +36,8 @@ public:
     DocPage(double width,
             double height, double scaleFactor,QWidget * parent = 0);
     ~DocPage();
-    void setPassage(DocPassage * passage);        // 设置文章
-    DocPassage *getPassage();                     // 获得文章
 
+    DocPassage *getPassage();                     // 获得文章
     QSize getSize();                              // 获得页面像素大小
     double getWidth(){return width_mm;}           // 返回毫米单位宽度
     double getHeight(){return height_mm;}         // 返回毫米单位高度
@@ -47,7 +46,7 @@ public:
 
 public slots:
     void setSize(double width, double height);             // 设置页面大小
-
+    void setPassage(DocPassage * passage);        // 设置文章
     void addBlock(DocBlock* block, DocPage::Layer layer);  // 为页面添加一个新元素
 //    void addBlock(DocTextBlock* textBlock, DocPage::Layer layer);  // 为页面添加一个新元素
     void addItem(QGraphicsItem *item);      // 拓展接口
@@ -69,7 +68,6 @@ private:
 
     void init();                         // 初始化UI
     DocPassage * passage;                // 页所属文章
-
     DocPageScene* docScene;              // 场景数据
     //QVector<DocLayer *> layers;        // 一个文档具有很多层
 
@@ -99,17 +97,6 @@ signals:        // 信号
 
 };
 
-/**
- * @Author Chaoqun
- * @brief  获得文章
- * @param  void
- * @return DocPassage
- * @date   2017/06/20
- */
-DocPassage *DocPage::getPassage()
-{
-    return this->passage;
-}
 
 /**
  * @Author Chaoqun

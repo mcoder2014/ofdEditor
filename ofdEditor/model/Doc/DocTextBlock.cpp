@@ -2,6 +2,9 @@
 #include "Doc/DocParagraph.h"
 #include "Widget/ParagraphFormatDialog.h"
 #include "Widget/FontSettingDialog.h"
+#include "Doc/DocPage.h"
+#include "Doc/DocLayer.h"
+#include "Doc/DocPassage.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -36,6 +39,67 @@ void DocTextBlock::setContent(QString str)
 {
     QTextCursor cursor(this->textCursor());
     cursor.insertText(str);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得文章
+ * @param  void
+ * @return 返回值
+ * @date   2017/06/21
+ */
+DocPassage *DocTextBlock::getPassage()
+{
+    DocPage* page = this->getPage();        // 查找所在的页
+//    qDebug() << "getPassage success";
+    if(page == NULL)
+        return NULL;
+    return page->getPassage();              // 返回所在页所在的文章
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得所在的页
+ * @param  void
+ * @return DocPage*
+ * @date   2017/06/21
+ */
+DocPage *DocTextBlock::getPage()
+{
+    DocLayer* layer = this->getLayer();     // 获得层
+    if(layer == NULL)
+        return NULL;
+//    qDebug() << "GetPage success";
+    return layer->getPage();                // 由层去获得passage
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得所在的层
+ * @param  void
+ * @return DocLayer*
+ * @date   2017/06/21
+ */
+DocLayer *DocTextBlock::getLayer()
+{
+    DocBlock* block = this->block;
+    if(block == NULL)
+        return NULL;
+//    qDebug()<<"get layer success";
+    return block->getLayer();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得Block的指针
+ * @param  void
+ * @return DocBlock*
+ * @date   2017/06/21
+ */
+DocBlock *DocTextBlock::getBlock()
+{
+//    qDebug()<<"getBlock test success";
+    return this->block;
 }
 
 /**
@@ -97,6 +161,18 @@ void DocTextBlock::setFont(const QFont &font)
 
 //    mergeCurrentCharFormat(currentFormat);
     mergeFormatOnWordOrSelection(currentFormat);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置block
+ * @param  DocBlock *block
+ * @return 返回值
+ * @date   2017/06/21
+ */
+void DocTextBlock::setBlock(DocBlock *block)
+{
+    this->block = block;        // 设置Block
 }
 
 /**
