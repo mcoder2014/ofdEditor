@@ -9,6 +9,7 @@
 class DocBlock;     // 块
 class DocTable;     // 表格
 class DocDrawParam; // 默认绘画模式
+class DocPassage;   // 文章
 
 /**
  * @Author Chaoqun
@@ -22,17 +23,21 @@ public:
     DocLayer(DocPage::Layer layer);
     ~DocLayer();
 
-    void setZValue(qreal z);             // 设置本层的 ZValue的值
+
     qreal getZValue(){return this->zValue;}  // 获取本层的 ZValue的值
 
-    void addBlock(DocBlock *block);     // 添加Block
-    void removeBlock(DocBlock* block);  // 移除Block
-    QVector<DocBlock *> *getBlocks();    // 获得所有Block
-
+    QVector<DocBlock *> *getBlocks();       // 获得所有Block
     DocPage::Layer getLayer(){return type;}
-    void setLayer(DocPage::Layer layer){this->type = layer;}
+    DocPage* getPage();                     // 找到层所在的Page
+    DocPassage* getPassage();               // 找到文章
 
+public slots:
 
+void setZValue(qreal z);             // 设置本层的 ZValue的值
+void addBlock(DocBlock *block);     // 添加Block
+void removeBlock(DocBlock* block);  // 移除Block
+void setLayer(DocPage::Layer layer){this->type = layer;}
+void setPage(DocPage* page);        // 设置page
 
 
 private:

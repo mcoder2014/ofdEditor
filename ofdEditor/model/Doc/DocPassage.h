@@ -15,6 +15,8 @@
 class DocPage;
 class CT_DocInfo;
 class CT_CommonData;
+class DocBlock;
+class DocTextBlock;
 
 /**
  * @Author Chaoqun
@@ -31,13 +33,22 @@ public:
                QString docType,double scaleFactor);
     ~DocPassage();
 
+    CT_DocInfo getDocInfo();        // 获取CT_DocInfo数据
+    QString getVersion( ){return this->version;}
+    QString getDocType( ){return this->docType;}
+    QVector<DocPage* >& getPages();         // 获得文档中包含的所有页面
+    DocPage *getPage(int index);            // 获得文档中的某一页
+
+public slots:
     void addPage(DocPage *page);                    // 添加一个新页面
     void addPassage(QVector<DocPage* >& passage);   // 添加很多界面
     void appendNewPage(DocPage *page = NULL);       // 如果为空，则代表假如空白页
 
+    void removePage(int index);                     // 移除某一页
+    void removePage(DocPage* page);                 // 移除某一页
+
     // DocInfo
     void setDocInfo( CT_DocInfo & docInfo );
-    CT_DocInfo getDocInfo();
 
     // CommonData
 //    void setCommonData(CT_CommonData* commonData);
@@ -45,16 +56,19 @@ public:
 
     // Version
     void setVersion(QString version){this->version = version;}
-    QString getVersion( ){return this->version;}
 
     // DocType
     void setDocType(QString docType){this->docType = docType;}
-    QString getDocType( ){return this->docType;}
+
+    void testMessage(); // 测试信号是否走通
+
+
+
+
 
 
 protected:
     void resizeEvent(QResizeEvent* event);
-
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
 
 
@@ -80,11 +94,11 @@ private:
 
 
 private:
-    void init();                            // 初始化
+    void init();                                // 初始化
     void adjustScrollBar(QScrollBar *scrollBar,
-                         double factor);    // 调整滑动条
-    void adjustScrollBarRange();    //调整滑动条范围
-    void adjustWidgetSize();        // 根据页数来自动调整widget大小
+                         double factor);        // 调整滑动条
+    void adjustScrollBarRange();                //调整滑动条范围
+    void adjustWidgetSize();                    // 根据页数来自动调整widget大小
 
 
 

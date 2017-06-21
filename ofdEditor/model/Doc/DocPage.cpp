@@ -8,6 +8,7 @@
 #include "Doc/DocTable.h"
 #include "Doc/DocPicture.h"
 #include "Doc/DocGraph.h"
+#include "Doc/DocPassage.h"
 
 #include <QPalette>
 #include <QPaintEvent>
@@ -43,6 +44,23 @@ DocPage::~DocPage()
 {
     // area空间释放
 
+}
+
+DocPassage *DocPage::getPassage()
+{
+    return this->passage;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置文章引用
+ * @param  DocPassage *passage
+ * @return void
+ * @date   2017/06/20
+ */
+void DocPage::setPassage(DocPassage *passage)
+{
+    this->passage = passage;    // 设置 passage
 }
 
 
@@ -385,8 +403,13 @@ void DocPage::init()
 
     // 新建三个层
     this->foregroundLayer = new DocLayer(Foreground);
+    this->foregroundLayer->setPage(this);
+
     this->bodyLayer = new DocLayer(DocPage::Body);
+    this->bodyLayer->setPage(this);
+
     this->backgroundLayer = new DocLayer(Background);
+    this->backgroundLayer->setPage(this);
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;

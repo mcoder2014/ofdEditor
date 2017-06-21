@@ -45,7 +45,7 @@ INCLUDEPATH += ../model \
 
 
 unix{
-    LIBS += -L../bin -lmodel -lofd
+    LIBS += -L../bin -lmodel -lofd -lquazip
 }
 
 win32{

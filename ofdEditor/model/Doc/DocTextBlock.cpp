@@ -2,6 +2,9 @@
 #include "Doc/DocParagraph.h"
 #include "Widget/ParagraphFormatDialog.h"
 #include "Widget/FontSettingDialog.h"
+#include "Doc/DocPage.h"
+#include "Doc/DocLayer.h"
+#include "Doc/DocPassage.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -16,10 +19,6 @@
 DocTextBlock::DocTextBlock(QWidget *parent)
     :QTextEdit(parent)
 {
-//    QTextCursor cursor(this->textCursor());
-//    cursor.insertText(tr("testsesetstsetestes"));
-
-//    this->setBackgroundRole(QPalette::Dark);
     this->init();   // 调用初始化函数
 
 }
@@ -44,13 +43,74 @@ void DocTextBlock::setContent(QString str)
 
 /**
  * @Author Chaoqun
+ * @brief  获得文章
+ * @param  void
+ * @return 返回值
+ * @date   2017/06/21
+ */
+DocPassage *DocTextBlock::getPassage()
+{
+    DocPage* page = this->getPage();        // 查找所在的页
+//    qDebug() << "getPassage success";
+    if(page == NULL)
+        return NULL;
+    return page->getPassage();              // 返回所在页所在的文章
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得所在的页
+ * @param  void
+ * @return DocPage*
+ * @date   2017/06/21
+ */
+DocPage *DocTextBlock::getPage()
+{
+    DocLayer* layer = this->getLayer();     // 获得层
+    if(layer == NULL)
+        return NULL;
+//    qDebug() << "GetPage success";
+    return layer->getPage();                // 由层去获得passage
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得所在的层
+ * @param  void
+ * @return DocLayer*
+ * @date   2017/06/21
+ */
+DocLayer *DocTextBlock::getLayer()
+{
+    DocBlock* block = this->block;
+    if(block == NULL)
+        return NULL;
+//    qDebug()<<"get layer success";
+    return block->getLayer();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得Block的指针
+ * @param  void
+ * @return DocBlock*
+ * @date   2017/06/21
+ */
+DocBlock *DocTextBlock::getBlock()
+{
+//    qDebug()<<"getBlock test success";
+    return this->block;
+}
+
+/**
+ * @Author Chaoqun
  * @brief  用来合并格式
  * @param  const QTextCharFormat &format
  * @return void
  * @date   2017/05/20
  */
 void DocTextBlock::mergeFormatOnWordOrSelection(
-        const QTextCharFormat &format)
+        QTextCharFormat &format)
 {
     QTextCursor cursor = this->textCursor(); // 新建光标
     if(!cursor.hasSelection())
@@ -103,6 +163,30 @@ void DocTextBlock::setFont(const QFont &font)
     mergeFormatOnWordOrSelection(currentFormat);
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置block
+ * @param  DocBlock *block
+ * @return 返回值
+ * @date   2017/06/21
+ */
+void DocTextBlock::setBlock(DocBlock *block)
+{
+    this->block = block;        // 设置Block
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  通知DocBlock，从DocPage中移除本文本框
+ * @param  void
+ * @return void
+ * @date   2017/06/20
+ */
+void DocTextBlock::remove()
+{
+    emit signals_remove();      // 发送信号，remove
+}
+
 
 
 /**
@@ -120,6 +204,18 @@ void DocTextBlock::textBold()
                           QFont::Bold : QFont::Normal);
 
     mergeFormatOnWordOrSelection(fmt);      // 合并格式
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  QTextCursor &
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/20
+ */
+void DocTextBlock::textBold(QTextCursor &cursor)
+{
 
 }
 
@@ -246,8 +342,7 @@ void DocTextBlock::customFontDialog()
  * @return 返回值
  * @date   2017/05/22
  */
-void DocTextBlock::setTextBlockFormat(
-        const QTextBlockFormat &blockFormat)
+void DocTextBlock::setTextBlockFormat(QTextBlockFormat &blockFormat)
 {
     QTextCursor cursor = this->textCursor(); // 新建光标
     if(!cursor.hasSelection())
@@ -271,7 +366,7 @@ void DocTextBlock::setTextBlockFormat(
  * @date   2017/05/25
  */
 void DocTextBlock::setCharFormatOnWordOrSelection(
-        const QTextCharFormat &format)
+         QTextCharFormat &format)
 {
     QTextCursor cursor = this->textCursor(); // 新建光标
     if(!cursor.hasSelection())
@@ -294,15 +389,18 @@ void DocTextBlock::setCharFormatOnWordOrSelection(
 void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
 {
 
-    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
-    this->ContextMenu->addAction(this->actionBold);      // 加粗
-    this->ContextMenu->addAction(this->actionItalic);    // 斜体
-    this->ContextMenu->addAction(this->actionUnderline); // 下划线
-    this->ContextMenu->addAction(this->actionColor);     // 颜色
-    this->ContextMenu->addSeparator();  // 分界线
-    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
-    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
-    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
+    this->ContextMenu = createStandardContextMenu();        // 拓展标准菜单
+    this->ContextMenu->addAction(this->actionBold);         // 加粗
+    this->ContextMenu->addAction(this->actionItalic);       // 斜体
+    this->ContextMenu->addAction(this->actionUnderline);    // 下划线
+    this->ContextMenu->addAction(this->actionColor);        // 颜色
+    this->ContextMenu->addSeparator();                      // 分界线
+    this->ContextMenu->addAction(this->actionFontSet);      // 字体设置
+    this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
+    this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
+    this->ContextMenu->addAction(this->actionRemove);       // 移除操作
+
+    emit this->signals_setZValue(2000);                     // 将位置提升至最高层
 
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
@@ -318,7 +416,7 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
  */
 void DocTextBlock::focusInEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::Box);
+    this->setFrameStyle(QFrame::Box);           // 显示边框
     QTextEdit::focusInEvent(e);
 }
 
@@ -331,7 +429,7 @@ void DocTextBlock::focusInEvent(QFocusEvent *e)
  */
 void DocTextBlock::focusOutEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::NoFrame);
+    this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
     QTextEdit::focusOutEvent(e);
 }
 
@@ -352,7 +450,7 @@ void DocTextBlock::init()
 
     // 设置为背景透明
     this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
-//    // 无边框
+    // 无边框
     this->setFrameStyle(QFrame::NoFrame);
 
     this->initFormat();         // 初始化格式
@@ -428,22 +526,16 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionParagraph,SIGNAL(triggered()),
                   this,SLOT(textParagraph()));
 
+    // 移除文本框
+    this->actionRemove = new QAction(tr("Remove"),NULL);
+
+    this->connect(this->actionRemove,SIGNAL(triggered(bool)),
+                  this,SLOT(remove()));         // 链接信号，可以移除文本框
 
     // 字体窗口测试
     this->actionFontSetTest = new QAction(tr("FontDialogTest"),NULL);
     this->connect(this->actionFontSetTest, SIGNAL(triggered()),
                   this, SLOT(customFontDialog()));
-
-    // 右键菜单
-//    this->ContextMenu = createStandardContextMenu();     // 拓展标准菜单
-//    this->ContextMenu->addAction(this->actionBold);      // 加粗
-//    this->ContextMenu->addAction(this->actionItalic);    // 斜体
-//    this->ContextMenu->addAction(this->actionUnderline); // 下划线
-//    this->ContextMenu->addAction(this->actionColor);     // 颜色
-//    this->ContextMenu->addSeparator();  // 分界线
-//    this->ContextMenu->addAction(this->actionFontSet);   // 字体设置
-//    this->ContextMenu->addAction(this->actionParagraph); // 段落设置
-//    this->ContextMenu->addAction(this->actionFontSetTest);// 字体
 
 }
 

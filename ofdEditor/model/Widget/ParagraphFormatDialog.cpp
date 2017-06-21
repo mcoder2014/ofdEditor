@@ -137,8 +137,8 @@ ParagraphFormatDialog::ParagraphFormatDialog(
     this->init(blockFormat);
     this->textBlock = textBlock;        // 留下引用，仅用来连接信号槽
 
-    connect(this, SIGNAL(finished(int)),
-            this->textBlock, SLOT(setTextBlockFormat(QTextBlockFormat))); // 连接信号和信号槽
+    connect(this, SIGNAL(finished(QTextBlockFormat&)),
+            this->textBlock, SLOT(setTextBlockFormat(QTextBlockFormat&))); // 连接信号和信号槽
 }
 
 /**

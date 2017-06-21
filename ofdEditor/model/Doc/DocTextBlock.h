@@ -7,13 +7,16 @@
 #include <QTextEdit>
 #include <QGraphicsProxyWidget>
 
-class DocParagraph;
+//class DocParagraph;
 class QAction;
 class QTextBlockFormat;     // 块格式
 class QTextFrameFormat;     // 框架格式
 class QTextCharFormat;      // 字节格式
 class QFont;                // 字体格式
-class ParagraphFormatDialog;
+class ParagraphFormatDialog;// 段落样式
+class DocPassage;           // 文章
+class DocPage;              // 获得所在页
+class DocLayer;             // 层
 
 class MODELSHARED_EXPORT DocTextBlock
         :public QTextEdit
@@ -24,43 +27,44 @@ public:
     ~DocTextBlock();
     void setContent(QString str);               // 设置内容
 
+    DocPassage* getPassage();           // 获得文章
+    DocPage* getPage();                 // 获得页
+    DocLayer* getLayer();               // 获得层
+    DocBlock* getBlock();               // 获得Block
+
 
 
 public slots:
-    void textBold();            // 粗体
+
+    // 文档编辑部分
+    void textBold();            // 将光标选择的文字粗体
+    void textBold(QTextCursor& cursor);     // 将给定光标选择的文字设置为粗体
     void textUnderline();       // 下划线
     void textItalic();          // 斜体
     void textParagraph();       // 设置段落
-//    void textFamily(const QString &f);
-//    void textSize(const QString &p);
-//    void textStyle(int styleIndex);
-    void setTextColor();           // 设置字体颜色
-//    void textAlign(QAction *a);
+    void setTextColor();        // 设置字体颜色
     void textFontDialog();      // 通过字体小窗口设置字体
     void customFontDialog();    // 自定义的字体窗口设置
     void setTextBlockFormat(
-            const QTextBlockFormat& blockFormat);   // 设置块格式
-
+            QTextBlockFormat& blockFormat);   // 设置块格式
     void setCharFormatOnWordOrSelection(
-            const QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
-
+            QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
     void mergeFormatOnWordOrSelection(
-            const QTextCharFormat &format);     // 合并格式
+            QTextCharFormat &format);     // 合并格式
+    void currentCharFormatChangedEvent(
+            const QTextCharFormat &format);     // 选中的文字格式发生了变化
+    void cursorPositionChangedEvent( );         // 光标位置发生改变
+    void setFont(const QFont &font);            // 设置格式
 
+    // 关于框的一些其他部分
+    void setBlock(DocBlock* block);             // 设置Block
+    void remove();                              // 移除本文本框
 
 protected:
 
     void contextMenuEvent(QContextMenuEvent *event);    // 右键菜单重载
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);
-
-private slots:
-
-
-    void currentCharFormatChangedEvent(
-            const QTextCharFormat &format);     // 选中的文字格式发生了变化
-    void cursorPositionChangedEvent( );         // 光标位置发生改变
-    void setFont(const QFont &font);            // 设置格式
 
 
 private:
@@ -76,10 +80,16 @@ private:
     QAction * actionColor;      // 设置颜色
     QAction * actionFontSet;    // 设置字体
     QAction * actionParagraph;  // 设置段落
+    QAction * actionRemove;     // 移除文本框
 
     QAction * actionFontSetTest;    // 新字体窗口测试
 
     QMenu * ContextMenu;        // 右键菜单
+    DocBlock* block;            // 本类型所在的block
+
+signals:
+    void signals_remove();              // 移除文本框的信号。
+    void signals_setZValue(qreal z);    // 设置Z值的信号
 
 
 

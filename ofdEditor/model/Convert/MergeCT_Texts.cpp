@@ -17,11 +17,25 @@ QVector<DocBlock *> *MergeCT_Texts::execute(QVector<CT_Text *> *texts)
     return NULL;
 }
 
+/**
+ *@Author Chaoqun
+ *@brief  将CT_Text 处理成一个CT_Text对应一个TextCode的形式
+ *@param  void
+ *@return void
+ *@date   2017/06/18
+ */
 void MergeCT_Texts::splitTextCode()
 {
 
 }
 
+/**
+ *@Author Chaoqun
+ *@brief  最小化TextCode
+ *@param  void
+ *@return void
+ *@date   2017/xx/xx
+ */
 void MergeCT_Texts::minSize()
 {
 
