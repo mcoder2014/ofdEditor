@@ -237,6 +237,25 @@ void DocTextBlock::remove()
     emit signals_remove();      // 发送信号，remove
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  控制是否显示文本框的边界
+ * @param  bool show
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::showBoundaryFrame(bool show)
+{
+    if(show)
+    {
+        this->setFrameStyle(QFrame::Box);           // 显示边框
+    }
+    else
+    {
+        this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
+    }
+}
+
 
 
 /**
@@ -601,7 +620,11 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
     this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
     this->ContextMenu->addAction(this->actionRemove);       // 移除操作
 
-    emit this->signals_setZValue(2000);                     // 将位置提升至最高层
+    connect(this->ContextMenu, SIGNAL(aboutToHide()),
+            this,SLOT(contextMenuAboutToHideEvent()));      // 测试
+
+    this->tempZValue = this->getBlock()->getZValue();
+    emit this->signals_setZValue(2000);
 
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
@@ -617,7 +640,9 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
  */
 void DocTextBlock::focusInEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::Box);           // 显示边框
+    this->showBoundaryFrame(true);
+    emit this->signals_focusIn();
+
     QTextEdit::focusInEvent(e);
 }
 
@@ -630,8 +655,23 @@ void DocTextBlock::focusInEvent(QFocusEvent *e)
  */
 void DocTextBlock::focusOutEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
+    this->showBoundaryFrame(false);
+    emit this->signals_focusOut();
+
     QTextEdit::focusOutEvent(e);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  用来当右键菜单消失时，调整块的深度
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/22
+ */
+void DocTextBlock::contextMenuAboutToHideEvent()
+{
+    emit this->signals_setZValue(this->tempZValue);         // 还原Z值
+    this->focusInEvent(new QFocusEvent(QEvent::FocusIn));   // 关注它
 }
 
 /**

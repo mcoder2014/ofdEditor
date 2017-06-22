@@ -83,6 +83,7 @@ public slots:
     // 关于框的一些其他部分
     void setBlock(DocBlock* block);             // 设置Block
     void remove();                              // 移除本文本框
+    void showBoundaryFrame(bool show);          // 是否显示边界
 
 protected:
 
@@ -90,6 +91,8 @@ protected:
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);
 
+private slots:
+    void contextMenuAboutToHideEvent();               // 右键菜单隐藏绑定事件
 
 private:
     QString content;        // 文字内容
@@ -111,9 +114,16 @@ private:
     QMenu * ContextMenu;        // 右键菜单
     DocBlock* block;            // 本类型所在的block
 
+    qreal tempZValue;           // 存储临时Z值
+
 signals:
     void signals_remove();              // 移除文本框的信号。
     void signals_setZValue(qreal z);    // 设置Z值的信号
+
+    // 用来控制Z值信号
+    void signals_focusIn();
+    void signals_focusOut();
+
     void signals_currentCharFormatChanged(
             QTextCharFormat& fmt);    // 当前选择的charFormat发生了变化
     void signals_currentBlockFormatChanged(

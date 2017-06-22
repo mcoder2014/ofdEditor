@@ -404,12 +404,15 @@ void DocPage::init()
     // 新建三个层
     this->foregroundLayer = new DocLayer(Foreground);
     this->foregroundLayer->setPage(this);
+    this->foregroundLayer->setZValue(1000);
 
     this->bodyLayer = new DocLayer(DocPage::Body);
     this->bodyLayer->setPage(this);
+    this->bodyLayer->setZValue(0);
 
     this->backgroundLayer = new DocLayer(Background);
     this->backgroundLayer->setPage(this);
+    this->backgroundLayer->setZValue(-1000);
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;

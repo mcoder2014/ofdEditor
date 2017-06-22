@@ -126,6 +126,7 @@ void DocBlock::resize(const QSizeF &size)
  */
 void DocBlock::setZValue(qreal z)
 {
+//    qDebug()<<"setZValue:" << z;
     QGraphicsProxyWidget::setZValue(z);
     this->realZValue = z;                   // 设置本地记录
 }
@@ -351,10 +352,12 @@ void DocBlock::setWidget(DocTextBlock *textBlock)
             this,SLOT(remove()));                // 和块做移除连接
     connect(textBlock,SIGNAL(signals_setZValue(qreal)),
             this,SLOT(setZValue(qreal)));       // 建立设置Z值的信号连接
-    textBlock->setBlock(this);                  // 设置引用
+
+            textBlock->setBlock(this);                  // 设置引用
 
     QGraphicsProxyWidget::setWidget(textBlock);
 }
+
 
 /**
  * @Author Chaoqun

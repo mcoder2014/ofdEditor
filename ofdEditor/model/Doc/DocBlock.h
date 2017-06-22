@@ -49,6 +49,7 @@ public slots:           // 槽函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
 
 
+
 protected:
 
     void paint(QPainter *painter,
