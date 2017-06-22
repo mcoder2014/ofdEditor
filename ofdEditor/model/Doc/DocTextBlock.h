@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QTextEdit>
 #include <QGraphicsProxyWidget>
+#include <QColorDialog>
 
 //class DocParagraph;
 class QAction;
@@ -36,25 +37,48 @@ public:
 
 public slots:
 
-    // 文档编辑部分
     void textBold();            // 将光标选择的文字粗体
-    void textBold(QTextCursor& cursor);     // 将给定光标选择的文字设置为粗体
+    void textBold(QTextCursor& cursor, int mode = 0);     // 将给定光标选择的文字设置为粗体
     void textUnderline();       // 下划线
+    void textUnderline(QTextCursor& cursor, int mode = 0);// 设置下划线
     void textItalic();          // 斜体
-    void textParagraph();       // 设置段落
+    void textItalic(QTextCursor& cursor, int mode = 0);    // 设置斜体
     void setTextColor();        // 设置字体颜色
+    void setTextColor(QTextCursor& cursor,QColor color);    // 设置颜色
+
+    void textParagraph();       // 设置段落
+
     void textFontDialog();      // 通过字体小窗口设置字体
     void customFontDialog();    // 自定义的字体窗口设置
+
     void setTextBlockFormat(
             QTextBlockFormat& blockFormat);   // 设置块格式
+    void setTextBlockFormat(
+            QTextCursor& cursor,
+            QTextBlockFormat& blockFormat);   // 设置给定光标下块格式
+
     void setCharFormatOnWordOrSelection(
             QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
+    void setCharFormatOnWordOrSelection(
+            QTextCursor& cursor,
+            QTextCharFormat &format);     // 设置给定光标的QTextCharFormat
+
     void mergeFormatOnWordOrSelection(
             QTextCharFormat &format);     // 合并格式
-    void currentCharFormatChangedEvent(
-            const QTextCharFormat &format);     // 选中的文字格式发生了变化
-    void cursorPositionChangedEvent( );         // 光标位置发生改变
+    void mergeFormatOnWordOrSelection(
+            QTextCursor& cursor,
+            QTextCharFormat &format);     // 合并指定光标处的文字格式
+
+    void mergeBlockFormatOnBlock(
+            QTextBlockFormat& blockFormat);     // 合并blockFormat格式
+    void mergeBlockFormatOnBlock(
+            QTextCursor cursor,
+            QTextBlockFormat &blockFormat);     // 合并给定光标下块的格式
+
     void setFont(const QFont &font);            // 设置格式
+    void setFont(
+            QTextCursor& cursor,
+            const QFont &font);                 // 设置给定光标下的字体格式
 
     // 关于框的一些其他部分
     void setBlock(DocBlock* block);             // 设置Block
@@ -90,6 +114,10 @@ private:
 signals:
     void signals_remove();              // 移除文本框的信号。
     void signals_setZValue(qreal z);    // 设置Z值的信号
+    void signals_currentCharFormatChanged(
+            QTextCharFormat& fmt);    // 当前选择的charFormat发生了变化
+    void signals_currentBlockFormatChanged(
+            QTextBlockFormat& fmt);  // 当前选择的block格式发生了变化、
 
 
 

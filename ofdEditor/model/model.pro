@@ -49,7 +49,8 @@ SOURCES += model.cpp \
     Widget/FontSettingDialog.cpp \
     Convert/OFD_DocConvertor.cpp \
     Convert/MergeCT_Texts.cpp \
-    Convert/Doc_OFDConvertor.cpp
+    Convert/Doc_OFDConvertor.cpp \
+    Convert/Objects/MinTextUnit.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -78,7 +79,8 @@ HEADERS += model.h\
     Widget/FontSettingDialog.h \
     Convert/OFD_DocConvertor.h \
     Convert/MergeCT_Texts.h \
-    Convert/Doc_OFDConvertor.h
+    Convert/Doc_OFDConvertor.h \
+    Convert/Objects/MinTextUnit.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
