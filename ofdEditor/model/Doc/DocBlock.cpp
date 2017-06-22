@@ -225,17 +225,17 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
             || (this->currentStatus(event->pos()) == blockResize
                 && this->isFocused))
     {
-        this->setCursor(Qt::SizeFDiagCursor);   // 设置为角落缩放
+        this->setCursor(Qt::SizeFDiagCursor);           // 设置为角落缩放
     }
     else if(this->rectAdjust == blockMove
             || (this->currentStatus(event->pos()) == blockMove
                 && this->isFocused))
     {
-        this->setCursor(Qt::SizeAllCursor);     // 设置为移动样式
+        this->setCursor(Qt::SizeAllCursor);             // 设置为移动样式
     }
     else if(this->cursor().shape() != Qt::IBeamCursor)
     {
-//        this->unsetCursor();                    // 取消设置鼠标-效果不好
+//        this->unsetCursor();                          // 取消设置鼠标-效果不好
 //        qDebug() <<"Redo hoverEnterEvent";
         QGraphicsProxyWidget::hoverEnterEvent(event);   // 执行重新进入，设置鼠标
     }

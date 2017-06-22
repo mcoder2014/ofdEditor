@@ -57,9 +57,12 @@ class OFDSHARED_EXPORT OFDParser {               //解析OFD.xml
 
 public:
     OFDParser(QString _path);
+
     OFD * getData() {
+
         return data;
     }
+
 };
 
 

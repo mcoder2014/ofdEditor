@@ -120,7 +120,7 @@ signals:
     void signals_remove();              // 移除文本框的信号。
     void signals_setZValue(qreal z);    // 设置Z值的信号
 
-    // 用来控制Z值信号
+    // 该块被focus的信号
     void signals_focusIn();
     void signals_focusOut();
 

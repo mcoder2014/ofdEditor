@@ -14,6 +14,7 @@ class CT_PageBlock;
 class CT_Text;
 class CT_Path;
 class CT_Image;
+class CT_Color;
 
 /**
  * @Author Chaoqun
@@ -52,6 +53,8 @@ private:
     void insertCT_Image(DocPage * page,
                         DocPage::Layer layer,
                         CT_Image *image);      // 插入CT_Image
+
+    QColor ctColorToQColor(CT_Color* ct_color); // 颜色转换
 
 };
 
