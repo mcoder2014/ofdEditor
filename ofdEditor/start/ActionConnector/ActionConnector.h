@@ -28,6 +28,8 @@ public slots:
     void addTextBlock();                    // 插入文本框
     void addImageBlock();                   // 插入图片框
     void addTableBlock();                   // 插入表格
+    void undo();                            // undo
+    void redo();                            // redo
 
     void setDefaultLayer(DocPage::Layer layer){this->defaultLayer = layer;}
     DocPage::Layer getDefaultLayer(){return this->defaultLayer;}

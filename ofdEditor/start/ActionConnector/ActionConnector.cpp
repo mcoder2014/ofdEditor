@@ -87,6 +87,18 @@ void ActionConnector::addTableBlock()
     this->addNewBlock(blockInfo);
 }
 
+void ActionConnector::undo()
+{
+    qDebug() <<"undo";
+    this->passage->undoStack->undo();
+}
+
+void ActionConnector::redo()
+{
+    qDebug() <<"redo";
+    this->passage->undoStack->redo();
+}
+
 
 
 

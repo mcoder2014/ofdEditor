@@ -261,6 +261,12 @@ void PassageMainWindow::connectAction()
 //    connect(this->insertTextBlockAction, &QAction::triggered,
 //            this->connector, &ActionConnector::addNewBlock);    // 插入新块
 
+    //undo operation
+    connect(this->undoAction,SIGNAL(triggered(bool)),this->connector,SLOT(undo()));
+
+    //redo operation
+    connect(this->redoAction,SIGNAL(triggered(bool)),this->connector,SLOT(redo()));
+
     connect(this->insertTextBlockAction, SIGNAL(triggered()),
             this->connector, SLOT(addTextBlock()));   // 插入文本框
 

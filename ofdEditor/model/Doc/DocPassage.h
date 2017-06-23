@@ -10,6 +10,7 @@
 #include <QScrollArea>
 #include <QVBoxLayout>      // 树状排布
 #include <QResizeEvent>
+#include <QUndoStack>
 
 // 类声明
 class DocPage;
@@ -62,7 +63,8 @@ public slots:
 
     void testMessage(); // 测试信号是否走通
 
-
+public:
+    QUndoStack *undoStack;
 
 
 
