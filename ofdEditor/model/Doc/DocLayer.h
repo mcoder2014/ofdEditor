@@ -29,7 +29,7 @@ public:
     QVector<DocBlock *> *getBlocks();       // 获得所有Block
     DocPage::Layer getLayer(){return type;}
     DocPage* getPage();                     // 找到层所在的Page
-    DocPassage* getPassage();               // 找到文章
+    DocPassage *getPassage();               // 找到文章
 
 public slots:
 

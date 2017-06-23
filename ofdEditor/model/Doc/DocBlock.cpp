@@ -126,6 +126,7 @@ void DocBlock::resize(const QSizeF &size)
  */
 void DocBlock::setZValue(qreal z)
 {
+//    qDebug()<<"setZValue:" << z;
     QGraphicsProxyWidget::setZValue(z);
     this->realZValue = z;                   // 设置本地记录
 }
@@ -154,6 +155,8 @@ void DocBlock::remove()
 {
     QGraphicsScene *scene = this->scene();      // 查找到本块所在的场景
     scene->removeItem(this);                    // 从场景中移除该组件
+
+    emit this->signals_blockRemoved(this);      // 发出信号
 }
 
 
@@ -224,17 +227,17 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
             || (this->currentStatus(event->pos()) == blockResize
                 && this->isFocused))
     {
-        this->setCursor(Qt::SizeFDiagCursor);   // 设置为角落缩放
+        this->setCursor(Qt::SizeFDiagCursor);           // 设置为角落缩放
     }
     else if(this->rectAdjust == blockMove
             || (this->currentStatus(event->pos()) == blockMove
                 && this->isFocused))
     {
-        this->setCursor(Qt::SizeAllCursor);     // 设置为移动样式
+        this->setCursor(Qt::SizeAllCursor);             // 设置为移动样式
     }
     else if(this->cursor().shape() != Qt::IBeamCursor)
     {
-//        this->unsetCursor();                    // 取消设置鼠标-效果不好
+//        this->unsetCursor();                          // 取消设置鼠标-效果不好
 //        qDebug() <<"Redo hoverEnterEvent";
         QGraphicsProxyWidget::hoverEnterEvent(event);   // 执行重新进入，设置鼠标
     }
@@ -347,14 +350,17 @@ void DocBlock::setWidget(QWidget *widget)
 void DocBlock::setWidget(DocTextBlock *textBlock)
 {
     // 建立connect
-    connect(textBlock,SIGNAL(signals_remove()),
+    connect(textBlock,SIGNAL(signals_remove(DocTextBlock*)),
             this,SLOT(remove()));                // 和块做移除连接
     connect(textBlock,SIGNAL(signals_setZValue(qreal)),
             this,SLOT(setZValue(qreal)));       // 建立设置Z值的信号连接
-    textBlock->setBlock(this);                  // 设置引用
+
+    textBlock->setBlock(this);                  // 给DocTextBlock设置引用
+    this->textBlock = textBlock;                // 给DocBlock设置引用
 
     QGraphicsProxyWidget::setWidget(textBlock);
 }
+
 
 /**
  * @Author Chaoqun
@@ -402,5 +408,36 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
 
     // 如果未得出结果，则默认无操作
     return blockNone;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  判断是其中装的是否是DocTextBlock
+ * @param  void
+ * @return bool
+ * @date   2017/06/23
+ */
+bool DocBlock::isTextBlock()
+{
+    if(this->textBlock == NULL)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得DocTextBlock
+ * @param  void
+ * @return DocTextBlock*
+ * @date   2017/06/23
+ */
+DocTextBlock *DocBlock::getTextBlock()
+{
+    return this->textBlock;
 }
 

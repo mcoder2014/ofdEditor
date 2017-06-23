@@ -80,6 +80,7 @@ void DocLayer::setZValue(qreal z)
 void DocLayer::addBlock(DocBlock *block)
 {
     this->blocks.append(block);     // 追加到队尾
+    block->setZValue(this->zValue); // 设置Z值
     block->setLayer(this);          // 设置引用
 }
 

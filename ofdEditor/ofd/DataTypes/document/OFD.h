@@ -16,7 +16,7 @@ class OFDSHARED_EXPORT OFD { //主入口文件的根元素
 
     QVector<Document *> * docs;
 
-    //私有方法
+    //公有
 public:
     friend class OFDParser;
 

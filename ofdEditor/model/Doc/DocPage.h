@@ -56,6 +56,7 @@ public slots:
     void setBlockFlag(BlockFlag flag){this->newBlockFlag = flag;}
 
     void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
+    void remove();          // 移除本页
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -69,7 +70,6 @@ private:
     void init();                         // 初始化UI
     DocPassage * passage;                // 页所属文章
     DocPageScene* docScene;              // 场景数据
-    //QVector<DocLayer *> layers;        // 一个文档具有很多层
 
     DocLayer* foregroundLayer;           // 前景层
     DocLayer* bodyLayer;                 // 正文层
@@ -88,12 +88,12 @@ private:
     QPointF newPos;                     // 新点
 
     BlockFlag newBlockFlag;             // 是否画块
-
-//    QList<QGraphicsItem *> items;
     DocBlock * activeBlock;             // 正在活跃的那个DocBlock
 
 signals:        // 信号
-    void signals_remove();              // 本页面被移除信号
+
+    void signals_insertTextBlock(DocTextBlock* textBlock );  // 插入文本框信号
+    void signals_removeTextBlock(DocTextBlock* textBlock );  // 移除文本框信号
 
 };
 

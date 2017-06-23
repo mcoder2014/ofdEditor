@@ -15,6 +15,8 @@
 #include <QMdiSubWindow>
 #include <QMdiArea>
 #include <QPalette>
+#include <QTextBlockFormat>
+#include <QTextCharFormat>
 
 
 #include "Doc/DocPassage.h"
@@ -23,6 +25,8 @@
 #include "ofd_parser.h"
 #include "DataTypes/document/ofd.h"
 #include "Convert/OFD_DocConvertor.h"       // OFD 转 Doc 工具
+#include "Doc/DocPage.h"
+#include "Doc/DocTextBlock.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -49,9 +53,11 @@ DocPassage *PassageMainWindow::createMdiChild()
     DocPassage * child = new DocPassage(this);
     child->addPage(new DocPage());      // 添加一个空白页
 
-    this->area->addSubWindow(child);
-    child->setVisible(true);            // 设置可见
-    child->showMaximized();
+//    this->area->addSubWindow(child);
+//    child->setVisible(true);            // 设置可见
+//    child->showMaximized();
+    this->addDocPassage(child);         // 加入到本视区
+
     return child;
 }
 
@@ -261,6 +267,12 @@ void PassageMainWindow::connectAction()
 //    connect(this->insertTextBlockAction, &QAction::triggered,
 //            this->connector, &ActionConnector::addNewBlock);    // 插入新块
 
+    //undo operation
+    connect(this->undoAction,SIGNAL(triggered(bool)),this->connector,SLOT(undo()));
+
+    //redo operation
+    connect(this->redoAction,SIGNAL(triggered(bool)),this->connector,SLOT(redo()));
+
     connect(this->insertTextBlockAction, SIGNAL(triggered()),
             this->connector, SLOT(addTextBlock()));   // 插入文本框
 
@@ -269,6 +281,15 @@ void PassageMainWindow::connectAction()
 
     connect(this->insertTableAction, SIGNAL(triggered()),
             this->connector, SLOT(addTableBlock()));  // 插入表格
+
+    connect(this->textFormat,SIGNAL(triggered(bool)),
+            this,SLOT(fontDialog()));                 // 修改字体
+
+    connect(this->paragraphFormat,SIGNAL(triggered(bool)),
+            this,SLOT(paragraphDialog()));            // 修改段落
+
+    connect(this->area, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+            this->connector, SLOT(updateActivePassage(QMdiSubWindow*)));    // 检测ActivePassage更新
 }
 
 /**
@@ -316,15 +337,77 @@ void PassageMainWindow::openFile()
         OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
 //        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
         OFD* data = ofdParser.getData();    // 读取出OFD文件
+        qDebug()<< "ofd file open";
         OFD_DocConvertor convert;
         DocPassage* passage = convert.ofd_to_doc(data);
 
         this->addDocPassage(passage);       // 添加文章
 
-
-
-
     }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  打开字体框
+ * @param  void
+ * @return void
+ * @date   2017/06/23
+ */
+void PassageMainWindow::fontDialog()
+{
+    this->textBlock->customFontDialog();    // 用自定义窗口修改字体
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  用自定义窗口修改段落格式
+ * @param  void
+ * @return void
+ * @date   2017/06/23
+ */
+void PassageMainWindow::paragraphDialog()
+{
+    this->textBlock->textParagraph();       // 用自定义段落窗口修改段落
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  接受当前处理的文字块的更新
+ * @param  DocTextBlock *textBlock
+ * @return void
+ * @date   2017/06/23
+ */
+void PassageMainWindow::acceptTextBlock(DocTextBlock *textBlock)
+{
+    this->textBlock = textBlock;        // 修改引用
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  接受当前处理的块格式
+ * @param  QTextBlockFormat &blockFormat
+ * @return void
+ * @date   2017/06/23
+ */
+void PassageMainWindow::acceptTextBlockFormat(QTextBlockFormat &blockFormat)
+{
+    this->_currentBlockFormat = &blockFormat;   // 留下引用
+
+    // 更新界面显示
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  接受字符格式
+ * @param  QTextCharFormat &charFormat
+ * @return void
+ * @date   2017/06/23
+ */
+void PassageMainWindow::acceptTextCharFormat(QTextCharFormat &charFormat)
+{
+    this->_currentCharFormat  = &charFormat;    // 留下引用
+
+    // 更新界面显示
 }
 
 /**
@@ -359,5 +442,17 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
     this->area->addSubWindow(passage);
     passage->setVisible(true);            // 设置可见
     passage->showMaximized();
+
+    // 处理变更的blockFormat
+    this->connect(passage,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat&)),
+                  this,SLOT(acceptTextBlockFormat(QTextBlockFormat&)));
+    // 处理变更的charFormat
+    this->connect(passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)),
+                  this,SLOT(acceptTextCharFormat(QTextCharFormat&)));
+    // 处理变更的textBlock
+    this->connect(passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
+                  this,SLOT(acceptTextBlock(DocTextBlock*)));
+
     return passage;
 }
+

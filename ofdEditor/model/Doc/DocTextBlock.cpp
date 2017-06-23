@@ -5,6 +5,7 @@
 #include "Doc/DocPage.h"
 #include "Doc/DocLayer.h"
 #include "Doc/DocPassage.h"
+#include "Command/SetTextBlodCmd.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -14,6 +15,7 @@
 #include <QDebug>
 #include <QFontDialog>
 #include <QColorDialog>
+
 
 
 DocTextBlock::DocTextBlock(QWidget *parent)
@@ -126,41 +128,91 @@ void DocTextBlock::mergeFormatOnWordOrSelection(
 
 /**
  * @Author Chaoqun
- * @brief  当前CharFormat样式发上改变的响应函数，
- *         当增加了一个字体控制的widget时，可以使用
- * @param  const QTextCharFormat &format
+ * @brief  合并指定光标下的char和文字格式
+ * @param  QTextCursor &cursor
+ * @param  QTextCharFormat &format
  * @return void
- * @date   2017/05/21
+ * @date   2017/06/22
  */
-void DocTextBlock::currentCharFormatChangedEvent(
-        const QTextCharFormat &format)
+void DocTextBlock::mergeFormatOnWordOrSelection(
+        QTextCursor &cursor, QTextCharFormat &format)
 {
-
+    if(!cursor.hasSelection())
+    {
+        // 如果没有选择文字段落
+        cursor.select(QTextCursor::WordUnderCursor);
+        qDebug() << "cursor has no selection!";
+    }
+    cursor.mergeCharFormat(format);         // 合并光标下的 QTextCharFormat
+//    this->mergeCurrentCharFormat(format);   // 合并当前的 QTextCharFormat
 }
 
 /**
  * @Author Chaoqun
- * @brief  光标位置发生改变时的响应函数
- * @param  void
+ * @brief  合并当前光标下块的格式
+ * @param  QTextBlockFormat &blockFormat
  * @return void
- * @date   2017/05/21
+ * @date   2017/06/22
  */
-void DocTextBlock::cursorPositionChangedEvent()
+void DocTextBlock::mergeBlockFormatOnBlock(
+        QTextBlockFormat &blockFormat)
 {
-    //    qDebug() << "Cursor Position Changed!";
+    QTextCursor cursor = this->textCursor();        // 光标
+    if(!cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::BlockUnderCursor);   // 选择光标下的块
+    }
+
+    cursor.mergeBlockFormat(blockFormat);
 }
+
+/**
+ * @Author Chaoqun
+ * @brief  合并给定光标下的块格式
+ * @param  QTextCursor &cursor
+ * @param  QTextBlockFormat &blockFormat
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::mergeBlockFormatOnBlock(
+        QTextCursor cursor, QTextBlockFormat &blockFormat)
+{
+    if(!cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::BlockUnderCursor);   // 选择光标下的块
+    }
+
+    cursor.mergeBlockFormat(blockFormat);
+}
+
 
 void DocTextBlock::setFont(const QFont &font)
 {
-//    QTextCharFormat currentFormat =
-//            this->currentCharFormat();      // 当前选择文字的样式
+
     QTextCursor cursor = this->textCursor();
     QTextCharFormat currentFormat = cursor.charFormat();
 
     currentFormat.setFont(font);            // 设置字体
 
-//    mergeCurrentCharFormat(currentFormat);
-    mergeFormatOnWordOrSelection(currentFormat);
+    mergeFormatOnWordOrSelection(currentFormat);    // 合并字体样式
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置给定光标下的字体格式
+ * @param  QTextCursor &cursor
+ * @param  const QFont &font
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::setFont(
+        QTextCursor &cursor, const QFont &font)
+{
+    QTextCharFormat currentFormat = cursor.charFormat();
+
+    currentFormat.setFont(font);            // 设置字体
+
+    mergeFormatOnWordOrSelection(cursor, currentFormat);    // 合并给定光标下的字体样式
 }
 
 /**
@@ -184,7 +236,26 @@ void DocTextBlock::setBlock(DocBlock *block)
  */
 void DocTextBlock::remove()
 {
-    emit signals_remove();      // 发送信号，remove
+    emit signals_remove(this);      // 发送信号，remove
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  控制是否显示文本框的边界
+ * @param  bool show
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::showBoundaryFrame(bool show)
+{
+    if(show)
+    {
+        this->setFrameStyle(QFrame::Box);           // 显示边框
+    }
+    else
+    {
+        this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
+    }
 }
 
 
@@ -198,25 +269,53 @@ void DocTextBlock::remove()
  */
 void DocTextBlock::textBold()
 {
-    QTextCharFormat fmt;
-    QTextCharFormat currentFormat = this->currentCharFormat();      // 当前选择文字的样式
-    fmt.setFontWeight(currentFormat.fontWeight() != QFont::Bold ?   // 设置粗细
-                          QFont::Bold : QFont::Normal);
+//    QTextCharFormat fmt;
+//    QTextCharFormat currentFormat = this->currentCharFormat();      // 当前选择文字的样式
+//    fmt.setFontWeight(currentFormat.fontWeight() != QFont::Bold ?   // 设置粗细
+//                          QFont::Bold : QFont::Normal);
 
-    mergeFormatOnWordOrSelection(fmt);      // 合并格式
-
+//    mergeFormatOnWordOrSelection(fmt);      // 合并格式
+    QTextCursor cursor=this->textCursor();
+    textBold(cursor,0);
 }
 
 /**
  * @Author Chaoqun
- * @brief  QTextCursor &
- * @param  参数
- * @return 返回值
+ * @brief  使用QTextCursor作为参数，并且通过mode参数可以控制是否设置加粗，
+ *          方便Command操作进行使用
+ * mode = -1 普通，
+ * mode = 0 一般模式同无参的这个函数
+ * mode = 1 加粗
+ * @param  QTextCursor &
+ * @return void
  * @date   2017/06/20
  */
-void DocTextBlock::textBold(QTextCursor &cursor)
+void DocTextBlock::textBold(QTextCursor &cursor, int mode)
 {
+    QTextCharFormat fmt;
+    QTextCharFormat currentCharFormat = cursor.charFormat();
+    switch (mode) {
+    case -1:
+        fmt.setFontWeight(QFont::Normal);           // 设置普通
+        break;
+    case 0:
+        fmt.setFontWeight(currentCharFormat.fontWeight() != QFont::Bold ?   // 设置粗细
+                             QFont::Bold : QFont::Normal);
+        break;
+    case 1:
+        fmt.setFontWeight(QFont::Bold);             // 设置加粗
+        break;
+    }
 
+    mergeFormatOnWordOrSelection(cursor,fmt);       // 合并给定光标下的字体
+
+    if(currentCharFormat.fontWeight()==QFont::Normal)
+    {
+        DocPassage *parentPassage=this->getPassage();
+        QUndoCommand *setTextBlodCmd=new SetTextBlodCmd(this,cursor);
+        parentPassage->undoStack->push(setTextBlodCmd);
+        qDebug()<<"stack size:"<<parentPassage->undoStack->count();
+    }
 }
 
 /**
@@ -239,6 +338,38 @@ void DocTextBlock::textUnderline()
 
 /**
  * @Author Chaoqun
+ * @brief  设置下划线
+ * @param  QTextCursor& cursor
+ * @param mode -1 取消下划线
+ * @param mode 0 正常机制
+ * @param mode 1 设置下划线
+ * @return 返回值
+ * @date   2017/06/22
+ */
+void DocTextBlock::textUnderline(QTextCursor &cursor, int mode)
+{
+    QTextCharFormat fmt;
+    QTextCharFormat currentFormat = cursor.charFormat();      // 当前选择文字的样式
+
+    switch (mode)
+    {
+    case -1:
+        fmt.setFontUnderline(false);
+        break;
+    case 0:
+        fmt.setFontUnderline(currentFormat.fontUnderline()?
+                                 false:true);
+    case 1:
+        fmt.setFontUnderline(true);
+    default:
+        break;
+    }
+
+    mergeFormatOnWordOrSelection(cursor,fmt);      // 合并格式
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置斜体
  * @param  void
  * @return void
@@ -252,6 +383,42 @@ void DocTextBlock::textItalic()
                           false:true);
 
     mergeFormatOnWordOrSelection(fmt);      // 合并格式
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置斜体
+ * @param  QTextCursor &cursor 选中文字的光标
+ * @param mode -1 取消斜体
+ * @param mode 0 正常模式
+ * @param mode 1 加入斜体
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::textItalic(QTextCursor &cursor, int mode)
+{
+    QTextCharFormat fmt;
+    QTextCharFormat currentFormat = cursor.charFormat();      // 当前选择文字的样式
+
+    switch (mode) {
+    case -1:
+        fmt.setFontItalic(false);           // 取消斜体
+        break;
+    case 0:
+        fmt.setFontItalic(currentFormat.fontItalic() == true?                  // 设置斜体
+                              false:true);
+        break;
+    case 1:
+        fmt.setFontItalic(true);            // 设置斜体
+        break;
+    default:
+        break;
+    }
+
+    fmt.setFontItalic(currentFormat.fontItalic() == true?                  // 设置斜体
+                          false:true);
+
+    mergeFormatOnWordOrSelection(cursor,fmt);      // 合并格式
 }
 
 /**
@@ -293,6 +460,21 @@ void DocTextBlock::setTextColor()
     charFormat.setForeground(color);        // 设置颜色
     mergeCurrentCharFormat(charFormat);
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  摘要
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/22
+ */
+void DocTextBlock::setTextColor(QTextCursor& cursor,QColor color)
+{
+    QTextCharFormat fmt;
+    fmt.setForeground(color);       // 设置前景-文字的颜色
+
+    mergeFormatOnWordOrSelection(cursor,fmt);
 }
 
 /**
@@ -353,8 +535,33 @@ void DocTextBlock::setTextBlockFormat(QTextBlockFormat &blockFormat)
     }
 
     cursor.setBlockFormat(blockFormat);
-    qDebug()<<"Change the selected QTextBlock' Format. Test";
 
+
+    // 发出信号
+    emit this->signals_currentBlockFormatChanged(blockFormat);
+
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置给定光标下的块的格式
+ * @param  QTextCursor &cursor
+ * @param  QTextBlockFormat &blockFormat
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::setTextBlockFormat(
+        QTextCursor &cursor, QTextBlockFormat &blockFormat)
+{
+    if(!cursor.hasSelection())
+    {
+        // 如果没有选择文字段落
+        cursor.select(QTextCursor::WordUnderCursor);
+        qDebug() << "cursor has no selection!";
+    }
+
+    cursor.setBlockFormat(blockFormat);
 
 }
 
@@ -377,6 +584,59 @@ void DocTextBlock::setCharFormatOnWordOrSelection(
     }
     cursor.setCharFormat(format);         // 设置光标下的 QTextCharFormat
     this->setCurrentCharFormat(format);   // 合并当前的 QTextCharFormat
+
+    // 发射信号
+    emit this->signals_currentCharFormatChanged(format);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置给定光标的char格式
+ * @param  QTextCursor &cursor
+ * @param  QTextCharFormat &format
+ * @return void
+ * @date   2017/06/22
+ */
+void DocTextBlock::setCharFormatOnWordOrSelection(
+        QTextCursor &cursor, QTextCharFormat &format)
+{
+    if(!cursor.hasSelection())
+    {
+        // 如果没有选择文字段落
+        cursor.select(QTextCursor::WordUnderCursor);
+        qDebug() << "cursor has no selection!";
+    }
+    cursor.setCharFormat(format);         // 设置光标下的 QTextCharFormat
+    this->setCurrentCharFormat(format);   // 合并当前的 QTextCharFormat
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置选择文字的格式
+ * @param  QTextCharFormat &format
+ * @return void
+ * @date   2017/06/23
+ */
+void DocTextBlock::setCharFormatOnSelection(
+        QTextCharFormat &format)
+{
+    QTextCursor cursor = this->textCursor();    // 获得光标
+    cursor.setCharFormat(format);               // 设置字符格式
+    this->setTextCursor(cursor);                    // 并应用光标
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置给定光标的，选择的文字的格式
+ * @param  QTextCursor &cursor
+ * @param  QTextCharFormat &format
+ * @return void
+ * @date   2017/06/23
+ */
+void DocTextBlock::serCharFormatOnSelection(
+        QTextCursor &cursor, QTextCharFormat &format)
+{
+    cursor.setCharFormat(format);               // 设置字符格式
 }
 
 /**
@@ -400,7 +660,11 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
     this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
     this->ContextMenu->addAction(this->actionRemove);       // 移除操作
 
-    emit this->signals_setZValue(2000);                     // 将位置提升至最高层
+    connect(this->ContextMenu, SIGNAL(aboutToHide()),
+            this,SLOT(contextMenuAboutToHideEvent()));      // 测试
+
+    this->tempZValue = this->getBlock()->getZValue();
+    emit this->signals_setZValue(2000);
 
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
@@ -416,7 +680,10 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
  */
 void DocTextBlock::focusInEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::Box);           // 显示边框
+    this->showBoundaryFrame(true);
+
+    emitFormatSignals();            // 当鼠标移进时，必须发出信号
+
     QTextEdit::focusInEvent(e);
 }
 
@@ -429,8 +696,88 @@ void DocTextBlock::focusInEvent(QFocusEvent *e)
  */
 void DocTextBlock::focusOutEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
+    this->showBoundaryFrame(false);
+
     QTextEdit::focusOutEvent(e);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  用来当右键菜单消失时，调整块的深度
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/22
+ */
+void DocTextBlock::contextMenuAboutToHideEvent()
+{
+    emit this->signals_setZValue(this->tempZValue);         // 还原Z值
+    this->focusInEvent(new QFocusEvent(QEvent::FocusIn));   // 关注它
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  用来检查当前的格式是否发生改变，并向外界发出信号
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/22
+ */
+void DocTextBlock::checkCurrentFormat()
+{
+    QTextCursor cursor = this->textCursor();        //获得当前的光标
+    // 比较当前光标位置的类型和已有的是否一致，不一致的话，当前的类型，并发射信号
+    QTextBlockFormat blockFormat = cursor.blockFormat();    // 块格式
+    QTextCharFormat charFormat = cursor.charFormat();       // 字符格式
+
+    // 处理字符格式
+    if(this->_currentCharFormat == charFormat)
+    {
+        // 如果字符格式相等
+//        qDebug() << "charFormat does not change!";
+    }
+    else
+    {
+//        qDebug() << "charFormat changes! "
+//                 << "And emit signal signals_currentCharFormatChanged!";
+        // 如果字符格式变化
+        this->_currentCharFormat = charFormat;          // 更新char格式
+        emit this->signals_currentCharFormatChanged(charFormat);    // 发射char格式变更信号
+    }
+
+    // 处理块格式
+    if(this->_currentBlockFormat == blockFormat)
+    {
+        // 格式相等
+//        qDebug() << "blockFormat does not change!";
+    }
+    else
+    {
+//        qDebug() << "blockFormat changes! "
+//                 << "And emit signal signals_currentBlockFormatChanged!";
+        // 格式不相等
+        this->_currentBlockFormat = blockFormat;    // 存储新格式
+        emit this->signals_currentBlockFormatChanged(blockFormat);      // 发射blockFormat变更信号
+    }
+    emit this->signals_currentTextBlock(this);      // 发射Text Block信号
+//    qDebug() << "check format";
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  将所有的信号发出
+ * @param  void
+ * @return void
+ * @date   2017/06/23
+ */
+void DocTextBlock::emitFormatSignals()
+{
+    QTextCursor cursor = this->textCursor();    // 光标
+    this->_currentBlockFormat = cursor.blockFormat();   // 获得块格式
+    this->_currentCharFormat = cursor.charFormat();     // 获得字符格式
+
+    // 发射三个信号
+    emit this->signals_currentBlockFormatChanged(this->_currentBlockFormat);
+    emit this->signals_currentCharFormatChanged(this->_currentCharFormat);
+    emit this->signals_currentTextBlock(this);
 }
 
 /**
@@ -453,17 +800,15 @@ void DocTextBlock::init()
     // 无边框
     this->setFrameStyle(QFrame::NoFrame);
 
-    this->initFormat();         // 初始化格式
+    this->initFormat();                                 // 初始化格式
 
-
-
-    // 连接当前charFormat改变函数
-    connect(this, SIGNAL(currentCharFormatChanged(QTextCharFormat)),
-            this, SLOT(currentCharFormatChangedEvent(QTextCharFormat)));
+    QTextCursor cursor = this->textCursor();            // 获得光标
+    this->_currentBlockFormat = cursor.blockFormat();   // 块格式
+    this->_currentCharFormat = cursor.charFormat();     // 字符格式
 
     // 连接当前光标位置改变事件
     connect(this, SIGNAL(cursorPositionChanged()),
-            this, SLOT(cursorPositionChangedEvent()));
+            this, SLOT(checkCurrentFormat()));
 
     this->initAcitons();    // 初始化QAction相关
 }
@@ -538,7 +883,6 @@ void DocTextBlock::initAcitons()
                   this, SLOT(customFontDialog()));
 
 }
-
 
 /**
  * @Author Chaoqun

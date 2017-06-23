@@ -20,6 +20,7 @@
 DocPassage::DocPassage(QWidget *parent)
     :docType("OFD"),version("1.0"),QScrollArea(parent)
 {
+    undoStack=new QUndoStack(this);
     this->scaleFactor = 1.0;            // 缩放100%
     this->docInfo = new CT_DocInfo();   // 文档元信息
 //    this->commonData = new CT_CommonData();
@@ -40,6 +41,7 @@ DocPassage::DocPassage(QWidget *parent,
                        QString version, QString docType, double scaleFactor)
     :QScrollArea(parent)
 {
+    undoStack=new QUndoStack(this);
     this->version = version;
     this->docType = docType;
     this->scaleFactor = scaleFactor;
@@ -243,10 +245,10 @@ DocPage *DocPassage::getPage(int index)
  * @return void
  * @date   2017/05/23
  */
-//void DocPassage::setCommonData(CT_CommonData* commonData)
-//{
-//    (this->commonData)->copy(commonData);
-//}
+void DocPassage::setCommonData(CT_CommonData* commonData)
+{
+    this->commonData = commonData;
+}
 
 /**
  * @Author Chaoqun
@@ -255,13 +257,10 @@ DocPage *DocPassage::getPage(int index)
  * @return CT_CommonData
  * @date   2017/05/23
  */
-//CT_CommonData DocPassage::getCommonData()
-//{
-//    CT_CommonData common;
-//    common.copy(this->commonData);
-
-//    return common;
-//}
+CT_CommonData* DocPassage::getCommonData()
+{
+    return this->commonData;
+}
 
 /**
  * @Author Chaoqun

@@ -109,10 +109,28 @@ QSize DocPage::getSize()
 void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
 {
 
-    qDebug() << "DocPage::addBlock excuted";
+//    qDebug() << "DocPage::addBlock excuted";
     this->docScene->addItem(block);       // 添加元素
 //    qDebug() << "DocPage::addBlock excuted this->docScene->addItem(block);";
 
+    // 插入DocTextBlock
+    if(block->isTextBlock())
+    {
+        DocTextBlock* textBlock = block->getTextBlock();            // 获得TextBlock
+        DocPassage* passage = this->getPassage();                   // 获得passage
+        emit this->signals_insertTextBlock(textBlock);              // 发射信号
+
+        // 转发信号给passage
+        connect(textBlock,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat&)),
+                passage,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat&)));
+        connect(textBlock,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)),
+                passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)));
+        connect(textBlock,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
+                passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)));
+
+    }
+
+    // 分到层
     switch (layer) {
     case Body:
         this->bodyLayer->addBlock(block);
@@ -129,7 +147,6 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
     default:
         break;
     }
-
 
 }
 
@@ -177,6 +194,19 @@ void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
     this->insertBlockInfo->layer = blockInfo.layer;     // 层
     this->insertBlockInfo->type = blockInfo.type;       // 类型
     //    qDebug()<<"Set InsertBlockInfo successfully!";
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  从passage中移除本页内容
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/23
+ */
+void DocPage::remove()
+{
+    DocPassage * passage = this->getPassage();
+    passage->removePage(this);
 }
 
 
@@ -404,12 +434,15 @@ void DocPage::init()
     // 新建三个层
     this->foregroundLayer = new DocLayer(Foreground);
     this->foregroundLayer->setPage(this);
+    this->foregroundLayer->setZValue(1000);
 
     this->bodyLayer = new DocLayer(DocPage::Body);
     this->bodyLayer->setPage(this);
+    this->bodyLayer->setZValue(0);
 
     this->backgroundLayer = new DocLayer(Background);
     this->backgroundLayer->setPage(this);
+    this->backgroundLayer->setZValue(-1000);
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;
