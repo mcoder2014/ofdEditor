@@ -44,6 +44,9 @@ public:
 
     BlockFlag getBlockFlag(){return this->newBlockFlag;}
 
+    //Pan
+    void addImage();
+
 public slots:
     void setSize(double width, double height);             // 设置页面大小
     void setPassage(DocPassage * passage);        // 设置文章

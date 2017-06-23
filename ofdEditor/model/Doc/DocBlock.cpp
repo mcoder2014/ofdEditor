@@ -29,6 +29,8 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setFlag(QGraphicsProxyWidget::ItemIsSelectable, true);    // 可选择
     this->setFlag(QGraphicsProxyWidget::ItemIsFocusable, true);     // 可关注
     this->setAcceptHoverEvents(true);
+    textBlock = NULL;
+    imageBlock = NULL;
 }
 
 /**
@@ -254,7 +256,7 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
  */
 void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    qDebug() << "Pressed.";
     QPointF pos = event->pos();     // 获取鼠标位置
 //    qDebug()<<"DocBlock Mouse Postion" << pos.x()
 //           << ", "<<pos.y();
@@ -264,7 +266,7 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
         // 如果按下的是鼠标左键，检测是否是可以修改大小或位置的状态
         this->rectAdjust = this->currentStatus(event->pos());
     }
-
+qDebug() << (rectAdjust == DocBlock::blockResize);
     QGraphicsProxyWidget::mousePressEvent(event);
 
 }
@@ -278,9 +280,10 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
  */
 void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    qDebug() << (rectAdjust == DocBlock::blockResize);
     if (this->rectAdjust == blockResize)
     {
+//        qDebug() << "???";
         qreal w = event->pos().x();
         qreal h = event->pos().y();
 
@@ -289,6 +292,8 @@ void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         if (h > this->minimumHeight())
             blockSize.setHeight(h);
 
+//        qDebug() << "Block Size Width = " << blockSize.width();
+//        qDebug() << "Block Size Height = " << blockSize.height();
         this->resize(blockSize);        // 调整大小
         this->setCursor(Qt::SizeFDiagCursor);
     }
@@ -386,8 +391,10 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
 {
     if((pos.x() - this->size().width() + 15) >
             (this->size().height() - pos.y()))
+    {
+        //qDebug() << "Mouse resizing.";
         return blockResize;
-
+    }
     // 画出可以移动的边缘
     qreal moveMargin = 5;   // 边缘多少像素内可以移动
     QRectF left(0,0,
@@ -438,6 +445,31 @@ bool DocBlock::isTextBlock()
  */
 DocTextBlock *DocBlock::getTextBlock()
 {
-    return this->textBlock;
+    if (isTextBlock())
+        return this->textBlock;
 }
 
+/**
+ * @Author Pan
+ * @brief  判断是其中装的是否是DocImageBlock
+ * @param  void
+ * @return bool
+ * @date   2017/06/23
+ */
+bool DocBlock::isImageBlock()
+{
+    return imageBlock != NULL;
+}
+
+/**
+ * @Author Pan
+ * @brief  获得DocImageBlock
+ * @param  void
+ * @return void
+ * @date   2017/06/23
+ */
+DocImageBlock * DocBlock::getImageBlock()
+{
+    if (isImageBlock())
+        return imageBlock;
+}

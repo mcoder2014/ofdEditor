@@ -4,7 +4,7 @@
 #include "Doc/DocBlock.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocPageScene.h"
-#include "Doc/DocImage.h"
+#include "Doc/DocImageBlock.h"
 #include "Doc/DocTable.h"
 #include "Doc/DocPicture.h"
 #include "Doc/DocGraph.h"
@@ -17,6 +17,12 @@
 #include <QPointF>
 #include <QPainter>
 #include <QObject>
+#include <cmath>
+
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPixmap>
+#include "DocImageBlock.h"
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
@@ -384,14 +390,11 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
         {
             newBlock->setWidget(new DocTextBlock());    // 插入文字框
         }
-        else if(this->insertBlockInfo->type == image)
-        {
-//            newBlock->setWidget(new DocImage());      // 插入图片框
-        }
         else if(this->insertBlockInfo->type == table)
         {
             newBlock->setWidget(new DocTable());        // 插入表格框
         }
+
 
         // 设置位置大小
         QRectF rect = UnitTool::getBox(this->oldPos,newPos);
@@ -446,4 +449,43 @@ void DocPage::init()
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;
+}
+
+void DocPage::addImage()
+{
+    qDebug() << "???";
+    //打开对话框，选取一个图片文件
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                    tr("Open File"), QDir::currentPath());
+    if (!fileName.isEmpty()) {
+        QPixmap image(fileName);
+        if (image.isNull()) {
+            QMessageBox::information(this, tr("OFD Editor"),
+                                     tr("Cannot open file %1.").arg(fileName));
+            return;
+        }
+        //新建一个DocBlock
+        DocBlock * newBlock = new DocBlock();
+        //新建一个图片框
+        DocImageBlock * new_image_block = new DocImageBlock();
+        newBlock->setWidget(new_image_block);
+        new_image_block->setImage(image);
+        double page_width = this->width(), page_height = this->height();
+        qDebug() << "Page Width: " << this->width();
+        qDebug() << "Page Height: " << this->height();
+        qDebug() << "Image Width: " << image.width();
+        qDebug() << "Image Height: " << image.height();
+        double ratio;
+        if (image.width() > page_width || image.height() > page_height)
+        {
+            ratio = std::min(page_width / image.width(), page_height / image.height());
+            ratio *= 0.8;
+        }
+        else ratio = 1.0;
+        qDebug() << "Ratio = " << ratio;
+        newBlock->setPos((page_width - image.width() * ratio) / 2, (page_height - image.height() * ratio) / 2);
+        newBlock->resize(image.width() * ratio,image.height() * ratio);
+
+        this->addBlock(newBlock,this->insertBlockInfo->layer);
+    }
 }

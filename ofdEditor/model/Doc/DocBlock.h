@@ -5,13 +5,14 @@
 #include "Doc/DocBasicTypes.h"
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
+#include "DocImageBlock.h"
 
 class DocLayer;
 class QPainter;
 class DocTextBlock;
 class DocPage;
 class DocPassage;
-
+class DocImageBlock;
 
 /**
  * @Author Chaoqun
@@ -38,6 +39,8 @@ public:
 
     bool isTextBlock();         // 判断是否DocBlock装的是否是DocTextBlock
     DocTextBlock *getTextBlock(); // 获得DocTextBlock
+    bool isImageBlock();
+    DocImageBlock *getImageBlock(); //获得DocImageBlock
 
 public slots:           // 槽函数
     void setLayer(DocLayer * layer){this->layer = layer;}
@@ -75,7 +78,8 @@ private:
     QSizeF blockSize;           // 用来纪录大小
     QPointF blockOldPos;        // 用来记录旧的位置
 
-    DocTextBlock* textBlock;    // 存下引用
+    DocTextBlock * textBlock;    // 存下引用
+    DocImageBlock * imageBlock; //同上
 
     bool isFocused;             // 是否被聚焦
     bool blockIsResizing;       // 是否正在改变大小
