@@ -37,7 +37,7 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
     try{
 
         passage = new DocPassage();
-
+        passage->setVisible(false);
         // version
         passage->setVersion(ofd->getOfdVersion());
         passage->setDocType(ofd->getDocType());
@@ -57,9 +57,8 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         {
 
             //  生成每一页
-            DocPage * newPage = this->buildDocPage((*pages)[i]);
+            DocPage * newPage = this->buildDocPage(passage, (*pages)[i]);
             newPage->setVisible(true);
-            passage->addPage(newPage);
         }
     }
     catch(...)
@@ -67,10 +66,11 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         qDebug() << "ofd_to_doc:exception.";
     }
 
+    passage->setVisible(true);
     return passage;
 }
 
-DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
+DocPage *OFD_DocConvertor::buildDocPage(DocPassage *passage, Page *ct_page)
 {
     DocPage * page;
     try
@@ -91,6 +91,7 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
            page = new DocPage();
         }
 
+        passage->addPage(page);         // 加入到文章中来
         page->setVisible(false);        // 先隐藏显示
 
         // 将每一层加入到页中
@@ -98,7 +99,7 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
         for(int i = 0; i < layers->size(); i++)
         {
             CT_Layer* layer = (*layers)[i];
-            qDebug() << "excute insertLayer: " << i;
+//            qDebug() << "excute insertLayer: " << i;
             this->insertLayer(page,layer);          // 将该层的内容加入到页面中
         }
 
@@ -193,7 +194,7 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
  */
 void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Text *text)
 {
-    qDebug() << "execute insert CT_Text" << text->getID();
+//    qDebug() << "execute insert CT_Text" << text->getID();
     CT_Color * fillColor = text->getFillColor();            // 获得填充颜色
     QColor color = this->ctColorToQColor(fillColor);        // 获得填充颜色
 
@@ -208,9 +209,9 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
         CT_Font* ctFont = (CT_Font*) base_font;
         QString font_name = ctFont->getFontName();      // 字体名
         QString family_name = ctFont->getFamilyName();  // 字体族名
-        qDebug() << font_name << "  "<< family_name;
+//        qDebug() << font_name << "  "<< family_name;
         textFont.setFamily(family_name);
-        qDebug() << "After setting font family :"<<textFont.family();
+//        qDebug() << "After setting font family :"<<textFont.family();
     }
 
     // 处理每一个textCode
@@ -240,16 +241,16 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 
         width += height;        // 假设为方块字吧
 
-        qDebug() << "has compute the boundary";
+//        qDebug() << "has compute the boundary";
 
         // 获得文本内容
         QString content = textCode->getText();     // 文本内容
 
         qDebug() << "insert Content:" << content;
 
-        DocTextBlock *textBlock = new DocTextBlock();
-        DocBlock *block = new DocBlock();
-        block->setWidget(textBlock);
+        DocTextBlock *textBlock = new DocTextBlock();       // 新建文本块
+        DocBlock *block = new DocBlock();                   // 新建块
+        block->setWidget(textBlock);                        // 将块放入文本块中
 
         block->resize(UnitTool::mmToPixel(width),
                       UnitTool::mmToPixel(height));          // 调整块大小
@@ -294,6 +295,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 
         cursor.insertText(content);             // 插入文本
 
+//        qDebug()<<"page->addBlock";
         page->addBlock(block,layer);                    // 插入到场景中
 
     }

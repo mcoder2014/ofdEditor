@@ -129,6 +129,7 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
                 passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)));
 
     }
+//    qDebug()<< "connect";
 
     // 分到层
     switch (layer) {
