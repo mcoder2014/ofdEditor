@@ -20,6 +20,7 @@
 DocPassage::DocPassage(QWidget *parent)
     :docType("OFD"),version("1.0"),QScrollArea(parent)
 {
+    undoStack=new QUndoStack(this);
     this->scaleFactor = 1.0;            // 缩放100%
     this->docInfo = new CT_DocInfo();   // 文档元信息
 //    this->commonData = new CT_CommonData();
@@ -40,6 +41,7 @@ DocPassage::DocPassage(QWidget *parent,
                        QString version, QString docType, double scaleFactor)
     :QScrollArea(parent)
 {
+    undoStack=new QUndoStack(this);
     this->version = version;
     this->docType = docType;
     this->scaleFactor = scaleFactor;

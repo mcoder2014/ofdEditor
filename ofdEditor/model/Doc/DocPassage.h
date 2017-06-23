@@ -11,6 +11,7 @@
 #include <QVBoxLayout>      // 树状排布
 #include <QResizeEvent>
 #include <QTextCharFormat>
+#include <QUndoStack>
 #include <QTextBlockFormat>
 
 // 类声明
@@ -40,6 +41,7 @@ public:
     QString getDocType( ){return this->docType;}
     QVector<DocPage* >& getPages();         // 获得文档中包含的所有页面
     DocPage *getPage(int index);            // 获得文档中的某一页
+    QUndoStack *undoStack;                  // 撤销队列
 
 public slots:
     void addPage(DocPage *page);                    // 添加一个新页面

@@ -5,6 +5,7 @@
 #include "Doc/DocPage.h"
 #include "Doc/DocLayer.h"
 #include "Doc/DocPassage.h"
+#include "Command/SetTextBlodCmd.h"
 
 #include <QTextCursor>
 #include <QPalette>
@@ -14,6 +15,7 @@
 #include <QDebug>
 #include <QFontDialog>
 #include <QColorDialog>
+
 
 
 DocTextBlock::DocTextBlock(QWidget *parent)
@@ -267,13 +269,14 @@ void DocTextBlock::showBoundaryFrame(bool show)
  */
 void DocTextBlock::textBold()
 {
-    QTextCharFormat fmt;
-    QTextCharFormat currentFormat = this->currentCharFormat();      // 当前选择文字的样式
-    fmt.setFontWeight(currentFormat.fontWeight() != QFont::Bold ?   // 设置粗细
-                          QFont::Bold : QFont::Normal);
+//    QTextCharFormat fmt;
+//    QTextCharFormat currentFormat = this->currentCharFormat();      // 当前选择文字的样式
+//    fmt.setFontWeight(currentFormat.fontWeight() != QFont::Bold ?   // 设置粗细
+//                          QFont::Bold : QFont::Normal);
 
-    mergeFormatOnWordOrSelection(fmt);      // 合并格式
-
+//    mergeFormatOnWordOrSelection(fmt);      // 合并格式
+    QTextCursor cursor=this->textCursor();
+    textBold(cursor,0);
 }
 
 /**
@@ -305,6 +308,14 @@ void DocTextBlock::textBold(QTextCursor &cursor, int mode)
     }
 
     mergeFormatOnWordOrSelection(cursor,fmt);       // 合并给定光标下的字体
+
+    if(currentCharFormat.fontWeight()==QFont::Normal)
+    {
+        DocPassage *parentPassage=this->getPassage();
+        QUndoCommand *setTextBlodCmd=new SetTextBlodCmd(this,cursor);
+        parentPassage->undoStack->push(setTextBlodCmd);
+        qDebug()<<"stack size:"<<parentPassage->undoStack->count();
+    }
 }
 
 /**

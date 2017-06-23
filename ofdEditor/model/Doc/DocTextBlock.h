@@ -18,6 +18,7 @@ class ParagraphFormatDialog;// 段落样式
 class DocPassage;           // 文章
 class DocPage;              // 获得所在页
 class DocLayer;             // 层
+class commands;
 
 class MODELSHARED_EXPORT DocTextBlock
         :public QTextEdit
