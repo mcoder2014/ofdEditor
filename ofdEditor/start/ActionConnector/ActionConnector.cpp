@@ -2,6 +2,8 @@
 #include "Doc/DocPassage.h"
 #include "ui/PassageMainWindow.h"
 #include "Doc/DocPage.h"
+#include "DataTypes/document/ct_docinfo.h"
+#include "Widget/DocInfoDialog.h"
 
 #include <QDebug>
 #include <QMetaObject>
@@ -16,6 +18,22 @@ ActionConnector::ActionConnector(PassageMainWindow *mainWindow)
 {
     this->mainWindow = mainWindow;
     init();
+}
+
+void ActionConnector::showAttribute()
+{
+    if(this->passage == NULL)
+    {
+        qDebug() << "show attribute";
+        return;
+    }
+
+
+    CT_DocInfo * docInfo = this->passage->getDocInfo();
+    DocInfoDialog* dialog = new DocInfoDialog(docInfo,this->mainWindow);  // 设置窗口
+    dialog->exec();                  // 运行
+    qDebug() << "show Attribute";
+
 }
 
 void ActionConnector::setMainWindow(PassageMainWindow *mainWindow)
@@ -35,6 +53,8 @@ void ActionConnector::setMainWindow(PassageMainWindow *mainWindow)
 void ActionConnector::addNewPage()
 {
 
+    if(this->passage == NULL)
+        return;
     this->passage->appendNewPage();     // 在队尾增加一页
 
 }
@@ -48,6 +68,10 @@ void ActionConnector::addNewPage()
  */
 void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
 {
+    if(this->passage == NULL)
+    {
+        return;
+    }
 
 //    this->updateActivePassage();    // 更新文章
     DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
@@ -71,18 +95,24 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
 
 void ActionConnector::addTextBlock()
 {
+    if(this->passage == NULL)
+        return;
     InsertBlockInfo blockInfo(this->defaultLayer,DocPage::text);  // 设置插入文本框信息
     this->addNewBlock(blockInfo);
 }
 
 void ActionConnector::addImageBlock()
 {
+    if(this->passage == NULL)
+        return;
     InsertBlockInfo blockInfo(this->defaultLayer,DocPage::image);  // 设置插入文本框信息
     this->addNewBlock(blockInfo);
 }
 
 void ActionConnector::addTableBlock()
 {
+    if(this->passage == NULL)
+        return;
     InsertBlockInfo blockInfo(this->defaultLayer,DocPage::table);  // 设置插入文本框信息
     this->addNewBlock(blockInfo);
 }
@@ -115,12 +145,14 @@ void ActionConnector::updateActivePassage(QMdiSubWindow *window)
     {
         qDebug() << "updateActivePassage NULL"
                  << "there's no actived window";
+        this->passage = NULL;
         return;
     }
     DocPassage* passage = qobject_cast<DocPassage*>(window->widget());  // 获得文档
     if(passage == NULL)
     {
         qDebug()<< "The active MdiWindow may not DocPassage";
+        this->passage = NULL;
     }
     else
     {
@@ -131,4 +163,5 @@ void ActionConnector::updateActivePassage(QMdiSubWindow *window)
 void ActionConnector::init()
 {
     this->defaultLayer = DocPage::Body;
+    this->passage = NULL;   // 初始化为空
 }

@@ -22,362 +22,278 @@
   <property name="modal">
    <bool>false</bool>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>600</y>
-     <width>461</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupNormal">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>30</y>
-     <width>461</width>
-     <height>131</height>
+     <width>451</width>
+     <height>451</height>
     </rect>
    </property>
-   <property name="title">
-    <string>对齐方式</string>
-   </property>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>水平</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboHAlignment">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>30</y>
-      <width>93</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QComboBox::AdjustToContents</enum>
-    </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <property name="text">
-      <string>左对齐</string>
-     </property>
+     <widget class="QGroupBox" name="groupNormal">
+      <property name="title">
+       <string>对齐方式</string>
+      </property>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>261</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>水平</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="comboHAlignment">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContents</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>左对齐</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>右对齐</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>居中</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>两端对齐</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>竖直</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboVAlignment">
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContents</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>居上</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>居下</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>居中</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>文字方向</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="comboTextDirection">
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContents</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>左到右</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>右到左</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
     <item>
-     <property name="text">
-      <string>右对齐</string>
-     </property>
+     <widget class="QGroupBox" name="groupIndent">
+      <property name="title">
+       <string>缩进</string>
+      </property>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>261</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>整体缩进</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="paraIndent">
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>首行缩进</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="doubleFirstIndent">
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
     <item>
-     <property name="text">
-      <string>居中</string>
-     </property>
+     <widget class="QGroupBox" name="groupSpacing">
+      <property name="title">
+       <string>间距</string>
+      </property>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>431</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>段前</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="doubleBefor">
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>段后</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="doubleAfter">
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>行距策略</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="comboLineHeight">
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContents</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>单倍行距</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>多倍行距</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>固定值</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>最小值</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>值</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QDoubleSpinBox" name="doubleLineHight">
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
     <item>
-     <property name="text">
-      <string>两端对齐</string>
-     </property>
+     <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
     </item>
-   </widget>
-   <widget class="QLabel" name="label_12">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>竖直</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboVAlignment">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>60</y>
-      <width>61</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QComboBox::AdjustToContents</enum>
-    </property>
-    <item>
-     <property name="text">
-      <string>居上</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>居下</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>居中</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="label_13">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>文字方向</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboTextDirection">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>90</y>
-      <width>77</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QComboBox::AdjustToContents</enum>
-    </property>
-    <item>
-     <property name="text">
-      <string>左到右</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>右到左</string>
-     </property>
-    </item>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupIndent">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>170</y>
-     <width>461</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>缩进</string>
-   </property>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>整体缩进</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="paraIndent">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>30</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>10000</number>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="doubleFirstIndent">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>60</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <double>10000.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>首行缩进</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupSpacing">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>290</y>
-     <width>461</width>
-     <height>161</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>间距</string>
-   </property>
-   <widget class="QDoubleSpinBox" name="doubleAfter">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>60</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <double>10000.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>段后</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="doubleBefor">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>30</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <double>10000.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>段前</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="doubleLineHight">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>90</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <double>10000.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>90</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>值</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboLineHeight">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>90</y>
-      <width>93</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QComboBox::AdjustToContents</enum>
-    </property>
-    <item>
-     <property name="text">
-      <string>单倍行距</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>多倍行距</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>固定值</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>最小值</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>70</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>行距策略</string>
-    </property>
-   </widget>
+   </layout>
   </widget>
  </widget>
  <resources/>

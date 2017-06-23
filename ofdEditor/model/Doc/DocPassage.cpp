@@ -10,7 +10,7 @@
 #include <QApplication>
 #include <QScrollBar>
 #include <QMainWindow>
-
+#include <Quuid>
 
 /**
  * @Author Chaoqun
@@ -193,7 +193,7 @@ void DocPassage::setDocInfo(CT_DocInfo &docInfo)
  * @brief  测试
  * @param  参数
  * @return 返回值
- * @date   2017/06/xx
+ * @date   2017/06/22
  */
 void DocPassage::testMessage()
 {
@@ -207,11 +207,9 @@ void DocPassage::testMessage()
  * @return CT_DocInfo
  * @date   2017/05/23
  */
-CT_DocInfo DocPassage::getDocInfo()
+CT_DocInfo *DocPassage::getDocInfo()
 {
-    CT_DocInfo docInfo;
-    docInfo.copy( *this->docInfo);
-    return docInfo;
+    return this->docInfo;
 }
 
 /**
@@ -264,6 +262,22 @@ CT_CommonData* DocPassage::getCommonData()
 
 /**
  * @Author Chaoqun
+ * @brief  设置 docID
+ * @param  void
+ * @return void
+ * @date   2017/06/23
+ */
+void DocPassage::resetDocId()
+{
+    QUuid uuid = QUuid::createUuid();   // 创建uuid
+    QString docId = uuid.toString();    // 转换为字符串
+    qDebug() << "uuid : " << docId;
+
+    this->docInfo->setDocID(docId);
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置重置响应事件，窗口大小发生调整，将会调用这个函数u
  * @param  QResizeEvent *event
  * @return void
@@ -289,6 +303,8 @@ void DocPassage::closeEvent(QCloseEvent *event)
 
 void DocPassage::init()
 {
+    this->docInfo = new CT_DocInfo();           // 新建文档 元信息
+    this->resetDocId();     // 设置UUID
     this->layout = new QVBoxLayout;             // 新建布局
 
     // 新增widget

@@ -44,7 +44,8 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
 
         QVector<DocBody* > * bodys = ofd->getDocBodies();
         DocBody * docBody = (*bodys)[0];        // DocBody
-        passage->setDocInfo(*(docBody->getDocInfo()));
+
+        passage->setDocInfo(*(docBody->getDocInfo()));      // 设置文档元信息
 
         Document * document = (*(ofd->getDocuments()))[0];          // Document
 

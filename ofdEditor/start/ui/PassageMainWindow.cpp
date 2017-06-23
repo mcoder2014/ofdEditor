@@ -121,6 +121,9 @@ void PassageMainWindow::initAction()
     this->printAction->setStatusTip(tr("Print your document"));
     this->printAction->setIcon(QIcon(":/icons/source/icons/print.png"));
 
+    this->attributeAction = new QAction(tr("Attribute"),NULL);      // 文档属性
+    this->attributeAction->setStatusTip(tr("Show you the attribute of the actived passage"));
+
     this->undoAction = new QAction(tr("Undo"),NULL);             // 撤销操作
     this->undoAction->setStatusTip(tr("Undo your last action"));
     this->undoAction->setShortcut(QKeySequence::Undo);
@@ -199,6 +202,7 @@ void PassageMainWindow::initAction()
     this->filesMenu->addAction(this->saveAction);
     this->filesMenu->addAction(this->saveAsAction);
     this->filesMenu->addAction(this->printAction);
+    this->filesMenu->addAction(this->attributeAction);
 
     this->editMenu->addAction(this->undoAction);
     this->editMenu->addAction(this->redoAction);
@@ -260,6 +264,9 @@ void PassageMainWindow::connectAction()
 
     connect(this->openFileAtcion, SIGNAL(triggered(bool)),
             this, SLOT(openFile()));  //打开文件
+
+    connect(this->attributeAction, SIGNAL(triggered(bool)),
+            this->connector, SLOT(showAttribute()));        // 显示文档属性
 
     connect(this->insertNewPageAction, SIGNAL(triggered(bool)),
             this->connector, SLOT(addNewPage()));    // 在文章尾部加入新的一页

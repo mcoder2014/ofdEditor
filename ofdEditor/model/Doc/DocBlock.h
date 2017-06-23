@@ -50,8 +50,6 @@ public slots:           // 槽函数
     void setWidget(QWidget* widget);           // 旧的函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
 
-
-
 protected:
 
     void paint(QPainter *painter,
@@ -66,8 +64,6 @@ protected:
     void mouseMoveEvent (QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent (QGraphicsSceneMouseEvent * event);
     void contextMenuEvent (QGraphicsSceneContextMenuEvent *event);   //　邮件菜单吧
-
-
 
 private:
     DocBox boundary;            // 该块的外包矩形
