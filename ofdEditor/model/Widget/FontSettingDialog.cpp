@@ -124,7 +124,7 @@ void FontSettingDialog::initConnect()
             this, SLOT(accept_slots()));                        // 窗口接受确认的信号
 
     connect(this,SIGNAL(sendFont(QTextCharFormat&)),
-            this->textBlock,SLOT(setCharFormatOnWordOrSelection(QTextCharFormat&)));    // 发送字体
+            this->textBlock,SLOT(setCharFormatOnSelection(QTextCharFormat&)));    // 发送字体
 
 }
 

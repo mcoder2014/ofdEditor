@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "Doc/DocPage.h"
+#include <QMdiSubWindow>
 
 class DocPassage;
 class PassageMainWindow;
@@ -21,6 +22,8 @@ public:
     ActionConnector();
     ActionConnector(PassageMainWindow * mainWindow);
 
+    DocPage::Layer getDefaultLayer(){return this->defaultLayer;}
+
 public slots:
     void setMainWindow(PassageMainWindow * mainWindow);     // 设置主窗口
     void addNewPage();                                      // 添加一个新页面
@@ -30,14 +33,13 @@ public slots:
     void addTableBlock();                   // 插入表格
 
     void setDefaultLayer(DocPage::Layer layer){this->defaultLayer = layer;}
-    DocPage::Layer getDefaultLayer(){return this->defaultLayer;}
+
+    void updateActivePassage(QMdiSubWindow * window );      // 更新当前操作的文章
 
 private:
     PassageMainWindow * mainWindow;        // 主窗口
     DocPassage * passage;                  // 当前活跃文档
     DocPage::Layer defaultLayer;           // 当前默认插入的层
-
-    void updateActivePassage();             // 更新，确保当前操作的对象是活动的窗口
 
     void init();                            // 初始化
 

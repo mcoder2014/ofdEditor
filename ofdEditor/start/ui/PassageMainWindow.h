@@ -4,11 +4,16 @@
 #include <QMainWindow>
 #include <QResizeEvent>
 #include <QLabel>
+#include <QFontComboBox>        // 字体框
+#include <QComboBox>            // 选择框
 
 class QAction;
 class QMenu;
 class QMdiArea;
 class DocPassage;
+class DocTextBlock;
+class QTextCharFormat;
+class QTextBlockFormat;
 class ActionConnector;      // 函数功能的中间件
 
 // 编辑窗口的主界面
@@ -72,6 +77,7 @@ private:
     QAction * helpAciton;               // 帮助文档，如何使用本软件
 
     QMdiArea * area;            // 多窗口区域
+    QVector<DocPassage* >passages;      // 存储所有的passage
 
     ActionConnector* connector; // 功能连接中间件
 
@@ -81,12 +87,19 @@ private:
     void connectAction();       // 链接QAction的相应事件
     void disconnectAction();    // 断开事件响应
 
+    DocTextBlock *textBlock;    // 文字块
+    QTextCharFormat* _currentCharFormat;    // 当前字符格式
+    QTextBlockFormat* _currentBlockFormat;  // 当前块格式
+
+
 private slots:
     void openFile();            // 打开新文件
+    void fontDialog();          // 打开字体框
+    void paragraphDialog();     // 打开段落框
 
-
-
-
+    void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
+    void acceptTextBlockFormat(QTextBlockFormat& blockFormat);  // 接受当前处理的块格式
+    void acceptTextCharFormat(QTextCharFormat& charFormat);     // 接受当前处理的字符格式
 
 };
 

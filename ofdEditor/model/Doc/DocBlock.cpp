@@ -155,6 +155,8 @@ void DocBlock::remove()
 {
     QGraphicsScene *scene = this->scene();      // 查找到本块所在的场景
     scene->removeItem(this);                    // 从场景中移除该组件
+
+    emit this->signals_blockRemoved(this);      // 发出信号
 }
 
 
@@ -348,12 +350,13 @@ void DocBlock::setWidget(QWidget *widget)
 void DocBlock::setWidget(DocTextBlock *textBlock)
 {
     // 建立connect
-    connect(textBlock,SIGNAL(signals_remove()),
+    connect(textBlock,SIGNAL(signals_remove(DocTextBlock*)),
             this,SLOT(remove()));                // 和块做移除连接
     connect(textBlock,SIGNAL(signals_setZValue(qreal)),
             this,SLOT(setZValue(qreal)));       // 建立设置Z值的信号连接
 
-            textBlock->setBlock(this);                  // 设置引用
+    textBlock->setBlock(this);                  // 给DocTextBlock设置引用
+    this->textBlock = textBlock;                // 给DocBlock设置引用
 
     QGraphicsProxyWidget::setWidget(textBlock);
 }
@@ -405,5 +408,36 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
 
     // 如果未得出结果，则默认无操作
     return blockNone;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  判断是其中装的是否是DocTextBlock
+ * @param  void
+ * @return bool
+ * @date   2017/06/23
+ */
+bool DocBlock::isTextBlock()
+{
+    if(this->textBlock == NULL)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得DocTextBlock
+ * @param  void
+ * @return DocTextBlock*
+ * @date   2017/06/23
+ */
+DocTextBlock *DocBlock::getTextBlock()
+{
+    return this->textBlock;
 }
 

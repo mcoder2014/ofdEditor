@@ -34,7 +34,7 @@ void ActionConnector::setMainWindow(PassageMainWindow *mainWindow)
  */
 void ActionConnector::addNewPage()
 {
-    this->updateActivePassage();        // 更新选择的文章。
+
     this->passage->appendNewPage();     // 在队尾增加一页
 
 }
@@ -49,7 +49,7 @@ void ActionConnector::addNewPage()
 void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
 {
 
-    this->updateActivePassage();    // 更新文章
+//    this->updateActivePassage();    // 更新文章
     DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
     if(page == NULL)
     {
@@ -87,29 +87,29 @@ void ActionConnector::addTableBlock()
     this->addNewBlock(blockInfo);
 }
 
-
-
-
 /**
  * @Author Chaoqun
- * @brief  更新，确保当前操作的对象是活动窗口
+ * @brief  更新当前的活跃窗口
  * @param  参数
  * @return 返回值
- * @date   2017/05/15
+ * @date   2017/06/23
  */
-void ActionConnector::updateActivePassage()
+void ActionConnector::updateActivePassage(QMdiSubWindow *window)
 {
-    DocPassage* temp = this->mainWindow->activeMdiChild();
-    if(temp == NULL)
+    if(window == NULL)
     {
-        qDebug()<< " You haven't select any passage. "
-                  <<"void ActionConnector::updateActivePassage()";
-        this->passage = NULL;
+        qDebug() << "updateActivePassage NULL"
+                 << "there's no actived window";
+        return;
+    }
+    DocPassage* passage = qobject_cast<DocPassage*>(window->widget());  // 获得文档
+    if(passage == NULL)
+    {
+        qDebug()<< "The active MdiWindow may not DocPassage";
     }
     else
     {
-        this->passage = temp;
-        // 待CT_DocType配置好了，这里可以输出文档名称
+        this->passage = passage;
     }
 }
 

@@ -10,6 +10,8 @@
 #include <QScrollArea>
 #include <QVBoxLayout>      // 树状排布
 #include <QResizeEvent>
+#include <QTextCharFormat>
+#include <QTextBlockFormat>
 
 // 类声明
 class DocPage;
@@ -51,8 +53,8 @@ public slots:
     void setDocInfo( CT_DocInfo & docInfo );
 
     // CommonData
-//    void setCommonData(CT_CommonData* commonData);
-//    CT_CommonData getCommonData();
+    void setCommonData(CT_CommonData* commonData);  // 注意，设置的是直接的指针
+    CT_CommonData* getCommonData();                 // 注意，返回的是直接的指针
 
     // Version
     void setVersion(QString version){this->version = version;}
@@ -62,22 +64,16 @@ public slots:
 
     void testMessage(); // 测试信号是否走通
 
-
-
-
-
-
 protected:
     void resizeEvent(QResizeEvent* event);
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
-
 
 private:
     // 数据区
     QString version;                // OFD 版本默认 1.0
     QString docType;                // 类型默认是 OFD
     CT_DocInfo* docInfo;            // 文档元数据结构 ofd/CT_DocInfo
-//    CT_CommonData* commonData;      // 文档公用文档数据
+    CT_CommonData* commonData;      // 文档公用文档数据
 
     QVector<DocPage *> pages;       // 既作为数据，也作为渲染
 
@@ -92,16 +88,21 @@ private:
     int horizontalWhite;            // 白色页面左右两边的灰色区域
     int verticalWhite;              // 白色页面上下的灰色区域
 
-
-private:
     void init();                                // 初始化
     void adjustScrollBar(QScrollBar *scrollBar,
                          double factor);        // 调整滑动条
     void adjustScrollBarRange();                //调整滑动条范围
     void adjustWidgetSize();                    // 根据页数来自动调整widget大小
 
+signals:
+    void signals_insertTextBlock(DocTextBlock* textBlock);      // 用来转发信号
+    void signals_removeTextBlock(DocTextBlock* textBlock);      // 用来转发信号
 
-
+    void signals_currentCharFormatChanged(
+            QTextCharFormat& fmt);    // 当前选择的charFormat发生了变化
+    void signals_currentBlockFormatChanged(
+            QTextBlockFormat& fmt);  // 当前选择的block格式发生了变化
+    void signals_currentTextBlock(DocTextBlock* textBlock); // 当前操作的textBlock
 
 };
 

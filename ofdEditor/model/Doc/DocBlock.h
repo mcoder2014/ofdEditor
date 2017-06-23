@@ -36,6 +36,8 @@ public:
     qreal getZValue(){return this->realZValue;} // 获得当前块所在的Z值
     RectAdjustStatus currentStatus(const QPointF& pos);    // 鼠标所在位置可以进行什么调整
 
+    bool isTextBlock();         // 判断是否DocBlock装的是否是DocTextBlock
+    DocTextBlock *getTextBlock(); // 获得DocTextBlock
 
 public slots:           // 槽函数
     void setLayer(DocLayer * layer){this->layer = layer;}
@@ -73,10 +75,15 @@ private:
     QSizeF blockSize;           // 用来纪录大小
     QPointF blockOldPos;        // 用来记录旧的位置
 
+    DocTextBlock* textBlock;    // 存下引用
+
     bool isFocused;             // 是否被聚焦
     bool blockIsResizing;       // 是否正在改变大小
     bool isInResizeArea(const QPointF& pos);    // 检查鼠标是否在重置大小区域
     qreal realZValue;           // 真实的z值
+
+signals:
+    void signals_blockRemoved(DocBlock* block);     // 当本块被移除时发出信号
 
 };
 

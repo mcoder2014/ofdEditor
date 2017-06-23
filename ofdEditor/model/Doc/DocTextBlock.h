@@ -59,9 +59,16 @@ public slots:
 
     void setCharFormatOnWordOrSelection(
             QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
+            // 如果没有选中，则会选择光标所在行的字体
     void setCharFormatOnWordOrSelection(
             QTextCursor& cursor,
             QTextCharFormat &format);     // 设置给定光标的QTextCharFormat
+
+    void setCharFormatOnSelection(
+            QTextCharFormat &format);     // 设置选中字段的QTextCharFormat
+    void serCharFormatOnSelection(
+            QTextCursor& cursor,
+            QTextCharFormat &format);     // 设置给定光标下，文字的格式
 
     void mergeFormatOnWordOrSelection(
             QTextCharFormat &format);     // 合并格式
@@ -93,6 +100,8 @@ protected:
 
 private slots:
     void contextMenuAboutToHideEvent();               // 右键菜单隐藏绑定事件
+    void checkCurrentFormat();                        // 检查当前的格式是否发生改变
+    void emitFormatSignals();                         // 发射格式的信号
 
 private:
     QString content;        // 文字内容
@@ -116,20 +125,18 @@ private:
 
     qreal tempZValue;           // 存储临时Z值
 
-signals:
-    void signals_remove();              // 移除文本框的信号。
-    void signals_setZValue(qreal z);    // 设置Z值的信号
+    QTextBlockFormat _currentBlockFormat;       // 当前BlockFormat
+    QTextCharFormat _currentCharFormat;         // 当前
 
-    // 该块被focus的信号
-    void signals_focusIn();
-    void signals_focusOut();
+signals:
+    void signals_remove(DocTextBlock* textBlock);    // 移除文本框的信号。
+    void signals_setZValue(qreal z);    // 设置Z值的信号
 
     void signals_currentCharFormatChanged(
             QTextCharFormat& fmt);    // 当前选择的charFormat发生了变化
     void signals_currentBlockFormatChanged(
             QTextBlockFormat& fmt);  // 当前选择的block格式发生了变化、
-
-
+    void signals_currentTextBlock(DocTextBlock* textBlock); // 当前操作的textBlock
 
 };
 
