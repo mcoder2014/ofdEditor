@@ -29,6 +29,7 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setFlag(QGraphicsProxyWidget::ItemIsSelectable, true);    // 可选择
     this->setFlag(QGraphicsProxyWidget::ItemIsFocusable, true);     // 可关注
     this->setAcceptHoverEvents(true);
+
 }
 
 /**

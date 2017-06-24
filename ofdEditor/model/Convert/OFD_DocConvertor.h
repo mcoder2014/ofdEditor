@@ -15,6 +15,7 @@ class CT_Text;
 class CT_Path;
 class CT_Image;
 class CT_Color;
+class CT_PageArea;
 
 /**
  * @Author Chaoqun
@@ -32,6 +33,8 @@ public:
 
 private:
     OFD * ofdFile;  // 当前处理时使用的ofd文件-用来方便获取到公用的特征
+    CT_PageArea* public_pageArea;   // 公用的页面大小
+
 
     DocPage * buildDocPage(DocPassage * passage ,
                            Page * ct_page);         // 生成页

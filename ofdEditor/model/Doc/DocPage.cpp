@@ -17,6 +17,7 @@
 #include <QPointF>
 #include <QPainter>
 #include <QObject>
+#include <QLabel>
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
@@ -96,6 +97,42 @@ QSize DocPage::getSize()
 {
     return QSize(UnitTool::mmToPixel(width_mm),
                  UnitTool::mmToPixel(height_mm));
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得前景层
+ * @param  void
+ * @return DocLayer*
+ * @date   2017/06/24
+ */
+DocLayer *DocPage::getForegroundLayer()
+{
+    return this->foregroundLayer;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得正文层
+ * @param  void
+ * @return DocLayer*
+ * @date   2017/06/24
+ */
+DocLayer *DocPage::getBodyLayer()
+{
+    return this->bodyLayer;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得背景层
+ * @param  参数
+ * @return DocLayer*
+ * @date   2017/06/24
+ */
+DocLayer *DocPage::getBackgroundLayer()
+{
+    return this->backgroundLayer;
 }
 
 /**

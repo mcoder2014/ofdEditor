@@ -16,6 +16,8 @@
 #include "DataTypes/image/CT_DrawParam.h"
 #include "DataTypes/Color/CT_ColorSpace.h"
 #include "Convert/Objects/MinTextUnit.h"
+#include "DataTypes/page/CT_PageArea.h"
+#include "DataTypes/document/ct_commondata.h"
 
 OFD_DocConvertor::OFD_DocConvertor()
 {
@@ -49,7 +51,8 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
 
         Document * document = (*(ofd->getDocuments()))[0];          // Document
 
-//        CT_CommonData * commonData = document->getCommonData();     // 获取common_data
+        CT_CommonData * commonData = document->getCommonData();     // 获取common_data- >内含公用页大小
+        this->public_pageArea = commonData->getPageArea();          // 从common_data中获取公用边大小
 
         //    CT_Pages pages = document->pages;               // 获得文档中的页
         QVector<Page * > * pages = document->getPages()->getPages(); // 获得页属性
@@ -81,8 +84,14 @@ DocPage *OFD_DocConvertor::buildDocPage(DocPassage *passage, Page *ct_page)
             // 如果定义了纸张尺寸
 
             CT_PageArea* area = ct_page->getArea();      // 获得空间
+            if(area == NULL)
+            {
+                // 如果没有定义页面大小
+                qDebug() <<"buildPage -> there is no pageArea in page";
+                area = this->public_pageArea;       // 使用公用的页面空间
+            }
 
-            // 物理空间
+            // 使用物理空间新建页面
             page = new DocPage(area->getPhysicalBox().getDeltaX(),
                                area->getPhysicalBox().getDeltaY(),
                                1.0);       // 设置纸张大小
@@ -109,7 +118,6 @@ DocPage *OFD_DocConvertor::buildDocPage(DocPassage *passage, Page *ct_page)
     {
         qDebug() << "OFD_DocConvertor::buildDocPage exception.";
     }
-
 
     return page;
 }
@@ -182,7 +190,6 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
 
 
 }
-
 
 /**
  * @Author Chaoqun

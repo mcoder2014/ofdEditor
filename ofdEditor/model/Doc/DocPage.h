@@ -44,6 +44,10 @@ public:
 
     BlockFlag getBlockFlag(){return this->newBlockFlag;}
 
+    DocLayer *getForegroundLayer();                 // 获得前景层
+    DocLayer* getBodyLayer();                       // 获得正文层
+    DocLayer* getBackgroundLayer();                      // 获得背景层
+
 public slots:
     void setSize(double width, double height);             // 设置页面大小
     void setPassage(DocPassage * passage);        // 设置文章

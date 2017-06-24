@@ -11,6 +11,14 @@ class DocBlock;         // 块
 class DocTextBlock;     // 文本框
 
 class OFD;              // OFD文件模型
+class Res;              // 资源描述
+class ID_Table;         // id table表
+class CT_Font;          // ct_font
+class CT_ColorSpace;    // 颜色空间
+class Page;
+class Document;
+class CT_Layer;
+
 
 /**
  * @Author Chaoqun
@@ -30,14 +38,30 @@ signals:
 public slots:
 
 private:
-    void buildDocInfo();        // 存储DocInfo相关的信息
-    void buildPage();           // 储存文本信息，顺便整理文件
-    void buildLayer(DocLayer* layer);   // 将一层中的信息存储出来
-    void buildText(DocTextBlock* textBlock);    // 将DocTextBlock中的信息转换处理
+
+    void buildDocBody();        // 生成DocBody
+    void buildDocument();       // 生成Document
+    void buildPages(Document *document);          // 处理页面S
+
+    void buildPage(Page* ctPage,
+                   DocPage* docPage);   // 处理其中某一页
+
+    void buildLayer(CT_Layer* ctLayer,
+                    DocLayer* layer);   // 将一层中的信息存储出来
+    void buildText(CT_Layer* ctLayer,DocTextBlock* textBlock);    // 将DocTextBlock中的信息转换处理
+
+    int addFont(CT_Font* font);    // 添加字体类型到资源
+    int addColorSpace(CT_ColorSpace* colorSpace);  // 添加颜色空间
+
+    int checkFont(CT_Font* font);  // 检查publicRes中是否存在该字体
+    int checkColorSpace(CT_ColorSpace* colorSpace);    // 检查是否存在该颜色空间
 
 private:
     DocPassage* passage;        // 文章
-    OFD* ofdFile;               // OFD对象
+    OFD* ofdFile;               // OFD 对象
+    Res* public_res;            // Res 公共资源文件
+    ID_Table* table;            // ID table
+
 
 };
 

@@ -14,7 +14,6 @@ public:
     QVector<ST_Loc> * page_res_locations;
     QVector<CT_Layer *> *content;
     //Actions to be implemented
-
 public:
     friend class OFDParser;
     Page() {

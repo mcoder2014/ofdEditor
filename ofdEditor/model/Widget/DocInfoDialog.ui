@@ -41,7 +41,7 @@
    <property name="title">
     <string>说明</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>21</x>
@@ -149,13 +149,6 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
-      <widget class="QLabel" name="creationDate">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1" colspan="2">
       <widget class="QLabel" name="docId">
        <property name="text">
@@ -163,7 +156,14 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
+     <item row="9" column="1" colspan="3">
+      <widget class="QLabel" name="creationDate">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="3">
       <widget class="QLabel" name="fileName">
        <property name="text">
         <string/>
