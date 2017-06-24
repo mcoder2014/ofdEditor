@@ -133,6 +133,14 @@ void DocInfoDialog::resetDocId()
 {
     QUuid uuid = QUuid::createUuid();   // 创建一个新的uuid
     QString docId = uuid.toString();
+
+    docId.remove(docId.length()-1, 1);
+    docId.remove(docId.length() -13, 1);
+    docId.remove(docId.length() -17,1);
+    docId.remove(docId.length() -21, 1);
+    docId.remove(docId.length() - 25,1);
+    docId.remove(0,1);
+
     qDebug() << "new uuid: " << docId;
 
     this->docInfo->setDocID(docId);

@@ -271,6 +271,15 @@ void DocPassage::resetDocId()
 {
     QUuid uuid = QUuid::createUuid();   // 创建uuid
     QString docId = uuid.toString();    // 转换为字符串
+
+    // 去掉字符串的链接符号  {0142d46f-60b5-47cf-8310-50008cc7cb3a}
+    // 0142d46f60b547cf831050008cc7cb3a
+    docId.remove(docId.length()-1, 1);
+    docId.remove(docId.length() -13, 1);
+    docId.remove(docId.length() -17,1);
+    docId.remove(docId.length() -21, 1);
+    docId.remove(docId.length() - 25,1);
+    docId.remove(0,1);
     qDebug() << "uuid : " << docId;
 
     this->docInfo->setDocID(docId);

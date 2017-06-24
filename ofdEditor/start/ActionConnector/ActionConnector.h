@@ -5,6 +5,7 @@
 #include "Doc/DocPage.h"
 #include <QMdiSubWindow>
 
+
 class DocPassage;
 class PassageMainWindow;
 
@@ -34,6 +35,7 @@ public slots:
     void addTableBlock();                   // 插入表格
     void undo();                            // undo
     void redo();                            // redo
+    void setDocPassage(DocPassage* passage);    // 设置passage
 
     void setDefaultLayer(DocPage::Layer layer){this->defaultLayer = layer;}
 

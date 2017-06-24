@@ -5,6 +5,8 @@
 #include "DataTypes/document/ct_docinfo.h"
 #include "Widget/DocInfoDialog.h"
 
+#include "app/APPInfo.h"
+
 #include <QDebug>
 #include <QMetaObject>
 
@@ -24,7 +26,7 @@ void ActionConnector::showAttribute()
 {
     if(this->passage == NULL)
     {
-        qDebug() << "show attribute";
+        qDebug() << "show attribute this->passage == NULL";
         return;
     }
 
@@ -129,6 +131,11 @@ void ActionConnector::redo()
     this->passage->undoStack->redo();
 }
 
+void ActionConnector::setDocPassage(DocPassage *passage)
+{
+    this->passage = passage;
+}
+
 
 
 
@@ -164,4 +171,5 @@ void ActionConnector::init()
 {
     this->defaultLayer = DocPage::Body;
     this->passage = NULL;   // 初始化为空
+
 }

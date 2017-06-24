@@ -53,9 +53,6 @@ DocPassage *PassageMainWindow::createMdiChild()
     DocPassage * child = new DocPassage(this);
     child->addPage(new DocPage());      // 添加一个空白页
 
-//    this->area->addSubWindow(child);
-//    child->setVisible(true);            // 设置可见
-//    child->showMaximized();
     this->addDocPassage(child);         // 加入到本视区
 
     return child;
@@ -446,7 +443,9 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
         return NULL;
     }
 
-    this->area->addSubWindow(passage);
+    this->area->addSubWindow(passage);          // 插入子窗口
+    this->connector->setDocPassage(passage);    // 设置引用
+
     passage->setVisible(true);            // 设置可见
     passage->showMaximized();
 

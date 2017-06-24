@@ -24,7 +24,6 @@ private:
     Ui::DocInfoDialog *ui;
     CT_DocInfo* docInfo;        // 文档元信息
     void init();                // 初始化
-
     void initUi();              // 初始化ui
 
 public slots:

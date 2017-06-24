@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/appInfo">
+        <file>source/appInfo.json</file>
+    </qresource>
+</RCC>
