@@ -224,7 +224,7 @@ void DocBlock::focusOutEvent(QFocusEvent *event)
  */
 void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-
+//    qDebug() << "Hovering.";
     if (this->rectAdjust == blockResize
             || (this->currentStatus(event->pos()) == blockResize
                 && this->isFocused))
@@ -256,7 +256,7 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
  */
 void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "Pressed.";
+//    qDebug() << "Pressed.";
     QPointF pos = event->pos();     // 获取鼠标位置
 //    qDebug()<<"DocBlock Mouse Postion" << pos.x()
 //           << ", "<<pos.y();
@@ -265,10 +265,10 @@ void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         // 如果按下的是鼠标左键，检测是否是可以修改大小或位置的状态
         this->rectAdjust = this->currentStatus(event->pos());
+//        qDebug() << (rectAdjust == DocBlock::blockResize);
     }
-qDebug() << (rectAdjust == DocBlock::blockResize);
+//qDebug() << (rectAdjust == DocBlock::blockResize);
     QGraphicsProxyWidget::mousePressEvent(event);
-
 }
 
 /**
@@ -280,7 +280,7 @@ qDebug() << (rectAdjust == DocBlock::blockResize);
  */
 void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << (rectAdjust == DocBlock::blockResize);
+//    qDebug() << "???";
     if (this->rectAdjust == blockResize)
     {
 //        qDebug() << "???";
@@ -298,7 +298,6 @@ void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         this->setCursor(Qt::SizeFDiagCursor);
     }
         QGraphicsProxyWidget::mouseMoveEvent(event);    // 调用基类的函数
-
 
 }
 
@@ -368,6 +367,20 @@ void DocBlock::setWidget(DocTextBlock *textBlock)
 
 
 /**
+ * @Author Pan
+ * @brief  em.....
+ * @param  DocImageBlock * imageBlock
+ * @return void
+ * @date   2017/06/24
+ */
+void DocBlock::setWidget(DocImageBlock * imageBlock)
+{
+    imageBlock->setBlock(this);
+    this->imageBlock = imageBlock;
+    QGraphicsProxyWidget::setWidget(imageBlock);
+}
+
+/**
  * @Author Chaoqun
  * @brief  检查鼠标是否在重置大小区域
  * @param  const QPointF &pos
@@ -389,32 +402,53 @@ bool DocBlock::isInResizeArea(const QPointF &pos)
  */
 DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
 {
-    if((pos.x() - this->size().width() + 15) >
-            (this->size().height() - pos.y()))
+//    qDebug() << "get current status.";
+    if (isTextBlock())
     {
-        //qDebug() << "Mouse resizing.";
-        return blockResize;
+        if((pos.x() - this->size().width() + 15) >
+                (this->size().height() - pos.y()))
+        {
+            //qDebug() << "Mouse resizing.";
+            return blockResize;
+        }
+        // 画出可以移动的边缘
+        qreal moveMargin = 5;   // 边缘多少像素内可以移动
+        QRectF left(0,0,
+                    moveMargin,this->blockSize.height());
+        QRectF right(this->blockSize.width()-moveMargin,0,
+                     moveMargin,this->blockSize.height());
+        QRectF top(0,0,
+                   this->blockSize.width(),moveMargin);
+        QRectF bottom(0,this->blockSize.height() - moveMargin,
+                  this->blockSize.width(),moveMargin);
+
+        if(left.contains(pos)
+                || right.contains(pos)
+                || top.contains(pos)
+                || bottom.contains(pos))
+            return blockMove;
+
+        // 如果未得出结果，则默认无操作
+        return blockNone;
     }
-    // 画出可以移动的边缘
-    qreal moveMargin = 5;   // 边缘多少像素内可以移动
-    QRectF left(0,0,
-                moveMargin,this->blockSize.height());
-    QRectF right(this->blockSize.width()-moveMargin,0,
-                 moveMargin,this->blockSize.height());
-    QRectF top(0,0,
-               this->blockSize.width(),moveMargin);
-    QRectF bottom(0,this->blockSize.height() - moveMargin,
-              this->blockSize.width(),moveMargin);
+    else if (isImageBlock())
+    {
+//        qDebug() << "Is Image Block.";
+        QRectF rec(0, 0,
+                   this->blockSize.width(),
+                   this->blockSize.height());
+        if((pos.x() - this->size().width() + 15) >
+                (this->size().height() - pos.y()))
+        {
+            //qDebug() << "Mouse resizing.";
+            return blockResize;
+        } else if (rec.contains(pos))
+        {
+//            qDebug() << "Is moving Image Block";
+            return blockMove;
+        }
 
-    if(left.contains(pos)
-            || right.contains(pos)
-            || top.contains(pos)
-            || bottom.contains(pos))
-        return blockMove;
-
-
-    // 如果未得出结果，则默认无操作
-    return blockNone;
+    }
 }
 
 /**

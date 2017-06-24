@@ -9,7 +9,7 @@
 #include "Doc/DocPicture.h"
 #include "Doc/DocGraph.h"
 #include "Doc/DocPassage.h"
-
+#include "DocImageBlock.h"
 #include <QPalette>
 #include <QPaintEvent>
 #include <QDebug>
@@ -33,7 +33,8 @@ DocPage::DocPage(QWidget *parent)
     this->setSize(210,297);     // 默认A4纸张大小
     this->scaleFactor = 1.0;
     this->init();
-
+    activeBlock = NULL;
+//    this->setMouseTracking(true);
 }
 
 DocPage::DocPage(double width,
@@ -307,6 +308,15 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 //                     qDebug()<<" Accepted Signal is blockMove";
                      this->newBlockFlag = blockMove;
                  }
+                 else if (block->currentStatus(
+                              block->mapFromScene(tempPoint))
+                          == DocBlock::blockResize
+                          && block->isImageBlock())
+                 {
+                     this->newBlockFlag = DocPage::blockResize;
+                     this->oldPos = activeBlock->pos();
+//                     qDebug() << "oh yeah";
+                 }
                  else
                  {
 //                     qDebug()<<"not Move";
@@ -365,7 +375,26 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
 
         this->viewport()->update();   // 调用刷新
     }
-
+    else if (activeBlock
+             && activeBlock->isImageBlock()
+             && this->newBlockFlag == DocPage::blockResize)
+    {
+//        qDebug() << "hahaha";
+        DocImageBlock * image_block = activeBlock->getImageBlock();
+        this->newPos = this->mapToScene(event->pos());
+        QPointF point = this->newPos - this->oldPos;
+        if (!image_block->isWidthHeightRatioLocked())
+            this->activeBlock->resize(point.rx(),point.ry());
+        else
+        {
+            double ratio = image_block->getWidthHeightRatio();
+            if(point.rx() <
+                    point.ry() * ratio)
+                this->activeBlock->resize(point.rx(), point.rx() / ratio);
+            else
+                this->activeBlock->resize(point.ry() * ratio, point.ry());
+        }
+    }
 }
 
 /**
@@ -453,7 +482,7 @@ void DocPage::init()
 
 void DocPage::addImage()
 {
-    qDebug() << "???";
+    //qDebug() << "???";
     //打开对话框，选取一个图片文件
     QString fileName = QFileDialog::getOpenFileName(this,
                                     tr("Open File"), QDir::currentPath());
@@ -471,10 +500,10 @@ void DocPage::addImage()
         newBlock->setWidget(new_image_block);
         new_image_block->setImage(image);
         double page_width = this->width(), page_height = this->height();
-        qDebug() << "Page Width: " << this->width();
-        qDebug() << "Page Height: " << this->height();
-        qDebug() << "Image Width: " << image.width();
-        qDebug() << "Image Height: " << image.height();
+//        qDebug() << "Page Width: " << this->width();
+//        qDebug() << "Page Height: " << this->height();
+//        qDebug() << "Image Width: " << image.width();
+//        qDebug() << "Image Height: " << image.height();
         double ratio;
         if (image.width() > page_width || image.height() > page_height)
         {

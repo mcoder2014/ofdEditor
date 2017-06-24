@@ -17,6 +17,8 @@ public:
 
 private:
     Ui::DocInfoDialog *ui;
+
+
 };
 
 #endif // DOCINFODIALOG_H

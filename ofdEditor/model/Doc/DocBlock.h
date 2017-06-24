@@ -52,11 +52,10 @@ public slots:           // 槽函数
     void remove();                      // 从场景中移除本框
     void setWidget(QWidget* widget);           // 旧的函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
-
+    void setWidget(DocImageBlock * imageBlock);
 
 
 protected:
-
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);                   // 用来绘制变化
