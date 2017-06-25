@@ -71,6 +71,8 @@ public slots:
 
     void testMessage(); // 测试信号是否走通
 
+    void adjustWidgetSize();                    // 根据页数来自动调整widget大小
+
 protected:
     void resizeEvent(QResizeEvent* event);
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
@@ -105,7 +107,7 @@ private:
     void adjustScrollBar(QScrollBar *scrollBar,
                          double factor);        // 调整滑动条
     void adjustScrollBarRange();                //调整滑动条范围
-    void adjustWidgetSize();                    // 根据页数来自动调整widget大小
+
 
 signals:
     void signals_insertTextBlock(DocTextBlock* textBlock);      // 用来转发信号

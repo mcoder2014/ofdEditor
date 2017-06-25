@@ -33,8 +33,8 @@ public:
     DocPage* getPage();                 // 获得页
     DocLayer* getLayer();               // 获得层
     DocBlock* getBlock();               // 获得Block
-
-
+    QString& getContent();              // 获得TextBlock中的所有文本
+    int getContentLength();             // 获得内部文字长度
 
 public slots:
 

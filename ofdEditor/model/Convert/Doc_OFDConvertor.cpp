@@ -9,6 +9,8 @@
 #include <QTextCursor>
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
+#include <QTextdocument>
+#include <QTextBlock>
 
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/document/ofd.h"
@@ -234,9 +236,48 @@ void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
  */
 void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
 {
+    if(textBlock->getContentLength() == 0)
+    {
+        // 如果文本框中没有内容
+        qDebug() << "The textBlock has no content in it.";
+        return;
+    }
+
     // 分析TextBlock
     textBlock->moveCursor(QTextCursor::Start);      // 移动到块的开始
     QTextCursor cursor = textBlock->textCursor();
+    QTextDocument* document = cursor.document();
+    int blockCount = document->blockCount();        // 获得Block的数量
+
+    qDebug() << "This textBlock has " << blockCount << " QTextBlocks";
+
+    for(int i =0; i<blockCount; i++)
+    {
+        // 遍历每一个QTextBlock
+       QTextBlock block = cursor.block();
+       cursor.movePosition(QTextCursor::NextBlock,
+                           QTextCursor::MoveAnchor);    // 将鼠标移动到下一个块
+       QTextCursor tempCursor = cursor;             // 复制一个临时光标处理
+       int lineCount = block.lineCount();           // 计算该块有多少行
+
+       qDebug() << "block " << i
+                << " has " << lineCount
+                << "lines";
+
+//       for(int lineValue = 0; lineValue <lineCount; lineValue ++)
+//       {
+//           tempCursor.select(QTextCursor::LineUnderCursor); // 光标选中当前行
+//           QString lineStr = tempCursor.selectedText();     // 当前选中的内容
+//           qDebug() << "block " << i
+//                    << " line " << lineValue
+//                    << " content:" << lineStr;
+
+//           tempCursor.movePosition(QTextCursor::Down);     // 移动到下一行
+//       }
+
+    }
+
+
 
 
 }
