@@ -52,6 +52,7 @@ private:
     QAction * saveAction;               // 保存
     QAction * saveAsAction;             // 另存为
     QAction * printAction;              // 打印
+    QAction * attributeAction;          // 文档属性
 
     // 编辑
     QAction * undoAction;               // 撤销

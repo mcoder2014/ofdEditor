@@ -5,7 +5,6 @@
 #include "Doc/DocBasicTypes.h"
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
-#include "DocImageBlock.h"
 
 class DocLayer;
 class QPainter;
@@ -68,8 +67,6 @@ protected:
     void mouseMoveEvent (QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent (QGraphicsSceneMouseEvent * event);
     void contextMenuEvent (QGraphicsSceneContextMenuEvent *event);   //　邮件菜单吧
-
-
 
 private:
     DocBox boundary;            // 该块的外包矩形

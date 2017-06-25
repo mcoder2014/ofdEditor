@@ -13,6 +13,8 @@
 #include <QTextCharFormat>
 #include <QUndoStack>
 #include <QTextBlockFormat>
+#include <QFile>
+
 
 // 类声明
 class DocPage;
@@ -37,7 +39,7 @@ public:
                QString docType,double scaleFactor);
     ~DocPassage();
 
-    CT_DocInfo getDocInfo();        // 获取CT_DocInfo数据
+    CT_DocInfo* getDocInfo();                // 获取CT_DocInfo数据
     QString getVersion( ){return this->version;}
     QString getDocType( ){return this->docType;}
     QVector<DocPage* >& getPages();         // 获得文档中包含的所有页面
@@ -65,7 +67,12 @@ public slots:
     // DocType
     void setDocType(QString docType){this->docType = docType;}
 
+    // docId
+    void resetDocId();          // 重新设置DocId
+
     void testMessage(); // 测试信号是否走通
+
+    void adjustWidgetSize();                    // 根据页数来自动调整widget大小
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -79,6 +86,12 @@ private:
     CT_CommonData* commonData;      // 文档公用文档数据
 
     QVector<DocPage *> pages;       // 既作为数据，也作为渲染
+
+    // 文件信息
+    QString filePath;
+    QString fileName;
+    QString tempPath;               // 保存成文件前的临时路径
+        // 个人觉得可以用上UUID tmp/"uuid-fileName"
 
     // 渲染区
     QVBoxLayout * layout;           // 纵向排列
@@ -95,7 +108,7 @@ private:
     void adjustScrollBar(QScrollBar *scrollBar,
                          double factor);        // 调整滑动条
     void adjustScrollBarRange();                //调整滑动条范围
-    void adjustWidgetSize();                    // 根据页数来自动调整widget大小
+
 
 signals:
     void signals_insertTextBlock(DocTextBlock* textBlock);      // 用来转发信号

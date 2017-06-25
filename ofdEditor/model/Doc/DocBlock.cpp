@@ -14,6 +14,7 @@
 #include "Doc/DocLayer.h"
 #include "Doc/DocPage.h"
 #include "Doc/DocPassage.h"
+#include "Doc/DocImageBlock.h"
 
 DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     :QGraphicsProxyWidget(parent,wFlags)

@@ -27,6 +27,7 @@
 #include "Convert/OFD_DocConvertor.h"       // OFD 转 Doc 工具
 #include "Doc/DocPage.h"
 #include "Doc/DocTextBlock.h"
+#include "Doc/DocImageBlock.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -53,9 +54,6 @@ DocPassage *PassageMainWindow::createMdiChild()
     DocPassage * child = new DocPassage(this);
     child->addPage(new DocPage());      // 添加一个空白页
 
-//    this->area->addSubWindow(child);
-//    child->setVisible(true);            // 设置可见
-//    child->showMaximized();
     this->addDocPassage(child);         // 加入到本视区
 
     return child;
@@ -120,6 +118,9 @@ void PassageMainWindow::initAction()
     this->printAction = new QAction(tr("Print"),NULL);       // 打印
     this->printAction->setStatusTip(tr("Print your document"));
     this->printAction->setIcon(QIcon(":/icons/source/icons/print.png"));
+
+    this->attributeAction = new QAction(tr("Attribute"),NULL);      // 文档属性
+    this->attributeAction->setStatusTip(tr("Show you the attribute of the actived passage"));
 
     this->undoAction = new QAction(tr("Undo"),NULL);             // 撤销操作
     this->undoAction->setStatusTip(tr("Undo your last action"));
@@ -199,6 +200,7 @@ void PassageMainWindow::initAction()
     this->filesMenu->addAction(this->saveAction);
     this->filesMenu->addAction(this->saveAsAction);
     this->filesMenu->addAction(this->printAction);
+    this->filesMenu->addAction(this->attributeAction);
 
     this->editMenu->addAction(this->undoAction);
     this->editMenu->addAction(this->redoAction);
@@ -260,6 +262,9 @@ void PassageMainWindow::connectAction()
 
     connect(this->openFileAtcion, SIGNAL(triggered(bool)),
             this, SLOT(openFile()));  //打开文件
+
+    connect(this->attributeAction, SIGNAL(triggered(bool)),
+            this->connector, SLOT(showAttribute()));        // 显示文档属性
 
     connect(this->insertNewPageAction, SIGNAL(triggered(bool)),
             this->connector, SLOT(addNewPage()));    // 在文章尾部加入新的一页
@@ -456,7 +461,9 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
         return NULL;
     }
 
-    this->area->addSubWindow(passage);
+    this->area->addSubWindow(passage);          // 插入子窗口
+    this->connector->setDocPassage(passage);    // 设置引用
+
     passage->setVisible(true);            // 设置可见
     passage->showMaximized();
 

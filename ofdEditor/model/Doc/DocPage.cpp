@@ -17,6 +17,7 @@
 #include <QPointF>
 #include <QPainter>
 #include <QObject>
+#include <QLabel>
 #include <cmath>
 
 #include <QFileDialog>
@@ -33,7 +34,7 @@ DocPage::DocPage(QWidget *parent)
     this->setSize(210,297);     // 默认A4纸张大小
     this->scaleFactor = 1.0;
     this->init();
-    activeBlock = NULL;
+
 //    this->setMouseTracking(true);
 }
 
@@ -107,6 +108,42 @@ QSize DocPage::getSize()
 
 /**
  * @Author Chaoqun
+ * @brief  获得前景层
+ * @param  void
+ * @return DocLayer*
+ * @date   2017/06/24
+ */
+DocLayer *DocPage::getForegroundLayer()
+{
+    return this->foregroundLayer;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得正文层
+ * @param  void
+ * @return DocLayer*
+ * @date   2017/06/24
+ */
+DocLayer *DocPage::getBodyLayer()
+{
+    return this->bodyLayer;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得背景层
+ * @param  参数
+ * @return DocLayer*
+ * @date   2017/06/24
+ */
+DocLayer *DocPage::getBackgroundLayer()
+{
+    return this->backgroundLayer;
+}
+
+/**
+ * @Author Chaoqun
  * @brief  添加一个新的块到页面之中
  * @param  DocBlock* block  具体的块
  * @param  Layer layer      在哪层
@@ -144,6 +181,7 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
         this->connect(imageBlock, SIGNAL(signals_currrentImageBlock(DocImageBlock*)),
                       passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)));
     }
+//    qDebug()<< "connect";
 
     // 分到层
     switch (layer) {
@@ -383,11 +421,11 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
 
         this->viewport()->update();   // 调用刷新
     }
-    else if (activeBlock
-             && activeBlock->isImageBlock()
-             && this->newBlockFlag == DocPage::blockResize)
+    else if (this->newBlockFlag == DocPage::blockResize&&
+             activeBlock != NULL
+             && activeBlock->isImageBlock())
     {
-//        qDebug() << "hahaha";
+////        qDebug() << "hahaha";
         DocImageBlock * image_block = activeBlock->getImageBlock();
         this->newPos = this->mapToScene(event->pos());
         QPointF point = this->newPos - this->oldPos;
@@ -486,6 +524,7 @@ void DocPage::init()
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;
+    this->activeBlock = NULL;
 }
 
 void DocPage::addImage()

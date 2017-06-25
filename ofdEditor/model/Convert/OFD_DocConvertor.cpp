@@ -16,6 +16,8 @@
 #include "DataTypes/image/CT_DrawParam.h"
 #include "DataTypes/Color/CT_ColorSpace.h"
 #include "Convert/Objects/MinTextUnit.h"
+#include "DataTypes/page/CT_PageArea.h"
+#include "DataTypes/document/ct_commondata.h"
 
 OFD_DocConvertor::OFD_DocConvertor()
 {
@@ -37,18 +39,20 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
     try{
 
         passage = new DocPassage();
-
+        passage->setVisible(false);
         // version
         passage->setVersion(ofd->getOfdVersion());
         passage->setDocType(ofd->getDocType());
 
         QVector<DocBody* > * bodys = ofd->getDocBodies();
         DocBody * docBody = (*bodys)[0];        // DocBody
-        passage->setDocInfo(*(docBody->getDocInfo()));
+
+        passage->setDocInfo(*(docBody->getDocInfo()));      // 设置文档元信息
 
         Document * document = (*(ofd->getDocuments()))[0];          // Document
 
-//        CT_CommonData * commonData = document->getCommonData();     // 获取common_data
+        CT_CommonData * commonData = document->getCommonData();     // 获取common_data- >内含公用页大小
+        this->public_pageArea = commonData->getPageArea();          // 从common_data中获取公用边大小
 
         //    CT_Pages pages = document->pages;               // 获得文档中的页
         QVector<Page * > * pages = document->getPages()->getPages(); // 获得页属性
@@ -57,9 +61,8 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         {
 
             //  生成每一页
-            DocPage * newPage = this->buildDocPage((*pages)[i]);
+            DocPage * newPage = this->buildDocPage(passage, (*pages)[i]);
             newPage->setVisible(true);
-            passage->addPage(newPage);
         }
     }
     catch(...)
@@ -67,10 +70,11 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         qDebug() << "ofd_to_doc:exception.";
     }
 
+    passage->setVisible(true);
     return passage;
 }
 
-DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
+DocPage *OFD_DocConvertor::buildDocPage(DocPassage *passage, Page *ct_page)
 {
     DocPage * page;
     try
@@ -80,8 +84,14 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
             // 如果定义了纸张尺寸
 
             CT_PageArea* area = ct_page->getArea();      // 获得空间
+            if(area == NULL)
+            {
+                // 如果没有定义页面大小
+                qDebug() <<"buildPage -> there is no pageArea in page";
+                area = this->public_pageArea;       // 使用公用的页面空间
+            }
 
-            // 物理空间
+            // 使用物理空间新建页面
             page = new DocPage(area->getPhysicalBox().getDeltaX(),
                                area->getPhysicalBox().getDeltaY(),
                                1.0);       // 设置纸张大小
@@ -91,6 +101,7 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
            page = new DocPage();
         }
 
+        passage->addPage(page);         // 加入到文章中来
         page->setVisible(false);        // 先隐藏显示
 
         // 将每一层加入到页中
@@ -98,7 +109,7 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
         for(int i = 0; i < layers->size(); i++)
         {
             CT_Layer* layer = (*layers)[i];
-            qDebug() << "excute insertLayer: " << i;
+//            qDebug() << "excute insertLayer: " << i;
             this->insertLayer(page,layer);          // 将该层的内容加入到页面中
         }
 
@@ -107,7 +118,6 @@ DocPage *OFD_DocConvertor::buildDocPage(Page *ct_page)
     {
         qDebug() << "OFD_DocConvertor::buildDocPage exception.";
     }
-
 
     return page;
 }
@@ -181,7 +191,6 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
 
 }
 
-
 /**
  * @Author Chaoqun
  * @brief  将文字块插入到页面中
@@ -193,7 +202,7 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
  */
 void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Text *text)
 {
-    qDebug() << "execute insert CT_Text" << text->getID();
+//    qDebug() << "execute insert CT_Text" << text->getID();
     CT_Color * fillColor = text->getFillColor();            // 获得填充颜色
     QColor color = this->ctColorToQColor(fillColor);        // 获得填充颜色
 
@@ -208,9 +217,9 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
         CT_Font* ctFont = (CT_Font*) base_font;
         QString font_name = ctFont->getFontName();      // 字体名
         QString family_name = ctFont->getFamilyName();  // 字体族名
-        qDebug() << font_name << "  "<< family_name;
+//        qDebug() << font_name << "  "<< family_name;
         textFont.setFamily(family_name);
-        qDebug() << "After setting font family :"<<textFont.family();
+//        qDebug() << "After setting font family :"<<textFont.family();
     }
 
     // 处理每一个textCode
@@ -240,16 +249,16 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 
         width += height;        // 假设为方块字吧
 
-        qDebug() << "has compute the boundary";
+//        qDebug() << "has compute the boundary";
 
         // 获得文本内容
         QString content = textCode->getText();     // 文本内容
 
         qDebug() << "insert Content:" << content;
 
-        DocTextBlock *textBlock = new DocTextBlock();
-        DocBlock *block = new DocBlock();
-        block->setWidget(textBlock);
+        DocTextBlock *textBlock = new DocTextBlock();       // 新建文本块
+        DocBlock *block = new DocBlock();                   // 新建块
+        block->setWidget(textBlock);                        // 将块放入文本块中
 
         block->resize(UnitTool::mmToPixel(width),
                       UnitTool::mmToPixel(height));          // 调整块大小
@@ -294,6 +303,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 
         cursor.insertText(content);             // 插入文本
 
+//        qDebug()<<"page->addBlock";
         page->addBlock(block,layer);                    // 插入到场景中
 
     }

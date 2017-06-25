@@ -44,6 +44,10 @@ public:
 
     BlockFlag getBlockFlag(){return this->newBlockFlag;}
 
+    DocLayer *getForegroundLayer();                 // 获得前景层
+    DocLayer* getBodyLayer();                       // 获得正文层
+    DocLayer* getBackgroundLayer();                      // 获得背景层
+
     //Pan
     void addImage();
 

@@ -15,6 +15,7 @@
 #include <QDebug>
 #include <QFontDialog>
 #include <QColorDialog>
+#include <QTextBlock>
 
 
 
@@ -102,6 +103,32 @@ DocBlock *DocTextBlock::getBlock()
 {
 //    qDebug()<<"getBlock test success";
     return this->block;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得TextBlock中的所有文本
+ * @param  void
+ * @return QString &
+ * @date   2017/06/25
+ */
+QString &DocTextBlock::getContent()
+{
+    QString content = this->document()->toPlainText();  // 获得纯文本
+    return content;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  蝴蝶文字框内容长度
+ * @param  void
+ * @return int
+ * @date   2017/06/25
+ */
+int DocTextBlock::getContentLength()
+{
+    QString content = this->document()->toPlainText();
+    return content.length();
 }
 
 /**
@@ -334,6 +361,57 @@ void DocTextBlock::textUnderline()
                              false:true);
 
     mergeFormatOnWordOrSelection(fmt);      // 合并格式
+
+
+//    /////test
+//    QTextCursor cursor = this->textCursor();    // 获取光标
+//    cursor.movePosition(QTextCursor::Start);    // 移动到文章开头
+//    for(int i = 0 ; i < this->document()->blockCount(); i++)
+//    {
+//        QTextBlock block = cursor.block();  // 获得当前块
+//        QTextCursor tempCursor = cursor;    // 复制cursor
+
+//        QTextBlock::Iterator iter = block.begin();      // 块的开始
+//        QString lineContent;        // 行内容
+//        QString tempFragement;      // 块
+//        QTextFragment fragment;     // 短句
+
+//        while(!iter.atEnd())        // 用来判断是否处理完了
+//        {
+//            if(tempFragement == "")
+//            {
+//                // 如果处理字段为空
+//                fragment = iter.fragment();   // 获得当前的
+//                tempFragement = fragment.text();    //
+//                iter++;
+//            }
+////            while(lineContent.length() < tempFragement.length())
+////            {
+////                cursor.select(QTextCursor::LineUnderCursor);    // 选择当前行
+////                QString currentLine = cursor.selectedText();    // 选中的文字
+
+////                lineContent += currentLine;     // 追加一行
+////                qDebug() << "Read Next Line： " << currentLine
+////                         << "LineContent: " << lineContent;
+////            }
+//            if(lineContent == "")
+//            {
+//                cursor.select(QTextCursor::LineUnderCursor);    // 选择当前行
+//                QString currentLine = cursor.selectedText();    // 选中的文字
+
+//                lineContent += currentLine;     // 追加一行
+//                qDebug() << "Read Next Line： " << currentLine
+//                         << "LineContent: " << lineContent;
+//            }
+
+//            // 处理当前Fragment
+////            if(fra)
+
+
+//        }
+
+//        cursor.movePosition(QTextCursor::NextBlock);
+//    }
 }
 
 /**
