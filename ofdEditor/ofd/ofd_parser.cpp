@@ -117,7 +117,7 @@ OFD * OFDParser::readOFD() {
 
 Document * OFDParser::readDocument() {
     openFile();
-//    qDebug() << "Checkpoint 1";
+    qDebug() << "Checkpoint 1: Entering Document...";
     QDomElement new_document = document->firstChildElement("ofd:Document");
     Document *document_data;
     if (!new_document.isNull()) {
@@ -127,11 +127,12 @@ Document * OFDParser::readDocument() {
         if (!new_commondata.isNull()) {
             CT_CommonData * commondata_data = new CT_CommonData();
             document_data->common_data = commondata_data;
-
+    qDebug() << "Checkpoint 1.1...";
             QDomElement t;
             if (!(t = new_commondata.firstChildElement("ofd:MaxUnitID")).isNull()) {
                 commondata_data->max_unit_id = t.text().toInt();
             } else {
+                throw ParsingFormatException("缺少MaxID");
                 //Error
             }
 
@@ -140,9 +141,9 @@ Document * OFDParser::readDocument() {
                 commondata_data->page_area = pagearea_data;
                 readPageArea(pagearea_data, t);
             } else {
-                //Error
+                throw ParsingFormatException("PageArea");
             }
-
+    qDebug() << "Checkpoint 1.1.1...";
             t = new_commondata.firstChildElement("ofd:PublicRes");
             while (!t.isNull()) {
                 ST_Loc p("PublicRes", t.text(), current_path);
@@ -158,7 +159,7 @@ Document * OFDParser::readDocument() {
         } else {
             throw ParsingFormatException("Document类型的数据中中缺少必要的CommonData成员\n位于Document.xml");
         }
-
+    qDebug() << "Checkpoint 1.2...";
         QDomElement new_pages = new_document.firstChildElement("ofd:Pages");
         CT_Pages *pages_data;
         if (!new_pages.isNull()) {
@@ -178,7 +179,7 @@ Document * OFDParser::readDocument() {
             throw ParsingFormatException("Document类型的数据中中缺少必要的Pages成员\n位于Document.xml");
         }
         document_data->pages = pages_data;
-
+    qDebug() << "Checkpoint 1.3...";
         QDomElement new_outlines = new_document.firstChildElement("ofd:Outlines");
         if (!new_outlines.isNull()) {
             //to be implemented
@@ -228,7 +229,7 @@ Document * OFDParser::readDocument() {
 void OFDParser::readPage(Page * page_data) {
     openFile();
     QDomElement new_page = document->firstChildElement("ofd:Page");
-//    qDebug() << "Checkpoint 2";
+    qDebug() << "Checkpoint 2: Entering Page...";
     if (!new_page.isNull()) {
         QDomElement t;
         if (!(t = new_page.firstChildElement("ofd:Area")).isNull()) {
@@ -264,6 +265,7 @@ void OFDParser::readPage(Page * page_data) {
                     if (id_table->contains(ri.getRefID()))
                         layer_data->draw_param = ri;
                     else {
+                            qDebug() << "Checkpoint ID 1...";
                         throw ParsingIDException("Layer类型数据的DrawParam属性引用了未注册的ID 位于" + current_path.getRelativePath());
                     }
                 }
@@ -284,6 +286,7 @@ void OFDParser::readPage(Page * page_data) {
                         if (id_table->contains(ri.getRefID()))
                             text_data->font = ri;
                         else {
+                            qDebug() << "Checkpoint ID 2...";
                             throw ParsingIDException("CT_Text类型数据的Font属性引用了未注册的ID:" + QString::number(ri.getRefID()) + " 位于" + current_path.getRelativePath());
                         }
                     } else {
@@ -386,7 +389,9 @@ void OFDParser::readPage(Page * page_data) {
                         if (id_table->contains(ri.getRefID()))
                             image_data->resource_id = ri;
                         else {
-                            throw ParsingIDException("CT_Image类型数据的ResourceID属性引用了未注册的ID 位于" + current_path.getRelativePath());
+                            qDebug() << ri.getRefID();
+                            qDebug() << "Checkpoint ID 3...";
+                            //throw ParsingIDException("CT_Image类型数据的ResourceID属性引用了未注册的ID 位于" + current_path.getRelativePath());
                         }
                     } else {
                         throw ParsingFormatException("CT_Image类型数据中缺少必要的ResourceID属性\n位于" + current_path.getRelativePath());
@@ -396,6 +401,7 @@ void OFDParser::readPage(Page * page_data) {
                         if (id_table->contains(ri.getRefID()))
                             image_data->substitution = ri;
                         else {
+                            qDebug() << "Checkpoint ID 4...";
                             throw ParsingIDException("CT_Image类型数据的Substitution属性引用了未注册的ID 位于" + current_path.getRelativePath());
                         }
                     }
@@ -414,6 +420,7 @@ void OFDParser::readPage(Page * page_data) {
 
 void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
     QDomElement t;
+        qDebug() << "Checkpoint PA 1...";
     if (!(t = root_node.firstChildElement("ofd:PhysicalBox")).isNull()) {
         QStringList values = t.text().split(" ");
         //qDebug() << values[0] << values[1] << values[2] << endl;
@@ -426,7 +433,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
     } else {
         throw ParsingFormatException("CT_PageArea类型的数据中中缺少必要的PhysicalBox成员\n位于" + current_path.getRelativePath());
     }
-
+        qDebug() << "Checkpoint PA 2...";
     if (!(t = root_node.firstChildElement("ofd:ApplicationBox")).isNull()) {
         QStringList values = t.text().split(" ");
         if (values.size() == 4)
@@ -435,7 +442,7 @@ void OFDParser::readPageArea(CT_PageArea * data, QDomElement & root_node) {
             throw ParsingFormatException("CT_PageArea类型数据的ApplicationBox成员的值的数目错误\n位于" + current_path.getRelativePath());
         }
     }
-
+        qDebug() << "Checkpoint PA 3...";
     if (!(t = root_node.firstChildElement("ofd:ContentBox")).isNull()) {
         QStringList values = t.text().split(" ");
         if (values.size() == 4)

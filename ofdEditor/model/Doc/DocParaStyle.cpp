@@ -1,5 +1,5 @@
 #include "DocParaStyle.h"
-#include "Doc/DocImage.h"
+#include "Doc/DocImageBlock.h"
 
 
 DocParaStyle::DocParaStyle()

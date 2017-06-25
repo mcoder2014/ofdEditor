@@ -22,6 +22,7 @@ class CT_DocInfo;
 class CT_CommonData;
 class DocBlock;
 class DocTextBlock;
+class DocImageBlock;
 
 /**
  * @Author Chaoqun
@@ -118,6 +119,7 @@ signals:
     void signals_currentBlockFormatChanged(
             QTextBlockFormat& fmt);  // 当前选择的block格式发生了变化
     void signals_currentTextBlock(DocTextBlock* textBlock); // 当前操作的textBlock
+    void signals_currentImageBlock(DocImageBlock* imageBlock);  //当前操作的imageBlock
 
 };
 

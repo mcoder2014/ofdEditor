@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "model_global.h"
-class CT_DocInfo;       // æ–‡æ¡£å…ƒä¿¡æ¯
+class CT_DocInfo;       // ÎÄµµÔªĞÅÏ¢
 
 namespace Ui {
 class DocInfoDialog;
@@ -22,18 +22,18 @@ public:
 
 private:
     Ui::DocInfoDialog *ui;
-    CT_DocInfo* docInfo;        // æ–‡æ¡£å…ƒä¿¡æ¯
-    void init();                // åˆå§‹åŒ–
-    void initUi();              // åˆå§‹åŒ–ui
+    CT_DocInfo* docInfo;        // ÎÄµµÔªĞÅÏ¢
+    void init();                // ³õÊ¼»¯
+    void initUi();              // ³õÊ¼»¯ui
 
 public slots:
-    void editTitle(const QString & text);       // ä¿®æ”¹æ ‡é¢˜
-    void editAuthor(const QString & text);      // ä¿®æ”¹ä½œè€…
-    void editSubject(const QString & text);     // ä¿®æ”¹ä¸»é¢˜
-    void editAbstract(const QString & text);    // ä¿®æ”¹æ‘˜è¦
-    void editFileType(const QString & text);    // æ–‡æ¡£ç±»å‹
-    void editFileCover(const QString & text);   // æ–‡æ¡£å°é¢
-    void resetDocId();                          // é‡ç½®UUID
+    void editTitle(const QString & text);       // ĞŞ¸Ä±êÌâ
+    void editAuthor(const QString & text);      // ĞŞ¸Ä×÷Õß
+    void editSubject(const QString & text);     // ĞŞ¸ÄÖ÷Ìâ
+    void editAbstract(const QString & text);    // ĞŞ¸ÄÕªÒª
+    void editFileType(const QString & text);    // ÎÄµµÀàĞÍ
+    void editFileCover(const QString & text);   // ÎÄµµ·âÃæ
+    void resetDocId();                          // ÖØÖÃUUID
 
 };
 

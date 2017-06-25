@@ -29,7 +29,7 @@ class MODELSHARED_EXPORT DocPage
     Q_OBJECT
 public:
     enum Layer{Body,Foreground,Background};              // 分为三层
-    enum BlockFlag{none,draw,drawMove,blockMove};        // 插入时的绘制状态
+    enum BlockFlag{none,draw,drawMove,blockMove, blockResize};        // 插入时的绘制状态
     enum BlockType{text,image,table};                    // 插入时的类型
 
     explicit DocPage(QWidget * parent = 0);
@@ -47,6 +47,9 @@ public:
     DocLayer *getForegroundLayer();                 // 获得前景层
     DocLayer* getBodyLayer();                       // 获得正文层
     DocLayer* getBackgroundLayer();                      // 获得背景层
+
+    //Pan
+    void addImage();
 
 public slots:
     void setSize(double width, double height);             // 设置页面大小

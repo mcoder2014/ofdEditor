@@ -47,7 +47,6 @@ public:
         }
     //        qDebug() << "cur = " << current_path << "rela = " << relative_path << endl;
         abs_path = current_path + relative_path;
-        abs_path.replace("/", "\\");    //路径分隔符标准化
     }   //构造方法，包括对路径的解析
     ST_Loc(QString tag, QString _abs_path) : title(tag), abs_path(_abs_path) {  //构造方法，在直接已有绝对路径时
         abs_path.replace("/", "\\");

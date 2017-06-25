@@ -4,12 +4,12 @@
 #include "Doc/DocBlock.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocPageScene.h"
-#include "Doc/DocImage.h"
+#include "Doc/DocImageBlock.h"
 #include "Doc/DocTable.h"
 #include "Doc/DocPicture.h"
 #include "Doc/DocGraph.h"
 #include "Doc/DocPassage.h"
-
+#include "DocImageBlock.h"
 #include <QPalette>
 #include <QPaintEvent>
 #include <QDebug>
@@ -18,6 +18,12 @@
 #include <QPainter>
 #include <QObject>
 #include <QLabel>
+#include <cmath>
+
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPixmap>
+#include "DocImageBlock.h"
 
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
@@ -29,6 +35,7 @@ DocPage::DocPage(QWidget *parent)
     this->scaleFactor = 1.0;
     this->init();
 
+//    this->setMouseTracking(true);
 }
 
 DocPage::DocPage(double width,
@@ -164,7 +171,15 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
                 passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)));
         connect(textBlock,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
                 passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)));
+    } else if (block->isImageBlock())
+    {
+        DocImageBlock * imageBlock = block->getImageBlock();
+        DocPassage * passage = this->getPassage();
+        //emit this->signals_insertImageBlock();
 
+        //转发给passage
+        this->connect(imageBlock, SIGNAL(signals_currrentImageBlock(DocImageBlock*)),
+                      passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)));
     }
 //    qDebug()<< "connect";
 
@@ -339,6 +354,15 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 //                     qDebug()<<" Accepted Signal is blockMove";
                      this->newBlockFlag = blockMove;
                  }
+                 else if (block->currentStatus(
+                              block->mapFromScene(tempPoint))
+                          == DocBlock::blockResize
+                          && block->isImageBlock())
+                 {
+                     this->newBlockFlag = DocPage::blockResize;
+                     this->oldPos = activeBlock->pos();
+//                     qDebug() << "oh yeah";
+                 }
                  else
                  {
 //                     qDebug()<<"not Move";
@@ -397,7 +421,26 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
 
         this->viewport()->update();   // 调用刷新
     }
-
+    else if (this->newBlockFlag == DocPage::blockResize&&
+             activeBlock != NULL
+             && activeBlock->isImageBlock())
+    {
+////        qDebug() << "hahaha";
+        DocImageBlock * image_block = activeBlock->getImageBlock();
+        this->newPos = this->mapToScene(event->pos());
+        QPointF point = this->newPos - this->oldPos;
+        if (!image_block->isWidthHeightRatioLocked())
+            this->activeBlock->resize(point.rx(),point.ry());
+        else
+        {
+            double ratio = image_block->getWidthHeightRatio();
+            if(point.rx() <
+                    point.ry() * ratio)
+                this->activeBlock->resize(point.rx(), point.rx() / ratio);
+            else
+                this->activeBlock->resize(point.ry() * ratio, point.ry());
+        }
+    }
 }
 
 /**
@@ -422,14 +465,11 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
         {
             newBlock->setWidget(new DocTextBlock());    // 插入文字框
         }
-        else if(this->insertBlockInfo->type == image)
-        {
-//            newBlock->setWidget(new DocImage());      // 插入图片框
-        }
         else if(this->insertBlockInfo->type == table)
         {
             newBlock->setWidget(new DocTable());        // 插入表格框
         }
+
 
         // 设置位置大小
         QRectF rect = UnitTool::getBox(this->oldPos,newPos);
@@ -484,4 +524,44 @@ void DocPage::init()
 
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;
+    this->activeBlock = NULL;
+}
+
+void DocPage::addImage()
+{
+    //qDebug() << "???";
+    //打开对话框，选取一个图片文件
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                    tr("Open File"), QDir::currentPath());
+    if (!fileName.isEmpty()) {
+        QPixmap image(fileName);
+        if (image.isNull()) {
+            QMessageBox::information(this, tr("OFD Editor"),
+                                     tr("Cannot open file %1.").arg(fileName));
+            return;
+        }
+        //新建一个DocBlock
+        DocBlock * newBlock = new DocBlock();
+        //新建一个图片框
+        DocImageBlock * new_image_block = new DocImageBlock();
+        newBlock->setWidget(new_image_block);
+        new_image_block->setImage(image);
+        double page_width = this->width(), page_height = this->height();
+//        qDebug() << "Page Width: " << this->width();
+//        qDebug() << "Page Height: " << this->height();
+//        qDebug() << "Image Width: " << image.width();
+//        qDebug() << "Image Height: " << image.height();
+        double ratio;
+        if (image.width() > page_width || image.height() > page_height)
+        {
+            ratio = std::min(page_width / image.width(), page_height / image.height());
+            ratio *= 0.8;
+        }
+        else ratio = 1.0;
+        qDebug() << "Ratio = " << ratio;
+        newBlock->setPos((page_width - image.width() * ratio) / 2, (page_height - image.height() * ratio) / 2);
+        newBlock->resize(image.width() * ratio,image.height() * ratio);
+
+        this->addBlock(newBlock,this->insertBlockInfo->layer);
+    }
 }

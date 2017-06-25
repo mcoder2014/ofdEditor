@@ -84,14 +84,24 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
     }
     else
     {
-        qDebug() << "get Focus Sucess";
-        page->setBlockFlag(DocPage::draw);      // 进入绘画状态
+        //插入文本框
+        if (blockInfo.type == DocPage::text)
+        {
+            qDebug() << "get Focus Sucess";
+            page->setBlockFlag(DocPage::draw);      // 进入绘画状态
 
-//        InsertBlockInfo blockInfo(type,layer);  // 设置插入文本框信息
-        page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
+    //        InsertBlockInfo blockInfo(type,layer);  // 设置插入文本框信息
+            page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
 
-        page->viewport()->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
-
+            page->viewport()->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
+        }
+        //插入图片框
+        else if (blockInfo.type == DocPage::image)
+        {
+            page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
+            qDebug() << "!!!";
+            page->addImage();
+        }
     }
 }
 

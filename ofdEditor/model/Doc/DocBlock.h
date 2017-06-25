@@ -11,7 +11,7 @@ class QPainter;
 class DocTextBlock;
 class DocPage;
 class DocPassage;
-
+class DocImageBlock;
 
 /**
  * @Author Chaoqun
@@ -38,6 +38,8 @@ public:
 
     bool isTextBlock();         // 判断是否DocBlock装的是否是DocTextBlock
     DocTextBlock *getTextBlock(); // 获得DocTextBlock
+    bool isImageBlock();
+    DocImageBlock *getImageBlock(); //获得DocImageBlock
 
 public slots:           // 槽函数
     void setLayer(DocLayer * layer){this->layer = layer;}
@@ -49,9 +51,10 @@ public slots:           // 槽函数
     void remove();                      // 从场景中移除本框
     void setWidget(QWidget* widget);           // 旧的函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
+    void setWidget(DocImageBlock * imageBlock);
+
 
 protected:
-
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);                   // 用来绘制变化
@@ -71,7 +74,8 @@ private:
     QSizeF blockSize;           // 用来纪录大小
     QPointF blockOldPos;        // 用来记录旧的位置
 
-    DocTextBlock* textBlock;    // 存下引用
+    DocTextBlock * textBlock;    // 存下引用
+    DocImageBlock * imageBlock; //同上
 
     bool isFocused;             // 是否被聚焦
     bool blockIsResizing;       // 是否正在改变大小

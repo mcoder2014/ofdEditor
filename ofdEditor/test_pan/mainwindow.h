@@ -15,21 +15,21 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void start();
-    void readOFD();
-    void readDocument();
-    void readCustomTags();
-    void readPublicRes();
-    void readPage();
-    void readPageArea();
-    void readContent();
+//    void start();
+//    void readOFD();
+//    void readDocument();
+//    void readCustomTags();
+//    void readPublicRes();
+//    void readPage();
+//    void readPageArea();
+//    void readContent();
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
-    QFile *file;
-    //Page p;
-    QXmlStreamReader reader;
+//    QFile *file;
+//    Page p;
+//    QXmlStreamReader reader;
 };
 
 

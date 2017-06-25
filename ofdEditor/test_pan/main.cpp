@@ -27,13 +27,9 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 
-    try {
-        OFDParser t("F:/第六届中软杯/OFD Document/OFD.xml");
-        OFD * i = t.getData();
-        qDebug() << "从Document_0中收集到的ID数量: " << i->getDocuments()->at(0)->getIDTable()->size();
-        qDebug() << "Document.xml中的MaxUnitID属性值: " << i->getDocuments()->at(0)->getCommonData()->getMaxUnitID();
-//        OFDWriter w(i, "F:/第六届中软杯/OFD Writing Test 2/");
-    } catch (Exception e) {
-        qDebug() << e.getMessage();
-    }
+    QApplication a(argc, argv);
+    PassageMainWindow w;
+    w.show();
+
+    return a.exec();
 }
