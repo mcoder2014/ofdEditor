@@ -288,6 +288,9 @@ void PassageMainWindow::connectAction()
     connect(this->paragraphFormat,SIGNAL(triggered(bool)),
             this,SLOT(paragraphDialog()));            // 修改段落
 
+    connect(this->imageFormat, SIGNAL(triggered(bool)),
+            this, SLOT(imageDialog()));                 //修改图片
+
     connect(this->area, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this->connector, SLOT(updateActivePassage(QMdiSubWindow*)));    // 检测ActivePassage更新
 }
@@ -355,7 +358,8 @@ void PassageMainWindow::openFile()
  */
 void PassageMainWindow::fontDialog()
 {
-    this->textBlock->customFontDialog();    // 用自定义窗口修改字体
+    if (textBlock)
+        this->textBlock->customFontDialog();    // 用自定义窗口修改字体
 }
 
 /**
@@ -367,7 +371,14 @@ void PassageMainWindow::fontDialog()
  */
 void PassageMainWindow::paragraphDialog()
 {
-    this->textBlock->textParagraph();       // 用自定义段落窗口修改段落
+    if (textBlock)
+        this->textBlock->textParagraph();       // 用自定义段落窗口修改段落
+}
+
+void PassageMainWindow::imageDialog()
+{
+    if (imageBlock)
+        this->imageBlock->setImageProperties();
 }
 
 /**
@@ -380,6 +391,7 @@ void PassageMainWindow::paragraphDialog()
 void PassageMainWindow::acceptTextBlock(DocTextBlock *textBlock)
 {
     this->textBlock = textBlock;        // 修改引用
+    this->imageBlock = NULL;
 }
 
 /**
@@ -406,8 +418,13 @@ void PassageMainWindow::acceptTextBlockFormat(QTextBlockFormat &blockFormat)
 void PassageMainWindow::acceptTextCharFormat(QTextCharFormat &charFormat)
 {
     this->_currentCharFormat  = &charFormat;    // 留下引用
-
     // 更新界面显示
+}
+
+void PassageMainWindow::acceptImageBlock(DocImageBlock *imageBlock)
+{
+    this->imageBlock = imageBlock;
+    this->textBlock = NULL;
 }
 
 /**
@@ -452,7 +469,9 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
     // 处理变更的textBlock
     this->connect(passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
                   this,SLOT(acceptTextBlock(DocTextBlock*)));
-
+    //处理变更的imageBlock
+    this->connect(passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)),
+                  this, SLOT(acceptImageBlock(DocImageBlock*)));
     return passage;
 }
 

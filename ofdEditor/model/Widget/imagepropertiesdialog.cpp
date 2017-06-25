@@ -41,6 +41,12 @@ ImagePropertiesDialog::ImagePropertiesDialog(DocImageBlock * _block, QWidget *pa
     this->connect(ui->WidthInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
     this->connect(ui->xInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
     this->connect(ui->yInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->WidthInPixel,
+                  SIGNAL(valueChanged(double)),
+                         this, SLOT(Width2HeightTrans(double)));
+    this->connect(ui->HeightInPixel,
+                  SIGNAL(valueChanged(double)),
+                         this, SLOT(Height2WidthTrans(double)));
 }
 /**
  * @Author Pan
@@ -113,20 +119,16 @@ void ImagePropertiesDialog::emitMessage()
  */
 void ImagePropertiesDialog::lockRatioStateChanged(int locked)
 {
+    qDebug() << "Waaaa";
     if (locked == Qt::Checked && !ratio_locked)
     {
-//        qDebug() << "Set to Checked.";
+        qDebug() << "Set to Checked.";
         ratio_locked = true;
-        this->connect(ui->WidthInPixel,
-                      SIGNAL(valueChanged(double)),
-                             this, SLOT(Width2HeightTrans(double)));
-        this->connect(ui->HeightInPixel,
-                      SIGNAL(valueChanged(double)),
-                             this, SLOT(Height2WidthTrans(double)));
+
     }
     else if (locked == Qt::Unchecked && ratio_locked)
     {
-//        qDebug() << "Set to Unchecked.";
+        qDebug() << "Set to Unchecked.";
         ratio_locked = false;
         this->disconnect(ui->WidthInPercentage,
                       SIGNAL(valueChanged(double)),
@@ -147,8 +149,11 @@ void ImagePropertiesDialog::lockRatioStateChanged(int locked)
 void ImagePropertiesDialog::Width2HeightTrans(double value)
 {
     //qDebug() << "W2H";
-    double ratio = initial_height / initial_width;
-    ui->HeightInPixel->setValue(value * ratio);
+    if (ratio_locked)
+    {
+        double ratio = initial_height / initial_width;
+        ui->HeightInPixel->setValue(value * ratio);
+    }
 }
 
 /**
@@ -160,9 +165,11 @@ void ImagePropertiesDialog::Width2HeightTrans(double value)
  */
 void ImagePropertiesDialog::Height2WidthTrans(double value)
 {
-    //qDebug() << "H2W";
-    double ratio = initial_width / initial_height;
-    ui->WidthInPixel->setValue(value * ratio);
+    if (ratio_locked)
+    {
+        double ratio = initial_width / initial_height;
+        ui->WidthInPixel->setValue(value * ratio);
+    }
 }
 
 /**
@@ -176,7 +183,7 @@ void ImagePropertiesDialog::Pixel2Percentage(double value)
 {
 //    static int cnt = 1;
 //    qDebug() << cnt++;
-    qDebug() << ui->HeightInPixel->value();
+//    qDebug() << ui->HeightInPixel->value();
     ui->HeightInPercentage->setValue(100.0 * ui->HeightInPixel->value() / initial_height);
     ui->WidthInPercentage->setValue(100.0 * ui->WidthInPixel->value() / initial_width);
     ui->xInPercentage->setValue(100.0 * ui->xInPixel->value() / page_width);

@@ -34,7 +34,6 @@ DocImageBlock::DocImageBlock(QWidget *parent)
                   this, SLOT(imagePropertiesChanged(double,double,
                                                     double,double,
                                                     bool)));
-
 }
 
 /**
@@ -96,7 +95,7 @@ double DocImageBlock::getWidthHeightRatio()
 void DocImageBlock::focusInEvent(QFocusEvent *e)
 {
     //qDebug() << "focus In Event";
-
+    emit signals_currrentImageBlock(this);
     this->setFrameShape(QFrame::Box);
     this->setLineWidth(1);
     QLabel::focusInEvent(e);

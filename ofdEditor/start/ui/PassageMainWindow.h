@@ -15,6 +15,7 @@ class DocTextBlock;
 class QTextCharFormat;
 class QTextBlockFormat;
 class ActionConnector;      // 函数功能的中间件
+class DocImageBlock;
 
 // 编辑窗口的主界面
 class PassageMainWindow
@@ -66,6 +67,7 @@ private:
     QAction * insertTableAction;        // 插入表格
 
     // 格式
+    QAction * pageFormat;               // 页面格式调整
     QAction * textFormat;               // 文字格式调整
     QAction * paragraphFormat;          // 段落格式调整
     QAction * imageFormat;              // 图形格式调整
@@ -91,16 +93,19 @@ private:
     QTextCharFormat* _currentCharFormat;    // 当前字符格式
     QTextBlockFormat* _currentBlockFormat;  // 当前块格式
 
+    DocImageBlock *imageBlock;  //图片块
+
 
 private slots:
     void openFile();            // 打开新文件
     void fontDialog();          // 打开字体框
     void paragraphDialog();     // 打开段落框
+    void imageDialog();         // 打开图片框
 
     void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
     void acceptTextBlockFormat(QTextBlockFormat& blockFormat);  // 接受当前处理的块格式
     void acceptTextCharFormat(QTextCharFormat& charFormat);     // 接受当前处理的字符格式
-
+    void acceptImageBlock(DocImageBlock * imageBlock);          //接受当前处理的图片块
 };
 
 #endif // PASSAGEMAINWINDOW_H

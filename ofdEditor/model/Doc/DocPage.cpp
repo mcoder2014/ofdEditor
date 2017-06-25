@@ -134,7 +134,15 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
                 passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)));
         connect(textBlock,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
                 passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)));
+    } else if (block->isImageBlock())
+    {
+        DocImageBlock * imageBlock = block->getImageBlock();
+        DocPassage * passage = this->getPassage();
+        //emit this->signals_insertImageBlock();
 
+        //转发给passage
+        this->connect(imageBlock, SIGNAL(signals_currrentImageBlock(DocImageBlock*)),
+                      passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)));
     }
 
     // 分到层

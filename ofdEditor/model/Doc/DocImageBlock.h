@@ -28,6 +28,8 @@ public slots:
                                 double new_x,
                                 double new_y,
                                 bool ratio_locked);
+    void changeImage();
+    void setImageProperties();
 
 protected:
     void focusInEvent(QFocusEvent *ev);
@@ -42,9 +44,6 @@ private:
     ImagePropertiesDialog * properties_dialog;
     bool width_height_ratio_locked;
     double width_height_ratio;
-private slots:
-    void changeImage();
-    void setImageProperties();
 
 signals:
     void sendImageInfo(double image_width,
@@ -54,6 +53,7 @@ signals:
                        double page_width,
                        double page_height,
                        bool ratio_is_locked);
+    void signals_currrentImageBlock(DocImageBlock * textBlock);   //当前操作的imageBlock
 };
 
 #endif // DOCIMAGEBLOCK_H
