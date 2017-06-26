@@ -3,7 +3,7 @@
 #include "DocPage.h"
 #include "DataTypes/document/CT_DocInfo.h"
 #include "DataTypes/document/ct_commondata.h"
-
+#include "../Widget/PageDialog.h"
 #include <QDebug>
 #include <QDesktopWidget>
 #include <QPalette>
@@ -11,6 +11,7 @@
 #include <QScrollBar>
 #include <QMainWindow>
 #include <Quuid>
+#include "../Tool/UnitTool.h"
 
 /**
  * @Author Chaoqun
@@ -29,7 +30,7 @@ DocPassage::DocPassage(QWidget *parent)
 //    this->addPage(new DocPage());       // 添加一个空白页面
 
     setAttribute(Qt::WA_DeleteOnClose);
-
+    qDebug() << "DocPassage Constructor Finished.";
 }
 
 /**
@@ -96,6 +97,15 @@ void DocPassage::addPage(DocPage *page)
     }
 
     // 先添加到 vector
+    page->setSize(default_width, default_height);
+    qDebug() << "!!Page width in pixel = " <<  page->size().width()
+             << "!!Page height in pixel = " <<  page->size().height();
+    page->has_working_area = default_using_working_area;
+    page->working_area_height = default_working_height;
+    page->working_area_width = default_working_width;
+    page->working_area_x = default_working_x;
+    page->working_area_y = default_working_y;
+
     this->pages.append(page);
     // 添加到ScrollArea
     this->adjustWidgetSize();   // 调整大小
@@ -105,7 +115,7 @@ void DocPassage::addPage(DocPage *page)
     page->setPassage(this);             // 设置页所属的文章
 
 
-    qDebug() << "You have added an new page";
+//    qDebug() << "You have added an new page";
 
 }
 
@@ -295,7 +305,7 @@ void DocPassage::resetDocId()
 void DocPassage::resizeEvent(QResizeEvent *event)
 {
     this->adjustWidgetSize();       // 调整整体大小
-    qDebug() << "DocPassage::resizeEvent Runs";
+//    qDebug() << "DocPassage::resizeEvent Runs";
 }
 
 /**
@@ -340,6 +350,15 @@ void DocPassage::init()
     adjustScrollBar(this->horizontalScrollBar(), 1);
     adjustScrollBar(this->verticalScrollBar(),1);
 
+    this->page_dialog = new PageDialog(NULL, this);
+//    qDebug() << "Finished Initializing DocPassage...";
+    default_width = 210;                       //默认宽度
+    default_height = 297;                      //默认高度
+    default_using_working_area = false;
+    default_working_width = 210;
+    default_working_height = 297;
+    default_working_x = 0;
+    default_working_y = 0;
 }
 
 /**
@@ -415,7 +434,71 @@ void DocPassage::adjustWidgetSize()
     adjustScrollBar(this->verticalScrollBar(), this->scaleFactor);
 
 
-    qDebug() <<"widget's Size"<<this->widget->size();
-    qDebug() << "ScrollArea's Size" << this->size();
+//    qDebug() <<"widget's Size"<<this->widget->size();
+//    qDebug() << "ScrollArea's Size" << this->size();
 
+}
+
+void DocPassage::setDefaultPageSize(double default_width, double default_height)
+{
+    this->default_width = default_width;
+    this->default_height = default_height;
+}
+
+void DocPassage::activatePageDialog()
+{
+    DocPage * page = qobject_cast<DocPage *>(focusWidget());
+//    qDebug() << "page width in pixel = " <<  page->size().width()
+//             << "page height in pixel = " <<  page->size().height();
+    if (page)
+    {
+        page_dialog->updateInformation(page,
+                                       default_width,
+                                       default_height,
+                                       default_using_working_area,
+                                       default_working_width,
+                                       default_working_height,
+                                       default_working_x,
+                                       default_working_y);
+        this->page_dialog->exec();
+    }
+}
+
+void DocPassage::updatePageSizeInformation(QVector<int> &changed_pages,
+                                           double current_width,
+                                           double current_height,
+                                           bool current_using_working_area,
+                                           double current_working_width,
+                                           double current_working_height,
+                                           double current_working_x,
+                                           double current_working_y,
+                                           double default_height,
+                                           double default_width,
+                                           bool using_working_area,
+                                           double default_working_width,
+                                           double default_working_height,
+                                           double default_working_x,
+                                           double default_working_y)
+{
+    DocPage * cur_page;
+    for (int i = 0; i < changed_pages.size(); i++) {
+        cur_page = pages[changed_pages[i] - 1];
+        cur_page->setSize(current_width, current_height);
+        cur_page->has_working_area = current_using_working_area;
+        cur_page->working_area_width = current_working_width;
+        cur_page->working_area_height = current_working_height;
+        cur_page->working_area_x = current_working_x;
+        cur_page->working_area_y = current_working_y;
+    }
+    this->default_width = default_width;
+    this->default_height = default_height;
+    this->default_using_working_area = using_working_area;
+    this->default_working_width = default_working_width;
+    this->default_working_height = default_working_height;
+    this->default_working_x = default_working_x;
+    this->default_working_y = default_working_y;
+//    qDebug() << "Current Page Width = "
+//             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().width())
+//             << "Current Page Height = "
+//             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().height());
 }

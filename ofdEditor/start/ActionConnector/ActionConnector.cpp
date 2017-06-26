@@ -34,7 +34,7 @@ void ActionConnector::showAttribute()
     CT_DocInfo * docInfo = this->passage->getDocInfo();
     DocInfoDialog* dialog = new DocInfoDialog(docInfo,this->mainWindow);  // 设置窗口
     dialog->exec();                  // 运行
-    qDebug() << "show Attribute";
+//    qDebug() << "show Attribute";
 
 }
 
@@ -99,7 +99,7 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
         else if (blockInfo.type == DocPage::image)
         {
             page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
-            qDebug() << "!!!";
+//            qDebug() << "!!!";
             page->addImage();
         }
     }
@@ -175,6 +175,11 @@ void ActionConnector::updateActivePassage(QMdiSubWindow *window)
     {
         this->passage = passage;
     }
+}
+
+DocPage *ActionConnector::getActivePage()
+{
+    return qobject_cast<DocPage *>(this->passage->focusWidget());
 }
 
 void ActionConnector::init()

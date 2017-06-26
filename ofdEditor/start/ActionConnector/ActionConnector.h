@@ -41,6 +41,7 @@ public slots:
 
     void updateActivePassage(QMdiSubWindow * window );      // 更新当前操作的文章
 
+    DocPage *getActivePage();              //获取当前操作的页面
 private:
     PassageMainWindow * mainWindow;        // 主窗口
     DocPassage * passage;                  // 当前活跃文档

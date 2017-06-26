@@ -28,10 +28,17 @@ class MODELSHARED_EXPORT DocPage
 {
     Q_OBJECT
 public:
+    //Temporarily put here
+    bool has_working_area;
+    double working_area_width;
+    double working_area_height;
+    double working_area_x;
+    double working_area_y;
+
+
     enum Layer{Body,Foreground,Background};              // 分为三层
     enum BlockFlag{none,draw,drawMove,blockMove, blockResize};        // 插入时的绘制状态
     enum BlockType{text,image,table};                    // 插入时的类型
-
     explicit DocPage(QWidget * parent = 0);
     DocPage(double width,
             double height, double scaleFactor,QWidget * parent = 0);
@@ -49,7 +56,7 @@ public:
     DocLayer* getBackgroundLayer();                      // 获得背景层
 
     //Pan
-    void addImage();
+    void addImage();                                //添加图片
 
 public slots:
     void setSize(double width, double height);             // 设置页面大小
@@ -97,11 +104,13 @@ private:
     BlockFlag newBlockFlag;             // 是否画块
     DocBlock * activeBlock;             // 正在活跃的那个DocBlock
 
+
 signals:        // 信号
 
     void signals_insertTextBlock(DocTextBlock* textBlock );  // 插入文本框信号
     void signals_removeTextBlock(DocTextBlock* textBlock );  // 移除文本框信号
-
+    void has_focused_page();
+    void has_no_focused_page();
 };
 
 

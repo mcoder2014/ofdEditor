@@ -97,11 +97,13 @@ private:
     DocImageBlock *imageBlock;  //图片块
 
 
+
 private slots:
     void openFile();            // 打开新文件
     void fontDialog();          // 打开字体框
     void paragraphDialog();     // 打开段落框
     void imageDialog();         // 打开图片框
+    void pageDialog();          // 打开页面框
 
     void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
     void acceptTextBlockFormat(QTextBlockFormat& blockFormat);  // 接受当前处理的块格式

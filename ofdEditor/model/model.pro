@@ -53,7 +53,8 @@ SOURCES += model.cpp \
     Widget/DocInfoDialog.cpp \
     Command/SetTextBlodCmd.cpp \
     Doc/DocImageBlock.cpp \
-    Widget/imagepropertiesdialog.cpp
+    Widget/imagepropertiesdialog.cpp \
+    Widget/PageDialog.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -86,7 +87,8 @@ HEADERS += model.h\
     Widget/DocInfoDialog.h \
     Command/SetTextBlodCmd.h \
     Doc/DocImageBlock.h \
-    Widget/imagepropertiesdialog.h
+    Widget/imagepropertiesdialog.h \
+    Widget/PageDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -115,4 +117,5 @@ FORMS += \
     Widget/ParagraphFormatDialog.ui \
     Widget/FontSettingDialog.ui \
     Widget/DocInfoDialog.ui \
-    Widget/imagepropertiesdialog.ui
+    Widget/imagepropertiesdialog.ui \
+    Widget/PageDialog.ui

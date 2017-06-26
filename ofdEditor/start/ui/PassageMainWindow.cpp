@@ -52,10 +52,13 @@ DocPassage *PassageMainWindow::createMdiChild()
     qDebug()<<"execute";
 
     DocPassage * child = new DocPassage(this);
+//    qDebug() << "Creating new Passage Completed.";
     child->addPage(new DocPage());      // 添加一个空白页
-
+//    qDebug() << "Creating new Page Completed.";
     this->addDocPassage(child);         // 加入到本视区
-
+//    qDebug() << "Passage has " << child->getPages().size() << " pages.";
+//    qDebug() << "Page width = " << child->getPages()[0]->size().width()
+//             << " Page Height = " <<child->getPages()[0]->size().height();
     return child;
 }
 
@@ -83,6 +86,7 @@ void PassageMainWindow::init()
 
     this->setMinimumSize(960,720);
     this->setBackgroundRole(QPalette::Text);
+
 
 }
 
@@ -163,8 +167,12 @@ void PassageMainWindow::initAction()
     this->insertTableAction->setStatusTip(tr("Insert a table"));
     this->insertTableAction->setIcon(QIcon(":/icons/source/icons/insertTable.png"));
 
+    this->pageFormat = new QAction(tr("Page Format"), NULL);     // 页面格式
+    this->pageFormat->setStatusTip(tr("Set the page format"));
+    //this->textFormat->setIcon(QIcon());
+
     this->textFormat = new QAction(tr("Text Format"),NULL);      // 文字格式
-    this->textFormat->setStatusTip(tr("Set the selected texts' Format"));
+    this->textFormat->setStatusTip(tr("Set the selected texts' format"));
     this->textFormat->setIcon(QIcon(":/icons/source/icons/TextFormat.png"));
 
     this->paragraphFormat = new QAction(tr("Paragraph Format"),NULL);    // 段落格式
@@ -213,6 +221,7 @@ void PassageMainWindow::initAction()
     this->formatMenu->addAction(this->paragraphFormat);
     this->formatMenu->addAction(this->imageFormat);
     this->formatMenu->addAction(this->tableFormat);
+    this->formatMenu->addAction(this->pageFormat);
 
     this->insertMenu->addAction(this->insertNewPageAction);
     this->insertMenu->addAction(this->insertTextBlockAction);
@@ -289,6 +298,8 @@ void PassageMainWindow::connectAction()
 
     connect(this->textFormat,SIGNAL(triggered(bool)),
             this,SLOT(fontDialog()));                 // 修改字体
+    connect(this->pageFormat, SIGNAL(triggered(bool)),
+            this, SLOT(pageDialog()));
 
     connect(this->paragraphFormat,SIGNAL(triggered(bool)),
             this,SLOT(paragraphDialog()));            // 修改段落
@@ -384,6 +395,19 @@ void PassageMainWindow::imageDialog()
 {
     if (imageBlock)
         this->imageBlock->setImageProperties();
+}
+
+void PassageMainWindow::pageDialog()
+{
+    DocPassage * passage = activeMdiChild();
+    if (passage)
+    {
+        passage->activatePageDialog();
+    }
+    else
+    {
+        qDebug() << "No active DocPassage.";
+    }
 }
 
 /**

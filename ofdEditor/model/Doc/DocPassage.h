@@ -23,6 +23,7 @@ class CT_CommonData;
 class DocBlock;
 class DocTextBlock;
 class DocImageBlock;
+class PageDialog;
 
 /**
  * @Author Chaoqun
@@ -74,6 +75,25 @@ public slots:
 
     void adjustWidgetSize();                    // 根据页数来自动调整widget大小
 
+    void setDefaultPageSize(double default_width, double default_height);       //设置默认的页面尺寸
+
+    void activatePageDialog();
+
+    void updatePageSizeInformation(QVector<int> & changed_pages,
+                                   double current_width,
+                                   double current_height,
+                                   bool current_using_working_area,
+                                   double current_working_width,
+                                   double current_working_height,
+                                   double current_working_x,
+                                   double current_working_y,
+                                   double default_height,
+                                   double default_width,
+                                   bool using_working_area,
+                                   double default_working_width,
+                                   double default_working_height,
+                                   double default_working_x,
+                                   double default_working_y);
 protected:
     void resizeEvent(QResizeEvent* event);
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
@@ -109,6 +129,14 @@ private:
                          double factor);        // 调整滑动条
     void adjustScrollBarRange();                //调整滑动条范围
 
+    PageDialog * page_dialog;                   //用于调整页面格式的对话框
+    double default_width;                       //默认宽度
+    double default_height;                      //默认高度
+    bool default_using_working_area;
+    double default_working_width;
+    double default_working_height;
+    double default_working_x;
+    double default_working_y;
 
 signals:
     void signals_insertTextBlock(DocTextBlock* textBlock);      // 用来转发信号

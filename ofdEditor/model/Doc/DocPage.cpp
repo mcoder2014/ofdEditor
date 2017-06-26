@@ -28,10 +28,11 @@
 // #include "DataTypes/page/CT_PageArea.h"     // 页面大小
 
 
+
 DocPage::DocPage(QWidget *parent)
-    :QGraphicsView(parent)
+    : QGraphicsView(parent)
 {
-    this->setSize(210,297);     // 默认A4纸张大小
+    //this->setSize(210,297);     // 默认A4纸张大小
     this->scaleFactor = 1.0;
     this->init();
 
@@ -525,6 +526,11 @@ void DocPage::init()
 //    this->setBackgroundRole(QPalette::Dark);
     this->insertBlockInfo = NULL;
     this->activeBlock = NULL;
+
+    has_working_area = false;
+    working_area_width = this->size().width();
+    working_area_height = this->size().height();
+    working_area_x = working_area_y = 0;
 }
 
 void DocPage::addImage()
