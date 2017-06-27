@@ -467,10 +467,20 @@ void PassageMainWindow::connectAction()
 //            this->connector, &ActionConnector::addNewBlock);    // 插入新块
 
     //undo operation
-    connect(this->undoAction,SIGNAL(triggered(bool)),this->connector,SLOT(undo()));
+    connect(this->undoAction,SIGNAL(triggered(bool)),
+            this->connector,SLOT(undo()));
 
     //redo operation
-    connect(this->redoAction,SIGNAL(triggered(bool)),this->connector,SLOT(redo()));
+    connect(this->redoAction,SIGNAL(triggered(bool)),
+            this->connector,SLOT(redo()));
+
+    // 放大
+    connect(this->zoomInAction, SIGNAL(triggered(bool)),
+            this, SLOT(zoomIn()));
+
+    // 缩小
+    connect(this->zoomOutAction, SIGNAL(triggered(bool)),
+            this, SLOT(zooomOut()));
 
     connect(this->find_and_replace, SIGNAL(triggered(bool)),
             this->connector, SLOT(startFindAndReplace()));
@@ -551,6 +561,36 @@ void PassageMainWindow::underline()
     {
         this->textBlock->textUnderline();   // 下划线
     }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  放大函数
+ * @param  void
+ * @return void
+ * @date   2017/06/27
+ */
+void PassageMainWindow::zoomIn()
+{
+//    DocPage* page = this->connector->getActivePage();
+//    page->scale(2,2);
+    DocPassage* passage = this->connector->getActivePassage();
+    passage->zoomIn();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  缩小函数/
+ * @param  void
+ * @return void
+ * @date   2017/06/27
+ */
+void PassageMainWindow::zooomOut()
+{
+//    DocPage* page = this->connector->getActivePage();
+//    page->scale(0.5,0.5);
+    DocPassage* passage = this->connector->getActivePassage();
+    passage->zoomOut();
 }
 
 /**

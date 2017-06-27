@@ -71,6 +71,7 @@ public slots:
 
     void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
     void remove();          // 移除本页
+    void setScale(double scale);    // 设置页面的显示大小
 
 protected:
     void paintEvent(QPaintEvent *event);

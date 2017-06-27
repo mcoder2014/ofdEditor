@@ -407,6 +407,9 @@ void DocPassage::init()
     this->verticalWhite = 50;               // 文章之间黑边
     this->setAlignment(Qt::AlignHCenter);   // 设置位置水平居中
 
+    this->scaleFactor = 1.0;
+
+
     // 设置滚动条策略
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -475,12 +478,12 @@ void DocPassage::adjustWidgetSize()
     int length = this->pages.size();
     for(int i = 0; i <length; i++)
     {
-        if(width < this->pages[i]->getSize().width())
+        if(width < this->pages[i]->viewport()->width())
         {
-           width =  this->pages[i]->getSize().width();
+           width =  this->pages[i]->viewport()->width();
         }
 
-        height += verticalWhite + this->pages[i]->getSize().height();
+        height += verticalWhite + this->pages[i]->viewport()->height();
     }
 
     height += verticalWhite;
@@ -488,6 +491,10 @@ void DocPassage::adjustWidgetSize()
 
 //    this->widget->setMinimumSize(width, height);    // 设置内容大小
     this->widget->resize(width,height);
+    this->widget->update();
+    this->layout->update();
+    this->update();
+    this->viewport()->update();
 
     // 保存计算结果
     this->widgetWidth = width;
@@ -567,5 +574,57 @@ void DocPassage::updatePageSizeInformation(QVector<int> &changed_pages,
 //    qDebug() << "Current Page Width = "
 //             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().width())
 //             << "Current Page Height = "
-//             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().height());
+    //             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().height());
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  放大页面
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/27
+ */
+void DocPassage::zoomIn()
+{
+    this->setScale(this->scaleFactor * 1.25);
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  缩小
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/27
+ */
+void DocPassage::zoomOut()
+{
+    this->setScale(this->scaleFactor * 0.8);
+}
+
+
+/**
+ * @Author Chaoqun
+ * @brief  设置文章的缩放
+ * @param  double scale
+ * @return void
+ * @date   2017/06/27
+ */
+void DocPassage::setScale(double scale)
+{
+    // 重置DocPage的尺寸
+    double scale_temp = scale / this->scaleFactor;      // 获得需要缩小的增量
+
+    // 对每一页进行缩放
+    int page_length = this->pages.size();
+
+    for(int i =0 ; i< page_length; i++)
+    {
+        pages[i]->setScale(scale_temp);         // 进行缩放
+    }
+
+    // 调整页面的尺寸
+    adjustWidgetSize();
+
+    this->scaleFactor = scale;
+
 }

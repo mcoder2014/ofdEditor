@@ -99,6 +99,48 @@ QRectF UnitTool::getBox(QPointF &point1, QPointF &point2)
 
 /**
  * @Author Chaoqun
+ * @brief  获得两个点组成的方形
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/27
+ */
+QRect UnitTool::getBox(QPoint point1, QPoint point2)
+{
+    int x1 = point1.x();
+    int x2 = point2.x();
+
+    int y1 = point1.y();
+    int y2 = point2.y();
+
+    int x,y,w,h;
+
+    if(x1 < x2)
+    {
+        x = x1;
+        w = x2 - x1;
+    }
+    else
+    {
+        x = x2;
+        w = x1 - x2;
+    }
+
+    if(y1 < y2)
+    {
+        y = y1;
+        h = y2 - y1;
+    }
+    else
+    {
+        y = y2;
+        h = y1 - y2;
+    }
+
+    return QRect(x,y,w,h);
+}
+
+/**
+ * @Author Chaoqun
  * @brief  判断两个数是否相等，因为公文的误差要求是 1mm，
  *      对于边框的要求没有那么高。
  *      因此，我这里两者差的绝对值小于 0.05mm即视为相等。

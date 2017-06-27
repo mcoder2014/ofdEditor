@@ -263,6 +263,23 @@ void DocPage::remove()
     passage->removePage(this);
 }
 
+// 设置页面的显示大小
+void DocPage::setScale(double scale)
+{
+    // 设置纸张大小
+
+    this->setFixedSize(scale * this->width(),
+                       scale * this->height());
+
+    qDebug() << "Page Size after scale:" << this->width()
+             << " " << this->height();
+
+    // 缩放
+    this->scale(scale,scale);
+    this->viewport()->update();
+    this->update();
+}
+
 
 /**
  * @Author Chaoqun
@@ -281,7 +298,9 @@ void DocPage::paintEvent(QPaintEvent *event)
         QPainter painter(this->viewport());     // 坑，要画在viewport上
         painter.setPen(Qt::blue);
 
-        QRectF rect = UnitTool::getBox(this->oldPos,this->newPos);
+        QRect rect = UnitTool::getBox(
+                    mapFromScene(this->oldPos),
+                    mapFromScene(this->newPos));
 
         painter.drawRect(rect);
         painter.end();                                  // 结束
@@ -345,14 +364,15 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 
                  QPointF tempPoint = this->mapToScene(this->oldPos.rx(),
                                                       this->oldPos.ry());
-//                 qDebug() <<"temp Point"<<tempPoint.rx()
-//                         << ","<<tempPoint.ry();
+                 qDebug() <<"temp Point"<<tempPoint.rx()
+                         << ","<<tempPoint.ry();
 
-                 if(block->currentStatus(
-                             block->mapFromScene(tempPoint))
-                         == DocBlock::blockMove)
+//                 if(block->currentStatus(
+//                             block->mapFromScene(tempPoint))
+//                         == DocBlock::blockMove)
+                 if(block->cursor().shape() == Qt::SizeAllCursor)
                  {
-//                     qDebug()<<" Accepted Signal is blockMove";
+                     qDebug()<<" Accepted Signal is blockMove";
                      this->newBlockFlag = blockMove;
                  }
                  else if (block->currentStatus(
@@ -417,6 +437,8 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
         }
 
         QPointF point = this->newPos - this->oldPos;
+        qDebug() << "Move x:" << point.rx()
+                 << " y:" << point.ry();
         this->activeBlock->moveBy(point.rx(),point.ry());
         this->oldPos = this->mapToScene(event->pos());
 

@@ -34,7 +34,7 @@ public:
     DocPassage *getPassage();                   // 获得所在文章
     void paintHandle(QPainter& painter);        // 绘制负责变换的控制器
     qreal getZValue(){return this->realZValue;} // 获得当前块所在的Z值
-    RectAdjustStatus currentStatus(const QPointF& pos);    // 鼠标所在位置可以进行什么调整
+    RectAdjustStatus currentStatus(QPointF pos);    // 鼠标所在位置可以进行什么调整
 
     bool isTextBlock();         // 判断是否DocBlock装的是否是DocTextBlock
     DocTextBlock *getTextBlock(); // 获得DocTextBlock
@@ -62,6 +62,7 @@ protected:
 
     // 用来修改鼠标
     void hoverMoveEvent (QGraphicsSceneHoverEvent *event);          // 鼠标悬浮响应
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);    // 双击恢复正常
     void mousePressEvent (QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent (QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent (QGraphicsSceneMouseEvent * event);

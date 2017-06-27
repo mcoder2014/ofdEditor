@@ -99,6 +99,10 @@ public slots:
                                    double default_working_height,
                                    double default_working_x,
                                    double default_working_y);
+    void zoomIn();                      // 缩小
+    void zoomOut();                     // 放大
+
+    void setScale(double scale);        // 设置缩放
 protected:
     void resizeEvent(QResizeEvent* event);
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
@@ -123,6 +127,7 @@ private:
     QWidget * widget;               // 用widget做缓冲
 
     double scaleFactor;             // 表示缩放倍数
+
     double widgetWidth;             // 内容的宽度
     double widgetHeight;            // 内容的高度
 

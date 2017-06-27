@@ -35,6 +35,7 @@ public slots:
 
 
 private:
+    double scale;
 
     // 菜单栏
     QMenu * filesMenu;          // 文件
@@ -136,6 +137,9 @@ private slots:
     void Bold();                // 加粗事件
     void Italic();              // 斜体事件
     void underline();           // 下划线事件
+
+    void zoomIn();              // 放大
+    void zooomOut();            // 缩小
 
     void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式

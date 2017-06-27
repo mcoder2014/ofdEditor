@@ -248,6 +248,14 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 
 }
 
+void DocBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+
+    this->clearFocus();
+    this->setFocus();
+
+}
+
 /**
  * @Author Chaoqun
  * @brief  鼠标按下时处理函数
@@ -401,8 +409,10 @@ bool DocBlock::isInResizeArea(const QPointF &pos)
  * @return RectAdjustStatus
  * @date   2017/05/19
  */
-DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
+DocBlock::RectAdjustStatus DocBlock::currentStatus( QPointF pos)
 {
+    qDebug() << "point: x:" << pos.rx()
+             << "y: " << pos.ry();
 //    qDebug() << "get current status.";
     if (isTextBlock())
     {
@@ -413,14 +423,14 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus(const QPointF &pos)
             return blockResize;
         }
         // 画出可以移动的边缘
-        qreal moveMargin = 5;   // 边缘多少像素内可以移动
-        QRectF left(0,0,
+        qreal moveMargin = 10;   // 边缘多少像素内可以移动
+        QRectF left(-5,0,
                     moveMargin,this->blockSize.height());
-        QRectF right(this->blockSize.width()-moveMargin,0,
+        QRectF right(this->blockSize.width()-moveMargin+5,0,
                      moveMargin,this->blockSize.height());
-        QRectF top(0,0,
+        QRectF top(0,-5,
                    this->blockSize.width(),moveMargin);
-        QRectF bottom(0,this->blockSize.height() - moveMargin,
+        QRectF bottom(0,this->blockSize.height() - moveMargin+5,
                   this->blockSize.width(),moveMargin);
 
         if(left.contains(pos)
