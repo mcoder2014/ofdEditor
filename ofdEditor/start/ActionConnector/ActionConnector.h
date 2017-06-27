@@ -24,8 +24,8 @@ public:
     ActionConnector(PassageMainWindow * mainWindow);
 
     DocPage::Layer getDefaultLayer(){return this->defaultLayer;}
-    DocPassage *getActivedPassage();      // 获得活跃的文章
-
+    DocPassage * getActivePassage();        //获取当前操作的文档
+    DocPage *getActivePage();              //获取当前操作的页面
 public slots:
     void showAttribute();           // 显示文档元信息
     void setMainWindow(PassageMainWindow * mainWindow);     // 设置主窗口
@@ -41,8 +41,8 @@ public slots:
     void setDefaultLayer(DocPage::Layer layer){this->defaultLayer = layer;}
 
     void updateActivePassage(QMdiSubWindow * window );      // 更新当前操作的文章
+    void startFindAndReplace();         //打开查找和替换界面
 
-    DocPage *getActivePage();              //获取当前操作的页面
 private:
     PassageMainWindow * mainWindow;        // 主窗口
     DocPassage * passage;                  // 当前活跃文档

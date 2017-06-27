@@ -16,6 +16,7 @@ class DocPassage;
 class DocTextBlock;
 class ActionConnector;      // 函数功能的中间件
 class DocImageBlock;
+class FindAndReplaceDock;
 
 // 编辑窗口的主界面
 class PassageMainWindow
@@ -25,10 +26,13 @@ class PassageMainWindow
 public:
     explicit PassageMainWindow(QWidget *parent = 0);
     ~PassageMainWindow();
+
+    void activateFindAndReplaceDock();
 public slots:
     DocPassage *createMdiChild();       // 创建一个新文档
     DocPassage *activeMdiChild();       // 获取活动的窗口
     DocPassage *addDocPassage(DocPassage * passage);
+
 
 private:
 
@@ -67,6 +71,7 @@ private:
     QAction * editModeAction;           // 编辑模式
     QAction * zoomInAction;             // 放大
     QAction * zoomOutAction;            // 缩小
+    QAction * find_and_replace;         //查找和替换
 
     // 插入
     QAction * insertNewPageAction;      // 插入新页面
@@ -116,6 +121,7 @@ private:
 
     DocImageBlock *imageBlock;  //图片块
 
+    FindAndReplaceDock * find_and_replace_dock;   //查找 & 替换
 
 
 private slots:
@@ -135,6 +141,8 @@ private slots:
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
     void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
     void acceptImageBlock(DocImageBlock * imageBlock);          //接受当前处理的图片块
+
+
 };
 
 #endif // PASSAGEMAINWINDOW_H

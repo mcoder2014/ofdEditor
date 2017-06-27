@@ -29,6 +29,7 @@
 #include "Doc/DocPage.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocImageBlock.h"
+#include "Widget/FindAndReplaceDock.h"
 #include "Convert/Doc_OFDConvertor.h"
 #include "ofd_writer.h"
 
@@ -41,6 +42,15 @@ PassageMainWindow::PassageMainWindow(QWidget *parent)
 PassageMainWindow::~PassageMainWindow()
 {
 
+}
+
+void PassageMainWindow::activateFindAndReplaceDock()
+{
+    if (connector->getActivePassage())
+    {
+        find_and_replace_dock->setCurrentPassage(connector->getActivePassage());
+        this->find_and_replace_dock->show();
+    }
 }
 
 /**
@@ -89,6 +99,11 @@ void PassageMainWindow::init()
     this->setBackgroundRole(QPalette::Text);
 
 
+    this->find_and_replace_dock = new FindAndReplaceDock(NULL);
+    this->addDockWidget(Qt::BottomDockWidgetArea, find_and_replace_dock);
+    this->find_and_replace_dock->setMaximumHeight(60);
+    this->find_and_replace_dock->setMinimumHeight(60);
+    this->find_and_replace_dock->setVisible(false);
 }
 
 /**
@@ -180,6 +195,11 @@ void PassageMainWindow::initAction()
     this->pasteAction->setShortcut(QKeySequence::Paste);
     this->pasteAction->setIcon(QIcon(":/icons/source/icons/paste.png"));
 
+    this->find_and_replace = new QAction(tr("Find/Replace"), NULL);     //查找和替换
+    this->find_and_replace->setStatusTip(tr("Find specific text or replace them"));
+    this->find_and_replace->setShortcut(QKeySequence::Find);
+    //缺少Icon
+
     this->insertNewPageAction = new QAction(tr("Insert New Page"),NULL);     // 插入新页面
     this->insertNewPageAction->setStatusTip(tr("Insert a new Page into document"));
     this->insertNewPageAction->setIcon(QIcon(":/icons/source/icons/insertNewPage.png"));
@@ -254,6 +274,7 @@ void PassageMainWindow::initAction()
     this->editMenu->addAction(this->copyAction);
     this->editMenu->addAction(this->cutAction);
     this->editMenu->addAction(this->pasteAction);
+    this->editMenu->addAction(this->find_and_replace);
     this->editMenu->addSeparator();
 
 
@@ -451,6 +472,9 @@ void PassageMainWindow::connectAction()
     //redo operation
     connect(this->redoAction,SIGNAL(triggered(bool)),this->connector,SLOT(redo()));
 
+    connect(this->find_and_replace, SIGNAL(triggered(bool)),
+            this->connector, SLOT(startFindAndReplace()));
+
     connect(this->insertTextBlockAction, SIGNAL(triggered()),
             this->connector, SLOT(addTextBlock()));   // 插入文本框
 
@@ -584,7 +608,7 @@ void PassageMainWindow::openFile()
 void PassageMainWindow::saveFile()
 {
 
-    DocPassage* passage = this->connector->getActivedPassage();
+    DocPassage* passage = this->connector->getActivePassage();
     if(passage == NULL)
     {
         qDebug() << "Select NULL Passage";
@@ -635,7 +659,7 @@ void PassageMainWindow::saveFileAs()
         QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
 
 
-        DocPassage* passage = this->connector->getActivedPassage();
+        DocPassage* passage = this->connector->getActivePassage();
         if(passage == NULL)
         {
             qDebug() << "Select NULL Passage";

@@ -22,7 +22,7 @@ ActionConnector::ActionConnector(PassageMainWindow *mainWindow)
     init();
 }
 
-DocPassage *ActionConnector::getActivedPassage()
+DocPassage *ActionConnector::getActivePassage()
 {
     return this->passage;
 }
@@ -180,6 +180,12 @@ void ActionConnector::updateActivePassage(QMdiSubWindow *window)
     {
         this->passage = passage;
     }
+}
+
+void ActionConnector::startFindAndReplace()
+{
+    mainWindow->activateFindAndReplaceDock();
+
 }
 
 DocPage *ActionConnector::getActivePage()

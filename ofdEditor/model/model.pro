@@ -55,7 +55,8 @@ SOURCES += model.cpp \
     Doc/DocImageBlock.cpp \
     Widget/imagepropertiesdialog.cpp \
     Widget/PageDialog.cpp \
-    Widget/InsertTableDialog.cpp
+    Widget/InsertTableDialog.cpp \
+    Widget/FindAndReplaceDock.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -90,6 +91,7 @@ HEADERS += model.h\
     Doc/DocImageBlock.h \
     Widget/imagepropertiesdialog.h \
     Widget/PageDialog.h \
+    Widget/FindAndReplaceDock.h \
     Widget/InsertTableDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
@@ -123,4 +125,5 @@ FORMS += \
     Widget/DocInfoDialog.ui \
     Widget/imagepropertiesdialog.ui \
     Widget/PageDialog.ui \
-    Widget/InsertTableDialog.ui
+    Widget/InsertTableDialog.ui \
+    Widget/FindAndReplaceDock.ui

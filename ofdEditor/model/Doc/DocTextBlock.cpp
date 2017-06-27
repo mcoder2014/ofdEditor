@@ -112,7 +112,7 @@ DocBlock *DocTextBlock::getBlock()
  * @return QString &
  * @date   2017/06/25
  */
-QString &DocTextBlock::getContent()
+QString DocTextBlock::getContent()
 {
     QString content = this->document()->toPlainText();  // 获得纯文本
     return content;
