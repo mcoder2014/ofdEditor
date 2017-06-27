@@ -58,6 +58,8 @@ public:
                    CT_Color * _fill_color = NULL,
                    CT_Color * _stroke_color = NULL
                    ) {
+        fill_color = NULL;
+        stroke_color = NULL;
         if (_start_x || _start_y || _delta_x || _delta_y)
             setBoundary(_start_x, _start_y, _delta_x, _delta_y);
         setName(_name);
@@ -73,6 +75,8 @@ public:
         setAlpha(_alpha);
         setFillColor(_fill_color);
         setStrokeColor(_stroke_color);
+
+
     }
 
     ST_Box getBoundary() {

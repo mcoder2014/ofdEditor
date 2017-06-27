@@ -42,6 +42,10 @@ void ZipTool::extractDir(QString fileCompressed, QString dir)
 bool ZipTool::compressDir(QString fileCompressed,
                           QString dir, bool deleteDir)
 {
+    QDir dirs;
+    if(dirs.exists(fileCompressed))
+        deleteFolder(fileCompressed);
+
     bool flag = false;
     flag = JlCompress::compressDir(fileCompressed,dir,true);    // 递归
     if(!flag)

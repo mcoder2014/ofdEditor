@@ -17,6 +17,7 @@
 #include <QPalette>
 #include <QTextBlockFormat>
 #include <QTextCharFormat>
+#include <QDir>
 
 
 #include "Doc/DocPassage.h"
@@ -28,6 +29,8 @@
 #include "Doc/DocPage.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocImageBlock.h"
+#include "Convert/Doc_OFDConvertor.h"
+#include "ofd_writer.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -81,8 +84,6 @@ void PassageMainWindow::init()
 
     QLabel * status = new QLabel();
     this->statusBar()->addWidget(status);
-
-
 
     this->setMinimumSize(960,720);
     this->setBackgroundRole(QPalette::Text);
@@ -272,6 +273,12 @@ void PassageMainWindow::connectAction()
     connect(this->openFileAtcion, SIGNAL(triggered(bool)),
             this, SLOT(openFile()));  //打开文件
 
+    connect(this->saveAction,SIGNAL(triggered(bool)),
+            this,SLOT(saveFile()));     // 保存文件
+
+    connect(this->saveAsAction, SIGNAL(triggered(bool)),
+            this,SLOT(saveFileAs()));
+
     connect(this->attributeAction, SIGNAL(triggered(bool)),
             this->connector, SLOT(showAttribute()));        // 显示文档属性
 
@@ -356,13 +363,117 @@ void PassageMainWindow::openFile()
         OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
 //        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
         OFD* data = ofdParser.getData();    // 读取出OFD文件
+        qDebug() << tempPath + "/OFD.xml";
+        OFDWriter writer(data, "E:/temp/");
         qDebug()<< "ofd file open";
         OFD_DocConvertor convert;
         DocPassage* passage = convert.ofd_to_doc(data);
+        passage->setFilePath(path);         // 设置文件路径
 
         this->addDocPassage(passage);       // 添加文章
 
     }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  文件保存测试
+ * @param  void
+ * @return void
+ * @date   2017/06/25
+ */
+void PassageMainWindow::saveFile()
+{
+
+    DocPassage* passage = this->connector->getActivedPassage();
+    if(passage == NULL)
+    {
+        qDebug() << "Select NULL Passage";
+        return;
+    }
+    QString filePath = passage->getFilePath();      // 获得文件路径
+    if(filePath.size() == 0)
+    {
+        qDebug() << "passage filePath == 0";
+        this->saveFileAs();     // 如果文件名不存在则使用另存为
+
+        return;
+    }
+
+    Doc_OFDConvertor docToOfd;
+    OFD* ofdFile = docToOfd.doc_to_ofd(passage);
+
+    QString tempPath = passage->getTempStorePath();
+    ZipTool::deleteFolder(tempPath);                // 删除文件夹
+    QDir dir;
+    dir.mkdir(tempPath);                          // 生成文件夹
+    OFDWriter writer(ofdFile, tempPath+"/");            // 写出文件
+
+    ZipTool::compressDir(filePath,
+                         tempPath);                 // 将文件夹压缩为指定文件
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  文件另存为
+ * @param  void
+ * @return void
+ * @date   2017/06/26
+ */
+void PassageMainWindow::saveFileAs()
+{
+    QFileDialog * fileDialog = new QFileDialog(this);           // 新建一个QFileDialog
+
+    fileDialog->setAcceptMode(QFileDialog::AcceptSave);         // 设置对话框为保存文件类型
+    fileDialog->setFileMode(QFileDialog::AnyFile);              // 设置文件对话框能够显示任何文件
+    fileDialog->setViewMode(QFileDialog::Detail);               // 文件以细节形式显示出来
+    fileDialog->setWindowTitle(tr("Save the passage content as a ofd file"));
+
+    fileDialog->setNameFilter(tr("OFD files(*.ofd)"));            // 设置文件过滤器
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
+
+
+        DocPassage* passage = this->connector->getActivedPassage();
+        if(passage == NULL)
+        {
+            qDebug() << "Select NULL Passage";
+            return;
+        }
+
+        Doc_OFDConvertor docToOfd;
+        OFD* ofdFile = docToOfd.doc_to_ofd(passage);
+
+        QString tempPath = passage->getTempStorePath();
+        QDir dir;
+        if(dir.exists(tempPath))
+        {
+            qDebug() << "the file is existing";
+            // 如果文件夹已存在则要删除该文件夹
+            ZipTool::deleteFolder(tempPath);                // 删除文件夹
+        }
+
+        dir.mkdir(tempPath);                          // 生成文件夹
+        OFDWriter writer(ofdFile, tempPath + "/");            // 写出文件
+
+        qDebug() << "temp Files Path:" << tempPath;
+        qDebug() << "selected ofd"<< path;
+
+        bool flag = ZipTool::compressDir(path,
+                             tempPath, false);                 // 将文件夹压缩为指定文件
+
+        if(flag == true)
+        {
+            passage->setFilePath(path);
+        }
+        else
+        {
+            qDebug() << "Save File Failed";
+        }
+    }
+
 }
 
 /**

@@ -11,7 +11,7 @@
 #include <QScrollBar>
 #include <QMainWindow>
 #include <Quuid>
-#include "../Tool/UnitTool.h"
+#include <QDir>
 
 /**
  * @Author Chaoqun
@@ -188,6 +188,18 @@ void DocPassage::removePage(DocPage *page)
 
 /**
  * @Author Chaoqun
+ * @brief  设置文件路径
+ * @param  QString filePath
+ * @return void
+ * @date   2017/06/26
+ */
+void DocPassage::setFilePath(QString filePath)
+{
+    this->filePath = filePath;
+}
+
+/**
+ * @Author Chaoqun
  * @brief  设置文档原信息
  * @param  CT_DocInfo &docInfo
  * @return void
@@ -224,6 +236,48 @@ CT_DocInfo *DocPassage::getDocInfo()
 
 /**
  * @Author Chaoqun
+ * @brief  获得文章的uuid
+ * @param  void
+ * @return QString&
+ * @date   2017/06/xx
+ */
+QString DocPassage::getUUID()
+{
+    return this->docInfo->getDocID();
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得用来存储文档时的临时路径
+ * @param  void
+ * @return QString
+ * @date   2017/06/26
+ */
+QString DocPassage::getTempSavePath()
+{
+    QString temp = QDir::tempPath() + "/";      // 获得系统临时路径
+    QString uuid = this->getUUID();             // 获得uuid
+    QString end = "-source";
+    return temp + uuid + end;       // 获得临时存放路径
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  临时存储路劲
+ * @param  void
+ * @return QString
+ * @date   2017/06/26
+ */
+QString DocPassage::getTempStorePath()
+{
+    QString temp = QDir::tempPath() + "/";      // 获得系统临时路径
+    QString uuid = this->getUUID();             // 获得uuid
+    QString end = "-file";
+    return temp + uuid + end;       // 获得临时存放路径
+}
+
+/**
+ * @Author Chaoqun
  * @brief  获得文档中所有的页面
  * @param  void
  * @return 返回值
@@ -244,6 +298,19 @@ QVector<DocPage *> &DocPassage::getPages()
 DocPage *DocPassage::getPage(int index)
 {
     return this->pages[index];
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  摘要
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/26
+ */
+QString DocPassage::getFilePath()
+{
+    // 获得文件路径
+    return this->filePath;
 }
 
 /**

@@ -232,7 +232,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 //        qDebug() << "deal with current textcode:" << i;
 
         // 求出单个块的保卫面积
-        double height = text->getSize();           // 高等于字体的高
+        double height = text->getSize() + 5;           // 高等于字体的高
         double width = 0;                       // 所有deltax相加再加上一个字宽
         double x = text->boundary.getX() + textCode->getX();    // 左上角 x坐标
         double y = text->boundary.getY() + textCode->getY() - height;   // 左上角y值
@@ -247,7 +247,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
             width += arrayDeltaX[j].toDouble();   // 计算宽度
         }
 
-        width += height;        // 假设为方块字吧
+        width += height + 15;        // 假设为方块字吧
 
 //        qDebug() << "has compute the boundary";
 

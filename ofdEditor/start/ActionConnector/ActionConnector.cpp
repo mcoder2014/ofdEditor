@@ -22,6 +22,11 @@ ActionConnector::ActionConnector(PassageMainWindow *mainWindow)
     init();
 }
 
+DocPassage *ActionConnector::getActivedPassage()
+{
+    return this->passage;
+}
+
 void ActionConnector::showAttribute()
 {
     if(this->passage == NULL)

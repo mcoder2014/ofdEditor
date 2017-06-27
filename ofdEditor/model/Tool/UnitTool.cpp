@@ -27,10 +27,10 @@ int UnitTool::mmToPixel(double mm)
 //    QDesktopWidget *desktopWidget = QApplication::desktop();    // 获取桌面信息
     double dotsPerInch = 96;            // 暂时不知道如何获得屏幕具体信息
 
+    int pixel = (int)(inch * dotsPerInch);
 
 
-
-    return (int)(inch * dotsPerInch);       // 返回像素大小
+    return pixel;       // 返回像素大小
 }
 
 /**
@@ -50,7 +50,8 @@ double UnitTool::pixelToMM(double pixel)
     double dotsPerInch = 96;
 
     double inch = pixel / dotsPerInch;          // 获取像素单位对应的英寸单位
-    return inch * 25.4;                 // 返回毫米单位
+    double mm = inch * 25.4;
+    return mm;                 // 返回毫米单位
 }
 
 /**

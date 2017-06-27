@@ -11,6 +11,7 @@
 #include <QTextBlockFormat>
 #include <QTextdocument>
 #include <QTextBlock>
+#include <QFontMetricsF>
 
 #include "DataTypes/basic_datatype.h"
 #include "DataTypes/document/ofd.h"
@@ -28,7 +29,7 @@
 #include "DataTypes/text/ct_text.h"
 #include "DataTypes/text/textcode.h"
 #include "DataTypes/basic_datatype.h"
-
+#include "Tool/UnitTool.h"
 
 Doc_OFDConvertor::Doc_OFDConvertor(QObject *parent)
     : QObject(parent)
@@ -52,7 +53,9 @@ OFD *Doc_OFDConvertor::doc_to_ofd(DocPassage *passage)
     this->buildDocBody();           // 构建DocBody
     this->buildDocument();          // docment
 
+    qDebug() << "doc to ofd finished";
 
+    return this->ofdFile;
 
 }
 
@@ -66,12 +69,15 @@ OFD *Doc_OFDConvertor::doc_to_ofd(DocPassage *passage)
 void Doc_OFDConvertor::buildDocBody()
 {
     qDebug() << "exec buildDocbody";
-    QVector<DocBody* >  docbodys;       // 新建docbodys新建带有……的docbodys
-    DocBody* docbody = new DocBody(this->passage->getDocInfo());    // 加入docbody
-    docbodys.append(docbody);           // 新建DocBody
-    docbody->setDocRoot(QString("Doc_0/Document.xml"));             // 设置文档根目录
 
-    this->ofdFile->setDocBodies( &docbodys);  // 设置ofd的docbobys
+    // 新建DocBody
+    DocBody* docbody = new DocBody(this->passage->getDocInfo());    // 加入docbody
+    docbody->setDocRoot("Doc_0/Document.xml");              // 设置文档根目录
+    this->ofdFile->getDocBodies()->append(docbody);         // 设置ofd的docbobys
+    this->ofdFile->setDocType(this->passage->getDocType()); // 文档类型
+    this->ofdFile->setOfdVersion(this->passage->getVersion());  // 文档类型
+
+    qDebug() << "build docbody finished";
 
 }
 
@@ -85,26 +91,35 @@ void Doc_OFDConvertor::buildDocBody()
 void Doc_OFDConvertor::buildDocument()
 {
     qDebug() << "exec buildDocument";
-    QVector<Document*> documents;               // 新建Documents
+//    QVector<Document*> *documents = new QVector<Document*>();               // 新建Documents
     Document* document = new Document();        // 新建Document
-    documents.append(document);                 // 添加到文件中
+//    documents->append(document);                 // 添加到文件中
 
     // 设置ID_Table
     this->table = document->getIDTable();       // 获得IDTable
 
     // 设置publicRes
     this->public_res = new Res();
-    document->getPublicRes()->append(public_res);   // 将公用资源加入到document
+    this->public_res->setBaseLoc("Res");
+    document->getPublicRes()->append(this->public_res);   // 将公用资源加入到document
 
     // 设置common_data
     CT_CommonData * commonData = new CT_CommonData();
     document->setCommonData(commonData);
+
         // 设置指向资源文件的
-    commonData->getPublicRes()->append(ST_Loc(QString("PublicRes.xml"),
-                                                  QString("PublicRes.xml"),
-                                                  QString("PublicRes.xml")));
+    commonData->getPublicRes()->append(ST_Loc("PublicRes.xml",
+                                                  "PublicRes.xml",
+                                                  "PublicRes.xml"));
+
 
     this->buildPages(document);     // 解析每一页
+
+    //    this->ofdFile->setDocument(documents);
+    commonData->setMaxUnitID(this->table->size());      // 设置最大单元
+    this->ofdFile->getDocuments()->append(document);
+
+    qDebug() << "build document finished";
 }
 
 /**
@@ -120,7 +135,8 @@ void Doc_OFDConvertor::buildPages(Document* document)
     QVector<DocPage* > docPages = this->passage->getPages(); // 获得页面
     int pagesLength = docPages.size();      // 获得页面的数量
 
-    if(pagesLength > 1)
+    // 公共页大小，之后改成从DocPassage读取
+    if(pagesLength >= 1)
     {
         // 设置公共页大小
         CT_CommonData* commonData = document->getCommonData();
@@ -146,14 +162,16 @@ void Doc_OFDConvertor::buildPages(Document* document)
         Page* ctPage = new Page();
         ctPage->setID(this->table->size()+1,this->table);   // 设置ID
         // 设置页的路径
-        QString num;
-        num.setNum(i);
-        ctPage->setBaseLoc(QString("Pages/Page_") + num);
+
+        ctPage->setBaseLoc(QString("Pages/Page_") + QString::number(i)
+                           + "/Content.xml");
         pages->append(ctPage);               // 加入到OFD 文件中
 
         this->buildPage(ctPage,page);   // 单独处理每一页
 
     }
+
+    qDebug() << "build Pages finished";
 
 }
 
@@ -167,8 +185,14 @@ void Doc_OFDConvertor::buildPages(Document* document)
  */
 void Doc_OFDConvertor::buildPage(Page *ctPage, DocPage *docPage)
 {
-    qDebug() << "exec buildPage";
+    qDebug() << "exec buildPage:" << ctPage->getBaseLoc();
     QVector<CT_Layer *> *layers = ctPage->getContent();
+
+    // pageArea
+    CT_PageArea *area = new CT_PageArea();
+    area->setPhysicalBox(0,0,
+                         docPage->getWidth(),docPage->getHeight());
+    ctPage->setArea(area);
 
     // 分成多个层，对每个层进行处理
     DocLayer* foreground = docPage->getForegroundLayer();   // 获得前景层
@@ -195,6 +219,8 @@ void Doc_OFDConvertor::buildPage(Page *ctPage, DocPage *docPage)
     layers->append(backLayer);
     this->buildLayer(backLayer,background);
 
+    qDebug() << "build page Finished";
+
 }
 
 /**
@@ -207,7 +233,7 @@ void Doc_OFDConvertor::buildPage(Page *ctPage, DocPage *docPage)
  */
 void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
 {
-    qDebug() << "Exec buildLayer";
+    qDebug() << "Exec buildLayer" << ctLayer->getType();
     QVector<DocBlock* > *blocks = layer->getBlocks();
     int blocks_length = blocks->size();
 
@@ -246,39 +272,193 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
     // 分析TextBlock
     textBlock->moveCursor(QTextCursor::Start);      // 移动到块的开始
     QTextCursor cursor = textBlock->textCursor();
-    QTextDocument* document = cursor.document();
-    int blockCount = document->blockCount();        // 获得Block的数量
 
-    qDebug() << "This textBlock has " << blockCount << " QTextBlocks";
+    QTextDocument* document = cursor.document();    // 获得文档
 
-    for(int i =0; i<blockCount; i++)
+    cursor.movePosition(QTextCursor::Start);    // 移动到文章开头
+
+
+
+    QString lineContent;        // 行内容
+    QString lineContent_backup;        // 当前行内容备份
+    int pixelContent = 0;       // 当前行已经使用的像素长度
+    int pixelContHeight = 0;    // 当前行的最大高度
+    int pixelLine = 0;          // 当前纵向已经进入的深度
+    QString tempFragment;      // 块
+    QTextFragment fragment;     // 短句
+
+    // lineCount记录当前处理到的行数，第一行从0开始算起
+    for(int i = 0, lineCount = -1 ; i < document->blockCount(); i++)
     {
-        // 遍历每一个QTextBlock
-       QTextBlock block = cursor.block();
-       cursor.movePosition(QTextCursor::NextBlock,
-                           QTextCursor::MoveAnchor);    // 将鼠标移动到下一个块
-       QTextCursor tempCursor = cursor;             // 复制一个临时光标处理
-       int lineCount = block.lineCount();           // 计算该块有多少行
+        QTextBlock block = cursor.block();  // 获得当前块
+        QTextCursor tempCursor = cursor;    // 复制cursor
 
-       qDebug() << "block " << i
-                << " has " << lineCount
-                << "lines";
+        QTextBlock::Iterator iter = block.begin();      // 块的开始
 
-//       for(int lineValue = 0; lineValue <lineCount; lineValue ++)
-//       {
-//           tempCursor.select(QTextCursor::LineUnderCursor); // 光标选中当前行
-//           QString lineStr = tempCursor.selectedText();     // 当前选中的内容
-//           qDebug() << "block " << i
-//                    << " line " << lineValue
-//                    << " content:" << lineStr;
+        while(!iter.atEnd()
+              || lineContent.length() != 0
+              || tempFragment.length() !=0)        // 用来判断是否处理完了
+        {
+            if(tempFragment.size() == 0 && !iter.atEnd())
+            {
+                // 如果处理字段为空
+                fragment = iter.fragment();   // 获得当前的
+                tempFragment = fragment.text();
+                iter++;
+            }
 
-//           tempCursor.movePosition(QTextCursor::Down);     // 移动到下一行
-//       }
+            if(lineContent == "")
+            {
+                tempCursor.select(QTextCursor::LineUnderCursor);    // 选择当前行
+                QString currentLine = tempCursor.selectedText();    // 选中的文字
 
+                lineContent = currentLine;          // 追加一行
+                lineContent_backup = currentLine;   // 当前行内容
+                lineCount ++;
+                //                qDebug() << "Read Next Line： " << currentLine
+                //                         << "LineContent: " << lineContent;
+                pixelContent = 0;       // 使用新行，已用长度置空
+                pixelContHeight = 0;    // 使用新行，最大高度置零
+            }
+
+            QString nextEditContent;    // 即将处理的字段
+
+            // 处理当前Fragment
+            if(tempFragment.length() < lineContent.length())
+            {
+                // 当前小块的长度未达一页
+
+                // 删除重复的部分，用来循环
+                lineContent.remove(0,tempFragment.length());     // 把重复的部分先从lineContent中删除
+                qDebug() << "use TextFragement: " << tempFragment;
+                nextEditContent = tempFragment;                 // 设置待处理字段
+                tempFragment.remove(0,tempFragment.length());   // 清空
+
+            }
+            else if(tempFragment.length() >= lineContent.length())
+            {
+                // 当前行已完，但小块未完
+
+                // 删除重复的用来循环
+                tempFragment.remove(0,lineContent.length());
+                qDebug() << "use remaind lineContent: " << lineContent;
+                nextEditContent = lineContent;                      // 设置待处理字段
+                lineContent.remove(0,lineContent.length());             // 清空
+            }
+
+            // 样式
+            QTextCharFormat charFormat = fragment.charFormat();     // 字符格式
+            QTextBlockFormat blockFormat = tempCursor.blockFormat();// 块格式
+            QFont font = charFormat.font();     // 字体
+
+
+            // 分析块的大小
+            QFontMetricsF metrics(font);
+
+            int pixelWidth = metrics.boundingRect(nextEditContent).width();    // 获得宽度
+            int pixelHeight = metrics.boundingRect(nextEditContent).height();     // 获得高度
+
+            if(pixelContHeight < pixelHeight)
+            {
+
+                // 如果小于最大行间距
+                pixelLine = pixelLine + pixelHeight;               // 纵向深度增加
+                qDebug() << "pixelLine: "<< pixelLine
+                         << " pixelHeight:" << pixelHeight;
+            }
+
+            CT_Text* ct_text = new CT_Text();
+            ct_text->setID(this->table->size() +1 ,this->table);    // 设置ID
+            ctLayer->getTextObject()->append(ct_text);              // 加入到layer
+
+            // 设置颜色
+            QBrush brush = charFormat.foreground();     // 获得画笔
+            QColor color = brush.color();               // 获得颜色
+            CT_ColorSpace *space = new CT_ColorSpace(); // 颜色空间
+            space->setBitsPerComponent(8);
+            space->setType("RGB");
+            int colorSpaceId = this->addColorSpace(space);
+            CT_Color* ct_color = new CT_Color();
+
+            ct_color->setValue(QString::number(color.red()) + " "
+                               + QString::number(color.green()) + " "
+                               + QString::number(color.blue()));
+            ct_color->setColorSpace(colorSpaceId,this->table);
+
+            ct_text->setFillColor(ct_color);
+
+
+            // 加入字体
+            CT_Font* ctfont = new CT_Font();
+            ctfont->setFamilyName(font.family());
+            ctfont->setFontName(font.family());
+            int font_id = this->addFont(ctfont);    // 添加字体ID
+            ct_text->setFont(font_id, this->table); // 设置字体引用
+
+            // 设置字体
+            if(font.italic())
+            {
+                // 如果斜体
+                ct_text->setItalic( true);
+            }
+            if(font.weight() != 50)
+            {
+                // 字重
+                ct_text->setWeight(font.weight() * 8);  // 默认值400
+            }
+
+            // 设置字体大小
+            // 这个只针对/通过 setPixelSize的才有效
+//            double font_size = font.pixelSize();    // 获得字大小
+//            qDebug() << "Font Size:" <<font.pixelSize();
+//            ct_text->setSize(UnitTool::pixelToMM(font_size));
+//            int fontPixelSize = metrics.height();       // 获得像素高度
+            ct_text->setSize(UnitTool::pixelToMM(pixelHeight));
+
+            qDebug() << "before setBoundary pixelLine: "<< pixelLine;
+
+            // 边框
+            ct_text->setBoundary(UnitTool::pixelToMM(textBlock->pos().rx()
+                                                     + pixelContent),      // 最左侧，向右偏移一定距离
+                                 UnitTool::pixelToMM(textBlock->pos().ry()
+                                                     + pixelLine),
+                                 UnitTool::pixelToMM(pixelWidth),
+                                 UnitTool::pixelToMM(pixelLine)
+                                 );
+
+            qDebug() << "After setBoundary pixelLine: "<< pixelLine;
+
+            // 设置delta_x
+            TextCode* textCode = new TextCode();        // 文字内容
+            textCode->setText(nextEditContent);            // 设置文字内容
+            textCode->setX(0);  // 设置起始位置
+            textCode->setY(UnitTool::pixelToMM(metrics.height()));
+
+            if(nextEditContent.length()>1)
+            {
+                qDebug() << "font's wordSpacing:" << font.wordSpacing();
+                QString delta_x_str;
+                // n个字符 n-1 个 delta_x
+                for(int delta_x = 0; delta_x < nextEditContent.length()-1; delta_x++)
+                {
+
+                    delta_x_str = delta_x_str + " "
+                            + QString::number(
+                                UnitTool::pixelToMM(
+                                    metrics.boundingRect(
+                                        nextEditContent.operator [](delta_x)).width()));
+                }
+                textCode->setDeltaX(delta_x_str);
+            }
+
+            ct_text->getTextCode()->append(textCode);   // 加入到textCode中
+
+            pixelContent += pixelWidth;         // 将当前使用长度加入，进入下一次循环
+        }
+
+        cursor.movePosition(QTextCursor::NextBlock);        //
     }
-
-
-
+    //// 将文本框按照 格式和行进行拆分
 
 }
 
@@ -377,3 +557,4 @@ int Doc_OFDConvertor::checkColorSpace(CT_ColorSpace *colorSpace)
 
     return -1;  // 不存在已有的
 }
+

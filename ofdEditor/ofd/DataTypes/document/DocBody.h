@@ -40,7 +40,7 @@ public:
     }
 
     void setDocRoot(QString _doc_root_abs) {
-        ST_Loc p("DocRoot", _doc_root_abs);
+        ST_Loc p("DocRoot", _doc_root_abs,_doc_root_abs);
         doc_root = p;
     }
 

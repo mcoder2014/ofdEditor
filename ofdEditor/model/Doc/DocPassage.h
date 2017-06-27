@@ -41,10 +41,14 @@ public:
     ~DocPassage();
 
     CT_DocInfo* getDocInfo();                // 获取CT_DocInfo数据
+    QString getUUID();                      // 获得文章的uuid
+    QString getTempSavePath();              // 获得文章保存前的临时路径
+    QString getTempStorePath();             // 获得暂存资源的临时路径
     QString getVersion( ){return this->version;}
     QString getDocType( ){return this->docType;}
     QVector<DocPage* >& getPages();         // 获得文档中包含的所有页面
     DocPage *getPage(int index);            // 获得文档中的某一页
+    QString getFilePath();                  // 获得文档路径
     QUndoStack *undoStack;                  // 撤销队列
 
 public slots:
@@ -54,6 +58,7 @@ public slots:
 
     void removePage(int index);                     // 移除某一页
     void removePage(DocPage* page);                 // 移除某一页
+    void setFilePath(QString filePath);             // 设置文件路径
 
     // DocInfo
     void setDocInfo( CT_DocInfo & docInfo );

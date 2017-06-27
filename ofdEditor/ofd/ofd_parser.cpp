@@ -489,6 +489,8 @@ void OFDParser::readGraphicUnit(CT_GraphicUnit *data, QDomElement &root_node) {
         CT_Color * fill_color_data = new CT_Color();
         data->fill_color = fill_color_data;
         readColor(fill_color_data, t);
+        if (root_node.hasAttribute("ID") && root_node.attribute("ID").toInt() == 3)
+            qDebug() << "In OFDParser: " << fill_color_data;
     }
 
     //Other members to be implemented

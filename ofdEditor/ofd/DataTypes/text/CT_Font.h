@@ -15,6 +15,7 @@ class OFDSHARED_EXPORT CT_Font : public CT_Base {    //字体声明类型
     bool serif;
     bool fixed_width;
     //FontFile
+public:
     CT_Font(){
         charset = "GB18030";
         italic = false;

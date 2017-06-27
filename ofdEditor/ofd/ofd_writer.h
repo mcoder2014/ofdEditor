@@ -64,4 +64,5 @@ QXmlStreamAttributes getAttributes(CT_Path * cur_path);
 QXmlStreamAttributes getAttributes(CT_ColorSpace * cur_colorspace);
 QXmlStreamAttributes getAttributes(CT_DrawParam * cur_draw_param);
 QXmlStreamAttributes getAttributes(CT_Font * cur_font);
+QXmlStreamAttributes getAttributes(CT_Text * cur_text);
 #endif // OFD_WRITER_H

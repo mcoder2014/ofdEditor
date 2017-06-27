@@ -79,6 +79,12 @@ private:
     QAction * aboutAppAction;           // 关于本工程的介绍
     QAction * helpAciton;               // 帮助文档，如何使用本软件
 
+
+    // 工具栏部分
+    QFontComboBox* fontCombox;          // 字体选择框
+    QComboBox* fontSizeCombox;          // 字体大小设置框
+
+
     QMdiArea * area;            // 多窗口区域
     QVector<DocPassage* >passages;      // 存储所有的passage
 
@@ -100,6 +106,8 @@ private:
 
 private slots:
     void openFile();            // 打开新文件
+    void saveFile();            // 保存文件测试
+    void saveFileAs();          // 将文件另存为
     void fontDialog();          // 打开字体框
     void paragraphDialog();     // 打开段落框
     void imageDialog();         // 打开图片框

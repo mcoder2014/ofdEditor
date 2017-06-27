@@ -48,8 +48,9 @@ public:
     //        qDebug() << "cur = " << current_path << "rela = " << relative_path << endl;
         abs_path = current_path + relative_path;
     }   //构造方法，包括对路径的解析
-    ST_Loc(QString tag, QString _abs_path) : title(tag), abs_path(_abs_path) {  //构造方法，在直接已有绝对路径时
-        abs_path.replace("/", "\\");
+    ST_Loc(QString tag, QString _abs_path)
+        : title(tag), abs_path(_abs_path) {  //构造方法，在直接已有绝对路径时
+        abs_path.replace("\\", "/");
     }
 
     operator QString() {    //可以直接把ST_Loc作为一个路径字符串使用
@@ -67,7 +68,7 @@ public:
     }
 
     bool isNull() {
-        return abs_path.isNull();
+        return abs_path.length() == 0;
     }
 };
 

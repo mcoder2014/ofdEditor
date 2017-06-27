@@ -24,6 +24,7 @@ public:
     ActionConnector(PassageMainWindow * mainWindow);
 
     DocPage::Layer getDefaultLayer(){return this->defaultLayer;}
+    DocPassage *getActivedPassage();      // 获得活跃的文章
 
 public slots:
     void showAttribute();           // 显示文档元信息

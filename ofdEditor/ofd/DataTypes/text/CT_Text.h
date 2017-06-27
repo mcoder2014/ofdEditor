@@ -66,6 +66,7 @@ public:
 
     void setSize(double _size) {
         size = _size;
+        size_used = true;
     }
 
     bool sizeUsed() {

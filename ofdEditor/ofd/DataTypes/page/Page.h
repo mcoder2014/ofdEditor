@@ -28,7 +28,7 @@ public:
     }
 
     void setBaseLoc(QString _base_loc_abs) {
-        ST_Loc p("BaseLoc", _base_loc_abs);
+        ST_Loc p("BaseLoc", _base_loc_abs, _base_loc_abs);
         base_loc = p;
     }
 
