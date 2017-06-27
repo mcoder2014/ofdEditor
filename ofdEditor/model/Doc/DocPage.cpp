@@ -166,10 +166,10 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
         emit this->signals_insertTextBlock(textBlock);              // 发射信号
 
         // 转发信号给passage
-        connect(textBlock,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat&)),
-                passage,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat&)));
-        connect(textBlock,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)),
-                passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)));
+        connect(textBlock,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat)),
+                passage,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat)));
+        connect(textBlock,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat)),
+                passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat)));
         connect(textBlock,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
                 passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)));
     } else if (block->isImageBlock())

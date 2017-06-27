@@ -6,14 +6,14 @@
 #include <QLabel>
 #include <QFontComboBox>        // 字体框
 #include <QComboBox>            // 选择框
+#include <QTextCharFormat>
+#include <QTextBlockFormat>
 
 class QAction;
 class QMenu;
 class QMdiArea;
 class DocPassage;
 class DocTextBlock;
-class QTextCharFormat;
-class QTextBlockFormat;
 class ActionConnector;      // 函数功能的中间件
 class DocImageBlock;
 
@@ -43,6 +43,7 @@ private:
     QToolBar* edit_toolBar;      // 编辑
     QToolBar* format_toolBar;    // 格式
     QToolBar* insert_toolBar;    // 插入
+    QToolBar* textBlock_toolBar;    // 文本工具栏
 
 
     // QAction
@@ -80,10 +81,17 @@ private:
     QAction * helpAciton;               // 帮助文档，如何使用本软件
 
 
-    // 工具栏部分
+    // 文本操作工具栏部分
     QFontComboBox* fontCombox;          // 字体选择框
     QComboBox* fontSizeCombox;          // 字体大小设置框
+    QAction* boldAction;                // 字体粗细
+    QAction* italicAction;              // 斜体
+    QAction* underlineAction;           // 下划线
 
+    QAction* middleAction;              // 居中
+    QAction* leftAction;                // 居左
+    QAction* rightAction;               // 居右
+    QAction* justifyAction;             // 两端对齐
 
     QMdiArea * area;            // 多窗口区域
     QVector<DocPassage* >passages;      // 存储所有的passage
@@ -97,8 +105,8 @@ private:
     void disconnectAction();    // 断开事件响应
 
     DocTextBlock *textBlock;    // 文字块
-    QTextCharFormat* _currentCharFormat;    // 当前字符格式
-    QTextBlockFormat* _currentBlockFormat;  // 当前块格式
+    QTextCharFormat _currentCharFormat;    // 当前字符格式
+    QTextBlockFormat _currentBlockFormat;  // 当前块格式
 
     DocImageBlock *imageBlock;  //图片块
 
@@ -114,8 +122,8 @@ private slots:
     void pageDialog();          // 打开页面框
 
     void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
-    void acceptTextBlockFormat(QTextBlockFormat& blockFormat);  // 接受当前处理的块格式
-    void acceptTextCharFormat(QTextCharFormat& charFormat);     // 接受当前处理的字符格式
+    void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
+    void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
     void acceptImageBlock(DocImageBlock * imageBlock);          //接受当前处理的图片块
 };
 

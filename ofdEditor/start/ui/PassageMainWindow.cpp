@@ -170,7 +170,7 @@ void PassageMainWindow::initAction()
 
     this->pageFormat = new QAction(tr("Page Format"), NULL);     // 页面格式
     this->pageFormat->setStatusTip(tr("Set the page format"));
-    //this->textFormat->setIcon(QIcon());
+    this->pageFormat->setIcon(QIcon(":/icons/source/icons/pageFormat.png"));
 
     this->textFormat = new QAction(tr("Text Format"),NULL);      // 文字格式
     this->textFormat->setStatusTip(tr("Set the selected texts' format"));
@@ -233,11 +233,107 @@ void PassageMainWindow::initAction()
     this->aboutMenu->addAction(this->aboutAppAction);
     this->aboutMenu->addAction(this->helpAciton);
 
+    // 文本操作工具栏部分/
+    this->fontCombox = new QFontComboBox();
+    this->fontSizeCombox = new QComboBox();
+    this->fontSizeCombox->insertItem(0,tr("72"));
+    this->fontSizeCombox->insertItem(0,tr("48"));
+    this->fontSizeCombox->insertItem(0,tr("36"));
+    this->fontSizeCombox->insertItem(0,tr("28"));
+    this->fontSizeCombox->insertItem(0,tr("26"));
+    this->fontSizeCombox->insertItem(0,tr("24"));
+    this->fontSizeCombox->insertItem(0,tr("22"));
+    this->fontSizeCombox->insertItem(0,tr("20"));
+    this->fontSizeCombox->insertItem(0,tr("18"));
+    this->fontSizeCombox->insertItem(0,tr("16"));
+    this->fontSizeCombox->insertItem(0,tr("14"));
+    this->fontSizeCombox->insertItem(0,tr("12"));
+    this->fontSizeCombox->insertItem(0,tr("11"));
+    this->fontSizeCombox->insertItem(0,tr("10.5"));
+    this->fontSizeCombox->insertItem(0,tr("10"));
+    this->fontSizeCombox->insertItem(0,tr("9"));
+    this->fontSizeCombox->insertItem(0,tr("8"));
+    this->fontSizeCombox->insertItem(0,tr("7.5"));
+    this->fontSizeCombox->insertItem(0,tr("6.5"));
+    this->fontSizeCombox->insertItem(0,tr("5.5"));
+    this->fontSizeCombox->insertItem(0,tr("5"));
+    this->fontSizeCombox->insertItem(0,tr("4.5"));
+    this->fontSizeCombox->insertItem(0,tr("5.25"));
+    this->fontSizeCombox->insertItem(0,tr("6.5"));
+    this->fontSizeCombox->insertItem(0,tr("7.5"));
+    this->fontSizeCombox->insertItem(0,tr("9"));
+    this->fontSizeCombox->insertItem(0,tr("10.5"));
+    this->fontSizeCombox->insertItem(0,tr("12"));
+    this->fontSizeCombox->insertItem(0,tr("14"));
+    this->fontSizeCombox->insertItem(0,tr("15"));
+    this->fontSizeCombox->insertItem(0,tr("16"));
+    this->fontSizeCombox->insertItem(0,tr("18"));
+    this->fontSizeCombox->insertItem(0,tr("21"));
+    this->fontSizeCombox->insertItem(0,tr("24"));
+    this->fontSizeCombox->insertItem(0,tr("27.5"));
+    this->fontSizeCombox->insertItem(0,tr("36"));
+    this->fontSizeCombox->insertItem(0,tr("42"));
+
+
+
+    // 加粗
+    this->boldAction = new QAction(tr("Bold"), NULL);
+    this->boldAction->setStatusTip(tr("Set selected text Bold or not bold"));
+    this->boldAction->setIcon(QIcon(":/icons/source/icons/bold.png"));
+    this->boldAction->setCheckable(true);
+
+    // 倾斜
+    this->italicAction = new QAction(tr("Italic"), NULL);
+    this->italicAction->setStatusTip(tr("Set the selected text Italic"));
+    this->italicAction->setIcon(QIcon(":/icons/source/icons/italic.png"));
+    this->italicAction->setCheckable(true);
+
+    // 下划线
+    this->underlineAction = new QAction(tr("Underline" ),NULL);
+    this->underlineAction->setStatusTip(
+                tr("Set the selected text underline"));
+    this->underlineAction->setIcon(QIcon(":/icons/source/icons/underline.png"));
+    this->underlineAction->setCheckable(true);
+
+    // 居中
+    this->middleAction = new QAction(tr("middle"),NULL);
+    this->middleAction->setStatusTip(
+                tr("Set the selected paragraph align middle"));
+    this->middleAction->setIcon(QIcon(":/icons/source/icons/middle.png"));
+    this->middleAction->setCheckable(true);
+
+    // 左对齐
+    this->leftAction = new QAction(tr("Left"),NULL);
+    this->leftAction->setStatusTip(
+                tr("Set the selected paragraph align by left"));
+    this->leftAction->setIcon(QIcon(":/icons/source/icons/left.png"));
+    this->leftAction->setCheckable(true);
+
+
+    // 右对齐
+    this->rightAction = new QAction(tr("Right"),NULL);
+    this->rightAction->setStatusTip(
+                tr("Set the selected paragraph align by right"));
+    this->rightAction->setIcon(QIcon(":/icons/source/icons/right.png"));
+    this->rightAction->setCheckable(true);
+
+    // 两端对齐
+    this->justifyAction = new QAction(tr("jutify"),NULL);
+    this->justifyAction->setStatusTip(
+                tr("Set the selected paragraph align by left and right"));
+    this->justifyAction->setIcon(QIcon(":/icons/source/icons/justify.png"));
+    this->justifyAction->setCheckable(true);
+
+
 /*---------------------------------------------------------------------*/
     this->file_toolBar = this->addToolBar(tr("File"));
+    this->file_toolBar->setMovable(false);
     this->edit_toolBar = this->addToolBar(tr("Edit"));
+    this->edit_toolBar->setMovable(false);
     this->format_toolBar = this->addToolBar(tr("Format"));
+    this->format_toolBar->setMovable(false);
     this->insert_toolBar = this->addToolBar(tr("Insert"));
+    this->insert_toolBar->setMovable(false);
 
     this->file_toolBar->addAction(this->newFileAction);
     this->file_toolBar->addAction(this->openFileAtcion);
@@ -255,6 +351,22 @@ void PassageMainWindow::initAction()
     this->insert_toolBar->addAction(this->insertTextBlockAction);
     this->insert_toolBar->addAction(this->insertImageAction);
     this->insert_toolBar->addAction(this->insertTableAction);
+
+
+    // 添加工具栏
+    this->textBlock_toolBar = this->addToolBar(tr("TextBlock"));
+    this->textBlock_toolBar->setMovable(false);
+    this->textBlock_toolBar->addWidget(this->fontCombox);           // 字体选择
+    this->textBlock_toolBar->addWidget(this->fontSizeCombox);       // 字体大小设置
+    this->textBlock_toolBar->addSeparator();                        // 分隔符
+    this->textBlock_toolBar->addAction(this->boldAction);           // 字体加粗
+    this->textBlock_toolBar->addAction(this->italicAction);         // 斜体
+    this->textBlock_toolBar->addAction(this->underlineAction);      // 下划线
+    this->textBlock_toolBar->addSeparator();                        // 分隔符
+    this->textBlock_toolBar->addAction(this->leftAction);           // 左对齐
+    this->textBlock_toolBar->addAction(this->middleAction);         // 居中
+    this->textBlock_toolBar->addAction(this->rightAction);          // 居右
+    this->textBlock_toolBar->addAction(this->justifyAction);        // 两端对齐
 
 }
 
@@ -541,11 +653,44 @@ void PassageMainWindow::acceptTextBlock(DocTextBlock *textBlock)
  * @return void
  * @date   2017/06/23
  */
-void PassageMainWindow::acceptTextBlockFormat(QTextBlockFormat &blockFormat)
+void PassageMainWindow::acceptTextBlockFormat(QTextBlockFormat blockFormat)
 {
-    this->_currentBlockFormat = &blockFormat;   // 留下引用
+    this->_currentBlockFormat = blockFormat;   // 留下引用
+    qDebug() << "PassageMainWindow::acceptTextBlockFormat(QTextBlockFormat blockFormat)";
 
     // 更新界面显示
+    Qt::Alignment align =  blockFormat.alignment() & Qt::AlignHorizontal_Mask;
+    switch (align)
+    {
+    case Qt::AlignHCenter:
+        this->middleAction->setChecked(true);
+        this->leftAction->setChecked(false);
+        this->rightAction->setChecked(false);
+        this->justifyAction->setChecked(false);
+        break;
+    case Qt::AlignLeft:
+        this->middleAction->setChecked(false);
+        this->leftAction->setChecked(true);
+        this->rightAction->setChecked(false);
+        this->justifyAction->setChecked(false);
+        break;
+    case Qt::AlignRight:
+        this->middleAction->setChecked(false);
+        this->leftAction->setChecked(false);
+        this->rightAction->setChecked(true);
+        this->justifyAction->setChecked(false);
+        break;
+    case Qt::AlignJustify:
+        this->middleAction->setChecked(false);
+        this->leftAction->setChecked(false);
+        this->rightAction->setChecked(false);
+        this->justifyAction->setChecked(true);
+        break;
+    default:
+        break;
+    }
+
+
 }
 
 /**
@@ -555,10 +700,45 @@ void PassageMainWindow::acceptTextBlockFormat(QTextBlockFormat &blockFormat)
  * @return void
  * @date   2017/06/23
  */
-void PassageMainWindow::acceptTextCharFormat(QTextCharFormat &charFormat)
+void PassageMainWindow::acceptTextCharFormat(QTextCharFormat charFormat)
 {
-    this->_currentCharFormat  = &charFormat;    // 留下引用
+    this->_currentCharFormat  = charFormat;    // 留下引用
     // 更新界面显示
+
+    // 字体
+    this->fontCombox->setCurrentFont(charFormat.font());
+
+    // 粗体
+    if(charFormat.fontWeight() >= 75)
+    {
+        this->boldAction->setChecked(true);
+    }
+    else
+    {
+        this->boldAction->setChecked(false);
+    }
+
+    // 斜体
+    if(charFormat.fontItalic())
+    {
+        this->italicAction->setChecked(true);
+    }
+    else
+    {
+        this->italicAction->setChecked(false);
+    }
+
+    // 下划线
+    if(charFormat.fontUnderline())
+    {
+        this->underlineAction->setChecked(true);
+    }
+    else
+    {
+        this->underlineAction->setChecked(false);
+    }
+
+    // 字号
 }
 
 void PassageMainWindow::acceptImageBlock(DocImageBlock *imageBlock)
@@ -603,11 +783,11 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
     passage->showMaximized();
 
     // 处理变更的blockFormat
-    this->connect(passage,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat&)),
-                  this,SLOT(acceptTextBlockFormat(QTextBlockFormat&)));
+    this->connect(passage,SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat)),
+                  this,SLOT(acceptTextBlockFormat(QTextBlockFormat)));
     // 处理变更的charFormat
-    this->connect(passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat&)),
-                  this,SLOT(acceptTextCharFormat(QTextCharFormat&)));
+    this->connect(passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat)),
+                  this,SLOT(acceptTextCharFormat(QTextCharFormat)));
     // 处理变更的textBlock
     this->connect(passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
                   this,SLOT(acceptTextBlock(DocTextBlock*)));

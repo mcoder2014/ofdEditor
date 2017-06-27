@@ -29,12 +29,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     ui/PassageMainWindow.cpp \
     ActionConnector/ActionConnector.cpp \
-    app/APPInfo.cpp
+    app/APPInfo.cpp \
+    ui/Editor.cpp
 
 HEADERS  += mainwindow.h \
     ui/PassageMainWindow.h \
     ActionConnector/ActionConnector.h \
-    app/APPInfo.h
+    app/APPInfo.h \
+    ui/Editor.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -58,4 +60,7 @@ RESOURCES += \
     icons.qrc \
     appinfo.qrc
 
-FORMS +=
+FORMS += \
+    ui/Editor.ui
+
+TRANSLATIONS = cn_start.ts

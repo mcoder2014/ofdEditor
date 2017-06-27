@@ -95,6 +95,8 @@ MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
 RCC_DIR = ./rcc     # .qrc 文件转换后存放路径
 OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 
+TRANSLATIONS = cn_model.ts
+
 INCLUDEPATH += $$PWD/../ofd \
                $$PWD/../model
 

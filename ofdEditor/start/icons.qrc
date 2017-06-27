@@ -20,5 +20,14 @@
         <file>source/icons/tableFormat.png</file>
         <file>source/icons/TextFormat.png</file>
         <file>source/icons/undo.png</file>
+        <file>source/icons/attribute.png</file>
+        <file>source/icons/bold.png</file>
+        <file>source/icons/italic.png</file>
+        <file>source/icons/justify.png</file>
+        <file>source/icons/left.png</file>
+        <file>source/icons/middle.png</file>
+        <file>source/icons/pageFormat.png</file>
+        <file>source/icons/right.png</file>
+        <file>source/icons/underline.png</file>
     </qresource>
 </RCC>

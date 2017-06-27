@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Editor</class>
+ <widget class="QMainWindow" name="Editor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="newFileAction"/>
+   <addaction name="openFileAtcion"/>
+   <addaction name="saveAction"/>
+   <addaction name="saveAsAction"/>
+   <addaction name="separator"/>
+   <addaction name="undoAction"/>
+   <addaction name="redoAction"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::NoDockWidgetFeatures</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::TopDockWidgetArea</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <widget class="QFontComboBox" name="fontComboBox">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>189</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>0</y>
+       <width>69</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <action name="newFileAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/newFile.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>新建文件</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="openFileAtcion">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/openFile.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>打开文件</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="saveAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/save.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>保存</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="saveAsAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/saveAs.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>另存为</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="printAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/print.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>打印</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="attributeAction">
+   <property name="text">
+    <string>文档属性</string>
+   </property>
+  </action>
+  <action name="undoAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/undo.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>撤销</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="redoAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/redo.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>重做</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="copyAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/copy.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>复制</string>
+   </property>
+   <property name="shortcut">
+    <string>Backspace</string>
+   </property>
+  </action>
+  <action name="pasteAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/paste.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>粘贴</string>
+   </property>
+  </action>
+  <action name="cutAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/cut.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>剪切</string>
+   </property>
+  </action>
+  <action name="insertNewPageAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/insertNewPage.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>插入新页</string>
+   </property>
+  </action>
+  <action name="insertTextBlockAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/insertTextBlock.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>插入文本框</string>
+   </property>
+  </action>
+  <action name="insertImageAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/insertImage.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>插入图片</string>
+   </property>
+  </action>
+  <action name="insertTableAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/insertTable.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>插入表格</string>
+   </property>
+  </action>
+  <action name="pageFormat">
+   <property name="text">
+    <string>页面设置</string>
+   </property>
+  </action>
+  <action name="textFormat">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/TextFormat.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>字体</string>
+   </property>
+  </action>
+  <action name="paragraphFormat">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/paragraphFormat.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>段落</string>
+   </property>
+  </action>
+  <action name="imageFormat">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/ImageFormat.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>图片设置</string>
+   </property>
+  </action>
+  <action name="tableFormat">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/tableFormat.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>表格设置</string>
+   </property>
+  </action>
+  <action name="aboutQtAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/AboutQpp.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>关于Qt</string>
+   </property>
+  </action>
+  <action name="aboutAppAction">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/source/icons/help.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>关于本工程</string>
+   </property>
+  </action>
+  <action name="boldAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>加粗</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

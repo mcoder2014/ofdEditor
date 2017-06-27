@@ -134,9 +134,9 @@ signals:
     void signals_setZValue(qreal z);    // 设置Z值的信号
 
     void signals_currentCharFormatChanged(
-            QTextCharFormat& fmt);    // 当前选择的charFormat发生了变化
+            QTextCharFormat fmt);    // 当前选择的charFormat发生了变化
     void signals_currentBlockFormatChanged(
-            QTextBlockFormat& fmt);  // 当前选择的block格式发生了变化、
+            QTextBlockFormat fmt);  // 当前选择的block格式发生了变化、
     void signals_currentTextBlock(DocTextBlock* textBlock); // 当前操作的textBlock
 
 };
