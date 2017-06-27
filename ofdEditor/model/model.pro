@@ -54,7 +54,8 @@ SOURCES += model.cpp \
     Command/SetTextBlodCmd.cpp \
     Doc/DocImageBlock.cpp \
     Widget/imagepropertiesdialog.cpp \
-    Widget/PageDialog.cpp
+    Widget/PageDialog.cpp \
+    Widget/FindAndReplaceDock.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -88,7 +89,8 @@ HEADERS += model.h\
     Command/SetTextBlodCmd.h \
     Doc/DocImageBlock.h \
     Widget/imagepropertiesdialog.h \
-    Widget/PageDialog.h
+    Widget/PageDialog.h \
+    Widget/FindAndReplaceDock.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -118,4 +120,5 @@ FORMS += \
     Widget/FontSettingDialog.ui \
     Widget/DocInfoDialog.ui \
     Widget/imagepropertiesdialog.ui \
-    Widget/PageDialog.ui
+    Widget/PageDialog.ui \
+    Widget/FindAndReplaceDock.ui
