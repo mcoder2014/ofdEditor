@@ -29,5 +29,11 @@
         <file>source/icons/pageFormat.png</file>
         <file>source/icons/right.png</file>
         <file>source/icons/underline.png</file>
+        <file>source/icons/EditMode.png</file>
+        <file>source/icons/Setting.png</file>
+        <file>source/icons/ViewMode.png</file>
+        <file>source/icons/ZoomIn.png</file>
+        <file>source/icons/ZoomOut.png</file>
+        <file>source/icons/template.png</file>
     </qresource>
 </RCC>

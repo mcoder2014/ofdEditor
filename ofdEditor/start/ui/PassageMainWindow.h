@@ -49,11 +49,13 @@ private:
     // QAction
     // 文件
     QAction * newFileAction;            // 新建文件
+    QAction * templateAction;           // 新建模板项目
     QAction * openFileAtcion;           // 打开文件
     QAction * saveAction;               // 保存
     QAction * saveAsAction;             // 另存为
     QAction * printAction;              // 打印
     QAction * attributeAction;          // 文档属性
+    QAction * softwareSettingAction;          // 软件设置
 
     // 编辑
     QAction * undoAction;               // 撤销
@@ -61,6 +63,10 @@ private:
     QAction * copyAction;               // 复制
     QAction * cutAction;               // 剪切
     QAction * pasteAction;              // 粘贴
+    QAction * viewModeAction;           // 阅读模式
+    QAction * editModeAction;           // 编辑模式
+    QAction * zoomInAction;             // 放大
+    QAction * zoomOutAction;            // 缩小
 
     // 插入
     QAction * insertNewPageAction;      // 插入新页面
@@ -120,6 +126,10 @@ private slots:
     void paragraphDialog();     // 打开段落框
     void imageDialog();         // 打开图片框
     void pageDialog();          // 打开页面框
+
+    void Bold();                // 加粗事件
+    void Italic();              // 斜体事件
+    void underline();           // 下划线事件
 
     void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式

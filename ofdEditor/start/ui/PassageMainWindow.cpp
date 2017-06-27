@@ -105,6 +105,11 @@ void PassageMainWindow::initAction()
     this->newFileAction->setShortcut(QKeySequence::New);
     this->newFileAction->setIcon(QIcon(":/icons/source/icons/newFile.png"));
 
+    // 模板
+    this->templateAction = new QAction(tr("Template"), NULL);   // 新建模板页
+    this->templateAction->setStatusTip(tr("Use a template to create a new document"));
+    this->templateAction->setIcon(QIcon(":/icons/source/icons/template.png"));
+
     this->openFileAtcion = new QAction(tr("Open File"),NULL);    // 打开文件
     this->openFileAtcion->setStatusTip(tr("Open an existing ofd file"));
     this->openFileAtcion->setShortcut(QKeySequence::Open);
@@ -126,6 +131,29 @@ void PassageMainWindow::initAction()
 
     this->attributeAction = new QAction(tr("Attribute"),NULL);      // 文档属性
     this->attributeAction->setStatusTip(tr("Show you the attribute of the actived passage"));
+
+    // 程序首选项
+    this->softwareSettingAction = new QAction(tr("Setting"),NULL);  // setting
+    this->softwareSettingAction->setStatusTip(tr("Set the software's preference"));
+    this->softwareSettingAction->setIcon(QIcon(":/icons/source/icons/Setting.png"));
+
+    // 编辑模式
+    this->editModeAction = new QAction(tr("EditMode"), NULL);
+    this->editModeAction->setStatusTip(tr("change current state to edit mode"));
+    this->editModeAction->setIcon(QIcon(":/icons/source/icons/EditMode.png"));
+
+    // 阅读模式
+    this->viewModeAction = new QAction(tr("ViewMode"),NULL);
+    this->viewModeAction->setStatusTip(tr("change current state to edit mode"));
+    this->viewModeAction->setIcon(QIcon(":/icons/source/icons/ViewMode.png"));
+
+    // 放大
+    this->zoomInAction = new QAction(tr("ZoomIn"),NULL);
+    this->zoomInAction->setIcon(QIcon(":/icons/source/icons/ZoomIn.png"));
+
+    // 缩小
+    this->zoomOutAction = new QAction(tr("ZoomOut"), NULL);
+    this->zoomOutAction->setIcon(QIcon(":/icons/source/icons/ZoomOut.png"));
 
     this->undoAction = new QAction(tr("Undo"),NULL);             // 撤销操作
     this->undoAction->setStatusTip(tr("Undo your last action"));
@@ -205,18 +233,29 @@ void PassageMainWindow::initAction()
     this->aboutMenu = this->menuBar()->addMenu(tr("About"));
 
     this->filesMenu->addAction(this->newFileAction);
+    this->filesMenu->addAction(this->templateAction);       // 模板
     this->filesMenu->addAction(this->openFileAtcion);
     this->filesMenu->addAction(this->saveAction);
     this->filesMenu->addAction(this->saveAsAction);
     this->filesMenu->addAction(this->printAction);
     this->filesMenu->addAction(this->attributeAction);
+    this->filesMenu->addSeparator();
+    this->filesMenu->addAction(this->softwareSettingAction);    // 软件设置
 
+    this->editMenu->addAction(this->editModeAction);        // 编辑状态
+    this->editMenu->addAction(this->viewModeAction);        // 阅读状态
+    this->editMenu->addSeparator();
+    this->editMenu->addAction(this->zoomInAction);          // 放大
+    this->editMenu->addAction(this->zoomOutAction);         // 缩小
+    this->editMenu->addSeparator();
     this->editMenu->addAction(this->undoAction);
     this->editMenu->addAction(this->redoAction);
     this->editMenu->addSeparator();     // 分割线
     this->editMenu->addAction(this->copyAction);
     this->editMenu->addAction(this->cutAction);
     this->editMenu->addAction(this->pasteAction);
+    this->editMenu->addSeparator();
+
 
     this->formatMenu->addAction(this->textFormat);
     this->formatMenu->addAction(this->paragraphFormat);
@@ -257,22 +296,22 @@ void PassageMainWindow::initAction()
     this->fontSizeCombox->insertItem(0,tr("6.5"));
     this->fontSizeCombox->insertItem(0,tr("5.5"));
     this->fontSizeCombox->insertItem(0,tr("5"));
-    this->fontSizeCombox->insertItem(0,tr("4.5"));
-    this->fontSizeCombox->insertItem(0,tr("5.25"));
-    this->fontSizeCombox->insertItem(0,tr("6.5"));
-    this->fontSizeCombox->insertItem(0,tr("7.5"));
-    this->fontSizeCombox->insertItem(0,tr("9"));
-    this->fontSizeCombox->insertItem(0,tr("10.5"));
-    this->fontSizeCombox->insertItem(0,tr("12"));
-    this->fontSizeCombox->insertItem(0,tr("14"));
-    this->fontSizeCombox->insertItem(0,tr("15"));
-    this->fontSizeCombox->insertItem(0,tr("16"));
-    this->fontSizeCombox->insertItem(0,tr("18"));
-    this->fontSizeCombox->insertItem(0,tr("21"));
-    this->fontSizeCombox->insertItem(0,tr("24"));
-    this->fontSizeCombox->insertItem(0,tr("27.5"));
-    this->fontSizeCombox->insertItem(0,tr("36"));
-    this->fontSizeCombox->insertItem(0,tr("42"));
+    this->fontSizeCombox->insertItem(0,tr("Size 8"));
+    this->fontSizeCombox->insertItem(0,tr("Size 7"));
+    this->fontSizeCombox->insertItem(0,tr("Size 6 Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Size 6"));
+    this->fontSizeCombox->insertItem(0,tr("Size 5 Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Size 5"));
+    this->fontSizeCombox->insertItem(0,tr("Size 4 Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Size 4"));
+    this->fontSizeCombox->insertItem(0,tr("Size 3 Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Size 3"));
+    this->fontSizeCombox->insertItem(0,tr("Size 2 Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Size 2"));
+    this->fontSizeCombox->insertItem(0,tr("Size 1 Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Size 1"));
+    this->fontSizeCombox->insertItem(0,tr("Prime Minor"));
+    this->fontSizeCombox->insertItem(0,tr("Prime"));
 
 
 
@@ -339,8 +378,14 @@ void PassageMainWindow::initAction()
     this->file_toolBar->addAction(this->openFileAtcion);
     this->file_toolBar->addAction(this->saveAction);
 
+    this->edit_toolBar->addAction(this->editModeAction);
+    this->edit_toolBar->addAction(this->viewModeAction);
+    this->edit_toolBar->addSeparator();
     this->edit_toolBar->addAction(this->undoAction);
     this->edit_toolBar->addAction(this->redoAction);
+    this->edit_toolBar->addSeparator();
+    this->edit_toolBar->addAction(this->zoomInAction);
+    this->edit_toolBar->addAction(this->zoomOutAction);
 
     this->format_toolBar->addAction(this->textFormat);
     this->format_toolBar->addAction(this->paragraphFormat);
@@ -426,6 +471,17 @@ void PassageMainWindow::connectAction()
     connect(this->imageFormat, SIGNAL(triggered(bool)),
             this, SLOT(imageDialog()));                 //修改图片
 
+    connect(this->boldAction, SIGNAL(triggered(bool)),
+            this,SLOT(Bold()));         // 加粗
+
+    connect(this->italicAction, SIGNAL(triggered(bool)),
+            this,SLOT(Italic()));       // 斜体
+
+    connect(this->underlineAction, SIGNAL(triggered(bool)),
+            this,SLOT(underline()));    // 下划线
+
+
+
     connect(this->area, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this->connector, SLOT(updateActivePassage(QMdiSubWindow*)));    // 检测ActivePassage更新
 }
@@ -440,6 +496,37 @@ void PassageMainWindow::connectAction()
 void PassageMainWindow::disconnectAction()
 {
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  找到当前活跃的textblock，加粗
+ * @param  void
+ * @return void
+ * @date   2017/06/27
+ */
+void PassageMainWindow::Bold()
+{
+    if(this->textBlock !=NULL)
+    {
+        this->textBlock->textBold();        // 加粗
+    }
+}
+
+void PassageMainWindow::Italic()
+{
+    if(this->textBlock != NULL)
+    {
+        this->textBlock->textItalic();      // 斜体
+    }
+}
+
+void PassageMainWindow::underline()
+{
+    if(this->textBlock != NULL)
+    {
+        this->textBlock->textUnderline();   // 下划线
+    }
 }
 
 /**

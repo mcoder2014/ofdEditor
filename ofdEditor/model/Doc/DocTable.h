@@ -17,8 +17,14 @@ public:
     DocTable(QWidget *parent = NULL);
     ~DocTable();
 
+public slots:
+
+private slots:
+
 private:
     // tableCell的内容估计使用QTextBlock
+    int rowCount;       // 行数
+    int colCount;       // 列数
 };
 
 #endif // TABLE_H

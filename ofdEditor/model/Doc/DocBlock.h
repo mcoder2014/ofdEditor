@@ -53,7 +53,6 @@ public slots:           // 槽函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
     void setWidget(DocImageBlock * imageBlock);
 
-
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
