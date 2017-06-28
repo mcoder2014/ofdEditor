@@ -364,15 +364,15 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 
                  QPointF tempPoint = this->mapToScene(this->oldPos.rx(),
                                                       this->oldPos.ry());
-                 qDebug() <<"temp Point"<<tempPoint.rx()
-                         << ","<<tempPoint.ry();
+//                 qDebug() <<"temp Point"<<tempPoint.rx()
+//                         << ","<<tempPoint.ry();
 
 //                 if(block->currentStatus(
 //                             block->mapFromScene(tempPoint))
 //                         == DocBlock::blockMove)
                  if(block->cursor().shape() == Qt::SizeAllCursor)
                  {
-                     qDebug()<<" Accepted Signal is blockMove";
+                     qDebug()<<" the cursor'shape is size all ";
                      this->newBlockFlag = blockMove;
                  }
                  else if (block->currentStatus(
@@ -437,8 +437,8 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
         }
 
         QPointF point = this->newPos - this->oldPos;
-        qDebug() << "Move x:" << point.rx()
-                 << " y:" << point.ry();
+//        qDebug() << "Move x:" << point.rx()
+//                 << " y:" << point.ry();
         this->activeBlock->moveBy(point.rx(),point.ry());
         this->oldPos = this->mapToScene(event->pos());
 

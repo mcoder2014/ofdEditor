@@ -12,7 +12,8 @@
 class DocBlock;
 class ImagePropertiesDialog;
 
-class MODELSHARED_EXPORT DocImageBlock : public QLabel
+class MODELSHARED_EXPORT DocImageBlock
+        : public QLabel
 {
     Q_OBJECT
 public:

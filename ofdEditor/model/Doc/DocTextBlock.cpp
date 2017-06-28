@@ -1,5 +1,4 @@
 #include "DocTextBlock.h"
-#include "Doc/DocParagraph.h"
 #include "Widget/ParagraphFormatDialog.h"
 #include "Widget/FontSettingDialog.h"
 #include "Doc/DocPage.h"

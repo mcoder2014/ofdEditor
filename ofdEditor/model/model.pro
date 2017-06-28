@@ -29,17 +29,12 @@ SOURCES += model.cpp \
     Doc/DocGraph.cpp \
     Doc/DocLayer.cpp \
     Doc/DocPage.cpp \
-    Doc/DocParagraph.cpp \
     Doc/DocPassage.cpp \
     Doc/DocPicture.cpp \
     Doc/DocTable.cpp \
     Doc/DocTableCell.cpp \
-    Doc/DocTableRow.cpp \
-    Doc/DocTemplate.cpp \
     Doc/DocText.cpp \
     Doc/DocTextBlock.cpp \
-    Doc/DocDrawParam.cpp \
-    Doc/DocParaStyle.cpp \
     Doc/DocTextStyle.cpp \
     Tool/UnitTool.cpp \
     Doc/DocPageScene.cpp \
@@ -64,18 +59,13 @@ HEADERS += model.h\
     Doc/DocGraph.h \
     Doc/DocLayer.h \
     Doc/DocPage.h \
-    Doc/DocParagraph.h \
     Doc/DocPassage.h \
     Doc/DocPicture.h \
     Doc/DocTable.h \
     Doc/DocTableCell.h \
-    Doc/DocTableRow.h \
-    Doc/DocTemplate.h \
     Doc/DocText.h \
     Doc/DocTextBlock.h \
-    Doc/DocDrawParam.h \
     Doc/DocBasicTypes.h \
-    Doc/DocParaStyle.h \
     Doc/DocTextStyle.h \
     Tool/UnitTool.h \
     Doc/DocPageScene.h \

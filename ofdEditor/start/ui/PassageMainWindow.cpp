@@ -626,9 +626,7 @@ void PassageMainWindow::openFile()
         OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
 //        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
         OFD* data = ofdParser.getData();    // 读取出OFD文件
-        qDebug() << tempPath + "/OFD.xml";
-        OFDWriter writer(data, "E:/temp/");
-        qDebug()<< "ofd file open";
+        qDebug()<< "ofd file open" << tempPath + "/OFD.xml";
         OFD_DocConvertor convert;
         DocPassage* passage = convert.ofd_to_doc(data);
         passage->setFilePath(path);         // 设置文件路径

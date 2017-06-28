@@ -8,7 +8,6 @@
 
 class DocBlock;     // 块
 class DocTable;     // 表格
-class DocDrawParam; // 默认绘画模式
 class DocPassage;   // 文章
 
 /**
@@ -43,8 +42,6 @@ void setPage(DocPage* page);        // 设置page
 private:
     QVector<DocBlock* > blocks;         // 块    -文字块图形块的父类
     QVector<DocTable* > tables;         // 表格
-
-    DocDrawParam* drawParam;            // 该层的默认绘画模式
 
     DocPage::Layer type;                // 共三层
     DocPage* parent;                    // 表明此层是哪一个页面的

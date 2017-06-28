@@ -226,6 +226,7 @@ void DocBlock::focusOutEvent(QFocusEvent *event)
 void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
 //    qDebug() << "Hovering.";
+
     if (this->rectAdjust == blockResize
             || (this->currentStatus(event->pos()) == blockResize
                 && this->isFocused))
@@ -238,12 +239,15 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     {
         this->setCursor(Qt::SizeAllCursor);             // 设置为移动样式
     }
-    else if(this->cursor().shape() != Qt::IBeamCursor)
+    else if(this->rectAdjust == blockNone)
     {
-//        this->unsetCursor();                          // 取消设置鼠标-效果不好
-//        qDebug() <<"Redo hoverEnterEvent";
-        QGraphicsProxyWidget::hoverEnterEvent(event);   // 执行重新进入，设置鼠标
+            if(this->isTextBlock())
+            {
+                // 如果是文本框
+                this->setCursor(Qt::IBeamCursor);
+            }
     }
+
         QGraphicsProxyWidget::hoverMoveEvent(event);    // 调用父类的调整函数
 
 }
@@ -265,18 +269,6 @@ void DocBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
  */
 void DocBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-//    qDebug() << "Pressed.";
-    QPointF pos = event->pos();     // 获取鼠标位置
-//    qDebug()<<"DocBlock Mouse Postion" << pos.x()
-//           << ", "<<pos.y();
-
-    if (event->button() == Qt::LeftButton )
-    {
-        // 如果按下的是鼠标左键，检测是否是可以修改大小或位置的状态
-        this->rectAdjust = this->currentStatus(event->pos());
-//        qDebug() << (rectAdjust == DocBlock::blockResize);
-    }
-//qDebug() << (rectAdjust == DocBlock::blockResize);
     QGraphicsProxyWidget::mousePressEvent(event);
 }
 
@@ -320,10 +312,9 @@ void DocBlock::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void DocBlock::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    if (event->button() == Qt::LeftButton &&
-            this->rectAdjust != blockNone)
+    if(event->button() == Qt::LeftButton)
     {
-        this->rectAdjust = blockNone;
+        this->rectAdjust = this->currentStatus(event->pos());
     }
 
     QGraphicsProxyWidget::mouseReleaseEvent(event);
@@ -411,15 +402,11 @@ bool DocBlock::isInResizeArea(const QPointF &pos)
  */
 DocBlock::RectAdjustStatus DocBlock::currentStatus( QPointF pos)
 {
-    qDebug() << "point: x:" << pos.rx()
-             << "y: " << pos.ry();
-//    qDebug() << "get current status.";
     if (isTextBlock())
     {
         if((pos.x() - this->size().width() + 15) >
                 (this->size().height() - pos.y()))
         {
-            //qDebug() << "Mouse resizing.";
             return blockResize;
         }
         // 画出可以移动的边缘
@@ -437,7 +424,9 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus( QPointF pos)
                 || right.contains(pos)
                 || top.contains(pos)
                 || bottom.contains(pos))
+        {
             return blockMove;
+        }
 
         // 如果未得出结果，则默认无操作
         return blockNone;

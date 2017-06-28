@@ -1,7 +1,6 @@
 #include "DocLayer.h"
 #include "Doc/DocBlock.h"       // 块
 #include "Doc/DocTable.h"       // 表格
-#include "Doc/DocDrawParam.h"
 #include "Doc/DocPage.h"
 #include "Doc/DocPassage.h"
 
