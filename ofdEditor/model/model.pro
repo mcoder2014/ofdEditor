@@ -38,7 +38,6 @@ SOURCES += model.cpp \
     Doc/DocTextStyle.cpp \
     Tool/UnitTool.cpp \
     Doc/DocPageScene.cpp \
-    Widget/ParagraphFormatWidget.cpp \
     Widget/ParagraphFormatDialog.cpp \
     Widget/FontSettingDialog.cpp \
     Convert/OFD_DocConvertor.cpp \
@@ -69,7 +68,6 @@ HEADERS += model.h\
     Doc/DocTextStyle.h \
     Tool/UnitTool.h \
     Doc/DocPageScene.h \
-    Widget/ParagraphFormatWidget.h \
     Widget/ParagraphFormatDialog.h \
     Widget/FontSettingDialog.h \
     Convert/OFD_DocConvertor.h \
@@ -109,7 +107,6 @@ win32{
 }
 
 FORMS += \
-    Widget/ParagraphFormatWidget.ui \
     Widget/ParagraphFormatDialog.ui \
     Widget/FontSettingDialog.ui \
     Widget/DocInfoDialog.ui \

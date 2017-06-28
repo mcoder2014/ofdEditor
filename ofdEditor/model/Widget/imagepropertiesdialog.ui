@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>图片设置窗口</string>
   </property>
   <widget class="QDialogButtonBox" name="EnableChangeOfProperties">
    <property name="geometry">

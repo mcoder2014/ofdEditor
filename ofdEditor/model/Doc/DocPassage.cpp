@@ -208,6 +208,7 @@ void DocPassage::setFilePath(QString filePath)
 void DocPassage::setDocInfo(CT_DocInfo &docInfo)
 {
     this->docInfo->copy(docInfo);
+    this->setWindowTitle(this->docInfo->getTitle());        // 设置小窗口标题
 }
 
 /**
@@ -575,6 +576,8 @@ void DocPassage::updatePageSizeInformation(QVector<int> &changed_pages,
 //             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().width())
 //             << "Current Page Height = "
     //             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().height());
+
+    this->adjustWidgetSize();
 }
 
 /**

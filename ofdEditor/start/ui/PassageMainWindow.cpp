@@ -98,9 +98,12 @@ void PassageMainWindow::init()
     this->setMinimumSize(960,720);
     this->setBackgroundRole(QPalette::Text);
 
+    this->setWindowTitle(tr("OFD Editor"));
+    this->setWindowIcon(QIcon(":/icons/source/icons/ofdEditor2.png"));
 
     this->find_and_replace_dock = new FindAndReplaceDock(NULL);
     this->addDockWidget(Qt::BottomDockWidgetArea, find_and_replace_dock);
+    this->find_and_replace_dock->setWindowIcon(QIcon(":/icons/source/icons/Find.png"));
     this->find_and_replace_dock->setMaximumHeight(60);
     this->find_and_replace_dock->setMinimumHeight(60);
     this->find_and_replace_dock->setVisible(false);
@@ -156,11 +159,14 @@ void PassageMainWindow::initAction()
     this->editModeAction = new QAction(tr("EditMode"), NULL);
     this->editModeAction->setStatusTip(tr("change current state to edit mode"));
     this->editModeAction->setIcon(QIcon(":/icons/source/icons/EditMode.png"));
+    this->editModeAction->setCheckable(true);
+    this->editModeAction->setChecked(true);
 
     // 阅读模式
     this->viewModeAction = new QAction(tr("ViewMode"),NULL);
     this->viewModeAction->setStatusTip(tr("change current state to edit mode"));
     this->viewModeAction->setIcon(QIcon(":/icons/source/icons/ViewMode.png"));
+    this->viewModeAction->setCheckable(true);
 
     // 放大
     this->zoomInAction = new QAction(tr("ZoomIn"),NULL);
@@ -195,9 +201,11 @@ void PassageMainWindow::initAction()
     this->pasteAction->setShortcut(QKeySequence::Paste);
     this->pasteAction->setIcon(QIcon(":/icons/source/icons/paste.png"));
 
+    // 查找
     this->find_and_replace = new QAction(tr("Find/Replace"), NULL);     //查找和替换
     this->find_and_replace->setStatusTip(tr("Find specific text or replace them"));
     this->find_and_replace->setShortcut(QKeySequence::Find);
+    this->find_and_replace->setIcon(QIcon(":/icons/source/icons/Find.png"));
     //缺少Icon
 
     this->insertNewPageAction = new QAction(tr("Insert New Page"),NULL);     // 插入新页面
@@ -407,6 +415,8 @@ void PassageMainWindow::initAction()
     this->edit_toolBar->addSeparator();
     this->edit_toolBar->addAction(this->zoomInAction);
     this->edit_toolBar->addAction(this->zoomOutAction);
+    this->edit_toolBar->addSeparator();
+    this->edit_toolBar->addAction(this->find_and_replace);
 
     this->format_toolBar->addAction(this->textFormat);
     this->format_toolBar->addAction(this->paragraphFormat);

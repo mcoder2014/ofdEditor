@@ -159,6 +159,11 @@ void DocBlock::remove()
     QGraphicsScene *scene = this->scene();      // 查找到本块所在的场景
     scene->removeItem(this);                    // 从场景中移除该组件
 
+    if(this->layer)
+    {
+        this->layer->removeBlock(this);
+    }
+
     emit this->signals_blockRemoved(this);      // 发出信号
 }
 

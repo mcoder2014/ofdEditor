@@ -45,13 +45,6 @@ DocLayer::~DocLayer()
     }
     this->tables.clear();
 
-    // 释放绘制模式
-    if(this->drawParam != NULL)
-    {
-        delete this->drawParam;
-        this->drawParam = NULL;
-    }
-
 }
 
 /**

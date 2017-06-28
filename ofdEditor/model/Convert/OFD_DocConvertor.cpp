@@ -288,6 +288,17 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
         font.setPixelSize(UnitTool::mmToPixel(text->getSize()));    // 字号
         font.setFamily(textFont.family());                      // 设置字体
 
+        qDebug() << "italic " << text->getItalic();
+        // 倾斜
+        if(text->getItalic())
+        {
+            font.setItalic(true);
+        }
+
+        // 加粗
+        int weight = text->getWeight();  // 获得粗细
+        font.setWeight(weight / 8);
+
         // 上下间距
         blockFormat.setTopMargin(0);
         blockFormat.setBottomMargin(0);

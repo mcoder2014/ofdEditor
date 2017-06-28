@@ -8,6 +8,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setWindowIcon(QIcon(":/icons/source/icons/ofdEditor2.png"));
 
     QTranslator model_translator;
     if(model_translator.load("cn_model.qm"))

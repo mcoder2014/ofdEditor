@@ -32,9 +32,13 @@
 <context>
     <name>DocInfoDialog</name>
     <message>
-        <location filename="Widget/DocInfoDialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation>文档属性</translation>
+        <translation type="obsolete">文档属性</translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/DocInfoDialog.ui" line="14"/>
+        <source>文档信息</source>
+        <translation>文档信息</translation>
     </message>
     <message utf8="true">
         <location filename="Widget/DocInfoDialog.ui" line="42"/>
@@ -120,17 +124,17 @@
 <context>
     <name>DocPage</name>
     <message>
-        <location filename="Doc/DocPage.cpp" line="541"/>
+        <location filename="Doc/DocPage.cpp" line="563"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="Doc/DocPage.cpp" line="545"/>
+        <location filename="Doc/DocPage.cpp" line="567"/>
         <source>OFD Editor</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="Doc/DocPage.cpp" line="546"/>
+        <location filename="Doc/DocPage.cpp" line="568"/>
         <source>Cannot open file %1.</source>
         <translation></translation>
     </message>
@@ -138,62 +142,114 @@
 <context>
     <name>DocTextBlock</name>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="482"/>
+        <location filename="Doc/DocTextBlock.cpp" line="481"/>
         <source>Choose a Color</source>
         <translation>选择颜色</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="525"/>
+        <location filename="Doc/DocTextBlock.cpp" line="524"/>
         <source>Set the font</source>
         <translation>设置字体</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="854"/>
+        <location filename="Doc/DocTextBlock.cpp" line="853"/>
         <source>Bold</source>
         <translation>加粗</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="864"/>
+        <location filename="Doc/DocTextBlock.cpp" line="863"/>
         <source>Italic</source>
         <translation>斜体</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="874"/>
+        <location filename="Doc/DocTextBlock.cpp" line="873"/>
         <source>Underline</source>
         <translation>下划线</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="884"/>
+        <location filename="Doc/DocTextBlock.cpp" line="883"/>
         <source>Color</source>
         <translation>颜色</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="891"/>
+        <location filename="Doc/DocTextBlock.cpp" line="890"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="898"/>
+        <location filename="Doc/DocTextBlock.cpp" line="897"/>
         <source>Paragraph</source>
         <translation>段落</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="903"/>
+        <location filename="Doc/DocTextBlock.cpp" line="902"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="Doc/DocTextBlock.cpp" line="909"/>
+        <location filename="Doc/DocTextBlock.cpp" line="908"/>
         <source>FontDialogTest</source>
         <translation>字体</translation>
     </message>
 </context>
 <context>
+    <name>FindAndReplaceDock</name>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="23"/>
+        <source>Find/Replace</source>
+        <translation>查找或替换</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="52"/>
+        <source>Find:</source>
+        <translation>查找：</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="71"/>
+        <source>Replace With:</source>
+        <translation>替换：</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="100"/>
+        <source>Find Previous</source>
+        <translation>往前查找</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="119"/>
+        <source>Find Next</source>
+        <translation>往后查找</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="138"/>
+        <source>Replace</source>
+        <translation>替换</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="157"/>
+        <source>Replace All</source>
+        <translation>替换全部</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="189"/>
+        <source>Found in:</source>
+        <translation>找到：</translation>
+    </message>
+    <message>
+        <location filename="Widget/FindAndReplaceDock.ui" line="208"/>
+        <source>places.</source>
+        <translation>处。</translation>
+    </message>
+</context>
+<context>
     <name>FontSettingDialog</name>
     <message>
-        <location filename="Widget/FontSettingDialog.ui" line="20"/>
         <source>Dialog</source>
-        <translation>字体设置窗口</translation>
+        <translation type="obsolete">字体设置窗口</translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/FontSettingDialog.ui" line="20"/>
+        <source>字体设置窗口</source>
+        <translation>字体</translation>
     </message>
     <message utf8="true">
         <location filename="Widget/FontSettingDialog.ui" line="47"/>
@@ -450,9 +506,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ImagePropertiesDialog</name>
     <message>
-        <location filename="Widget/imagepropertiesdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation>图片属性设置</translation>
+        <translation type="obsolete">图片属性设置</translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/imagepropertiesdialog.ui" line="14"/>
+        <source>图片设置窗口</source>
+        <translation>图片设置</translation>
     </message>
     <message utf8="true">
         <location filename="Widget/imagepropertiesdialog.ui" line="61"/>
@@ -527,6 +587,69 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="Widget/imagepropertiesdialog.cpp" line="66"/>
         <source>, Height: </source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>InsertTableDialog</name>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="14"/>
+        <source>插入表格</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="46"/>
+        <source>表格</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="61"/>
+        <source>行数列数</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="76"/>
+        <source>行数：</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="86"/>
+        <source>列数：</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="100"/>
+        <source>总体尺寸</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="115"/>
+        <location filename="Widget/InsertTableDialog.ui" line="182"/>
+        <source>宽：</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="Widget/InsertTableDialog.ui" line="125"/>
+        <location filename="Widget/InsertTableDialog.ui" line="142"/>
+        <location filename="Widget/InsertTableDialog.ui" line="192"/>
+        <location filename="Widget/InsertTableDialog.ui" line="209"/>
+        <source>mm</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="132"/>
+        <location filename="Widget/InsertTableDialog.ui" line="199"/>
+        <source>高：</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="155"/>
+        <source>高级</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/InsertTableDialog.ui" line="167"/>
+        <source>单元格大小</source>
         <translation></translation>
     </message>
 </context>
@@ -735,9 +858,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ParagraphFormatDialog</name>
     <message>
-        <location filename="Widget/ParagraphFormatDialog.ui" line="20"/>
         <source>Dialog</source>
-        <translation>段落属性设置</translation>
+        <translation type="obsolete">段落属性设置</translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/ParagraphFormatDialog.ui" line="20"/>
+        <source>段落</source>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="Widget/ParagraphFormatDialog.ui" line="38"/>
@@ -858,154 +985,6 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="Widget/ParagraphFormatDialog.ui" line="271"/>
         <source>值</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
-    <name>ParagraphFormatWidget</name>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="35"/>
-        <source>段落属性</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="58"/>
-        <source>常规</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="71"/>
-        <source>对齐方式：</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="85"/>
-        <source>左对齐</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="90"/>
-        <source>右对齐</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="95"/>
-        <source>居中</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="100"/>
-        <source>自动对齐</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="108"/>
-        <source>文字方向</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="122"/>
-        <source>自左向右</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="127"/>
-        <source>自右向左</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="148"/>
-        <source>缩进</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="158"/>
-        <source>整体缩进</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="172"/>
-        <source>首行缩进</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="199"/>
-        <source>间距</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="209"/>
-        <source>段前</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="223"/>
-        <source>段后</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="237"/>
-        <source>行高策略</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="251"/>
-        <source>单倍行高</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="256"/>
-        <source>多倍行高</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="261"/>
-        <source>固定值</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="266"/>
-        <source>最小值</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="274"/>
-        <source>行高值</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="301"/>
-        <source>边距</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="311"/>
-        <source>上边距</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="325"/>
-        <source>左边距</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="339"/>
-        <source>下边距</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="353"/>
-        <source>右边距</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="367"/>
-        <source>确定</source>
-        <translation></translation>
-    </message>
-    <message utf8="true">
-        <location filename="Widget/ParagraphFormatWidget.ui" line="374"/>
-        <source>取消</source>
         <translation></translation>
     </message>
 </context>

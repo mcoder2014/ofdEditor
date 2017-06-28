@@ -682,7 +682,7 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
     this->ContextMenu->addAction(this->actionUnderline);    // 下划线
     this->ContextMenu->addAction(this->actionColor);        // 颜色
     this->ContextMenu->addSeparator();                      // 分界线
-    this->ContextMenu->addAction(this->actionFontSet);      // 字体设置
+//    this->ContextMenu->addAction(this->actionFontSet);      // 字体设置
     this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
     this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
     this->ContextMenu->addAction(this->actionRemove);       // 移除操作

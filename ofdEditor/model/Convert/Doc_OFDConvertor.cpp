@@ -423,7 +423,7 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
                                  UnitTool::pixelToMM(textBlock->pos().ry()
                                                      + pixelLine),
                                  UnitTool::pixelToMM(pixelWidth),
-                                 UnitTool::pixelToMM(pixelLine)
+                                 UnitTool::pixelToMM(pixelLine) + 5
                                  );
 
             qDebug() << "After setBoundary pixelLine: "<< pixelLine;
