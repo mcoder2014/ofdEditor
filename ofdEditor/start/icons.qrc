@@ -37,5 +37,6 @@
         <file>source/icons/template.png</file>
         <file>source/icons/Find.png</file>
         <file>source/icons/ofdEditor2.png</file>
+        <file>source/red_line.png</file>
     </qresource>
 </RCC>

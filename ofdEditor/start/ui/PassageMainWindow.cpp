@@ -1143,6 +1143,14 @@ void PassageMainWindow::createTemplatePassage(int index)
     endtext_3->setContent(tr("2012Nian7Yue1RiYinFa"));
     new_page_2->addBlock(end_3, DocPage::Body);
 
+    DocImageBlock * line = new DocImageBlock();
+    DocBlock * line_block = new DocBlock();
+    line_block->setWidget(line);
+    line->setPixmap(QPixmap(":/icons/source/red_line.png"));
+    line_block->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(114));
+    line_block->resize(580, 3);
+    new_page_1->addBlock(line_block, DocPage::Body);
+
     addDocPassage(new_passage);
 
 }
