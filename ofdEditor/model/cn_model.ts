@@ -16,7 +16,7 @@
     <message>
         <location filename="Doc/DocImageBlock.cpp" line="21"/>
         <source>Remove Image.</source>
-        <translation type="unfinished"></translation>
+        <translation>移除图片。</translation>
     </message>
     <message>
         <location filename="Doc/DocImageBlock.cpp" line="155"/>
@@ -995,25 +995,25 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>SelectTemplateDialog</name>
-    <message>
+    <message utf8="true">
         <location filename="Widget/SelectTemplateDialog.ui" line="14"/>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <source>选择模版</source>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="Widget/SelectTemplateDialog.ui" line="66"/>
         <source>选择页面模板</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="Widget/SelectTemplateDialog.ui" line="92"/>
         <source>上一个</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <location filename="Widget/SelectTemplateDialog.ui" line="105"/>
         <source>下一个</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

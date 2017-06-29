@@ -292,19 +292,19 @@
     </message>
     <message>
         <location filename="ui/PassageMainWindow.cpp" line="264"/>
-        <location filename="ui/PassageMainWindow.cpp" line="405"/>
+        <location filename="ui/PassageMainWindow.cpp" line="406"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
         <location filename="ui/PassageMainWindow.cpp" line="265"/>
-        <location filename="ui/PassageMainWindow.cpp" line="407"/>
+        <location filename="ui/PassageMainWindow.cpp" line="408"/>
         <source>Format</source>
         <translation>格式</translation>
     </message>
     <message>
         <location filename="ui/PassageMainWindow.cpp" line="266"/>
-        <location filename="ui/PassageMainWindow.cpp" line="409"/>
+        <location filename="ui/PassageMainWindow.cpp" line="410"/>
         <source>Insert</source>
         <translation>插入</translation>
     </message>
@@ -314,222 +314,222 @@
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="313"/>
+        <location filename="ui/PassageMainWindow.cpp" line="314"/>
         <source>72</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="314"/>
+        <location filename="ui/PassageMainWindow.cpp" line="315"/>
         <source>48</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="315"/>
+        <location filename="ui/PassageMainWindow.cpp" line="316"/>
         <source>36</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="316"/>
+        <location filename="ui/PassageMainWindow.cpp" line="317"/>
         <source>28</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="317"/>
+        <location filename="ui/PassageMainWindow.cpp" line="318"/>
         <source>26</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="318"/>
+        <location filename="ui/PassageMainWindow.cpp" line="319"/>
         <source>24</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="319"/>
+        <location filename="ui/PassageMainWindow.cpp" line="320"/>
         <source>22</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="320"/>
+        <location filename="ui/PassageMainWindow.cpp" line="321"/>
         <source>20</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="321"/>
+        <location filename="ui/PassageMainWindow.cpp" line="322"/>
         <source>18</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="322"/>
+        <location filename="ui/PassageMainWindow.cpp" line="323"/>
         <source>16</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="323"/>
+        <location filename="ui/PassageMainWindow.cpp" line="324"/>
         <source>14</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="324"/>
+        <location filename="ui/PassageMainWindow.cpp" line="325"/>
         <source>12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="325"/>
+        <location filename="ui/PassageMainWindow.cpp" line="326"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="326"/>
+        <location filename="ui/PassageMainWindow.cpp" line="327"/>
         <source>10.5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="327"/>
+        <location filename="ui/PassageMainWindow.cpp" line="328"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="328"/>
+        <location filename="ui/PassageMainWindow.cpp" line="329"/>
         <source>9</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="329"/>
+        <location filename="ui/PassageMainWindow.cpp" line="330"/>
         <source>8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="330"/>
+        <location filename="ui/PassageMainWindow.cpp" line="331"/>
         <source>7.5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="331"/>
+        <location filename="ui/PassageMainWindow.cpp" line="332"/>
         <source>6.5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="332"/>
+        <location filename="ui/PassageMainWindow.cpp" line="333"/>
         <source>5.5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="333"/>
+        <location filename="ui/PassageMainWindow.cpp" line="334"/>
         <source>5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="334"/>
+        <location filename="ui/PassageMainWindow.cpp" line="335"/>
         <source>Size 8</source>
         <translation>八号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="335"/>
+        <location filename="ui/PassageMainWindow.cpp" line="336"/>
         <source>Size 7</source>
         <translation>七号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="336"/>
+        <location filename="ui/PassageMainWindow.cpp" line="337"/>
         <source>Size 6 Minor</source>
         <translation>小六</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="337"/>
+        <location filename="ui/PassageMainWindow.cpp" line="338"/>
         <source>Size 6</source>
         <translation>六号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="338"/>
+        <location filename="ui/PassageMainWindow.cpp" line="339"/>
         <source>Size 5 Minor</source>
         <translation>小五</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="339"/>
+        <location filename="ui/PassageMainWindow.cpp" line="340"/>
         <source>Size 5</source>
         <translation>五号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="340"/>
+        <location filename="ui/PassageMainWindow.cpp" line="341"/>
         <source>Size 4 Minor</source>
         <translation>小四</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="341"/>
+        <location filename="ui/PassageMainWindow.cpp" line="342"/>
         <source>Size 4</source>
         <translation>四号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="342"/>
+        <location filename="ui/PassageMainWindow.cpp" line="343"/>
         <source>Size 3 Minor</source>
         <translation>小三</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="343"/>
+        <location filename="ui/PassageMainWindow.cpp" line="344"/>
         <source>Size 3</source>
         <translation>三号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="344"/>
+        <location filename="ui/PassageMainWindow.cpp" line="345"/>
         <source>Size 2 Minor</source>
         <translation>小二</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="345"/>
+        <location filename="ui/PassageMainWindow.cpp" line="346"/>
         <source>Size 2</source>
         <translation>二号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="346"/>
+        <location filename="ui/PassageMainWindow.cpp" line="347"/>
         <source>Size 1 Minor</source>
         <translation>小一</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="347"/>
+        <location filename="ui/PassageMainWindow.cpp" line="348"/>
         <source>Size 1</source>
         <translation>一号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="348"/>
+        <location filename="ui/PassageMainWindow.cpp" line="349"/>
         <source>Prime Minor</source>
         <translation>小初</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="349"/>
+        <location filename="ui/PassageMainWindow.cpp" line="350"/>
         <source>Prime</source>
         <translation>初号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="947"/>
+        <location filename="ui/PassageMainWindow.cpp" line="962"/>
         <source>JiMi 1Nian</source>
         <translation>机密★1年</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="956"/>
+        <location filename="ui/PassageMainWindow.cpp" line="971"/>
         <source>Te Ji</source>
         <translation>特急</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="975"/>
+        <location filename="ui/PassageMainWindow.cpp" line="990"/>
         <source>XXXXXWenJian</source>
         <translation>×××××文件</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="989"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1004"/>
         <source>XXX[2012]10Hao</source>
         <translation>×××﹝2012﹞10号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1003"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1018"/>
         <source>XXXXXGuanYuXXXXXXDeTongZhi</source>
         <translation>×××关于××××的通知</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1017"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1032"/>
         <source>XXXXXXXX:</source>
         <translation>×××××：</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1029"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1044"/>
         <source>OOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 OOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 OOOOXXXXXXXXXXXXXXXXXXXXXX.
@@ -540,38 +540,38 @@ OOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
    ××××××××××××。××××××××××××××××××××××××××××××××××××××××××</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1052"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1067"/>
         <source>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 OOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.</source>
         <translation>××××××××××××××××××××××××××××。 ×××××××××××××××××××××××××××××××××××××××××××。</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1067"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1082"/>
         <source>XXXXXXXXXXXX</source>
         <translation>××××××××××××</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1080"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1095"/>
         <source>2012Nian7Yue1Ri</source>
         <translation>2012年7月1日</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1092"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1107"/>
         <source>(XXXXXX)</source>
         <translation>（××××××）</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1104"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1119"/>
         <source>ChaoSong:XXXXXXX,XXXXX,XXXXXX</source>
-        <translation type="unfinished">抄送：×××××，××××××，×××××××</translation>
+        <translation>抄送：×××××，××××××，×××××××</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1116"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1131"/>
         <source>XXXXXXXX</source>
         <translation>××××××××××</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="1128"/>
+        <location filename="ui/PassageMainWindow.cpp" line="1143"/>
         <source>2012Nian7Yue1RiYinFa</source>
         <translation>2012年7月1日印发</translation>
     </message>
@@ -584,102 +584,102 @@ OOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.</source>
         <translation type="obsolete">七号</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="354"/>
+        <location filename="ui/PassageMainWindow.cpp" line="355"/>
         <source>Bold</source>
         <translation>加粗</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="355"/>
+        <location filename="ui/PassageMainWindow.cpp" line="356"/>
         <source>Set selected text Bold or not bold</source>
         <translation>将选择的文本加粗</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="360"/>
+        <location filename="ui/PassageMainWindow.cpp" line="361"/>
         <source>Italic</source>
         <translation>斜体</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="361"/>
+        <location filename="ui/PassageMainWindow.cpp" line="362"/>
         <source>Set the selected text Italic</source>
         <translation>设置选择的文本斜体</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="366"/>
+        <location filename="ui/PassageMainWindow.cpp" line="367"/>
         <source>Underline</source>
         <translation>下划线</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="368"/>
+        <location filename="ui/PassageMainWindow.cpp" line="369"/>
         <source>Set the selected text underline</source>
         <translation>设置选择的文本下划线</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="373"/>
+        <location filename="ui/PassageMainWindow.cpp" line="374"/>
         <source>middle</source>
         <translation>居中</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="375"/>
+        <location filename="ui/PassageMainWindow.cpp" line="376"/>
         <source>Set the selected paragraph align middle</source>
         <translation>设置选择的段落格式为居中</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="380"/>
+        <location filename="ui/PassageMainWindow.cpp" line="381"/>
         <source>Left</source>
         <translation>左对齐</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="382"/>
+        <location filename="ui/PassageMainWindow.cpp" line="383"/>
         <source>Set the selected paragraph align by left</source>
         <translation>设置选择的段落对齐样式为左对齐</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="388"/>
+        <location filename="ui/PassageMainWindow.cpp" line="389"/>
         <source>Right</source>
         <translation>右对齐</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="390"/>
+        <location filename="ui/PassageMainWindow.cpp" line="391"/>
         <source>Set the selected paragraph align by right</source>
         <translation>设置选中的段落的对齐样式为右对齐</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="395"/>
+        <location filename="ui/PassageMainWindow.cpp" line="396"/>
         <source>jutify</source>
         <translation>两端对齐</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="397"/>
+        <location filename="ui/PassageMainWindow.cpp" line="398"/>
         <source>Set the selected paragraph align by left and right</source>
         <translation>设置选择的文本的对齐样式为两端对齐</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="403"/>
+        <location filename="ui/PassageMainWindow.cpp" line="404"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="439"/>
+        <location filename="ui/PassageMainWindow.cpp" line="440"/>
         <source>TextBlock</source>
         <translation>文本框</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="630"/>
+        <location filename="ui/PassageMainWindow.cpp" line="635"/>
         <source>JSON files(*.ofd)</source>
         <translation>OFD文件(*ofd)</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="631"/>
+        <location filename="ui/PassageMainWindow.cpp" line="636"/>
         <source>Choose an ofd document file!</source>
         <translation>选择一个OFD文件！</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="712"/>
+        <location filename="ui/PassageMainWindow.cpp" line="717"/>
         <source>Save the passage content as a ofd file</source>
         <translation>保存文件为一个ofd文件</translation>
     </message>
     <message>
-        <location filename="ui/PassageMainWindow.cpp" line="714"/>
+        <location filename="ui/PassageMainWindow.cpp" line="719"/>
         <source>OFD files(*.ofd)</source>
         <translation></translation>
     </message>

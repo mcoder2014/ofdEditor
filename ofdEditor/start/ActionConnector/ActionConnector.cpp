@@ -3,6 +3,7 @@
 #include "ui/PassageMainWindow.h"
 #include "Doc/DocPage.h"
 #include "DataTypes/document/ct_docinfo.h"
+#include "Widget/InsertTableDialog.h"
 #include "Widget/DocInfoDialog.h"
 #include <QDebug>
 #include <QMetaObject>
@@ -127,8 +128,11 @@ void ActionConnector::addTableBlock()
 {
     if(this->passage == NULL)
         return;
-    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::table);  // 设置插入文本框信息
-    this->addNewBlock(blockInfo);
+
+//    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::table);  // 设置插入文本框信息
+//    this->addNewBlock(blockInfo);
+    InsertTableDialog * tableDialog = new InsertTableDialog(0);
+    tableDialog->exec();
 }
 
 void ActionConnector::undo()

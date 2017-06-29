@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>选择模版</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -42,7 +42,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="../../start/icons.qrc">:/template_icons/source/templates/template_1.png</pixmap>
+    <pixmap>:/template_icons/source/templates/template_1.png</pixmap>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -127,9 +127,7 @@
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="../../start/icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
