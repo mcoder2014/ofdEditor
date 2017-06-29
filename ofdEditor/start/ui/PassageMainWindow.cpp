@@ -309,6 +309,7 @@ void PassageMainWindow::initAction()
 
     // 文本操作工具栏部分/
     this->fontCombox = new QFontComboBox();
+    this->fontCombox->setEditable(false);
     this->fontSizeCombox = new QComboBox();
     this->fontSizeCombox->insertItem(0,tr("72"));
     this->fontSizeCombox->insertItem(0,tr("48"));
