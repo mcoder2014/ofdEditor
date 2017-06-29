@@ -3,7 +3,7 @@
 
 #include <QPointF>
 #include <QRectF>
-
+#include "model_global.h"
 
 /**
  * @Author Chaoqun
@@ -11,7 +11,7 @@
  *         或者是一些常用的工具函数
  * @date   2017/05/01
  */
-class UnitTool
+class MODELSHARED_EXPORT UnitTool
 {
 public:
     UnitTool();

@@ -303,7 +303,7 @@ void PageDialog::on_DefaultSetWorkingAreaChecked_clicked(bool checked)
 
 void PageDialog::on_CurrentPageSize_valueChanged()
 {
-    qDebug() << "Called";
+//    qDebug() << "Called";
     ui->CurrentSelectPageSize->setCurrentIndex(ui->CurrentSelectPageSize->findText(tr("Customized")));
 }
 

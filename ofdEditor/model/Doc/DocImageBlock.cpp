@@ -18,9 +18,16 @@ DocImageBlock::DocImageBlock(QWidget *parent)
     this->context_menu = new QMenu(this);
     change_image = new QAction(tr("Change Image"), NULL);
     set_image_properties = new QAction(tr("Set Image Properties"), NULL);
+    remove_image = new QAction(tr("Remove Image."), NULL);
+    remove_image->setShortcut(Qt::Key_Delete);
+
     properties_dialog = new ImagePropertiesDialog(this, parent);
     width_height_ratio_locked = false;
     width_height_ratio = 0.0;
+
+    context_menu->addAction(this->change_image);
+    context_menu->addAction(this->set_image_properties);
+    context_menu->addAction(this->remove_image);
 
     //signal-slots
     this->connect(this->change_image, SIGNAL(triggered()),
@@ -34,6 +41,10 @@ DocImageBlock::DocImageBlock(QWidget *parent)
                   this, SLOT(imagePropertiesChanged(double,double,
                                                     double,double,
                                                     bool)));
+    this->connect(this->remove_image,
+                  SIGNAL(triggered(bool)),
+                  this,
+                  SLOT(removeImage()));
 }
 
 /**
@@ -85,6 +96,11 @@ double DocImageBlock::getWidthHeightRatio()
         return width_height_ratio;
 }
 
+DocBlock *DocImageBlock::getBlock()
+{
+    return this->block;
+}
+
 /**
  * @Author Pan
  * @brief  焦点聚焦，显示边框
@@ -123,9 +139,6 @@ void DocImageBlock::focusOutEvent(QFocusEvent *e)
  */
 void DocImageBlock::contextMenuEvent(QContextMenuEvent *ev)
 {
-    context_menu->addAction(this->change_image);
-    context_menu->addAction(this->set_image_properties);
-
     context_menu->exec(ev->globalPos());
 }
 
@@ -168,6 +181,11 @@ void DocImageBlock::setImageProperties()
                        this->block->getPage()->height(),
                        this->width_height_ratio_locked);
     properties_dialog->exec();
+}
+
+void DocImageBlock::removeImage()
+{
+    this->block->remove();
 }
 
 /**

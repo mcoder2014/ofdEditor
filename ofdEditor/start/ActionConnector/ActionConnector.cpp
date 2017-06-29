@@ -4,9 +4,6 @@
 #include "Doc/DocPage.h"
 #include "DataTypes/document/ct_docinfo.h"
 #include "Widget/DocInfoDialog.h"
-
-#include "app/APPInfo.h"
-
 #include <QDebug>
 #include <QMetaObject>
 

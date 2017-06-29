@@ -19,7 +19,6 @@
 #include <QTextCharFormat>
 #include <QDir>
 
-
 #include "Doc/DocPassage.h"
 #include "ActionConnector/ActionConnector.h"
 #include "Loaders/ZipTool.h"                // 压缩文件工具
@@ -32,6 +31,8 @@
 #include "Widget/FindAndReplaceDock.h"
 #include "Convert/Doc_OFDConvertor.h"
 #include "ofd_writer.h"
+#include "../model/Widget/SelectTemplateDialog.h"
+#include "../model/Tool/UnitTool.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -107,6 +108,11 @@ void PassageMainWindow::init()
     this->find_and_replace_dock->setMaximumHeight(60);
     this->find_and_replace_dock->setMinimumHeight(60);
     this->find_and_replace_dock->setVisible(false);
+
+    this->select_template_dialog = new SelectTemplateDialog(NULL, this);
+    this->select_template_dialog->setFixedSize(select_template_dialog->size());
+    connect(this->select_template_dialog, SIGNAL(createTemplate(int)),
+          this, SLOT(createTemplatePassage(int)));
 }
 
 /**
@@ -493,7 +499,10 @@ void PassageMainWindow::connectAction()
             this, SLOT(zooomOut()));
 
     connect(this->find_and_replace, SIGNAL(triggered(bool)),
-            this->connector, SLOT(startFindAndReplace()));
+            this->connector, SLOT(startFindAndReplace()));//查找/替换
+
+    connect(this->templateAction, SIGNAL(triggered(bool)),
+            this, SLOT(templateDialog()));      //模板选择
 
     connect(this->insertTextBlockAction, SIGNAL(triggered()),
             this->connector, SLOT(addTextBlock()));   // 插入文本框
@@ -525,9 +534,10 @@ void PassageMainWindow::connectAction()
             this,SLOT(underline()));    // 下划线
 
 
-
     connect(this->area, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this->connector, SLOT(updateActivePassage(QMdiSubWindow*)));    // 检测ActivePassage更新
+
+
 }
 
 /**
@@ -792,6 +802,11 @@ void PassageMainWindow::pageDialog()
     }
 }
 
+void PassageMainWindow::templateDialog()
+{
+    this->select_template_dialog->exec();
+}
+
 /**
  * @Author Chaoqun
  * @brief  接受当前处理的文字块的更新
@@ -904,6 +919,217 @@ void PassageMainWindow::acceptImageBlock(DocImageBlock *imageBlock)
 {
     this->imageBlock = imageBlock;
     this->textBlock = NULL;
+}
+
+void PassageMainWindow::createTemplatePassage(int index)
+{
+    qDebug() << "???";
+    DocPassage * new_passage = new DocPassage(this);
+    //**********************************************
+    DocPage * new_page_1 = new DocPage();
+
+    new_passage->addPage(new_page_1);
+    //***********************************************
+    QFont font1("SimHei", 15);
+    font1.setBold(false);
+    DocTextBlock * headtext_1 = new DocTextBlock();
+    DocBlock * head_1 = new DocBlock();
+    head_1->setWidget(headtext_1);
+    headtext_1->setContent("000001");
+    head_1->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(37));
+    head_1->resize(80, 30);
+    headtext_1->setFont(font1);
+    new_page_1->addBlock(head_1, DocPage::Body);
+
+    DocTextBlock * headtext_2 = new DocTextBlock();
+    DocBlock * head_2 = new DocBlock();
+    head_2->setWidget(headtext_2);
+    headtext_2->setContent(tr("JiMi 1Nian"));
+    head_2->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(47));
+    head_2->resize(120, 30);
+    headtext_2->setFont(font1);
+    new_page_1->addBlock(head_2, DocPage::Body);
+
+    DocTextBlock * headtext_3 = new DocTextBlock();
+    DocBlock * head_3 = new DocBlock();
+    head_3->setWidget(headtext_3);
+    headtext_3->setContent(tr("Te Ji"));
+    head_3->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(57));
+    head_3->resize(50, 30);
+    headtext_3->setFont(font1);
+    new_page_1->addBlock(head_3, DocPage::Body);
+
+    QFont font2("SimSun", 43);
+    font2.setBold(true);
+    DocTextBlock * titletext_1 = new DocTextBlock();
+    DocBlock * title_1 = new DocBlock();
+    title_1->setWidget(titletext_1);
+
+    titletext_1->setAlignment(Qt::AlignCenter);
+    title_1->setPos(UnitTool::mmToPixel(41), UnitTool::mmToPixel(73));
+    title_1->resize(500, 80);
+    titletext_1->setFont(font2);
+    QTextCharFormat fmt;
+    fmt.setForeground(Qt::red);
+    titletext_1->mergeCurrentCharFormat(fmt);
+    titletext_1->setContent(tr("XXXXXWenJian"));
+    new_page_1->addBlock(title_1, DocPage::Body);
+
+    QFont font3("FangSong", 15);
+    font3.setBold(false);
+    DocTextBlock * titletext_2 = new DocTextBlock();
+    DocBlock * title_2 = new DocBlock();
+    title_2->setWidget(titletext_2);
+
+    titletext_2->setAlignment(Qt::AlignCenter);
+    title_2->setPos(UnitTool::mmToPixel(75), UnitTool::mmToPixel(104));
+    title_2->resize(220, 35);
+    titletext_2->setFont(font3);
+
+    titletext_2->setContent(tr("XXX[2012]10Hao"));
+    new_page_1->addBlock(title_2, DocPage::Body);
+
+    QFont font4("SimSun", 27);
+    font4.setBold(false);
+    DocTextBlock * bodytext_1 = new DocTextBlock();
+    DocBlock * body_1 = new DocBlock();
+    body_1->setWidget(bodytext_1);
+
+    bodytext_1->setAlignment(Qt::AlignCenter);
+    body_1->setPos(UnitTool::mmToPixel(40), UnitTool::mmToPixel(128));
+    body_1->resize(500, 50);
+    bodytext_1->setFont(font4);
+
+    bodytext_1->setContent(tr("XXXXXGuanYuXXXXXXDeTongZhi"));
+    new_page_1->addBlock(body_1, DocPage::Body);
+
+    QFont font5("FangSong", 22);
+    font5.setBold(false);
+    DocTextBlock * bodytext_2 = new DocTextBlock();
+    DocBlock * body_2 = new DocBlock();
+    body_2->setWidget(bodytext_2);
+
+    bodytext_2->setAlignment(Qt::AlignLeft);
+    body_2->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(150));
+    body_2->resize(250, 35);
+    bodytext_2->setFont(font5);
+
+    bodytext_2->setContent(tr("XXXXXXXX:"));
+    new_page_1->addBlock(body_2, DocPage::Body);
+
+    DocTextBlock * bodytext_3 = new DocTextBlock();
+    DocBlock * body_3 = new DocBlock();
+    body_3->setWidget(bodytext_3);
+
+    bodytext_3->setAlignment(Qt::AlignLeft);
+    body_3->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(160));
+    body_3->resize(600, 400);
+    bodytext_3->setFont(font5);
+
+    bodytext_3->setContent(tr("OOOOXXXXXXXXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+                              "\nOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXX.\nOOOOXXXXXXXXX"
+                              "XXXXXXXXXXXXX.\nOOOOXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"));
+    new_page_1->addBlock(body_3, DocPage::Body);
+    //***********************************************
+    DocPage * new_page_2 = new DocPage();
+
+    new_passage->addPage(new_page_2);
+    //***********************************************
+    DocTextBlock * bodytext_4 = new DocTextBlock();
+    DocBlock * body_4 = new DocBlock();
+    body_4->setWidget(bodytext_4);
+
+    bodytext_4->setAlignment(Qt::AlignLeft);
+    body_4->setPos(UnitTool::mmToPixel(28), UnitTool::mmToPixel(37));
+    body_4->resize(600, 200);
+    bodytext_4->setFont(font5);
+
+    bodytext_4->setContent(tr("XXXXXXXXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+                              "\nOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                              "XXXXXXXXXXXXXXXXXXX."));
+    new_page_2->addBlock(body_4, DocPage::Body);
+
+    DocTextBlock * bodytext_5 = new DocTextBlock();
+    DocBlock * body_5 = new DocBlock();
+    body_5->setWidget(bodytext_5);
+
+    bodytext_5->setAlignment(Qt::AlignCenter);
+    body_5->setPos(UnitTool::mmToPixel(120), UnitTool::mmToPixel(85));
+    body_5->resize(200, 35);
+    bodytext_5->setFont(font5);
+
+    bodytext_5->setContent(tr("XXXXXXXXXXXX"));
+    new_page_2->addBlock(body_5, DocPage::Body);
+
+    QFont font6("FangSong", 16);
+    DocTextBlock * bodytext_6 = new DocTextBlock();
+    DocBlock * body_6 = new DocBlock();
+    body_6->setWidget(bodytext_6);
+
+    bodytext_6->setAlignment(Qt::AlignCenter);
+    body_6->setPos(UnitTool::mmToPixel(120), UnitTool::mmToPixel(95));
+    body_6->resize(200, 35);
+    bodytext_6->setFont(font6);
+
+    bodytext_6->setContent(tr("2012Nian7Yue1Ri"));
+    new_page_2->addBlock(body_6, DocPage::Body);
+
+    DocTextBlock * bodytext_7 = new DocTextBlock();
+    DocBlock * body_7 = new DocBlock();
+    body_7->setWidget(bodytext_7);
+
+    bodytext_7->setAlignment(Qt::AlignCenter);
+    body_7->setPos(UnitTool::mmToPixel(34), UnitTool::mmToPixel(108));
+    body_7->resize(250, 35);
+    bodytext_7->setFont(font5);
+
+    bodytext_7->setContent(tr("(XXXXXX)"));
+    new_page_2->addBlock(body_7, DocPage::Body);
+
+    DocTextBlock * endtext_1 = new DocTextBlock();
+    DocBlock * end_1 = new DocBlock();
+    end_1->setWidget(endtext_1);
+
+    endtext_1->setAlignment(Qt::AlignLeft);
+    end_1->setPos(UnitTool::mmToPixel(30), UnitTool::mmToPixel(230));
+    end_1->resize(600, 35);
+    endtext_1->setFont(font6);
+
+    endtext_1->setContent(tr("ChaoSong:XXXXXXX,XXXXX,XXXXXX"));
+    new_page_2->addBlock(end_1, DocPage::Body);
+
+    DocTextBlock * endtext_2 = new DocTextBlock();
+    DocBlock * end_2 = new DocBlock();
+    end_2->setWidget(endtext_2);
+
+    endtext_2->setAlignment(Qt::AlignLeft);
+    end_2->setPos(UnitTool::mmToPixel(30), UnitTool::mmToPixel(240));
+    end_2->resize(250, 35);
+    endtext_2->setFont(font6);
+
+    endtext_2->setContent(tr("XXXXXXXX"));
+    new_page_2->addBlock(end_2, DocPage::Body);
+
+    DocTextBlock * endtext_3 = new DocTextBlock();
+    DocBlock * end_3 = new DocBlock();
+    end_3->setWidget(endtext_3);
+
+    endtext_3->setAlignment(Qt::AlignCenter);
+    end_3->setPos(UnitTool::mmToPixel(110), UnitTool::mmToPixel(240));
+    end_3->resize(300, 35);
+    endtext_3->setFont(font6);
+
+    endtext_3->setContent(tr("2012Nian7Yue1RiYinFa"));
+    new_page_2->addBlock(end_3, DocPage::Body);
+
+    addDocPassage(new_passage);
+
 }
 
 /**

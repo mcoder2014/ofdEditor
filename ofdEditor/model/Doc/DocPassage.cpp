@@ -30,7 +30,7 @@ DocPassage::DocPassage(QWidget *parent)
 //    this->addPage(new DocPage());       // 添加一个空白页面
 
     setAttribute(Qt::WA_DeleteOnClose);
-    qDebug() << "DocPassage Constructor Finished.";
+//    qDebug() << "DocPassage Constructor Finished.";
 }
 
 /**
@@ -91,15 +91,15 @@ void DocPassage::addPage(DocPage *page)
 {
     if(page == NULL)
     {
-        qDebug() << "DocPassage::addPage(DocPage* page) "
-                 <<  "You have add a NULL pointer";
+//        qDebug() << "DocPassage::addPage(DocPage* page) "
+//                 <<  "You have add a NULL pointer";
         return;
     }
 
     // 先添加到 vector
     page->setSize(default_width, default_height);
-    qDebug() << "!!Page width in pixel = " <<  page->size().width()
-             << "!!Page height in pixel = " <<  page->size().height();
+//    qDebug() << "!!Page width in pixel = " <<  page->size().width()
+//             << "!!Page height in pixel = " <<  page->size().height();
     page->has_working_area = default_using_working_area;
     page->working_area_height = default_working_height;
     page->working_area_width = default_working_width;
@@ -220,7 +220,7 @@ void DocPassage::setDocInfo(CT_DocInfo &docInfo)
  */
 void DocPassage::testMessage()
 {
-    qDebug()<<"passage success";
+//    qDebug()<<"passage success";
 }
 
 /**
@@ -358,7 +358,7 @@ void DocPassage::resetDocId()
     docId.remove(docId.length() -21, 1);
     docId.remove(docId.length() - 25,1);
     docId.remove(0,1);
-    qDebug() << "uuid : " << docId;
+//    qDebug() << "uuid : " << docId;
 
     this->docInfo->setDocID(docId);
 }

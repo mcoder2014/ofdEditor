@@ -17,6 +17,7 @@ class DocTextBlock;
 class ActionConnector;      // 函数功能的中间件
 class DocImageBlock;
 class FindAndReplaceDock;
+class SelectTemplateDialog;
 
 // 编辑窗口的主界面
 class PassageMainWindow
@@ -33,7 +34,7 @@ public slots:
     DocPassage *activeMdiChild();       // 获取活动的窗口
     DocPassage *addDocPassage(DocPassage * passage);
 
-
+    void createTemplatePassage(int index);
 private:
     double scale;
 
@@ -123,7 +124,7 @@ private:
     DocImageBlock *imageBlock;  //图片块
 
     FindAndReplaceDock * find_and_replace_dock;   //查找 & 替换
-
+    SelectTemplateDialog * select_template_dialog;  //选择模板对话框
 
 private slots:
     void openFile();            // 打开新文件
@@ -133,7 +134,7 @@ private slots:
     void paragraphDialog();     // 打开段落框
     void imageDialog();         // 打开图片框
     void pageDialog();          // 打开页面框
-
+    void templateDialog();      //打开模板选择
     void Bold();                // 加粗事件
     void Italic();              // 斜体事件
     void underline();           // 下划线事件
@@ -145,8 +146,6 @@ private slots:
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
     void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
     void acceptImageBlock(DocImageBlock * imageBlock);          //接受当前处理的图片块
-
-
 };
 
 #endif // PASSAGEMAINWINDOW_H

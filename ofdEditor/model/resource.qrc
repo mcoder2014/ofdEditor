@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/template_icon">
+        <file>template_icons/template_1.png</file>
+        <file>template_icons/template_2 .png</file>
+        <file>template_icons/template_3.png</file>
+        <file>template_icons/template_4.png</file>
+        <file>template_icons/template_5.png</file>
+    </qresource>
+</RCC>

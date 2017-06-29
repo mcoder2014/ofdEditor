@@ -271,8 +271,8 @@ void DocPage::setScale(double scale)
     this->setFixedSize(scale * this->width(),
                        scale * this->height());
 
-    qDebug() << "Page Size after scale:" << this->width()
-             << " " << this->height();
+//    qDebug() << "Page Size after scale:" << this->width()
+//             << " " << this->height();
 
     // 缩放
     this->scale(scale,scale);
@@ -372,7 +372,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 //                         == DocBlock::blockMove)
                  if(block->cursor().shape() == Qt::SizeAllCursor)
                  {
-                     qDebug()<<" the cursor'shape is size all ";
+//                     qDebug()<<" the cursor'shape is size all ";
                      this->newBlockFlag = blockMove;
                  }
                  else if (block->currentStatus(
@@ -586,7 +586,7 @@ void DocPage::addImage()
             ratio *= 0.8;
         }
         else ratio = 1.0;
-        qDebug() << "Ratio = " << ratio;
+//        qDebug() << "Ratio = " << ratio;
         newBlock->setPos((page_width - image.width() * ratio) / 2, (page_height - image.height() * ratio) / 2);
         newBlock->resize(image.width() * ratio,image.height() * ratio);
 

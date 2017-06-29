@@ -14,17 +14,22 @@
         <translation>设置图片属性</translation>
     </message>
     <message>
-        <location filename="Doc/DocImageBlock.cpp" line="142"/>
+        <location filename="Doc/DocImageBlock.cpp" line="21"/>
+        <source>Remove Image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Doc/DocImageBlock.cpp" line="155"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="Doc/DocImageBlock.cpp" line="146"/>
+        <location filename="Doc/DocImageBlock.cpp" line="159"/>
         <source>OFD Editor</source>
         <translation>OFD Editor</translation>
     </message>
     <message>
-        <location filename="Doc/DocImageBlock.cpp" line="147"/>
+        <location filename="Doc/DocImageBlock.cpp" line="160"/>
         <source>Cannot open file %1.</source>
         <translation>无法打开文件 %1.</translation>
     </message>
@@ -656,9 +661,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PageDialog</name>
     <message>
-        <location filename="Widget/PageDialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation>页面设置</translation>
+        <translation type="obsolete">页面设置</translation>
     </message>
     <message utf8="true">
         <location filename="Widget/PageDialog.ui" line="30"/>
@@ -749,6 +753,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message utf8="true">
+        <location filename="Widget/PageDialog.ui" line="14"/>
         <location filename="Widget/PageDialog.ui" line="474"/>
         <source>页面设置</source>
         <translation></translation>
@@ -986,6 +991,29 @@ p, li { white-space: pre-wrap; }
         <location filename="Widget/ParagraphFormatDialog.ui" line="271"/>
         <source>值</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>SelectTemplateDialog</name>
+    <message>
+        <location filename="Widget/SelectTemplateDialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/SelectTemplateDialog.ui" line="66"/>
+        <source>选择页面模板</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/SelectTemplateDialog.ui" line="92"/>
+        <source>上一个</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="Widget/SelectTemplateDialog.ui" line="105"/>
+        <source>下一个</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

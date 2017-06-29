@@ -50,7 +50,8 @@ SOURCES += model.cpp \
     Widget/imagepropertiesdialog.cpp \
     Widget/PageDialog.cpp \
     Widget/InsertTableDialog.cpp \
-    Widget/FindAndReplaceDock.cpp
+    Widget/FindAndReplaceDock.cpp \
+    Widget/SelectTemplateDialog.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -80,7 +81,8 @@ HEADERS += model.h\
     Widget/imagepropertiesdialog.h \
     Widget/PageDialog.h \
     Widget/FindAndReplaceDock.h \
-    Widget/InsertTableDialog.h
+    Widget/InsertTableDialog.h \
+    Widget/SelectTemplateDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -113,4 +115,8 @@ FORMS += \
     Widget/imagepropertiesdialog.ui \
     Widget/PageDialog.ui \
     Widget/InsertTableDialog.ui \
-    Widget/FindAndReplaceDock.ui
+    Widget/FindAndReplaceDock.ui \
+    Widget/SelectTemplateDialog.ui
+
+RESOURCES += \
+    resource.qrc
