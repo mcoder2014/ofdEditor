@@ -146,6 +146,9 @@ private slots:
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
     void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
     void acceptImageBlock(DocImageBlock * imageBlock);          //接受当前处理的图片块
+
+    void switchToEditMode();        //切换到编辑模式
+    void switchToViewMode();        //切换到阅读模式
 };
 
 #endif // PASSAGEMAINWINDOW_H

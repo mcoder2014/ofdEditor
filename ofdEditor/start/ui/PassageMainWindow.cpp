@@ -537,7 +537,11 @@ void PassageMainWindow::connectAction()
     connect(this->area, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this->connector, SLOT(updateActivePassage(QMdiSubWindow*)));    // 检测ActivePassage更新
 
+    connect(this->editModeAction, SIGNAL(triggered(bool)),
+            this, SLOT(switchToEditMode()));
 
+    connect(this->viewModeAction, SIGNAL(triggered(bool)),
+            this, SLOT(switchToViewMode()));
 }
 
 /**
@@ -919,6 +923,16 @@ void PassageMainWindow::acceptImageBlock(DocImageBlock *imageBlock)
 {
     this->imageBlock = imageBlock;
     this->textBlock = NULL;
+}
+
+void PassageMainWindow::switchToEditMode()
+{
+    this->viewModeAction->setChecked(false);
+}
+
+void PassageMainWindow::switchToViewMode()
+{
+    this->editModeAction->setChecked(false);
 }
 
 void PassageMainWindow::createTemplatePassage(int index)
