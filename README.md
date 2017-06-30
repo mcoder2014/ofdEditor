@@ -53,11 +53,22 @@ win32 : Qt 4.8.6 + MinGW 4.8.2
 ```
 
 ## 软件效果图
-![浏览样例](doc\imgs\image40.png)
-![页面设置](doc\imgs\image41.png)
-![查找替换](doc\imgs\image51.png)
+![浏览样例](doc/imgs/image40.png)
+![页面设置](doc/imgs/image41.png)
+![查找替换](doc/imgs/image51.png)
 
 ## 工程引用外部库
 工程引用了 `quazip 0.73`作为本工程的zip压缩工具，他人在编译本工程时，请预先配置好`quazip 0.73` 的环境，之后才可以正常编译本工程。
+
+## 翻译文件
+本系统编写时设置语言为英文。在`model`和`start`工程下设置了翻译文件。
+```
+\ofdEditor
+  \-model
+   \-cn_model.ts
+  \-start
+   \-cn_start.ts
+```
+编译时，使用Qt自带的Linguist程序生成relesae的翻译文件，放在编译完成的bin目录下。
 
 [QuaZip官网](http://quazip.sourceforge.net/)
