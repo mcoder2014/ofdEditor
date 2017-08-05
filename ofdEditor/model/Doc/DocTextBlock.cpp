@@ -693,8 +693,12 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
     this->tempZValue = this->getBlock()->getZValue();
     emit this->signals_setZValue(2000);
 
+//    QPointF global = this->getBlock()->mapToScene(event->globalPos());  // 获得场景坐标
+//    this->ContextMenu->setParent(this->getPage());
+
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());
+
 
 }
 

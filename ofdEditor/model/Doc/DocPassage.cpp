@@ -108,12 +108,11 @@ void DocPassage::addPage(DocPage *page)
 
     this->pages.append(page);
     // 添加到ScrollArea
-    this->adjustWidgetSize();   // 调整大小
     this->layout->addWidget(page,0,Qt::AlignCenter);
         // 向layout中增加一页，并居中显示
     this->layout->update();             // 更新
     page->setPassage(this);             // 设置页所属的文章
-
+    this->adjustWidgetSize();   // 调整大小
 
 //    qDebug() << "You have added an new page";
 
@@ -373,6 +372,7 @@ void DocPassage::resetDocId()
 void DocPassage::resizeEvent(QResizeEvent *event)
 {
     this->adjustWidgetSize();       // 调整整体大小
+    QScrollArea::resizeEvent(event);
 //    qDebug() << "DocPassage::resizeEvent Runs";
 }
 
@@ -445,6 +445,7 @@ void DocPassage::adjustScrollBar(QScrollBar *scrollBar, double factor)
     // 设置滚动条位置
     scrollBar->setValue(int(factor * scrollBar->value()
                             + ((factor -1) * scrollBar->pageStep()/2)) + 1);
+    scrollBar->update();
 }
 
 void DocPassage::adjustScrollBarRange()
@@ -461,6 +462,9 @@ void DocPassage::adjustScrollBarRange()
     this->verticalScrollBar()->setRange(0,widgetSize.height()
                                         - areaSize.height());
 
+    this->horizontalScrollBar()->update();
+    this->verticalScrollBar()->update();
+
 
 }
 
@@ -476,11 +480,12 @@ void DocPassage::adjustWidgetSize()
     int width = 0;
     int height = 0;
 
-    int length = this->pages.size();
+    int length = this->pages.size();        // 文章的页数
     for(int i = 0; i <length; i++)
     {
         if(width < this->pages[i]->viewport()->width())
         {
+            // 最宽的一页的宽度
            width =  this->pages[i]->viewport()->width();
         }
 
@@ -496,11 +501,12 @@ void DocPassage::adjustWidgetSize()
     this->layout->update();
     this->update();
     this->viewport()->update();
+    this->QScrollArea::update();
 
     // 保存计算结果
     this->widgetWidth = width;
     this->widgetHeight = height;
-    this->QScrollArea::update();
+
 
     adjustScrollBarRange();     // 调整进度条长度
 

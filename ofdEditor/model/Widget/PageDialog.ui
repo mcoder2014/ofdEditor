@@ -128,45 +128,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2" colspan="7">
-        <widget class="QComboBox" name="CurrentSelectPageSize">
-         <item>
-          <property name="text">
-           <string>A4</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A3</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A5</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Letter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>16K</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>32K</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Customized</string>
-          </property>
-         </item>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_9">
          <property name="font">
@@ -442,6 +403,45 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="2" column="2" colspan="4">
+        <widget class="QComboBox" name="CurrentSelectPageSize">
+         <item>
+          <property name="text">
+           <string>A4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Letter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>16K</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>32K</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Customized</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </widget>

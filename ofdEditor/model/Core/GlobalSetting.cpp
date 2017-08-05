@@ -87,6 +87,7 @@ void GlobalSetting::loadGlobalSetting(QString filePath)
             this->docType = QString::fromStdString(str_docType);
             this->docVersion = QString::fromStdString(str_docVersion);
             this->viewMode = QString::fromStdString(str_viewMode);
+            this->undoSize = app["UndoSize"].asInt();       // 读取撤销恢复的最大数量
 
             // Font
             string str_fontFamily = font["FontFamily"].asString();  // 字体类型
@@ -188,6 +189,7 @@ void GlobalSetting::exportGlobalSetting(QString filePath)
     app["DocType"] = this->docType.toStdString();
     app["DocVersion"] = this->docVersion.toStdString();
     app["ViewMode"] = this->viewMode.toStdString();
+    app["UndoSize"] = this->undoSize;
 
     // Font
     font["FontFamily"] = this->fontFamily.toStdString();
@@ -233,6 +235,7 @@ void GlobalSetting::setDefaultSetting()
     this->docType = QString::fromStdString("OFD");
     this->docVersion = QString::fromStdString("1.0");
     this->viewMode = QString::fromStdString("Edit");
+    this->undoSize = 10;
 
     // Font
     this->fontFamily = tr("Test");
@@ -345,6 +348,15 @@ void GlobalSetting::setViewMode(QString viewMode)
         this->viewMode = viewMode;
     }
 
+}
+
+void GlobalSetting::setUndoSize(int undosize)
+{
+    if(this->undoSize != undosize)
+    {
+        this->settingChanged = true;
+        this->undoSize = undosize;
+    }
 }
 
 void GlobalSetting::setFontFamily(QString fontFamily)

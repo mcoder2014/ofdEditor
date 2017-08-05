@@ -40,6 +40,7 @@ public:
     QString getDocType(){return this->docType;}
     QString getDocVersion(){return this->docVersion;}
     QString getViewMode(){return this->viewMode;}
+    int getUndoSize(){return this->undoSize;}
 
     // 字体
     QString getFontFamily(){return this->fontFamily;}
@@ -73,6 +74,7 @@ public slots:
     void setDocType(QString docType);
     void setDocVersion(QString docVersion);
     void setViewMode(QString viewMode);
+    void setUndoSize(int undosize);
 
     // font
     void setFontFamily(QString fontFamily);
@@ -109,6 +111,7 @@ private:
     QString docType;               // 文档标准
     QString docVersion;            // 文档标准版本
     QString viewMode;              // 首次打开软件的阅读模式
+    int undoSize;                  // 撤销恢复栈的最大容量 0 为不限容量
 
     // Font
     QString fontFamily;             // 字体类型
