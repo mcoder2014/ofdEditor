@@ -33,8 +33,7 @@ SOURCES += \
     ofd_writer.cpp  \
     Loaders/ZipTool.cpp \
     ofdexceptions.cpp \
-    DataTypes/page/CT_PageBlock.cpp
-
+    DataTypes/page/CT_PageBlock.cpp \
 
 HEADERS +=\
     mainwindow.h \
@@ -72,7 +71,7 @@ HEADERS +=\
     DataTypes/document/CT_Outlines.h \
     DataTypes/document/CustomTags.h \
     DataTypes/document/Res.h \
-    DataTypes/text/CT_Font.h
+    DataTypes/text/CT_Font.h \
 
 
 DESTDIR = ../bin     # 生成文件在这
@@ -80,7 +79,8 @@ MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
 RCC_DIR = ./rcc     # .qrc 文件转换后存放路径
 OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 
-INCLUDEPATH += $$PWD/../libs/quazip/includes            # 引用quazip库
+INCLUDEPATH += $$PWD/../libs/quazip/includes \            # 引用quazip库
+               $$PWD/../libs/jsoncpp
     # $$PWD表示当前pro对应的文件夹路径
 
 FORMS    += mainwindow.ui \

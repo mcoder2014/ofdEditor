@@ -10,7 +10,8 @@ class DocTextBlock;
 class DocPage;
 class DocLayer;
 
-class SetTextBlodCmd:public QUndoCommand
+class SetTextBlodCmd:
+        public QUndoCommand
 {
 public:
     SetTextBlodCmd(DocTextBlock *docTextBlock,QTextCursor &cursor,QUndoCommand *parent=0);

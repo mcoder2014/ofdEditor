@@ -1,0 +1,31 @@
+{
+    "App": {
+        "Creator": "OFDEditor",
+        "CreatorVersion": "1.0",
+        "DocType": "OFD",
+        "DocVersion": "1.0",
+        "ViewMode": "Edit"
+    },
+    "Font": {
+        "FontFamily": "黑体",
+        "FontSize": 12
+    },
+    "Page": {
+        "Width": 230,
+        "Height": 330,
+        "WorkWidth": 230,
+        "WorkHeight": 330,
+        "WorkX": 0,
+        "WoekY": 0,
+        "PageType": "A4"
+    },
+    "Paragraph": {
+        "Horizontal": "AlignLeft",
+        "ParaIndent": 0,
+        "FirstIndent": 0,
+        "SpaceBefore": 0,
+        "SpaceAfter": 0,
+        "LineHeight": "SingleHeight",
+        "LineHeightValue": 0
+    }
+}

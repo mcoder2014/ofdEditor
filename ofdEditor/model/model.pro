@@ -51,7 +51,8 @@ SOURCES += model.cpp \
     Widget/PageDialog.cpp \
     Widget/InsertTableDialog.cpp \
     Widget/FindAndReplaceDock.cpp \
-    Widget/SelectTemplateDialog.cpp
+    Widget/SelectTemplateDialog.cpp \
+    Core/GlobalSetting.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -82,7 +83,8 @@ HEADERS += model.h\
     Widget/PageDialog.h \
     Widget/FindAndReplaceDock.h \
     Widget/InsertTableDialog.h \
-    Widget/SelectTemplateDialog.h
+    Widget/SelectTemplateDialog.h \
+    Core/GlobalSetting.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -92,7 +94,8 @@ OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 TRANSLATIONS = cn_model.ts
 
 INCLUDEPATH += $$PWD/../ofd \
-               $$PWD/../model
+               $$PWD/../model \
+               $$PWD/../libs/jsoncpp
 
 unix {
     target.path = /usr/lib

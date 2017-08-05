@@ -31,8 +31,9 @@
 #include "Widget/FindAndReplaceDock.h"
 #include "Convert/Doc_OFDConvertor.h"
 #include "ofd_writer.h"
-#include "../model/Widget/SelectTemplateDialog.h"
-#include "../model/Tool/UnitTool.h"
+#include "Widget/SelectTemplateDialog.h"
+#include "Tool/UnitTool.h"
+#include "Core/GlobalSetting.h"
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -85,6 +86,8 @@ DocPassage *PassageMainWindow::createMdiChild()
  */
 void PassageMainWindow::init()
 {
+    GlobalSetting *setting = GlobalSetting::getInstance();
+
     this->area = new QMdiArea();
     this->setCentralWidget(this->area);
 
