@@ -280,6 +280,29 @@ void DocPage::setScale(double scale)
     this->update();
 }
 
+///
+/// \brief DocPage::setWorkingArea
+///     设置工作区域
+/// \param isUsingWorkingArea
+/// \param contentWidth
+/// \param contentHeight
+/// \param contentX
+/// \param contentY
+///
+void DocPage::setWorkingArea(
+        bool isUsingWorkingArea,
+        double contentWidth,
+        double contentHeight,
+        double contentX,
+        double contentY)
+{
+    this->has_working_area = isUsingWorkingArea;
+    this->working_area_width = contentWidth;
+    this->working_area_height = contentHeight;
+    this->working_area_x = contentX;
+    this->working_area_y = contentY;
+}
+
 
 /**
  * @Author Chaoqun

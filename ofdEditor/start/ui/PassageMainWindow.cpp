@@ -93,8 +93,6 @@ DocPassage *PassageMainWindow::createMdiChild()
  */
 void PassageMainWindow::init()
 {
-    GlobalSetting *setting = GlobalSetting::getInstance();
-
     this->area = new QMdiArea();
     this->setCentralWidget(this->area);
 
@@ -112,25 +110,20 @@ void PassageMainWindow::init()
     this->setWindowTitle(tr("OFD Editor"));
     this->setWindowIcon(QIcon(":/icons/source/icons/ofdEditor2.png"));
 
-//    this->find_and_replace_dock = new FindAndReplaceDock(NULL);
-//    this->addDockWidget(Qt::BottomDockWidgetArea, find_and_replace_dock);
-//    this->find_and_replace_dock->setWindowIcon(QIcon(":/icons/source/icons/Find.png"));
-//    this->find_and_replace_dock->setMaximumHeight(60);
-//    this->find_and_replace_dock->setMinimumHeight(60);
-//    this->find_and_replace_dock->setVisible(false);
-
+    // 配置查找替换窗口
     FindAndReplaceDock* find_and_replace_dock
             = FindAndReplaceDock::getInstance();    // 获得单例
-     this->addDockWidget(
+    this->addDockWidget(
                 Qt::BottomDockWidgetArea,
                 find_and_replace_dock);     // 设置容器
 
-     find_and_replace_dock->setWindowIcon(
-                    QIcon(":/icons/source/icons/Find.png"));    // 设置图标
-     find_and_replace_dock->setMaximumHeight(60);
-     find_and_replace_dock->setMinimumHeight(60);
-     find_and_replace_dock->setVisible(false);
+    find_and_replace_dock->setWindowIcon(
+                QIcon(":/icons/source/icons/Find.png"));    // 设置图标
+    find_and_replace_dock->setMaximumHeight(60);
+    find_and_replace_dock->setMinimumHeight(60);
+    find_and_replace_dock->setVisible(false);
 
+    // 选择模板页面
     this->select_template_dialog = new SelectTemplateDialog(NULL, this);
     this->select_template_dialog->setFixedSize(select_template_dialog->size());
     connect(this->select_template_dialog, SIGNAL(createTemplate(int)),

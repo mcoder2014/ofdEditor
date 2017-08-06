@@ -5,21 +5,64 @@
 #include <QUuid>
 #include <QDebug>
 
+DocInfoDialog* DocInfoDialog::m_instance = NULL;    // 初始化静态变量
+
+///
+/// \brief DocInfoDialog::getInstance
+/// 获取实例
+/// \return
+///
+DocInfoDialog *DocInfoDialog::getInstance()
+{
+    if(m_instance != NULL)
+    {
+        return m_instance;
+    }
+
+    m_instance = new DocInfoDialog();
+    return m_instance;
+}
+
+///
+/// \brief DocInfoDialog::DestoryInstance
+/// 销毁实例
+void DocInfoDialog::DestoryInstance()
+{
+    m_instance = NULL;
+}
+
+///
+/// \brief DocInfoDialog::init
+///     每次调用出单例后进行调用，来调整显示的内容
+/// \param docInfo
+///
+void DocInfoDialog::init(CT_DocInfo *docInfo)
+{
+    this->docInfo = docInfo;
+    this->initUi();
+}
+
+///
+/// \brief DocInfoDialog::DocInfoDialog
+///     构造函数
+/// \param parent
+///
 DocInfoDialog::DocInfoDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DocInfoDialog)
 {
     ui->setupUi(this);
+    this->init();           // 初始化链接信号槽
 }
 
-DocInfoDialog::DocInfoDialog(CT_DocInfo *docInfo,QWidget *parent = 0):
-    QDialog(parent), ui(new Ui::DocInfoDialog)
-{
-    ui->setupUi(this);
-    this->docInfo = docInfo;
-    this->init();
-    this->initUi();
-}
+//DocInfoDialog::DocInfoDialog(CT_DocInfo *docInfo,QWidget *parent = 0):
+//    QDialog(parent), ui(new Ui::DocInfoDialog)
+//{
+//    ui->setupUi(this);
+//    this->docInfo = docInfo;
+//    this->init();
+//    this->initUi();
+//}
 
 DocInfoDialog::~DocInfoDialog()
 {

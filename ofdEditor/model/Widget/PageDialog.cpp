@@ -5,39 +5,144 @@
 #include <QDebug>
 #include "../Tool/UnitTool.h"
 
+PageDialog* PageDialog::m_instance = NULL;
+
 int toNearestInt(double n)
 {
     return n + 0.5;
 }
 
-PageDialog::PageDialog(QWidget *parent, DocPassage * passage) :
-    QDialog(parent),
-    ui(new Ui::PageDialog),
-    changed_page_numbers()
+PageDialog *PageDialog::getInstance()
 {
-    ui->setupUi(this);
-    this->passage = passage;
+    if(m_instance != NULL)
+    {
+        return m_instance;
+    }
+    m_instance = new PageDialog();
+    return m_instance;
+}
 
-    //成员初始化
-    current_page = NULL;
-    //组件初始化
+void PageDialog::DestoryInstance()
+{
+    m_instance = NULL;
+}
+
+///
+/// \brief PageDialog::init
+/// \param current_page
+/// \param default_width
+/// \param default_height
+/// \param using_working_area
+/// \param default_working_width
+/// \param default_working_height
+/// \param default_working_x
+/// \param default_working_y
+///
+void PageDialog::init(
+        DocPage *current_page,
+        double default_width,
+        double default_height,
+        bool using_working_area,
+        double default_working_width,
+        double default_working_height,
+        double default_working_x,
+        double default_working_y)
+{
+    this->current_page = current_page;
+
     if (current_page)
     {
-        ui->CurrentPageSizeWidth->setValue(current_page->size().width());
-        ui->CurrentPageSizeHeight->setValue(current_page->size().height());
+//        qDebug() << "Current_page width in pixel = " << current_page->size().width();
+//        qDebug() << "Current_page height in pixel = " << current_page->size().height();
+        ui->CurrentPageSizeWidth->setValue(toNearestInt(UnitTool::pixelToMM(current_page->size().width())));
+        ui->CurrentPageSizeHeight->setValue(toNearestInt(UnitTool::pixelToMM(current_page->size().height())));
+        //Working area to be implemented!!!!
+        ui->CurrentWorkingAreaWidth->setValue(toNearestInt(current_page->getContentWidth()));
+        ui->CurrentWorkingAreaHeight->setValue(toNearestInt(current_page->getContentHeight()));
+        ui->CurrentWorkingAreaX->setValue(toNearestInt(current_page->getContentX()));
+        ui->CurrentWorkingAreaY->setValue(toNearestInt(current_page->getContentY()));
+
+        ui->DefaultPageSizeWidth->setValue(toNearestInt(default_height));
+        ui->DefaultPageSizeHeight->setValue(toNearestInt(default_width));
+        //Working area to be implemented!!!!
+        ui->DefaultSetWorkingAreaChecked->setChecked(using_working_area);
+        ui->DefaultWorkingAreaWidth->setValue(toNearestInt(default_working_width));
+        ui->DefaultWorkingAreaHeight->setValue(toNearestInt(default_working_height));
+        ui->DefaultWorkingAreaX->setValue(toNearestInt(default_working_x));
+        ui->DefaultWorkingAreaY->setValue(toNearestInt(default_working_y));
+
+        this->isDefaultPageSizeChanged = false;     // 是否修改了默认尺寸
+
+        this->connect(this,
+                      SIGNAL(modifyPageSize(
+                                 QVector<int>*,
+                                 double,
+                                 double,
+                                 bool,
+                                 double,
+                                 double,
+                                 double,
+                                 double)),
+                      this->passage,
+                      SLOT(modifyPageSize(
+                               QVector<int>*,
+                               double,
+                               double,
+                               bool,
+                               double,
+                               double,
+                               double,
+                               double)));
+
+        this->connect(this,
+                      SIGNAL(modifyDefaultPageSize(
+                                 double,
+                                 double,
+                                 bool,
+                                 double,
+                                 double,
+                                 double,
+                                 double)),
+                      this->passage,
+                      SLOT(modifyDefaultPageSize(
+                               double,
+                               double,
+                               bool,
+                               double,
+                               double,
+                               double,
+                               double)));
+
+
     }
-    ui->CurrentPageSizeWidth->setRange(0.0, 10000.0);
-    ui->CurrentPageSizeHeight->setRange(0.0, 10000.0);
-    ui->DefaultPageSizeWidth->setRange(0.0, 10000.0);
-    ui->DefaultPageSizeHeight->setRange(0.0, 10000.0);
-    ui->CurrentWorkingAreaWidth->setRange(0.0, 10000.0);
-    ui->CurrentWorkingAreaHeight->setRange(0.0, 10000.0);
-    ui->DefaultWorkingAreaWidth->setRange(0.0, 10000.0);
-    ui->DefaultWorkingAreaHeight->setRange(0.0, 10000.0);
-    ui->CurrentWorkingAreaX->setRange(0.0, 10000.0);
-    ui->CurrentWorkingAreaY->setRange(0.0, 10000.0);
-    ui->DefaultWorkingAreaX->setRange(0.0, 10000.0);
-    ui->DefaultWorkingAreaY->setRange(0.0, 10000.0);
+}
+
+
+PageDialog::~PageDialog()
+{
+    delete ui;
+}
+
+
+///
+/// \brief PageDialog::PageDialog
+/// \param parent
+///
+PageDialog::PageDialog(QWidget *parent)
+    :QDialog(parent),ui(new Ui::PageDialog)
+{
+    ui->setupUi(this);
+    this->initUI();
+    this->initConnect();
+
+    qDebug() << "Constructor executed finished";
+}
+
+///
+/// \brief PageDialog::initUI
+/// 初始化界面
+void PageDialog::initUI()
+{
 
     ui->CurrentSetWorkingAreaChecked->setChecked(false);
     ui->CurrentWorkingAreaWidth->setEnabled(false);
@@ -72,6 +177,15 @@ PageDialog::PageDialog(QWidget *parent, DocPassage * passage) :
     ui->PageRangeLowerBound->setValue(1);
     ui->PageRangeUpperBound->setValue(passage->getPages().size());
     ui->SpecificPage->setEnabled(false);
+
+}
+
+///
+/// \brief PageDialog::initConnect
+/// 初始化 信号槽
+///
+void PageDialog::initConnect()
+{
     //创建信号槽
     this->connect(ui->PageRangeCheckBox,
                   SIGNAL(clicked(bool)),
@@ -138,52 +252,39 @@ PageDialog::PageDialog(QWidget *parent, DocPassage * passage) :
                   this,
                   SLOT(changed_page_range_changed()));
 
+    // 选择确定后的操作
     this->connect(this,
                   SIGNAL(accepted()),
                   this,
                   SLOT(emitInformation()));
+
+    // 判断是否修改过默认值
+    this->connect(ui->DefaultPageSizeWidth,
+                  SIGNAL(valueChanged(double)),
+                  this,
+                  SLOT(on_DefaultSizeChanged(double)));
+    this->connect(ui->DefaultPageSizeHeight,
+                  SIGNAL(valueChanged(double)),
+                  this,
+                  SLOT(on_DefaultSizeChanged(double)));
+    this->connect(ui->DefaultWorkingAreaHeight,
+                  SIGNAL(valueChanged(double)),
+                  this,
+                  SLOT(on_DefaultSizeChanged(double)));
+    this->connect(ui->DefaultWorkingAreaWidth,
+                  SIGNAL(valueChanged(double)),
+                  this,
+                  SLOT(on_DefaultSizeChanged(double)));
+    this->connect(ui->DefaultWorkingAreaX,
+                  SIGNAL(valueChanged(double)),
+                  this,
+                  SLOT(on_DefaultSizeChanged(double)));
+    this->connect(ui->DefaultWorkingAreaY,
+                  SIGNAL(valueChanged(double)),
+                  this,
+                  SLOT(on_DefaultSizeChanged(double)));
+
 }
-
-PageDialog::~PageDialog()
-{
-    delete ui;
-}
-
-void PageDialog::updateInformation(DocPage *current_page,
-                                   double default_width,
-                                   double default_height,
-                                   bool using_working_area,
-                                   double default_working_width,
-                                   double default_working_height,
-                                   double default_working_x,
-                                   double default_working_y)
-{
-    this->current_page = current_page;
-    if (current_page)
-    {
-//        qDebug() << "Current_page width in pixel = " << current_page->size().width();
-//        qDebug() << "Current_page height in pixel = " << current_page->size().height();
-        ui->CurrentPageSizeWidth->setValue(toNearestInt(UnitTool::pixelToMM(current_page->size().width())));
-        ui->CurrentPageSizeHeight->setValue(toNearestInt(UnitTool::pixelToMM(current_page->size().height())));
-        //Working area to be implemented!!!!
-        ui->CurrentWorkingAreaWidth->setValue(toNearestInt(current_page->working_area_width));
-        ui->CurrentWorkingAreaHeight->setValue(toNearestInt(current_page->working_area_height));
-        ui->CurrentWorkingAreaX->setValue(toNearestInt(current_page->working_area_x));
-        ui->CurrentWorkingAreaY->setValue(toNearestInt(current_page->working_area_y));
-
-        ui->DefaultPageSizeWidth->setValue(toNearestInt(default_height));
-        ui->DefaultPageSizeHeight->setValue(toNearestInt(default_width));
-        //Working area to be implemented!!!!
-        ui->DefaultSetWorkingAreaChecked->setChecked(using_working_area);
-        ui->DefaultWorkingAreaWidth->setValue(toNearestInt(default_working_width));
-        ui->DefaultWorkingAreaHeight->setValue(toNearestInt(default_working_height));
-        ui->DefaultWorkingAreaX->setValue(toNearestInt(default_working_x));
-        ui->DefaultWorkingAreaY->setValue(toNearestInt(default_working_y));
-
-    }
-}
-
-
 
 void PageDialog::on_CurrentSelectPageSize_currentIndexChanged(const QString &arg1)
 {
@@ -241,6 +342,7 @@ void PageDialog::on_DefaultSelectPageSize_currentIndexChanged(const QString &arg
         ui->DefaultPageSizeWidth->setValue(130);
         ui->DefaultPageSizeHeight->setValue(184);
     }
+    this->isDefaultPageSizeChanged = true;
 }
 
 void PageDialog::on_SpecificPageCheckBox_clicked(bool checked)
@@ -299,6 +401,13 @@ void PageDialog::on_DefaultSetWorkingAreaChecked_clicked(bool checked)
         ui->DefaultWorkingAreaX->setValue(0.0);
         ui->DefaultWorkingAreaY->setValue(0.0);
     }
+
+    this->isDefaultPageSizeChanged = true;
+}
+
+void PageDialog::on_DefaultSizeChanged(double value)
+{
+    this->isDefaultPageSizeChanged = true;
 }
 
 void PageDialog::on_CurrentPageSize_valueChanged()
@@ -394,20 +503,67 @@ void PageDialog::changed_page_range_changed()
 
 void PageDialog::emitInformation()
 {
-    passage->updatePageSizeInformation(changed_page_numbers,
-                                       ui->CurrentPageSizeWidth->value(),
-                                       ui->CurrentPageSizeHeight->value(),
-                                       ui->CurrentSetWorkingAreaChecked->isChecked(),
-                                       ui->CurrentWorkingAreaWidth->value(),
-                                       ui->CurrentWorkingAreaHeight->value(),
-                                       ui->CurrentWorkingAreaX->value(),
-                                       ui->CurrentWorkingAreaY->value(),
-                                       ui->DefaultPageSizeWidth->value(),
-                                       ui->DefaultPageSizeHeight->value(),
-                                       ui->DefaultSetWorkingAreaChecked->isChecked(),
-                                       ui->DefaultWorkingAreaWidth->value(),
-                                       ui->DefaultWorkingAreaHeight->value(),
-                                       ui->DefaultWorkingAreaX->value(),
-                                       ui->DefaultWorkingAreaY->value());
+
+    emit this->modifyPageSize(&changed_page_numbers,
+                              ui->CurrentPageSizeWidth->value(),
+                              ui->CurrentPageSizeHeight->value(),
+                              ui->CurrentSetWorkingAreaChecked->isChecked(),
+                              ui->CurrentWorkingAreaWidth->value(),
+                              ui->CurrentWorkingAreaHeight->value(),
+                              ui->CurrentWorkingAreaX->value(),
+                              ui->CurrentWorkingAreaY->value());
+
+    if(isDefaultPageSizeChanged)
+    {
+        emit this->modifyDefaultPageSize(
+                    ui->DefaultPageSizeWidth->value(),
+                    ui->DefaultPageSizeHeight->value(),
+                    ui->DefaultSetWorkingAreaChecked->isChecked(),
+                    ui->DefaultWorkingAreaWidth->value(),
+                    ui->DefaultWorkingAreaHeight->value(),
+                    ui->DefaultWorkingAreaX->value(),
+                    ui->DefaultWorkingAreaY->value());
+    }
+
+    // 断开链接
+    this->disconnect(this,
+                  SIGNAL(modifyPageSize(
+                             QVector<int>*,
+                             double,
+                             double,
+                             bool,
+                             double,
+                             double,
+                             double,
+                             double)),
+                  this->passage,
+                  SLOT(modifyPageSize(
+                           QVector<int>*,
+                           double,
+                           double,
+                           bool,
+                           double,
+                           double,
+                           double,
+                           double)));
+
+    this->disconnect(this,
+                  SIGNAL(modifyDefaultPageSize(
+                             double,
+                             double,
+                             bool,
+                             double,
+                             double,
+                             double,
+                             double)),
+                  this->passage,
+                  SLOT(modifyDefaultPageSize(
+                           double,
+                           double,
+                           bool,
+                           double,
+                           double,
+                           double,
+                           double)));
 }
 

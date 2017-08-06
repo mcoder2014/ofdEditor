@@ -27,7 +27,6 @@ public:
     explicit PassageMainWindow(QWidget *parent = 0);
     ~PassageMainWindow();
 
-
 public slots:
     void activateFindAndReplaceDock();  // 激活查找替换窗口
     DocPassage *createMdiChild();       // 创建一个新文档
@@ -50,7 +49,6 @@ private:
     QToolBar* format_toolBar;    // 格式
     QToolBar* insert_toolBar;    // 插入
     QToolBar* textBlock_toolBar;    // 文本工具栏
-
 
     // QAction
     // 文件
@@ -110,7 +108,6 @@ private:
     QVector<DocPassage* >passages;      // 存储所有的passage
 
     ActionConnector* connector; // 功能连接中间件
-
 
     void init();                // 初始化
     void initAction();          // 初始化QAction

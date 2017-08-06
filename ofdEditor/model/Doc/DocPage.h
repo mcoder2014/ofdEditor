@@ -28,12 +28,7 @@ class MODELSHARED_EXPORT DocPage
 {
     Q_OBJECT
 public:
-    //Temporarily put here
-    bool has_working_area;
-    double working_area_width;
-    double working_area_height;
-    double working_area_x;
-    double working_area_y;
+
 
 
     enum Layer{Body,Foreground,Background};              // 分为三层
@@ -53,10 +48,16 @@ public:
 
     DocLayer *getForegroundLayer();                 // 获得前景层
     DocLayer* getBodyLayer();                       // 获得正文层
-    DocLayer* getBackgroundLayer();                      // 获得背景层
+    DocLayer* getBackgroundLayer();                 // 获得背景层
 
     //Pan
     void addImage();                                //添加图片
+
+    bool isUsingWorkArea(){return this->has_working_area;}
+    double getContentWidth(){return this->working_area_width;}
+    double getContentHeight(){return this->working_area_height;}
+    double getContentX(){return this->working_area_x;}
+    double getContentY(){return this->working_area_y;}
 
 public slots:
     void setSize(double width, double height);             // 设置页面大小
@@ -72,6 +73,12 @@ public slots:
     void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
     void remove();          // 移除本页
     void setScale(double scale);    // 设置页面的显示大小
+    void setWorkingArea(
+            bool isUsingWorkingArea,
+            double contentWidth,
+            double contentHeight,
+            double contentX,
+            double contentY);          // 设置工作区域
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -104,6 +111,12 @@ private:
 
     BlockFlag newBlockFlag;             // 是否画块
     DocBlock * activeBlock;             // 正在活跃的那个DocBlock
+
+    bool has_working_area;
+    double working_area_width;
+    double working_area_height;
+    double working_area_x;
+    double working_area_y;
 
 
 signals:        // 信号

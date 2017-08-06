@@ -76,7 +76,6 @@ HEADERS += model.h\
     Convert/MergeCT_Texts.h \
     Convert/Doc_OFDConvertor.h \
     Convert/Objects/MinTextUnit.h \
-    Widget/DocInfoDialog.h \
     Command/SetTextBlodCmd.h \
     Doc/DocImageBlock.h \
     Widget/imagepropertiesdialog.h \
@@ -84,7 +83,8 @@ HEADERS += model.h\
     Widget/FindAndReplaceDock.h \
     Widget/InsertTableDialog.h \
     Widget/SelectTemplateDialog.h \
-    Core/GlobalSetting.h
+    Core/GlobalSetting.h \
+    Widget/DocInfoDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

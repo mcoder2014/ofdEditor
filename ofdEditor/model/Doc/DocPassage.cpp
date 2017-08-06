@@ -3,8 +3,10 @@
 #include "DocPage.h"
 #include "DataTypes/document/CT_DocInfo.h"
 #include "DataTypes/document/ct_commondata.h"
-#include "../Widget/PageDialog.h"
+#include "Widget/PageDialog.h"
+#include "Core/GlobalSetting.h"
 #include <QDebug>
+#include <QDateTime>
 #include <QDesktopWidget>
 #include <QPalette>
 #include <QApplication>
@@ -13,70 +15,77 @@
 #include <Quuid>
 #include <QDir>
 
+///
+/// \brief DocPassage::createNewPassage
+/// 创建一个新的文章
+/// \return 新的文章
+///
+DocPassage *DocPassage::createNewPassage()
+{
+    DocPassage* passage = new DocPassage(0);
+    return passage;
+}
+
+///
+/// \brief DocPassage::createEmptyPassage
+///     创建一个新的文章，空的，用来进行读取已有文章
+/// \return
+///
+DocPassage *DocPassage::createEmptyPassage()
+{
+    DocPassage* passage = new DocPassage();
+    return passage;
+}
+
+
 /**
  * @Author Chaoqun
  * @brief  默认构造函数
  * @date   2017/04/30
  */
 DocPassage::DocPassage(QWidget *parent)
-    :docType("OFD"),version("1.0"),QScrollArea(parent)
+    :QScrollArea(parent)
 {
-    undoStack=new QUndoStack(this);
-    this->scaleFactor = 1.0;            // 缩放100%
-    this->docInfo = new CT_DocInfo();   // 文档元信息
-//    this->commonData = new CT_CommonData();
-    this->init();       // 初始化界面
+    this->undoStack=new QUndoStack(this);   // 用来来存储操作队列
+    this->docInfo = new CT_DocInfo();       // 文档元信息
+    this->initUI();                         // 初始化界面
+    this->initDocInfo();                    // 初始化文章信息
 
 //    this->addPage(new DocPage());       // 添加一个空白页面
 
     setAttribute(Qt::WA_DeleteOnClose);
-//    qDebug() << "DocPassage Constructor Finished.";
+    //    qDebug() << "DocPassage Constructor Finished.";
 }
 
-/**
- * @Author Chaoqun
- * @brief  含参构造函数
- * @date   2017/05/01
- */
-DocPassage::DocPassage(QWidget *parent,
-                       QString version, QString docType, double scaleFactor)
-    :QScrollArea(parent)
+///
+/// \brief DocPassage::DocPassage
+///     空的构造函数，用来创建空的文章
+DocPassage::DocPassage()
+    :QScrollArea(0)
 {
-    undoStack=new QUndoStack(this);
-    this->version = version;
-    this->docType = docType;
-    this->scaleFactor = scaleFactor;
+    this->undoStack = new QUndoStack(this); // 撤销恢复队列
+    this->docInfo = new CT_DocInfo();       // 新建文章信息
+    this->initUI();                         // 初始化界面
+
 }
+
+///**
+// * @Author Chaoqun
+// * @brief  含参构造函数
+// * @date   2017/05/01
+// */
+//DocPassage::DocPassage(QWidget *parent,
+//                       QString version, QString docType, double scaleFactor)
+//    :QScrollArea(parent)
+//{
+//    undoStack=new QUndoStack(this);
+//    this->version = version;
+//    this->docType = docType;
+//    this->scaleFactor = scaleFactor;
+//}
 
 DocPassage::~DocPassage()
 {
-    // 释放根节点内容
-//    if(this->docInfo != NULL)
-//    {
-//        delete this->docInfo;
-//        this->docInfo = NULL;
-//    }
-
-    // 释放公共数据
-//    if(this->commonData != NULL)
-//    {
-//        delete this->commonData;
-//        this->commonData = NULL;
-//    }
-
-//     释放this->pages
-//    int pages_length = this->pages.size();
-//    for(int i = 0; i < pages_length; i++)
-//    {
-//        // 需要挨个释放内存空间
-//        DocPage* temp = this->pages.at(i);
-//        if(temp != NULL)
-//        {
-//            delete temp;
-//            (this->pages)[i] = NULL;
-//        }
-//    }
-//    this->pages.clear();
 
 }
 
@@ -100,11 +109,12 @@ void DocPassage::addPage(DocPage *page)
     page->setSize(default_width, default_height);
 //    qDebug() << "!!Page width in pixel = " <<  page->size().width()
 //             << "!!Page height in pixel = " <<  page->size().height();
-    page->has_working_area = default_using_working_area;
-    page->working_area_height = default_working_height;
-    page->working_area_width = default_working_width;
-    page->working_area_x = default_working_x;
-    page->working_area_y = default_working_y;
+    page->setWorkingArea(
+                default_using_working_area,
+                default_working_width,
+                default_working_height,
+                default_working_x,
+                default_working_y);
 
     this->pages.append(page);
     // 添加到ScrollArea
@@ -210,17 +220,17 @@ void DocPassage::setDocInfo(CT_DocInfo &docInfo)
     this->setWindowTitle(this->docInfo->getTitle());        // 设置小窗口标题
 }
 
-/**
- * @Author Chaoqun
- * @brief  测试
- * @param  参数
- * @return 返回值
- * @date   2017/06/22
- */
-void DocPassage::testMessage()
-{
-//    qDebug()<<"passage success";
-}
+///**
+// * @Author Chaoqun
+// * @brief  测试
+// * @param  参数
+// * @return 返回值
+// * @date   2017/06/22
+// */
+//void DocPassage::testMessage()
+//{
+////    qDebug()<<"passage success";
+//}
 
 /**
  * @Author Chaoqun
@@ -388,10 +398,13 @@ void DocPassage::closeEvent(QCloseEvent *event)
     QScrollArea::closeEvent(event);
 }
 
-void DocPassage::init()
+///
+/// \brief DocPassage::initUI
+///     与界面有关的初始化
+///
+void DocPassage::initUI()
 {
-    this->docInfo = new CT_DocInfo();           // 新建文档 元信息
-    this->resetDocId();     // 设置UUID
+
     this->layout = new QVBoxLayout;             // 新建布局
 
     // 新增widget
@@ -410,7 +423,6 @@ void DocPassage::init()
 
     this->scaleFactor = 1.0;
 
-
     // 设置滚动条策略
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -421,15 +433,37 @@ void DocPassage::init()
     adjustScrollBar(this->horizontalScrollBar(), 1);
     adjustScrollBar(this->verticalScrollBar(),1);
 
-    this->page_dialog = new PageDialog(NULL, this);
 //    qDebug() << "Finished Initializing DocPassage...";
-    default_width = 210;                       //默认宽度
-    default_height = 297;                      //默认高度
+    GlobalSetting* global = GlobalSetting::getInstance();
+    default_width = global->getPhysicalWidth();                //默认宽度
+    default_height = global->getPhysicalHeight();              //默认高度
     default_using_working_area = false;
-    default_working_width = 210;
-    default_working_height = 297;
-    default_working_x = 0;
-    default_working_y = 0;
+    default_working_width = global->getContentWidth();
+    default_working_height = global->getContentHeight();
+    default_working_x = global->getContentX();
+    default_working_y = global->getContentY();
+
+}
+
+///
+/// \brief DocPassage::initDocInfo
+/// 用来初始化文档相关的信息
+///
+void DocPassage::initDocInfo()
+{
+    this->docInfo = new CT_DocInfo();           // 新建文档 元信息
+    this->resetDocId();                         // 设置UUID
+
+    GlobalSetting* globalSetting = GlobalSetting::getInstance();
+    this->docInfo->setCreator(globalSetting->getCreator());
+    this->docInfo->setCreatorVersion(globalSetting->getCreatorVersion());
+
+    this->docType = globalSetting->getDocType();
+    this->version = globalSetting->getDocVersion();
+
+    QDateTime time = QDateTime::currentDateTime();  // 获得系统当前时间
+    this->docInfo->setCreationDate( time.toString("yyyy-MM-dd hh:mm:ss"));
+
 }
 
 /**
@@ -533,57 +567,85 @@ void DocPassage::activatePageDialog()
 //             << "page height in pixel = " <<  page->size().height();
     if (page)
     {
-        page_dialog->updateInformation(page,
-                                       default_width,
-                                       default_height,
-                                       default_using_working_area,
-                                       default_working_width,
-                                       default_working_height,
-                                       default_working_x,
-                                       default_working_y);
+        PageDialog* page_dialog = PageDialog::getInstance();
+
+        page_dialog->init(page,
+                          default_width,
+                          default_height,
+                          default_using_working_area,
+                          default_working_width,
+                          default_working_height,
+                          default_working_x,
+                          default_working_y);
+
         this->page_dialog->exec();
     }
 }
 
-void DocPassage::updatePageSizeInformation(QVector<int> &changed_pages,
-                                           double current_width,
-                                           double current_height,
-                                           bool current_using_working_area,
-                                           double current_working_width,
-                                           double current_working_height,
-                                           double current_working_x,
-                                           double current_working_y,
-                                           double default_height,
-                                           double default_width,
-                                           bool using_working_area,
-                                           double default_working_width,
-                                           double default_working_height,
-                                           double default_working_x,
-                                           double default_working_y)
+///
+/// \brief DocPassage::modifyPageSize
+///     修改指定页面的尺寸
+/// \param choosed_pages
+/// \param _width
+/// \param _height
+/// \param isUsingWorkingArea
+/// \param contentWidth
+/// \param contentHeight
+/// \param contentX
+/// \param contentY
+///
+void DocPassage::modifyPageSize(
+        QVector<int> *ch_pages,
+        double _width,
+        double _height,
+        bool isUsingWorkingArea,
+        double contentWidth,
+        double contentHeight,
+        double contentX,
+        double contentY)
 {
-    DocPage * cur_page;
-    for (int i = 0; i < changed_pages.size(); i++) {
-        cur_page = pages[changed_pages[i] - 1];
-        cur_page->setSize(current_width, current_height);
-        cur_page->has_working_area = current_using_working_area;
-        cur_page->working_area_width = current_working_width;
-        cur_page->working_area_height = current_working_height;
-        cur_page->working_area_x = current_working_x;
-        cur_page->working_area_y = current_working_y;
+
+    DocPage * temp_page;                // 临时变量使用的页面
+    for (int i = 0; i < ch_pages->size(); i++) {
+        temp_page = this->pages[ch_pages->operator [](i) - 1];
+        temp_page->setSize(_width, _height);
+        temp_page->setWorkingArea(isUsingWorkingArea,
+                                  contentWidth,
+                                  contentHeight,
+                                  contentX,
+                                  contentY);
     }
+
+    this->adjustWidgetSize();   // 更新尺寸
+}
+
+///
+/// \brief DocPassage::modifyDefaultPageSize
+///     修改默认新增加页面时的尺寸
+/// \param default_width
+/// \param default_height
+/// \param default_isUsingWorkingArea
+/// \param default_contentWidth
+/// \param default_contentHeight
+/// \param default_contentX
+/// \param default_contentY
+///
+void DocPassage::modifyDefaultPageSize(
+        double default_width,
+        double default_height,
+        bool default_isUsingWorkingArea,
+        double default_contentWidth,
+        double default_contentHeight,
+        double default_contentX,
+        double default_contentY)
+{
     this->default_width = default_width;
     this->default_height = default_height;
-    this->default_using_working_area = using_working_area;
-    this->default_working_width = default_working_width;
-    this->default_working_height = default_working_height;
-    this->default_working_x = default_working_x;
-    this->default_working_y = default_working_y;
-//    qDebug() << "Current Page Width = "
-//             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().width())
-//             << "Current Page Height = "
-    //             << UnitTool::pixelToMM(qobject_cast<DocPage *>(focusWidget())->size().height());
-
-    this->adjustWidgetSize();
+    this->default_using_working_area = default_isUsingWorkingArea;
+    this->default_working_width = default_contentWidth;
+    this->default_working_height = default_contentHeight;
+    this->default_working_x = default_contentX;
+    this->default_working_y = default_contentY;
 }
 
 /**

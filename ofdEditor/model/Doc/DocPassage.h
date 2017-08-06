@@ -35,9 +35,14 @@ class MODELSHARED_EXPORT DocPassage
 {
     Q_OBJECT
 public:
-    explicit DocPassage(QWidget* parent = 0);
-    DocPassage(QWidget *parent, QString version,
-               QString docType,double scaleFactor);
+
+    static DocPassage *createNewPassage();              // 创建新的文章
+    static DocPassage *createEmptyPassage();            // 创建空的文章
+
+    explicit DocPassage(QWidget* parent);
+    DocPassage();                                       // 空构造函数
+//    DocPassage(QWidget *parent, QString version,
+//               QString docType,double scaleFactor);     // 可能用不上了
     ~DocPassage();
 
     CT_DocInfo* getDocInfo();                // 获取CT_DocInfo数据
@@ -76,7 +81,7 @@ public slots:
     // docId
     void resetDocId();          // 重新设置DocId
 
-    void testMessage(); // 测试信号是否走通
+//    void testMessage();       // 测试信号是否走通
 
     void adjustWidgetSize();                    // 根据页数来自动调整widget大小
 
@@ -84,21 +89,28 @@ public slots:
 
     void activatePageDialog();
 
-    void updatePageSizeInformation(QVector<int> & changed_pages,
-                                   double current_width,
-                                   double current_height,
-                                   bool current_using_working_area,
-                                   double current_working_width,
-                                   double current_working_height,
-                                   double current_working_x,
-                                   double current_working_y,
-                                   double default_height,
-                                   double default_width,
-                                   bool using_working_area,
-                                   double default_working_width,
-                                   double default_working_height,
-                                   double default_working_x,
-                                   double default_working_y);
+    // 更改指定页面的页面尺寸
+    void modifyPageSize(
+            QVector<int> * ch_pages,
+            double _width,
+            double _height,
+            bool isUsingWorkingArea,
+            double contentWidth,
+            double contentHeight,
+            double contentX,
+            double contentY);
+
+    // 修改文章的默认尺寸
+    void modifyDefaultPageSize(
+            double default_width,
+            double default_height,
+            bool default_isUsingWorkingArea,
+            double default_contentWidth,
+            double default_contentHeight,
+            double default_contentX,
+            double default_contentY
+            );
+
     void zoomIn();                      // 缩小
     void zoomOut();                     // 放大
 
@@ -134,12 +146,15 @@ private:
     int horizontalWhite;            // 白色页面左右两边的灰色区域
     int verticalWhite;              // 白色页面上下的灰色区域
 
-    void init();                                // 初始化
+    void initUI();                  // 初始化文章界面相关的
+    void initDocInfo();             // 初始化文档信息
+
     void adjustScrollBar(QScrollBar *scrollBar,
                          double factor);        // 调整滑动条
     void adjustScrollBarRange();                //调整滑动条范围
 
     PageDialog * page_dialog;                   //用于调整页面格式的对话框
+    // 默认的大小
     double default_width;                       //默认宽度
     double default_height;                      //默认高度
     bool default_using_working_area;

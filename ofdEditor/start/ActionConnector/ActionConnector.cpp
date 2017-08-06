@@ -33,11 +33,10 @@ void ActionConnector::showAttribute()
         return;
     }
 
-
     CT_DocInfo * docInfo = this->passage->getDocInfo();
-    DocInfoDialog* dialog = new DocInfoDialog(docInfo,this->mainWindow);  // 设置窗口
+    DocInfoDialog* dialog = DocInfoDialog::getInstance();   // 获得实例
+    dialog->init(docInfo);                                  // 设置窗口
     dialog->exec();                  // 运行
-//    qDebug() << "show Attribute";
 
 }
 
