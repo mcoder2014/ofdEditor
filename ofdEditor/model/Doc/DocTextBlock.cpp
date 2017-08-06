@@ -540,7 +540,10 @@ void DocTextBlock::textFontDialog()
 void DocTextBlock::customFontDialog()
 {
 
-    FontSettingDialog * font = new FontSettingDialog(this,0);
+//    FontSettingDialog * font = new FontSettingDialog(this,0);
+//    font->exec();
+    FontSettingDialog* font = FontSettingDialog::getInstance(); // 获取实例
+    font->init(this);
     font->exec();
 }
 

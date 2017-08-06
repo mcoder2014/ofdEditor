@@ -3,33 +3,61 @@
 
 #include <QTextCharFormat>
 #include <QFont>
+#include <QDebug>
 #include "Doc/DocTextBlock.h"
 #include <QTextBrowser>
+
+FontSettingDialog* FontSettingDialog::m_instance = NULL;       // 初始化静态变量
 
 FontSettingDialog::FontSettingDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FontSettingDialog)
 {
     ui->setupUi(this);
+    init();
 }
 
-FontSettingDialog::FontSettingDialog(DocTextBlock *textBlock
-                                     , QWidget *parent)
-    :QDialog(parent),
-    ui(new Ui::FontSettingDialog)
+///
+/// \brief FontSettingDialog::getInstance
+/// 获得单例的实例
+/// \return
+///
+FontSettingDialog *FontSettingDialog::getInstance()
 {
-    ui->setupUi(this);
-    this->textBlock = textBlock;        // 记录下负责的DocTextBlock
+    if( m_instance != NULL)
+    {
+        return m_instance;
+    }
 
-    this->connect(this,SIGNAL(signal_updatePreview(QTextCharFormat)),
-                  this,SLOT(updatePreview(QTextCharFormat)));                  // 更新预览的链接
+    m_instance = new FontSettingDialog();   // 新建字体设置窗口实例
+    return m_instance;
+}
+
+///
+/// \brief FontSettingDialog::DestoryInstance
+/// 用来销毁实例
+void FontSettingDialog::DestoryInstance()
+{
+    // Font窗口暂不释放，交由Qt机制处理
+    m_instance = NULL;
+}
+
+///
+/// \brief FontSettingDialog::init
+///     每次调出单例后可执行
+/// \param textBlock
+///
+void FontSettingDialog::init(DocTextBlock *textBlock)
+{
+    this->textBlock = textBlock;            // 纪录下当前操作的对象
+    // 当用完后，记得将对象释放
+    connect(this,SIGNAL(sendFont(QTextCharFormat&)),
+            this->textBlock,SLOT(setCharFormatOnSelection(QTextCharFormat&)));    // 发送字体
 
     QTextCursor cursor = this->textBlock->textCursor();     // 获得文本的光标
     QTextCharFormat charFormat = cursor.charFormat();       // 获得光标的charFormat
-    this->init(charFormat);                                 // 初始化字体窗口
 
-    initConnect();                                          // 初始化信号连接
-
+    this->changeCharFormat(charFormat);                     // 更改字体窗口的当前字体
 }
 
 FontSettingDialog::~FontSettingDialog()
@@ -84,47 +112,55 @@ int FontSettingDialog::comboIndex(double pointSizeF)
 
 /**
  * @Author Chaoqun
- * @brief  初始化链接
+ * @brief  初始化链接 - 只需要执行一次
  * @param  void
  * @return void
  * @date   2017/05/26
  */
 void FontSettingDialog::initConnect()
 {
+    // 链接字体
     this->connect(this->ui->comboFont,
                   SIGNAL(currentFontChanged(QFont)),
-                  this,SLOT(updateFontFamily(QFont)));       // 链接字体
+                  this,SLOT(updateFontFamily(QFont)));
 
+    // 链接字号
     this->connect(this->ui->comboFontSize,
                   SIGNAL(currentIndexChanged(int)),
                   this, SLOT(updateFontSizeF(int)));                // 链接字体大小
-
+    // 链接粗体
     connect(this->ui->checkBold, SIGNAL(stateChanged(int)),
             this,SLOT(updateBold(int)));                             // 链接加粗
 
+    // 链接斜体
     connect(this->ui->checkItalic, SIGNAL(stateChanged(int)),
             this,SLOT(updateItalic(int)));                            // 链接斜体
 
+    // 链接下划线
     connect(this->ui->checkUnderline, SIGNAL(stateChanged(int)),
             this,SLOT(updateUnderline(int)));                          // 链接下划线
 
+    // 链接字宽
     connect(this->ui->checkFixedWidth, SIGNAL(stateChanged(int)),
             this,SLOT(updatefixedPitch(int)));                          // 固定字宽
 
+    // 链接字粗
     connect(this->ui->intFontWeight,
             SIGNAL(valueChanged(int)),
             this,SLOT(updateWeight(int)));                         // 字体粗细
 
+    // 字间距
     connect(this->ui->doubleFontSpace,
             SIGNAL(valueChanged(double)),
             this,SLOT(updateWordSpacing(double)));                    // 字间距
 
+    // 链接预览窗口
+    connect(this, SIGNAL(signal_updatePreview(QTextCharFormat)),
+            this,SLOT(updatePreview(QTextCharFormat)));
 
+    // 当用户点击确认后，执行的函数
     connect(this, SIGNAL(accepted()),
             this, SLOT(accept_slots()));                        // 窗口接受确认的信号
-
-    connect(this,SIGNAL(sendFont(QTextCharFormat&)),
-            this->textBlock,SLOT(setCharFormatOnSelection(QTextCharFormat&)));    // 发送字体
 
 }
 
@@ -142,21 +178,11 @@ void FontSettingDialog::updatePreview(const QTextCharFormat &charFormat)
     cursor.setCharFormat(charFormat);                           // 设置格式
 }
 
-/**
- * @Author Chaoqun
- * @brief  初始化界面
- * @param  const QTextCharFormat &charFormat
- * @return void
- * @date   2017/05/25
- */
-void FontSettingDialog::init(const QTextCharFormat &charFormat)
+///
+/// \brief FontSettingDialog::init
+/// 改成单例后，部分界面的初始化只需要做一次
+void FontSettingDialog::init()
 {
-    this->charFormat = new QTextCharFormat(charFormat);         // 存下这个charFormat，后面可以使用
-
-    // 字体框
-    QFont font = charFormat.font();         // 获得字体
-    this->ui->comboFont->setCurrentFont(font);     // 设置显示
-
     // 字体大小框
     // 点大小与Index的对应关系
     this->pointSizeTable.insert(0,42);      // 初号
@@ -197,6 +223,25 @@ void FontSettingDialog::init(const QTextCharFormat &charFormat)
     this->pointSizeTable.insert(35,48);
     this->pointSizeTable.insert(36,72);
 
+    initConnect();                      // 做链接
+
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  初始化界面
+ * @param  const QTextCharFormat &charFormat
+ * @return void
+ * @date   2017/05/25
+ */
+void FontSettingDialog::changeCharFormat(const QTextCharFormat &charFormat)
+{
+    this->charFormat = new QTextCharFormat(charFormat);         // 存下这个charFormat，后面可以使用
+
+    // 字体框
+    QFont font = charFormat.font();                 // 获得字体
+    this->ui->comboFont->setCurrentFont(font);      // 设置显示
 
     int fontsizeIndex = this->comboIndex(font.pointSizeF());        // 设置对应的字体大小
     this->ui->comboFontSize->setCurrentIndex(fontsizeIndex);
@@ -243,7 +288,6 @@ void FontSettingDialog::init(const QTextCharFormat &charFormat)
     this->ui->doubleFontStretch->setVisible(false);
     this->ui->checkFixedWidth->setVisible(false);
 
-
     // weight
     int weight = font.weight();
     this->ui->intFontWeight->setValue(weight);
@@ -259,7 +303,6 @@ void FontSettingDialog::init(const QTextCharFormat &charFormat)
     }
 
     emit signal_updatePreview(*this->charFormat);           // 更新预览窗口
-
 
 }
 
@@ -466,6 +509,11 @@ void FontSettingDialog::updateWeight(int i)
 * @date   2017/05/26
  */
 void FontSettingDialog::accept_slots()
-{
+{ 
     emit this->sendFont(*this->charFormat);
+
+    // 释放链接
+    disconnect(this,SIGNAL(sendFont(QTextCharFormat&)),
+               this->textBlock,SLOT(setCharFormatOnSelection(QTextCharFormat&)));
+
 }
