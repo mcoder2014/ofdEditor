@@ -10,11 +10,50 @@
 #include <QTextCursor>
 #include <QScrollBar>
 
+FindAndReplaceDock* FindAndReplaceDock::m_instance = NULL;  // 初始化静态变量
+
+///
+/// \brief FindAndReplaceDock::getInstance
+///     获得实例
+/// \return
+///
+FindAndReplaceDock *FindAndReplaceDock::getInstance()
+{
+    if(m_instance != NULL)
+    {
+        return m_instance;
+    }
+
+    m_instance = new FindAndReplaceDock();
+    return m_instance;
+}
+
+///
+/// \brief FindAndReplaceDock::DestoryInstance
+/// 销毁实例 - 暂时交由QT处理
+void FindAndReplaceDock::DestoryInstance()
+{
+    m_instance = NULL;
+}
+
+///
+/// \brief FindAndReplaceDock::FindAndReplaceDock
+/// 默认构造函数
+/// \param parent
+///
 FindAndReplaceDock::FindAndReplaceDock(QWidget *parent) :
     QDockWidget(parent),
     ui(new Ui::FindAndReplaceDock)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);              // 初始化界面
+    this->init();                   // 初始化
+}
+
+///
+/// \brief FindAndReplaceDock::init
+///     初始化，主要用于单例的构造函数
+void FindAndReplaceDock::init()
+{
     //初始化成员
     count = 0;
     ui->CountLineEdit->setText("0");
@@ -22,12 +61,22 @@ FindAndReplaceDock::FindAndReplaceDock(QWidget *parent) :
 
     ui->ReplaceButton->setEnabled(false);
     ui->ReplaceAllButton->setEnabled(false);
-    //建立信号槽
+
+    this->initConnect();            // 初始化信号槽链接
+}
+
+///
+/// \brief FindAndReplaceDock::initConnect
+/// 初始化链接
+///
+void FindAndReplaceDock::initConnect()
+{
+
     this->connect(ui->FindLineEdit,
                   SIGNAL(textChanged(QString)),
                   this,
                   SLOT(on_FindLineEdit_textChanged(QString)));
-    qDebug() << "Finished constructing FindAndReplaceDock";
+//    qDebug() << "Finished constructing FindAndReplaceDock";
     this->connect(ui->CountLineEdit,
                   SIGNAL(textChanged(QString)),
                   this,
@@ -48,6 +97,7 @@ FindAndReplaceDock::FindAndReplaceDock(QWidget *parent) :
                   SIGNAL(clicked(bool)),
                   this,
                   SLOT(replaceAll()));
+
 }
 
 

@@ -12,7 +12,8 @@ namespace Ui {
 class SelectTemplateDialog;
 }
 
-class MODELSHARED_EXPORT SelectTemplateDialog : public QDialog
+class MODELSHARED_EXPORT SelectTemplateDialog
+        : public QDialog
 {
     Q_OBJECT
 
@@ -30,7 +31,6 @@ private slots:
     void nextTemplate();
     void lastTemplate();
     void emitCreateTemplateSignal();
-
 
 signals:
     void createTemplate(int index);

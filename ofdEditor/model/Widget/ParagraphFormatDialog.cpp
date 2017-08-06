@@ -3,15 +3,62 @@
 
 #include "Doc/DocTextBlock.h"
 
+ParagraphFormatDialog* ParagraphFormatDialog::m_instance = NULL;    // 初始化静态单例
+
+///
+/// \brief ParagraphFormatDialog::getInstance
+///     获得实例
+/// \return
+///
+ParagraphFormatDialog *ParagraphFormatDialog::getInstance()
+{
+    if( m_instance != NULL)
+    {
+        return m_instance;
+    }
+
+    m_instance = new ParagraphFormatDialog();
+    return m_instance;
+}
+
+void ParagraphFormatDialog::DestoryInstance()
+{
+    // 考虑到是QT 组件，暂时不去释放内存
+    m_instance = NULL;
+}
+
+///
+/// \brief ParagraphFormatDialog::init
+/// 每次使用单例时都需要将界面初始化一次s
+/// \param blockFormat      需要进行设置的段落格式
+/// \param textBlock        留下文本框引用
+///
+void ParagraphFormatDialog::init(
+        QTextBlockFormat &blockFormat,
+        DocTextBlock *textBlock)
+{
+
+    this->init(blockFormat);
+    this->textBlock = textBlock;        // 留下引用，仅用来连接信号槽
+
+    connect(this,
+            SIGNAL(finished(QTextBlockFormat&)),
+            this->textBlock,
+            SLOT(setTextBlockFormat(QTextBlockFormat&))); // 连接信号和信号槽
+
+
+}
+
 ParagraphFormatDialog::ParagraphFormatDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ParagraphFormatDialog)
 {
-
+    ui->setupUi(this);
 
     // 设置默认选项
     QTextBlockFormat blockformat;
     this->init(blockformat);
+
 }
 
 ParagraphFormatDialog::~ParagraphFormatDialog()
@@ -19,23 +66,25 @@ ParagraphFormatDialog::~ParagraphFormatDialog()
     delete ui;
 }
 
+///
+/// \brief ParagraphFormatDialog::getQTextBlockFormat
+///     从设置页面中获得设置结果
+/// \return
+///
 QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
 {
 
     QTextBlockFormat blockFormat;           // 用来纪录格式的
 
     Qt::Alignment horizontalFlag;
-//    Qt::Alignment verticalFlag;
 
     // 水平布局
     int comboHAlignIndex = ui->comboHAlignment->currentIndex();
     switch (comboHAlignIndex) {
     case 0:
-//        horizontalFlag = (Qt::AlignLeft | Qt::AlignAbsolute);
          horizontalFlag = (Qt::AlignLeft);
         break;
     case 1:
-//        horizontalFlag = (Qt::AlignRight | Qt::AlignAbsolute);
         horizontalFlag = (Qt::AlignRight);
         break;
     case 2:
@@ -49,42 +98,7 @@ QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
 
     }
 
-//    // 竖直布局
-//    int comboVAlignIndex = ui->comboVAlignment->currentIndex();
-//    switch (comboVAlignIndex) {
-//    case 0:
-//        verticalFlag = Qt::AlignTop;
-//        break;
-//    case 1:
-//        verticalFlag = Qt::AlignBottom;
-//        break;
-//    case 2:
-//        verticalFlag = Qt::AlignVCenter;
-//        break;
-//    default:
-//        break;
-//    }
-
-    // 设置布局规则
-//    blockFormat.setAlignment(verticalFlag | horizontalFlag);
     blockFormat.setAlignment(horizontalFlag);
-
-//    // 设置文字方向
-    // 无法使用，仅对部分语言有效
-//    Qt::LayoutDirection textDirection;
-//    int textDirectionIndex = ui->comboTextDirection->currentIndex();
-//    switch (textDirectionIndex) {
-//    case 0:
-//        textDirection = Qt::LeftToRight;
-//        break;
-//    case 1:
-//        textDirection = Qt::RightToLeft;
-//        break;
-//    default:
-//        textDirection = Qt::LeftToRight;
-//        break;
-//    }
-//    blockFormat.setLayoutDirection(textDirection);
 
     // 缩进规则
     int paraIndent = ui->paraIndent->value();
@@ -92,7 +106,6 @@ QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
 
     blockFormat.setIndent(paraIndent);
     blockFormat.setTextIndent(firstIndent);
-
 
     // 设置段前段后
     double spaceBefore = ui->doubleBefor->value();
@@ -128,18 +141,6 @@ QTextBlockFormat ParagraphFormatDialog::getQTextBlockFormat()
     return blockFormat;
 }
 
-ParagraphFormatDialog::ParagraphFormatDialog(
-        const QTextBlockFormat &blockFormat,
-        DocTextBlock *textBlock, QWidget *parent)
-    :QDialog(parent),
-    ui(new Ui::ParagraphFormatDialog)
-{
-    this->init(blockFormat);
-    this->textBlock = textBlock;        // 留下引用，仅用来连接信号槽
-
-    connect(this, SIGNAL(finished(QTextBlockFormat&)),
-            this->textBlock, SLOT(setTextBlockFormat(QTextBlockFormat&))); // 连接信号和信号槽
-}
 
 /**
  * @Author Chaoqun
@@ -150,7 +151,6 @@ ParagraphFormatDialog::ParagraphFormatDialog(
  */
 void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
 {
-    ui->setupUi(this);
 
     // 此信号槽用来将accepted信号接收，然后通过函数发送finished信号
     connect(this,SIGNAL(accepted()),
@@ -159,10 +159,8 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
     // 设置对齐部分
     Qt::Alignment flag = blockFormat.alignment();       // 先获取对齐的样式
     Qt::Alignment horizontalFlag;
-//    Qt::Alignment verticalFlag;
 
     horizontalFlag = flag & Qt::AlignHorizontal_Mask;
-//    verticalFlag = flag & Qt::AlignVertical_Mask;
 
     // 水平对齐
     switch (horizontalFlag) {
@@ -183,43 +181,6 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
         break;
     }
 
-//    // 竖直对齐
-//    switch (verticalFlag) {
-//    case Qt::AlignTop:
-//        ui->comboVAlignment->setCurrentIndex(0);
-//        break;
-//    case Qt::AlignBottom:
-//        ui->comboVAlignment->setCurrentIndex(1);
-//        break;
-//    case Qt::AlignCenter:
-//        ui->comboVAlignment->setCurrentIndex(2);
-//        break;
-//    default:
-//        ui->comboVAlignment->setCurrentIndex(-1);
-//        break;
-//    }
-
-    // 因竖直对齐的调整并没有效果，这里选择去掉
-    this->ui->comboVAlignment->setVisible(false);
-    this->ui->label_12->setVisible(false);
-
-// 因为文字方向无法使用，所以将其隐藏掉
-//    //文字方向
-//    Qt::LayoutDirection textDirection = blockFormat.layoutDirection();
-//    switch (textDirection) {
-//    case Qt::LeftToRight:
-//        ui->comboTextDirection->setCurrentIndex(0);
-//        break;
-//    case Qt::RightToLeft:
-//        ui->comboTextDirection->setCurrentIndex(1);
-//        break;
-//    default:
-//        ui->comboTextDirection->setCurrentIndex(0);
-//        break;
-//    }
-    this->ui->comboTextDirection->setVisible(false);
-    this->ui->label_13->setVisible(false);
-
     // 整段缩进
     int indent = blockFormat.indent();
     ui->paraIndent->setValue(indent);
@@ -238,7 +199,6 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
     ui->doubleAfter->setValue(bottomMargin);
 
     // 行高
-//    QTextBlockFormat::LineHeightTypes lineHeightTypes;
     int lineHeightTypes;
     lineHeightTypes = blockFormat.lineHeightType();
 
@@ -277,4 +237,9 @@ void ParagraphFormatDialog::accept_slots()
 {
     QTextBlockFormat blockFormat = this->getQTextBlockFormat();
     emit this->finished(blockFormat);
+
+    disconnect(this,
+            SIGNAL(finished(QTextBlockFormat&)),
+            this->textBlock,
+            SLOT(setTextBlockFormat(QTextBlockFormat&))); // 断开信号与槽链接
 }

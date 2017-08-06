@@ -461,9 +461,13 @@ void DocTextBlock::textParagraph()
     QTextCursor cursor = this->textCursor();
     QTextBlockFormat blockFormat = cursor.blockFormat();
 
-    ParagraphFormatDialog * para = new ParagraphFormatDialog(
-                blockFormat,this);
+//    ParagraphFormatDialog * para = new ParagraphFormatDialog(
+//                blockFormat,this);
 
+//    para->exec();
+    ParagraphFormatDialog* para =
+            ParagraphFormatDialog::getInstance();  // 获得实例
+    para->init(blockFormat, this);
     para->exec();
 }
 /**

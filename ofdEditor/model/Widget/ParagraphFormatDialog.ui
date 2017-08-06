@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>505</height>
+    <width>340</width>
+    <height>494</height>
    </rect>
   </property>
   <property name="font">
@@ -62,59 +62,6 @@
         <item>
          <property name="text">
           <string>两端对齐</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>竖直</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboVAlignment">
-        <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
-        </property>
-        <item>
-         <property name="text">
-          <string>居上</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>居下</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>居中</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>文字方向</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboTextDirection">
-        <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
-        </property>
-        <item>
-         <property name="text">
-          <string>左到右</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>右到左</string>
          </property>
         </item>
        </widget>

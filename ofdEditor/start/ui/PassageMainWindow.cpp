@@ -46,12 +46,19 @@ PassageMainWindow::~PassageMainWindow()
 
 }
 
+///
+/// \brief PassageMainWindow::activateFindAndReplaceDock
+///     激活查找替换窗口
+///
 void PassageMainWindow::activateFindAndReplaceDock()
 {
     if (connector->getActivePassage())
     {
-        find_and_replace_dock->setCurrentPassage(connector->getActivePassage());
-        this->find_and_replace_dock->show();
+        FindAndReplaceDock* find_and_replace_dock
+                = FindAndReplaceDock::getInstance();    // 获得单例
+        find_and_replace_dock->setCurrentPassage(
+                    connector->getActivePassage());     // 设置当前操作的文章
+        find_and_replace_dock->show();
     }
 }
 
@@ -105,17 +112,30 @@ void PassageMainWindow::init()
     this->setWindowTitle(tr("OFD Editor"));
     this->setWindowIcon(QIcon(":/icons/source/icons/ofdEditor2.png"));
 
-    this->find_and_replace_dock = new FindAndReplaceDock(NULL);
-    this->addDockWidget(Qt::BottomDockWidgetArea, find_and_replace_dock);
-    this->find_and_replace_dock->setWindowIcon(QIcon(":/icons/source/icons/Find.png"));
-    this->find_and_replace_dock->setMaximumHeight(60);
-    this->find_and_replace_dock->setMinimumHeight(60);
-    this->find_and_replace_dock->setVisible(false);
+//    this->find_and_replace_dock = new FindAndReplaceDock(NULL);
+//    this->addDockWidget(Qt::BottomDockWidgetArea, find_and_replace_dock);
+//    this->find_and_replace_dock->setWindowIcon(QIcon(":/icons/source/icons/Find.png"));
+//    this->find_and_replace_dock->setMaximumHeight(60);
+//    this->find_and_replace_dock->setMinimumHeight(60);
+//    this->find_and_replace_dock->setVisible(false);
+
+    FindAndReplaceDock* find_and_replace_dock
+            = FindAndReplaceDock::getInstance();    // 获得单例
+     this->addDockWidget(
+                Qt::BottomDockWidgetArea,
+                find_and_replace_dock);     // 设置容器
+
+     find_and_replace_dock->setWindowIcon(
+                    QIcon(":/icons/source/icons/Find.png"));    // 设置图标
+     find_and_replace_dock->setMaximumHeight(60);
+     find_and_replace_dock->setMinimumHeight(60);
+     find_and_replace_dock->setVisible(false);
 
     this->select_template_dialog = new SelectTemplateDialog(NULL, this);
     this->select_template_dialog->setFixedSize(select_template_dialog->size());
     connect(this->select_template_dialog, SIGNAL(createTemplate(int)),
           this, SLOT(createTemplatePassage(int)));
+
 }
 
 /**
