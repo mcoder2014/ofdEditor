@@ -66,6 +66,7 @@ private slots:
     void updateWeight(int i);               // 字体粗细
 
     void accept_slots();                    // 向DocTextBlock传递成功事件
+    void finished_slots(int result);        // 结束时释放链接
 
 };
 

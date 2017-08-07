@@ -165,9 +165,9 @@ void FindAndReplaceDock::on_FindLineEdit_textChanged(const QString &arg1)
 void FindAndReplaceDock::findAllTargetTextBlock(const QString & str)
 {
 //    qDebug() << "Start finding all target blocks";
-    for (int i = 0; i < passage->getPages().size(); i++)
+    for (int i = 0; i < passage->getPages()->size(); i++)
     {
-        DocPage * cur_page = passage->getPages()[i];
+        DocPage * cur_page = passage->getPages()->operator [](i);
         DocLayer * foreground_layer = cur_page->getForegroundLayer();
         DocLayer * body_layer = cur_page->getBodyLayer();
         DocLayer * background_layer = cur_page->getBackgroundLayer();
@@ -265,12 +265,13 @@ void FindAndReplaceDock::focusOnFoundPart()
     DocPassage * current_passage = current_block->getPassage();
     DocPage * current_page = current_block->getPage();
     int accumulated_height = 0;
-    for (int i = 0; i < current_passage->getPages().size(); i++)
+    for (int i = 0; i < current_passage->getPages()->size(); i++)
     {
-        if (current_passage->getPages()[i] == current_page)
+        if (current_passage->getPages()->operator [](i) == current_page)
             break;
         else
-            accumulated_height += 50 + current_passage->getPages()[i]->height();
+            accumulated_height +=
+                    50 + current_passage->getPages()->operator [](i)->height();
     }
     scroll_bar->setSliderPosition(accumulated_height + current_block->pos().ry());
 }

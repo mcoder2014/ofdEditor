@@ -132,8 +132,8 @@ void Doc_OFDConvertor::buildDocument()
 void Doc_OFDConvertor::buildPages(Document* document)
 {
     qDebug() << "exec buildPages";
-    QVector<DocPage* > docPages = this->passage->getPages(); // 获得页面
-    int pagesLength = docPages.size();      // 获得页面的数量
+    QVector<DocPage* >* docPages = this->passage->getPages(); // 获得页面
+    int pagesLength = docPages->size();      // 获得页面的数量
 
     // 公共页大小，之后改成从DocPassage读取
     if(pagesLength >= 1)
@@ -143,7 +143,7 @@ void Doc_OFDConvertor::buildPages(Document* document)
 
         CT_PageArea *area = new CT_PageArea();
 
-        DocPage* page = docPages[0];
+        DocPage* page = docPages->operator [](0);
         area->setPhysicalBox(0,0,
                              page->getWidth(),page->getHeight());
         commonData->setPageArea(area);
@@ -157,7 +157,7 @@ void Doc_OFDConvertor::buildPages(Document* document)
     // 遍历每个页面
     for(int i=0; i< pagesLength;i++)
     {
-        DocPage* page = docPages.operator [](i);
+        DocPage* page = docPages->operator [](i);
 
         Page* ctPage = new Page();
         ctPage->setID(this->table->size()+1,this->table);   // 设置ID

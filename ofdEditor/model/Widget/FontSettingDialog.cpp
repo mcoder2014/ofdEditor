@@ -162,6 +162,8 @@ void FontSettingDialog::initConnect()
     connect(this, SIGNAL(accepted()),
             this, SLOT(accept_slots()));                        // 窗口接受确认的信号
 
+    connect(this,SIGNAL(finished(int)),
+            this,SLOT(finished_slots(int)));                    // 释放链接
 }
 
 /**
@@ -511,9 +513,18 @@ void FontSettingDialog::updateWeight(int i)
 void FontSettingDialog::accept_slots()
 { 
     emit this->sendFont(*this->charFormat);
+}
 
+///
+/// \brief FontSettingDialog::finished_slots
+/// \param result
+///
+void FontSettingDialog::finished_slots(int result)
+{
     // 释放链接
-    disconnect(this,SIGNAL(sendFont(QTextCharFormat&)),
-               this->textBlock,SLOT(setCharFormatOnSelection(QTextCharFormat&)));
+    disconnect(this,
+               SIGNAL(sendFont(QTextCharFormat&)),
+               this->textBlock,
+               SLOT(setCharFormatOnSelection(QTextCharFormat&)));
 
 }

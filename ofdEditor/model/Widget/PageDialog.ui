@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>456</height>
+    <width>549</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -335,71 +335,72 @@
           <string>应用于</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="4">
-           <widget class="QSpinBox" name="PageRangeUpperBound">
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="PageRangeCheckBox">
-            <property name="text">
-             <string>页面范围</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
-           <widget class="QCheckBox" name="CurrentPageCheckBox">
+           <widget class="QRadioButton" name="CurrentPageRadioButton">
             <property name="text">
              <string>当前页</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
+           <widget class="QRadioButton" name="AllPagesRadioButton">
+            <property name="text">
+             <string>所有页</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="PageRangeRadioButton">
+            <property name="text">
+             <string>页面范围</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QCheckBox" name="PageRangeCheckBox">
+            <property name="text">
+             <string>页面范围</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
            <widget class="QCheckBox" name="AllPagesCheckBox">
             <property name="text">
              <string>所有页</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="PageRange1">
-            <property name="font">
-             <font>
-              <family>Agency FB</family>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>从</string>
+          <item row="6" column="4">
+           <widget class="QSpinBox" name="PageRangeUpperBound">
+            <property name="maximum">
+             <number>10000</number>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="CurrentPageCheckBox">
+            <property name="text">
+             <string>当前页</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="tristate">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
            <widget class="QSpinBox" name="PageRangeLowerBound"/>
           </item>
-          <item row="2" column="3">
-           <widget class="QLabel" name="PageRange2">
-            <property name="font">
-             <font>
-              <family>Agency FB</family>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>到</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
+          <item row="7" column="0">
            <widget class="QCheckBox" name="SpecificPageCheckBox">
             <property name="text">
              <string>特定页数</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="5">
+          <item row="6" column="5">
            <widget class="QLabel" name="PageRange3">
             <property name="font">
              <font>
@@ -412,7 +413,33 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="6" column="3">
+           <widget class="QLabel" name="PageRange2">
+            <property name="font">
+             <font>
+              <family>Agency FB</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>到</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLabel" name="PageRange1">
+            <property name="font">
+             <font>
+              <family>Agency FB</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>从</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
            <widget class="QLabel" name="PageNum">
             <property name="font">
              <font>
@@ -425,8 +452,15 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2" colspan="4">
+          <item row="7" column="2" colspan="4">
            <widget class="QLineEdit" name="SpecificPage"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QRadioButton" name="SpecificPageRadioButton">
+            <property name="text">
+             <string>特定页数</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -777,11 +811,4 @@
  </widget>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="AppliedRange">
-   <property name="exclusive">
-    <bool>true</bool>
-   </property>
-  </buttongroup>
- </buttongroups>
 </ui>

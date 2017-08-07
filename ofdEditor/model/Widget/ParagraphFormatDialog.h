@@ -46,6 +46,7 @@ private:
 
 private slots:
     void accept_slots();    // 用来绑定 QDialog的 accepted信号
+    void finished_slots(int value);     // 用来做窗口关闭后的最后处理
 };
 
 #endif // PARAGRAPHFORMATDIALOG_H

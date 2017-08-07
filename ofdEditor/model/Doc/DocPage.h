@@ -29,8 +29,6 @@ class MODELSHARED_EXPORT DocPage
     Q_OBJECT
 public:
 
-
-
     enum Layer{Body,Foreground,Background};              // 分为三层
     enum BlockFlag{none,draw,drawMove,blockMove, blockResize};        // 插入时的绘制状态
     enum BlockType{text,image,table};                    // 插入时的类型
@@ -82,10 +80,11 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event) ;
-    void mousePressEvent(QMouseEvent *event) ;
-    void mouseMoveEvent(QMouseEvent *event) ;
-    void mouseReleaseEvent(QMouseEvent *event) ;
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void focusInEvent(QFocusEvent *event);
 
 private:
 
@@ -125,6 +124,7 @@ signals:        // 信号
     void signals_removeTextBlock(DocTextBlock* textBlock );  // 移除文本框信号
     void has_focused_page();
     void has_no_focused_page();
+    void signals_page_actived(DocPage* page);   // 本页面被激活信号
 };
 
 

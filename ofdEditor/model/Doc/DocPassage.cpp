@@ -120,6 +120,11 @@ void DocPassage::addPage(DocPage *page)
     // 添加到ScrollArea
     this->layout->addWidget(page,0,Qt::AlignCenter);
         // 向layout中增加一页，并居中显示
+
+    // 接收当前操作页面的更新
+    this->connect(page, SIGNAL(signals_page_actived(DocPage*)),
+                  this, SLOT(setCurrentActivedPage(DocPage*)));
+
     this->layout->update();             // 更新
     page->setPassage(this);             // 设置页所属的文章
     this->adjustWidgetSize();   // 调整大小
@@ -293,9 +298,9 @@ QString DocPassage::getTempStorePath()
  * @return 返回值
  * @date   2017/06/20
  */
-QVector<DocPage *> &DocPassage::getPages()
+QVector<DocPage *> *DocPassage::getPages()
 {
-    return this->pages;
+    return &this->pages;
 }
 
 /**
@@ -321,6 +326,16 @@ QString DocPassage::getFilePath()
 {
     // 获得文件路径
     return this->filePath;
+}
+
+///
+/// \brief DocPassage::getLastedActivedPage
+/// 获得最近更新的页面
+/// \return
+///
+DocPage *DocPassage::getLastedActivedPage()
+{
+    return _lastActivedPage;
 }
 
 /**
@@ -562,24 +577,39 @@ void DocPassage::setDefaultPageSize(double default_width, double default_height)
 
 void DocPassage::activatePageDialog()
 {
-    DocPage * page = qobject_cast<DocPage *>(focusWidget());
-//    qDebug() << "page width in pixel = " <<  page->size().width()
-//             << "page height in pixel = " <<  page->size().height();
-    if (page)
+
+////    qDebug() << "page width in pixel = " <<  page->size().width()
+////             << "page height in pixel = " <<  page->size().height();
+
+    int index = this->pages.indexOf(this->_lastActivedPage);
+    qDebug() << "The No."
+             << index
+             <<" page has been actived---"
+            << this->_lastActivedPage->getWidth();
+
+    if( this->_lastActivedPage!= NULL)
     {
+
         PageDialog* page_dialog = PageDialog::getInstance();
 
-        page_dialog->init(page,
-                          default_width,
-                          default_height,
-                          default_using_working_area,
-                          default_working_width,
-                          default_working_height,
-                          default_working_x,
-                          default_working_y);
+        page_dialog->init(
+                    this,
+                    this->_lastActivedPage,
+                    default_width,
+                    default_height,
+                    default_using_working_area,
+                    default_working_width,
+                    default_working_height,
+                    default_working_x,
+                    default_working_y);
 
-        this->page_dialog->exec();
+        page_dialog->exec();
     }
+    else
+    {
+        qDebug() << "You should have clicked at least one page";
+    }
+
 }
 
 ///
@@ -605,6 +635,7 @@ void DocPassage::modifyPageSize(
         double contentY)
 {
 
+    qDebug() << "modifyPageSize";
     DocPage * temp_page;                // 临时变量使用的页面
     for (int i = 0; i < ch_pages->size(); i++) {
         temp_page = this->pages[ch_pages->operator [](i) - 1];
@@ -698,4 +729,21 @@ void DocPassage::setScale(double scale)
 
     this->scaleFactor = scale;
 
+}
+
+///
+/// \brief DocPassage::setCurrentActivedPage
+/// 设置当前活跃的页面
+/// 因为假设调用此函数的均为此文档下的页面，因此未作检测
+/// 通过信号槽调用
+/// \param page
+///
+void DocPassage::setCurrentActivedPage(DocPage *page)
+{
+    this->_lastActivedPage = page;
+
+    int index = this->pages.indexOf(this->_lastActivedPage);
+    qDebug() << "The No."
+             << index
+             <<" page has been actived" ;
 }

@@ -387,12 +387,7 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 
                  QPointF tempPoint = this->mapToScene(this->oldPos.rx(),
                                                       this->oldPos.ry());
-//                 qDebug() <<"temp Point"<<tempPoint.rx()
-//                         << ","<<tempPoint.ry();
 
-//                 if(block->currentStatus(
-//                             block->mapFromScene(tempPoint))
-//                         == DocBlock::blockMove)
                  if(block->cursor().shape() == Qt::SizeAllCursor)
                  {
 //                     qDebug()<<" the cursor'shape is size all ";
@@ -535,6 +530,17 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
     this->viewport()->update();     // 释放时，刷新一下
 
     QGraphicsView::mouseReleaseEvent(event);
+}
+
+///
+/// \brief DocPage::focusInEvent
+///     When this page been focused ,we will emit a message
+/// \param event
+///
+void DocPage::focusInEvent(QFocusEvent *event)
+{
+    QGraphicsView::focusInEvent(event);
+    emit signals_page_actived(this);
 }
 
 
