@@ -25,9 +25,22 @@ class MODELSHARED_EXPORT DocBlock
 {
     Q_OBJECT
 public:
+    enum { Type = UserType + 1 };
+    int type() const
+    {
+        // Enable the use of qgraphicsitem_cast with this item.
+        return Type;
+    }
+
     DocBlock(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
 
-    enum RectAdjustStatus{blockNone , blockResize , blockMove};     // 对块的大小状态进行调整
+    enum RectAdjustStatus
+    {
+        blockNone ,
+        blockResize ,
+        blockMove
+    };     // 对块的大小状态进行调整
+
     RectAdjustStatus rectAdjust;                // 用来标识当前修改尺寸的状态
     DocLayer * getLayer(){return this->layer;}  // 获得所在的层
     DocPage * getPage();                        // 获得所在页
@@ -69,6 +82,7 @@ protected:
     void contextMenuEvent (QGraphicsSceneContextMenuEvent *event);   //　邮件菜单吧
 
 private:
+
     DocBox boundary;            // 该块的外包矩形
     DocLayer * layer;           // 该块在哪一个层之中
     QSizeF blockSize;           // 用来纪录大小

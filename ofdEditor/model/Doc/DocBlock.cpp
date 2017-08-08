@@ -359,10 +359,10 @@ void DocBlock::setWidget(QWidget *widget)
 void DocBlock::setWidget(DocTextBlock *textBlock)
 {
     // 建立connect
-    connect(textBlock,SIGNAL(signals_remove(DocTextBlock*)),
-            this,SLOT(remove()));                // 和块做移除连接
-    connect(textBlock,SIGNAL(signals_setZValue(qreal)),
-            this,SLOT(setZValue(qreal)));       // 建立设置Z值的信号连接
+//    connect(textBlock,SIGNAL(signals_remove(DocTextBlock*)),
+//            this,SLOT(remove()));                // 和块做移除连接
+//    connect(textBlock,SIGNAL(signals_setZValue(qreal)),
+//            this,SLOT(setZValue(qreal)));       // 建立设置Z值的信号连接
 
     textBlock->setBlock(this);                  // 给DocTextBlock设置引用
     this->textBlock = textBlock;                // 给DocBlock设置引用

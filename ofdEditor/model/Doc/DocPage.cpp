@@ -344,15 +344,7 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
 {
     // event->globalPos() 是相对于屏幕的
     // event->pos() 相对于页面左上角
-//        qDebug() << "Global Position: x"
-//                 << event->globalX()
-//                 << " ,Y "
-//                 << event->globalY();
-
-//        qDebug() << "Position x: "
-//                 << event->x()
-//                 << "y:"
-//                 << event->y();
+    QMenu* menu = new QMenu(this->passage); // 让passage作为父亲
 
     QPoint pos = event->pos();      // 获得相对于页面的
     QList<QGraphicsItem*> items = this->items(pos);     // 获得某鼠标下的所有块
@@ -363,14 +355,43 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
              << " scene:"
              << this->mapToScene(event->pos());
 
+    QMenu* seletion = new QMenu();
+    seletion->setTitle(tr("seletion"));
+
     for(int i = 0; i < items.size(); i++)
     {
-//        DocBlock* block = qobject_cast<DocBlock* >(items[i]);
-        if(block != NULL)
+        // 将qgraphicsItem造型成为DocBlock
+        if(items[i]->type() == DocBlock::Type)
         {
-            qDebug() << "qt cast success";
+            DocBlock* block = qgraphicsitem_cast<DocBlock*>(items[i]);
+            if(block != NULL)
+            {
+                qDebug() << "qt cast success";
+                if(block->isTextBlock())
+                {
+                    // 如果是文本框
+                    DocTextBlock* textBlock = block->getTextBlock();
+//                    seletion->addAction(textBlock->getType());
+                    menu->addMenu(textBlock->getMenu());
+                }
+                else if(block->isImageBlock())
+                {
+                    // 如果是图片
+                    DocImageBlock* imageBlock = block->getImageBlock();
+                    seletion->addAction(imageBlock->getType());
+                }
+            }
+            else
+            {
+                qDebug() << "is not a Docblock class";
+            }
         }
+
     }
+
+    menu->addMenu(seletion);                // 添加子菜单
+
+    menu->exec(event->globalPos());         // 执行菜单
 
 }
 

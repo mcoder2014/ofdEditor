@@ -101,6 +101,11 @@ DocBlock *DocImageBlock::getBlock()
     return this->block;
 }
 
+QString DocImageBlock::getType()
+{
+    return tr("DocImageBlock");
+}
+
 /**
  * @Author Pan
  * @brief  焦点聚焦，显示边框

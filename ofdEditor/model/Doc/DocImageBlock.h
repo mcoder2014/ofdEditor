@@ -16,13 +16,17 @@ class MODELSHARED_EXPORT DocImageBlock
         : public QLabel
 {
     Q_OBJECT
+
 public:
+
     DocImageBlock(QWidget *parent = NULL);
     void setImage(QPixmap & pixmap);
     void setBlock(DocBlock * _block);
     bool isWidthHeightRatioLocked();
     double getWidthHeightRatio();
     DocBlock * getBlock();          //获取代理它的DocBlock
+    QString getType();                  // 获得标识，来区分不同的块
+
 public slots:
     void imagePropertiesChanged(double new_width,
                                 double new_height,

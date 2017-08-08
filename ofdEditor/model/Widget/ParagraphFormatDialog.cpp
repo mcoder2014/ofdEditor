@@ -156,9 +156,6 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
     connect(this,SIGNAL(accepted()),
             this,SLOT(accept_slots()));
 
-    connect(this,SIGNAL(finished(int)),
-            this,SLOT(finished_slots(int)));
-
     // 设置对齐部分
     Qt::Alignment flag = blockFormat.alignment();       // 先获取对齐的样式
     Qt::Alignment horizontalFlag;
@@ -241,14 +238,6 @@ void ParagraphFormatDialog::accept_slots()
     QTextBlockFormat blockFormat = this->getQTextBlockFormat();
     emit this->finished(blockFormat);
 
-}
-
-///
-/// \brief ParagraphFormatDialog::finished_slots
-/// \param value
-///
-void ParagraphFormatDialog::finished_slots(int value)
-{
     disconnect(this,
             SIGNAL(finished(QTextBlockFormat&)),
             this->textBlock,

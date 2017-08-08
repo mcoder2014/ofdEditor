@@ -33,8 +33,9 @@ public:
     DocPage* getPage();                 // 获得页
     DocLayer* getLayer();               // 获得层
     DocBlock* getBlock();               // 获得Block
-    QString getContent();              // 获得TextBlock中的所有文本
+    QString getContent();               // 获得TextBlock中的所有文本
     int getContentLength();             // 获得内部文字长度
+    QString getType();                  // 获得标识，来区分不同的块
 
 public slots:
 
@@ -96,37 +97,36 @@ public slots:
     void showBoundaryFrame(bool show);          // 是否显示边界
 
 protected:
-
-    void contextMenuEvent(QContextMenuEvent *event);    // 右键菜单重载
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);
 
 private slots:
-    void contextMenuAboutToHideEvent();               // 右键菜单隐藏绑定事件
     void checkCurrentFormat();                        // 检查当前的格式是否发生改变
     void emitFormatSignals();                         // 发射格式的信号
+    void printTestMessage();        // 测试右键信号是否畅通
 
 private:
     QString content;        // 文字内容
     void init();            // 初始化
     void initAcitons();     // 初始化事件
     void initFormat();      // 初始化文字样式
+    void initMenu();        // 初始化右键菜单
 
     // QActions
+    QAction * actionCut;        // 剪贴
+    QAction * actionCopy;       // 复制
+    QAction * actionPaste;      // 粘贴
+    QAction * actionSelectAll;  // 全选
+
     QAction * actionBold;       // 加粗
     QAction * actionUnderline;  // 下划线
     QAction * actionItalic;     // 斜体
     QAction * actionColor;      // 设置颜色
-    QAction * actionFontSet;    // 设置字体
     QAction * actionParagraph;  // 设置段落
-    QAction * actionRemove;     // 移除文本框
-
     QAction * actionFontSetTest;    // 新字体窗口测试
 
     QMenu * ContextMenu;        // 右键菜单
     DocBlock* block;            // 本类型所在的block
-
-    qreal tempZValue;           // 存储临时Z值
 
     QTextBlockFormat _currentBlockFormat;       // 当前BlockFormat
     QTextCharFormat _currentCharFormat;         // 当前

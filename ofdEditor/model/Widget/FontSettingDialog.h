@@ -51,7 +51,6 @@ private:
 
 private slots:
     void updatePreview(const QTextCharFormat& charFormat);      // 设置为预览，用来更新预览文字的效果
-
     void init();                           // 初始化界面
     void changeCharFormat(const QTextCharFormat& charFormat);   // 根据字体更新界面选项
 
@@ -66,7 +65,6 @@ private slots:
     void updateWeight(int i);               // 字体粗细
 
     void accept_slots();                    // 向DocTextBlock传递成功事件
-    void finished_slots(int result);        // 结束时释放链接
 
 };
 
