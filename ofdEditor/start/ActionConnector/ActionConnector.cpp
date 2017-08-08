@@ -78,10 +78,11 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
     }
 
 //    this->updateActivePassage();    // 更新文章
-    DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
+//    DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
+    DocPage *page = this->passage->getLastedActivedPage();      // 获得最近操作过的页面
     if(page == NULL)
     {
-        qDebug() <<"No Focus Widget";
+        qDebug() <<"NO Last actived page";
         return;
     }
     else
@@ -89,7 +90,7 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
         //插入文本框
         if (blockInfo.type == DocPage::text)
         {
-            qDebug() << "get Focus Sucess";
+//            qDebug() << "get Focus Sucess";
             page->setBlockFlag(DocPage::draw);      // 进入绘画状态
 
     //        InsertBlockInfo blockInfo(type,layer);  // 设置插入文本框信息

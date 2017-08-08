@@ -38,6 +38,8 @@ public:
 
 public slots:
 
+    QMenu* getMenu();           // 获得该块的菜单成分
+
     void textBold();            // 将光标选择的文字粗体
     void textBold(QTextCursor& cursor, int mode = 0);     // 将给定光标选择的文字设置为粗体
     void textUnderline();       // 下划线

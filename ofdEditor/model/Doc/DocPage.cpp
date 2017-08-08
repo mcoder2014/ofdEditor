@@ -19,6 +19,7 @@
 #include <QObject>
 #include <QLabel>
 #include <cmath>
+#include <QList>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -247,7 +248,7 @@ void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
 
     this->insertBlockInfo->layer = blockInfo.layer;     // 层
     this->insertBlockInfo->type = blockInfo.type;       // 类型
-    //    qDebug()<<"Set InsertBlockInfo successfully!";
+//    qDebug()<<"Set InsertBlockInfo successfully!";
 }
 
 /**
@@ -331,7 +332,46 @@ void DocPage::paintEvent(QPaintEvent *event)
 //        qDebug()<<"Moving QPainter is Drawing";
     }
 
-//    qDebug()<<"QPainter is Drawing";
+    //    qDebug()<<"QPainter is Drawing";
+}
+
+///
+/// \brief DocPage::contextMenuEvent
+///     实现右键菜单
+/// \param event
+///
+void DocPage::contextMenuEvent(QContextMenuEvent *event)
+{
+    // event->globalPos() 是相对于屏幕的
+    // event->pos() 相对于页面左上角
+//        qDebug() << "Global Position: x"
+//                 << event->globalX()
+//                 << " ,Y "
+//                 << event->globalY();
+
+//        qDebug() << "Position x: "
+//                 << event->x()
+//                 << "y:"
+//                 << event->y();
+
+    QPoint pos = event->pos();      // 获得相对于页面的
+    QList<QGraphicsItem*> items = this->items(pos);     // 获得某鼠标下的所有块
+    qDebug() << "There are"
+             << items.size()
+             << " items at position "
+             << event->pos()
+             << " scene:"
+             << this->mapToScene(event->pos());
+
+    for(int i = 0; i < items.size(); i++)
+    {
+//        DocBlock* block = qobject_cast<DocBlock* >(items[i]);
+        if(block != NULL)
+        {
+            qDebug() << "qt cast success";
+        }
+    }
+
 }
 
 /**
@@ -355,6 +395,7 @@ void DocPage::mouseDoubleClickEvent(QMouseEvent *event)
  */
 void DocPage::mousePressEvent(QMouseEvent *event)
 {
+//    qDebug() << "mouse Press";
 
     // 如果是加入新块状态
     if(this->newBlockFlag == draw)

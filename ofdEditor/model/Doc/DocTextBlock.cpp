@@ -130,6 +130,31 @@ int DocTextBlock::getContentLength()
     return content.length();
 }
 
+///
+/// \brief DocTextBlock::getMenu
+///     将文本块中间所需的菜单返回出来
+/// \return
+///
+QMenu *DocTextBlock::getMenu()
+{
+    this->ContextMenu = createStandardContextMenu();        // 拓展标准菜单
+    this->ContextMenu->addAction(this->actionBold);         // 加粗
+    this->ContextMenu->addAction(this->actionItalic);       // 斜体
+    this->ContextMenu->addAction(this->actionUnderline);    // 下划线
+    this->ContextMenu->addAction(this->actionColor);        // 颜色
+    this->ContextMenu->addSeparator();                      // 分界线
+    this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
+    this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
+    this->ContextMenu->addAction(this->actionRemove);       // 移除操作
+
+    connect(this->ContextMenu, SIGNAL(aboutToHide()),
+            this,SLOT(contextMenuAboutToHideEvent()));      // 测试
+
+    this->tempZValue = this->getBlock()->getZValue();
+
+    return this->ContextMenu;       // 返回ContextMenu
+}
+
 /**
  * @Author Chaoqun
  * @brief  用来合并格式
@@ -689,7 +714,6 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
     this->ContextMenu->addAction(this->actionUnderline);    // 下划线
     this->ContextMenu->addAction(this->actionColor);        // 颜色
     this->ContextMenu->addSeparator();                      // 分界线
-//    this->ContextMenu->addAction(this->actionFontSet);      // 字体设置
     this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
     this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
     this->ContextMenu->addAction(this->actionRemove);       // 移除操作
@@ -700,8 +724,10 @@ void DocTextBlock::contextMenuEvent(QContextMenuEvent *event)
     this->tempZValue = this->getBlock()->getZValue();
     emit this->signals_setZValue(2000);
 
-//    QPointF global = this->getBlock()->mapToScene(event->globalPos());  // 获得场景坐标
-//    this->ContextMenu->setParent(this->getPage());
+//    qDebug() << "Global Position: x"
+//             << event->globalX()
+//             << " ,Y "
+//             << event->globalY();
 
     // 展示菜单
     this->ContextMenu->exec(event->globalPos());

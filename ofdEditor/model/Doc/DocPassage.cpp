@@ -742,8 +742,8 @@ void DocPassage::setCurrentActivedPage(DocPage *page)
 {
     this->_lastActivedPage = page;
 
-    int index = this->pages.indexOf(this->_lastActivedPage);
-    qDebug() << "The No."
-             << index
-             <<" page has been actived" ;
+//    int index = this->pages.indexOf(this->_lastActivedPage);
+//    qDebug() << "The No."
+//             << index
+//             <<" page has been actived" ;
 }

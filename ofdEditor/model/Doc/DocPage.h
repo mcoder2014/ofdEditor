@@ -80,6 +80,7 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);    // 右键菜单
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
