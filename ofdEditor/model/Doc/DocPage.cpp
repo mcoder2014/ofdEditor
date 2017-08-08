@@ -378,7 +378,8 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
                 {
                     // 如果是图片
                     DocImageBlock* imageBlock = block->getImageBlock();
-                    seletion->addAction(imageBlock->getType());
+//                    seletion->addAction(imageBlock->getType());
+                    menu->addMenu(imageBlock->getMenu());
                 }
             }
             else
@@ -648,7 +649,7 @@ void DocPage::init()
 
 void DocPage::addImage()
 {
-    //qDebug() << "???";
+    qDebug() << "???";
     //打开对话框，选取一个图片文件
     QString fileName = QFileDialog::getOpenFileName(this,
                                     tr("Open File"), QDir::currentPath());
@@ -659,6 +660,7 @@ void DocPage::addImage()
                                      tr("Cannot open file %1.").arg(fileName));
             return;
         }
+
         //新建一个DocBlock
         DocBlock * newBlock = new DocBlock();
         //新建一个图片框

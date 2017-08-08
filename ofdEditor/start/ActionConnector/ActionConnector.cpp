@@ -78,7 +78,6 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
     }
 
 //    this->updateActivePassage();    // 更新文章
-//    DocPage * page = qobject_cast<DocPage *>(this->passage->focusWidget());
     DocPage *page = this->passage->getLastedActivedPage();      // 获得最近操作过的页面
     if(page == NULL)
     {
@@ -121,6 +120,7 @@ void ActionConnector::addImageBlock()
     if(this->passage == NULL)
         return;
     InsertBlockInfo blockInfo(this->defaultLayer,DocPage::image);  // 设置插入文本框信息
+//    qDebug() << "add imageBlock";
     this->addNewBlock(blockInfo);
 }
 

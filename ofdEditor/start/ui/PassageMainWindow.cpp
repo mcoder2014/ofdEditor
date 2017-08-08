@@ -98,6 +98,10 @@ void PassageMainWindow::init()
 
     this->connector = new ActionConnector(this);        // 新建连接器
 
+    // 初始化变量
+    this->imageBlock = NULL;
+    this->textBlock = NULL;
+
     initAction();
     connectAction();
 

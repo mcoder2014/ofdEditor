@@ -1,6 +1,39 @@
 #include "imagepropertiesdialog.h"
 #include "ui_imagepropertiesdialog.h"
 #include <QDebug>
+
+ImagePropertiesDialog* ImagePropertiesDialog::m_instance = NULL;    // 静态变量初始化
+
+///
+/// \brief ImagePropertiesDialog::getInstance
+///     获得单例
+/// \return
+///
+ImagePropertiesDialog *ImagePropertiesDialog::getInstance()
+{
+    if(m_instance != NULL)
+    {
+        return m_instance;
+    }
+
+    m_instance = new ImagePropertiesDialog();
+    return m_instance;
+}
+
+void ImagePropertiesDialog::DestoryInstance()
+{
+    m_instance = NULL;
+}
+
+void ImagePropertiesDialog::init(DocImageBlock *_block)
+{
+    // 建立连接
+    this->connect(_block,SIGNAL(sendImageInfo(double,double,double,double,double,double,bool)),
+                  this,SLOT(receiveImageInfo(double,double,double,double,double,double,bool)));
+
+}
+
+
 /**
  * @Author Pan
  * @brief  构造函数，完成了成员组件的初始化、设置，以及信号槽的连接
@@ -8,7 +41,8 @@
  * @return
  * @date   2017/06/25
  */
-ImagePropertiesDialog::ImagePropertiesDialog(DocImageBlock * _block, QWidget *parent) :
+ImagePropertiesDialog::ImagePropertiesDialog(
+        DocImageBlock * _block, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ImagePropertiesDialog),
     block(_block)
@@ -31,22 +65,30 @@ ImagePropertiesDialog::ImagePropertiesDialog(DocImageBlock * _block, QWidget *pa
     ui->HeightInPercentage->setRange(0.0, 10000.0);
     ui->xInPercentage->setRange(0.0, 100.0);
     ui->yInPercentage->setRange(0.0, 100.0);
-    this->connect(this, SIGNAL(accepted()), this, SLOT(emitMessage()));
-    this->connect(ui->LockRatio, SIGNAL(stateChanged(int)), this, SLOT(lockRatioStateChanged(int)));
-    this->connect(ui->HeightInPercentage, SIGNAL(valueChanged(double)), this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->WidthInPercentage, SIGNAL(valueChanged(double)), this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->xInPercentage, SIGNAL(valueChanged(double)), this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->yInPercentage, SIGNAL(valueChanged(double)), this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->HeightInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->WidthInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->xInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->yInPixel, SIGNAL(valueChanged(double)), this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->WidthInPixel,
-                  SIGNAL(valueChanged(double)),
-                         this, SLOT(Width2HeightTrans(double)));
-    this->connect(ui->HeightInPixel,
-                  SIGNAL(valueChanged(double)),
-                         this, SLOT(Height2WidthTrans(double)));
+    this->connect(this, SIGNAL(accepted()),
+                  this, SLOT(emitMessage()));
+    this->connect(ui->LockRatio, SIGNAL(stateChanged(int)),
+                  this, SLOT(lockRatioStateChanged(int)));
+    this->connect(ui->HeightInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->WidthInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->xInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->yInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->HeightInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->WidthInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->xInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->yInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->WidthInPixel,SIGNAL(valueChanged(double)),
+                  this, SLOT(Width2HeightTrans(double)));
+    this->connect(ui->HeightInPixel,SIGNAL(valueChanged(double)),
+                  this, SLOT(Height2WidthTrans(double)));
 }
 /**
  * @Author Pan
@@ -87,11 +129,51 @@ void ImagePropertiesDialog::receiveImageInfo(double image_width,
 
 }
 
-
-
 ImagePropertiesDialog::~ImagePropertiesDialog()
 {
     delete ui;
+}
+
+
+ImagePropertiesDialog::ImagePropertiesDialog(QWidget *parent)
+    :QDialog(parent), ui(new Ui::ImagePropertiesDialog)
+{
+    ui->setupUi(this);
+}
+
+void ImagePropertiesDialog::init()
+{
+
+}
+
+void ImagePropertiesDialog::initConnect()
+{
+    // 确认
+    this->connect(this, SIGNAL(accepted()),
+                  this, SLOT(emitMessage()));
+
+    this->connect(ui->LockRatio, SIGNAL(stateChanged(int)),
+                  this, SLOT(lockRatioStateChanged(int)));
+    this->connect(ui->HeightInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->WidthInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->xInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->yInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2Pixel(double)));
+    this->connect(ui->HeightInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->WidthInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->xInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->yInPixel, SIGNAL(valueChanged(double)),
+                  this, SLOT(Pixel2Percentage(double)));
+    this->connect(ui->WidthInPixel,SIGNAL(valueChanged(double)),
+                  this, SLOT(Width2HeightTrans(double)));
+    this->connect(ui->HeightInPixel,SIGNAL(valueChanged(double)),
+                  this, SLOT(Height2WidthTrans(double)));
 }
 
 /**
@@ -108,6 +190,10 @@ void ImagePropertiesDialog::emitMessage()
                                ui->xInPixel->value(),
                                ui->yInPixel->value(),
                                ui->LockRatio->isChecked());
+
+    this->disconnect(_block,SIGNAL(sendImageInfo(double,double,double,double,double,double,bool)),
+                  this,SLOT(receiveImageInfo(double,double,double,double,double,double,bool)));
+
 }
 
 /**

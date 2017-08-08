@@ -36,10 +36,9 @@ public:
     QString getContent();               // 获得TextBlock中的所有文本
     int getContentLength();             // 获得内部文字长度
     QString getType();                  // 获得标识，来区分不同的块
+    QMenu* getMenu();                   // 获得该块的菜单成分
 
 public slots:
-
-    QMenu* getMenu();           // 获得该块的菜单成分
 
     void textBold();            // 将光标选择的文字粗体
     void textBold(QTextCursor& cursor, int mode = 0);     // 将给定光标选择的文字设置为粗体
@@ -51,8 +50,6 @@ public slots:
     void setTextColor(QTextCursor& cursor,QColor color);    // 设置颜色
 
     void textParagraph();       // 设置段落
-
-    void textFontDialog();      // 通过字体小窗口设置字体
     void customFontDialog();    // 自定义的字体窗口设置
 
     void setTextBlockFormat(

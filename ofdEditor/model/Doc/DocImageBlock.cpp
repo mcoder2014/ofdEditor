@@ -14,37 +14,19 @@ DocImageBlock::DocImageBlock(QWidget *parent)
     this->setFrameStyle(QFrame::NoFrame);
     this->setFocusPolicy(Qt::StrongFocus);
 
-    //Initialization
-    this->context_menu = new QMenu(this);
-    change_image = new QAction(tr("Change Image"), NULL);
-    set_image_properties = new QAction(tr("Set Image Properties"), NULL);
-    remove_image = new QAction(tr("Remove Image."), NULL);
-    remove_image->setShortcut(Qt::Key_Delete);
+    qDebug() << "DocImageBlock 1";
 
-    properties_dialog = new ImagePropertiesDialog(this, parent);
+    //Initialization
+    this->properties_dialog = new ImagePropertiesDialog(this, parent);
     width_height_ratio_locked = false;
     width_height_ratio = 0.0;
 
-    context_menu->addAction(this->change_image);
-    context_menu->addAction(this->set_image_properties);
-    context_menu->addAction(this->remove_image);
+    qDebug() << "DocImageBlock 2";
 
-    //signal-slots
-    this->connect(this->change_image, SIGNAL(triggered()),
-                  this, SLOT(changeImage()));
-    this->connect(this->set_image_properties, SIGNAL(triggered()),
-                  this, SLOT(setImageProperties()));
-    this->connect(properties_dialog,
-                  SIGNAL(changeImageProperties(double,double,
-                                               double,double,
-                                               bool)),
-                  this, SLOT(imagePropertiesChanged(double,double,
-                                                    double,double,
-                                                    bool)));
-    this->connect(this->remove_image,
-                  SIGNAL(triggered(bool)),
-                  this,
-                  SLOT(removeImage()));
+    this->initMenu();   // 初始化右键菜单
+
+    qDebug() << "DocImageBlock 3";
+
 }
 
 /**
@@ -106,6 +88,16 @@ QString DocImageBlock::getType()
     return tr("DocImageBlock");
 }
 
+///
+/// \brief DocImageBlock::getMenu
+///     获得图片块的右键菜单
+/// \return
+///
+QMenu *DocImageBlock::getMenu()
+{
+    return this->context_menu;
+}
+
 /**
  * @Author Pan
  * @brief  焦点聚焦，显示边框
@@ -147,6 +139,33 @@ void DocImageBlock::contextMenuEvent(QContextMenuEvent *ev)
     context_menu->exec(ev->globalPos());
 }
 
+///
+/// \brief DocImageBlock::initMenu
+///     初始化右键菜单
+///
+void DocImageBlock::initMenu()
+{
+    this->context_menu = new QMenu(tr("DocImageBlock"));       // 新建菜单
+
+    this->change_image = this->context_menu->addAction(tr("ChangeImage"));
+    this->set_image_properties = this->context_menu->addAction(tr("Property"));
+
+
+
+    //signal-slots
+    this->connect(this->change_image, SIGNAL(triggered()),
+                  this, SLOT(changeImage()));
+    this->connect(this->set_image_properties, SIGNAL(triggered()),
+                  this, SLOT(setImageProperties()));
+    this->connect(properties_dialog,
+                  SIGNAL(changeImageProperties(double,double,
+                                               double,double,
+                                               bool)),
+                  this, SLOT(imagePropertiesChanged(double,double,
+                                                    double,double,
+                                                    bool)));
+}
+
 /**
  * @Author Pan
  * @brief  更换图片的槽函数
@@ -186,11 +205,6 @@ void DocImageBlock::setImageProperties()
                        this->block->getPage()->height(),
                        this->width_height_ratio_locked);
     properties_dialog->exec();
-}
-
-void DocImageBlock::removeImage()
-{
-    this->block->remove();
 }
 
 /**

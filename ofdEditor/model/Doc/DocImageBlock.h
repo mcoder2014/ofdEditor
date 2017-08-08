@@ -25,7 +25,8 @@ public:
     bool isWidthHeightRatioLocked();
     double getWidthHeightRatio();
     DocBlock * getBlock();          //获取代理它的DocBlock
-    QString getType();                  // 获得标识，来区分不同的块
+    QString getType();              // 获得标识，来区分不同的块
+    QMenu* getMenu();               // 获得图片块的菜单成分
 
 public slots:
     void imagePropertiesChanged(double new_width,
@@ -35,7 +36,6 @@ public slots:
                                 bool ratio_locked);
     void changeImage();
     void setImageProperties();
-    void removeImage();
 
 protected:
     void focusInEvent(QFocusEvent *ev);
@@ -47,10 +47,11 @@ private:
     QMenu * context_menu;           //右键菜单
     QAction * change_image;         //更改图片
     QAction * set_image_properties; //更改图片的位置和尺寸
-    QAction * remove_image;         //删除图片
     ImagePropertiesDialog * properties_dialog;
     bool width_height_ratio_locked;
     double width_height_ratio;
+
+    void initMenu();                // 初始化右键菜单
 
 
 signals:
