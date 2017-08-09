@@ -442,8 +442,8 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 
             // 不清楚为什么，造型函数在这里编译出错，因此我采取了强制类型转换
 //            DocBlock * block = qobject_cast<DocBlock *>(tempItem);
-            DocBlock * block = (DocBlock *)tempItem;
-
+//            DocBlock * block = (DocBlock *)tempItem;
+            DocBlock* block = qgraphicsitem_cast<DocBlock *>(tempItem);
             if(block != NULL)
             {
                  this->activeBlock = block;         // 存下 block
@@ -479,8 +479,6 @@ void DocPage::mousePressEvent(QMouseEvent *event)
         {
 //            qDebug() << "items.size:" <<items.size();
         }
-
-
 
     }
 
@@ -534,12 +532,13 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
         this->newPos = this->mapToScene(event->pos());
         QPointF point = this->newPos - this->oldPos;
         if (!image_block->isWidthHeightRatioLocked())
+            // 如果纵横比未锁定
             this->activeBlock->resize(point.rx(),point.ry());
         else
         {
+            // 如果纵横比锁定
             double ratio = image_block->getWidthHeightRatio();
-            if(point.rx() <
-                    point.ry() * ratio)
+            if(point.rx() < point.ry() * ratio)
                 this->activeBlock->resize(point.rx(), point.rx() / ratio);
             else
                 this->activeBlock->resize(point.ry() * ratio, point.ry());
@@ -649,10 +648,10 @@ void DocPage::init()
 
 void DocPage::addImage()
 {
-    qDebug() << "???";
+//    qDebug() << "Open a QDialog and load an img";
     //打开对话框，选取一个图片文件
     QString fileName = QFileDialog::getOpenFileName(this,
-                                    tr("Open File"), QDir::currentPath());
+                                    tr("Open File"), QDir::homePath());
     if (!fileName.isEmpty()) {
         QPixmap image(fileName);
         if (image.isNull()) {
@@ -668,20 +667,30 @@ void DocPage::addImage()
         newBlock->setWidget(new_image_block);
         new_image_block->setImage(image);               // 设置图片
         double page_width = this->width(), page_height = this->height();
+
 //        qDebug() << "Page Width: " << this->width();
 //        qDebug() << "Page Height: " << this->height();
 //        qDebug() << "Image Width: " << image.width();
 //        qDebug() << "Image Height: " << image.height();
+
         double ratio;
         if (image.width() > page_width || image.height() > page_height)
         {
-            ratio = std::min(page_width / image.width(), page_height / image.height());
+            ratio = std::min(
+                        page_width / image.width(),
+                        page_height / image.height());
             ratio *= 0.8;
         }
         else ratio = 1.0;
+
 //        qDebug() << "Ratio = " << ratio;
-        newBlock->setPos((page_width - image.width() * ratio) / 2, (page_height - image.height() * ratio) / 2);
-        newBlock->resize(image.width() * ratio,image.height() * ratio);
+        newBlock->setPos(
+                    (page_width - image.width() * ratio) / 2,
+                    (page_height - image.height() * ratio) / 2);
+
+        newBlock->resize(
+                    image.width() * ratio,
+                    image.height() * ratio);
 
         this->addBlock(newBlock,this->insertBlockInfo->layer);
     }

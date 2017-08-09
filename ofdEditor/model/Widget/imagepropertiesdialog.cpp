@@ -49,26 +49,21 @@ void ImagePropertiesDialog::init(DocImageBlock *_block)
     // 保存图片原始尺寸
     initial_width = this->block->getRealWidth();
     initial_height = this->block->getRealWidth();
-    // 是否锁定纵横比
-    ratio_locked = this->block->isWidthHeightRatioLocked();
 
     // 页大小
     this->page_width = this->block->getPage()->getWidth();
     this->page_height = this->block->getPage()->getHeight();
 
-    // 像素大小？？
-    ui->WidthInPixel->setValue(this->block->width());
-    ui->HeightInPixel->setValue(this->block->height());
-    ui->xInPixel->setValue(this->block->x());
-    ui->yInPixel->setValue(this->block->y());
+    this->image_width = UnitTool::pixelToMM(this->block->width());
+    this->image_height = UnitTool::pixelToMM(this->block->height());
 
     // 图片采用毫米为单位
-    ui->WidthInMM->setValue(
-                UnitTool::pixelToMM(
-                    this->block->width()));
-    ui->HeightInMM->setValue(
-                UnitTool::pixelToMM(
-                    this->block->height()));
+    ui->WidthInMM->setValue(this->image_width);
+    ui->HeightInMM->setValue(this->image_height);
+
+    qDebug() << this->image_width
+             << " "
+             << this->image_height;
 
     ui->xInMM->setValue(
                 UnitTool::pixelToMM(
@@ -79,50 +74,44 @@ void ImagePropertiesDialog::init(DocImageBlock *_block)
 
     // 求比例
     ui->WidthInPercentage->setValue(
-                this->block->width() / this->initial_width * 100.0);
+                this->image_width / this->initial_width * 100.0);
     ui->HeightInPercentage->setValue(
-                this->block->height() / this->initial_height * 100.0);
+                this->image_height / this->initial_height * 100.0);
 
     ui->xInPercentage->setValue(
                 ui->xInMM->value() / this->page_width * 100.0);
     ui->yInPercentage->setValue(
                 ui->yInMM->value() / this->page_height * 100.0);
 
+    // 是否锁定纵横比
+    ratio_locked = this->block->isWidthHeightRatioLocked();
+    if(ratio_locked)
+    {
+        this->connect(ui->WidthInMM,SIGNAL(valueChanged(double)),
+                      this, SLOT(Width2HeightTrans(double)));
+        this->connect(ui->HeightInMM,SIGNAL(valueChanged(double)),
+                      this, SLOT(Height2WidthTrans(double)));
+    }
+
+    this->connect(ui->HeightInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+    this->connect(ui->WidthInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+    this->connect(ui->xInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+    this->connect(ui->yInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+
+    this->connect(ui->HeightInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+    this->connect(ui->WidthInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+    this->connect(ui->xInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+    this->connect(ui->yInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+
 }
-
-///**
-// * @Author Pan
-// * @brief  槽函数，用语接收DocImageBlock的信号后更新自身的信息
-// * @param  若干参数
-// * @return void
-// * @date   2017/06/25
-// */
-//void ImagePropertiesDialog::receiveImageInfo(double image_width,
-//                                             double image_height,
-//                                             double image_x,
-//                                             double image_y,
-//                                             double page_width,
-//                                             double page_height,
-//                                             bool ratio_is_locked) {
-//    ui->LockRatio->setChecked(ratio_is_locked);
-//    ui->InitialSize->setText(tr("Width: ") + QString::number(image_width) + tr(", Height: ") + QString::number(image_height));
-//    initial_width = image_width;
-//    initial_height = image_height;
-//    ratio_locked = ratio_is_locked;
-//    this->page_width = page_width;
-//    this->page_height = page_height;
-
-//    ui->WidthInPixel->setValue(image_width);
-//    ui->HeightInPixel->setValue(image_height);
-//    ui->xInPixel->setValue(image_x);
-//    ui->yInPixel->setValue(image_y);
-
-//    ui->WidthInPercentage->setValue(ui->WidthInPixel->value() / image_width * 100.0);
-//    ui->HeightInPercentage->setValue(ui->HeightInPixel->value() / image_height * 100.0);
-//    ui->xInPercentage->setValue(ui->xInPixel->value() / page_width * 100.0);
-//    ui->yInPercentage->setValue(ui->yInPixel->value() / page_width * 100.0);
-
-//}
 
 ImagePropertiesDialog::~ImagePropertiesDialog()
 {
@@ -144,50 +133,29 @@ void ImagePropertiesDialog::initConnect()
     this->connect(this, SIGNAL(finished(int)),
                   this, SLOT(finished_slots(int)));
 
+    // 锁定纵横比
     this->connect(ui->LockRatio, SIGNAL(stateChanged(int)),
                   this, SLOT(lockRatioStateChanged(int)));
-    this->connect(ui->HeightInPercentage, SIGNAL(valueChanged(double)),
-                  this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->WidthInPercentage, SIGNAL(valueChanged(double)),
-                  this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->xInPercentage, SIGNAL(valueChanged(double)),
-                  this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->yInPercentage, SIGNAL(valueChanged(double)),
-                  this, SLOT(Percentage2Pixel(double)));
-    this->connect(ui->HeightInPixel, SIGNAL(valueChanged(double)),
-                  this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->WidthInPixel, SIGNAL(valueChanged(double)),
-                  this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->xInPixel, SIGNAL(valueChanged(double)),
-                  this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->yInPixel, SIGNAL(valueChanged(double)),
-                  this, SLOT(Pixel2Percentage(double)));
-    this->connect(ui->WidthInPixel,SIGNAL(valueChanged(double)),
-                  this, SLOT(Width2HeightTrans(double)));
-    this->connect(ui->HeightInPixel,SIGNAL(valueChanged(double)),
-                  this, SLOT(Height2WidthTrans(double)));
+
+//    this->connect(ui->HeightInPercentage, SIGNAL(valueChanged(double)),
+//                  this, SLOT(Percentage2mm(double)));
+//    this->connect(ui->WidthInPercentage, SIGNAL(valueChanged(double)),
+//                  this, SLOT(Percentage2mm(double)));
+//    this->connect(ui->xInPercentage, SIGNAL(valueChanged(double)),
+//                  this, SLOT(Percentage2mm(double)));
+//    this->connect(ui->yInPercentage, SIGNAL(valueChanged(double)),
+//                  this, SLOT(Percentage2mm(double)));
+
+//    this->connect(ui->HeightInMM, SIGNAL(valueChanged(double)),
+//                  this, SLOT(mm2Percentage(double)));
+//    this->connect(ui->WidthInMM, SIGNAL(valueChanged(double)),
+//                  this, SLOT(mm2Percentage(double)));
+//    this->connect(ui->xInMM, SIGNAL(valueChanged(double)),
+//                  this, SLOT(mm2Percentage(double)));
+//    this->connect(ui->yInMM, SIGNAL(valueChanged(double)),
+//                  this, SLOT(mm2Percentage(double)));
 
 }
-
-///**
-// * @Author Pan
-// * @brief  发送信号
-// * @param  void
-// * @return void
-// * @date   2017/06/25
-// */
-//void ImagePropertiesDialog::emitMessage()
-//{
-//    emit changeImageProperties(ui->WidthInPixel->value(),
-//                               ui->HeightInPixel->value(),
-//                               ui->xInPixel->value(),
-//                               ui->yInPixel->value(),
-//                               ui->LockRatio->isChecked());
-
-////    this->disconnect(_block,SIGNAL(sendImageInfo(double,double,double,double,double,double,bool)),
-////                  this,SLOT(receiveImageInfo(double,double,double,double,double,double,bool)));
-
-//}
 
 ///
 /// \brief ImagePropertiesDialog::finished_slots
@@ -198,16 +166,46 @@ void ImagePropertiesDialog::finished_slots(int value)
     if(value == QDialog::Accepted)
     {
         // 点击确认
-        emit changeImageProperties(ui->WidthInPixel->value(),
-                                   ui->HeightInPixel->value(),
-                                   ui->xInPixel->value(),
-                                   ui->yInPixel->value(),
-                                   ui->LockRatio->isChecked());
+        emit changeImageProperties(
+                    UnitTool::mmToPixel(ui->WidthInMM->value()),
+                    UnitTool::mmToPixel(ui->HeightInMM->value()),
+                    UnitTool::mmToPixel(ui->xInMM->value()),
+                    UnitTool::mmToPixel(ui->yInMM->value()),
+                    UnitTool::mmToPixel(ui->LockRatio->isChecked()));
     }
 
     this->disconnect( this, SIGNAL(changeImageProperties(double,double,double,double,bool)),
                    this->block, SLOT(imagePropertiesChanged(double,double,double,double,bool)));
 
+    if(this->ratio_locked)
+    {
+        // 解除长和宽之间的关联
+        this->disconnect(ui->WidthInPercentage,
+                      SIGNAL(valueChanged(double)),
+                             this, SLOT(Width2HeightTrans(double)));
+
+        this->disconnect(ui->HeightInPercentage,
+                      SIGNAL(valueChanged(double)),
+                             this, SLOT(Height2WidthTrans(double)));
+    }
+
+    this->disconnect(ui->HeightInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+    this->disconnect(ui->WidthInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+    this->disconnect(ui->xInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+    this->disconnect(ui->yInPercentage, SIGNAL(valueChanged(double)),
+                  this, SLOT(Percentage2mm(double)));
+
+    this->disconnect(ui->HeightInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+    this->disconnect(ui->WidthInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+    this->disconnect(ui->xInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
+    this->disconnect(ui->yInMM, SIGNAL(valueChanged(double)),
+                  this, SLOT(mm2Percentage(double)));
 }
 
 /**
@@ -219,20 +217,33 @@ void ImagePropertiesDialog::finished_slots(int value)
  */
 void ImagePropertiesDialog::lockRatioStateChanged(int locked)
 {
-    qDebug() << "Waaaa";
+    qDebug() << "lockRatio ";
     if (locked == Qt::Checked && !ratio_locked)
     {
         qDebug() << "Set to Checked.";
         ratio_locked = true;
 
+        // 长和宽之间的关联
+        this->connect(ui->WidthInPercentage,
+                      SIGNAL(valueChanged(double)),
+                             this, SLOT(Width2HeightTrans(double)));
+
+        this->connect(ui->HeightInPercentage,
+                      SIGNAL(valueChanged(double)),
+                             this, SLOT(Height2WidthTrans(double)));
+
     }
     else if (locked == Qt::Unchecked && ratio_locked)
     {
+
         qDebug() << "Set to Unchecked.";
         ratio_locked = false;
+
+        // 解除长和宽之间的关联
         this->disconnect(ui->WidthInPercentage,
                       SIGNAL(valueChanged(double)),
                              this, SLOT(Width2HeightTrans(double)));
+
         this->disconnect(ui->HeightInPercentage,
                       SIGNAL(valueChanged(double)),
                              this, SLOT(Height2WidthTrans(double)));
@@ -252,7 +263,7 @@ void ImagePropertiesDialog::Width2HeightTrans(double value)
     if (ratio_locked)
     {
         double ratio = initial_height / initial_width;
-        ui->HeightInPixel->setValue(value * ratio);
+        ui->HeightInMM->setValue(value * ratio);
     }
 }
 
@@ -268,42 +279,32 @@ void ImagePropertiesDialog::Height2WidthTrans(double value)
     if (ratio_locked)
     {
         double ratio = initial_width / initial_height;
-        ui->WidthInPixel->setValue(value * ratio);
+        ui->WidthInMM->setValue(value * ratio);
     }
 }
 
-/**
- * @Author Pan
- * @brief  从像素量到比例量的同步
- * @param  double value
- * @return void
- * @date   2017/06/25
- */
-void ImagePropertiesDialog::Pixel2Percentage(double value)
+void ImagePropertiesDialog::mm2Percentage(double value)
 {
-//    static int cnt = 1;
-//    qDebug() << cnt++;
-//    qDebug() << ui->HeightInPixel->value();
-    ui->HeightInPercentage->setValue(100.0 * ui->HeightInPixel->value() / initial_height);
-    ui->WidthInPercentage->setValue(100.0 * ui->WidthInPixel->value() / initial_width);
-    ui->xInPercentage->setValue(100.0 * ui->xInPixel->value() / page_width);
-    ui->yInPercentage->setValue(100.0 * ui->yInPixel->value() / page_height);
+    ui->HeightInPercentage->setValue(
+                100.0 * ui->HeightInMM->value() / initial_height);
+    ui->WidthInPercentage->setValue(
+                100.0 * ui->WidthInMM->value() / initial_width);
+    ui->xInPercentage->setValue(
+                100.0 * ui->xInMM->value() / page_width);
+    ui->yInPercentage->setValue(
+                100.0 * ui->yInMM->value() / page_height);
+    qDebug() << "execute 1";
 }
 
-/**
- * @Author Pan
- * @brief  从比例量到像素量的同步
- * @param  double value
- * @return void
- * @date   2017/06/25
- */
-void ImagePropertiesDialog::Percentage2Pixel(double value)
+void ImagePropertiesDialog::Percentage2mm(double value)
 {
-    ui->HeightInPixel->setValue(ui->HeightInPercentage->value() * initial_height / 100.0);
-    ui->WidthInPixel->setValue(ui->WidthInPercentage->value() * initial_width / 100.0);
-    ui->xInPixel->setValue(ui->xInPercentage->value() * page_width / 100.0);
-    ui->yInPixel->setValue(ui->yInPercentage->value() * page_height / 100.0);
+    ui->HeightInMM->setValue(
+                ui->HeightInPercentage->value() * initial_height / 100.0);
+    ui->WidthInMM->setValue(
+                ui->WidthInPercentage->value() * initial_width / 100.0);
+    ui->xInMM->setValue(
+                ui->xInPercentage->value() * page_width / 100.0);
+    ui->yInMM->setValue(
+                ui->yInPercentage->value() * page_height / 100.0);
+    qDebug() << "execute 2";
 }
-
-
-

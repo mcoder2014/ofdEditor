@@ -15,18 +15,12 @@ DocImageBlock::DocImageBlock(QWidget *parent)
     this->setFrameStyle(QFrame::NoFrame);
     this->setFocusPolicy(Qt::StrongFocus);
 
-    qDebug() << "DocImageBlock 1";
-
     //Initialization
 //    this->properties_dialog = new ImagePropertiesDialog(this, parent);
-    width_height_ratio_locked = false;
+    width_height_ratio_locked = true;
     width_height_ratio = 0.0;
 
-    qDebug() << "DocImageBlock 2";
-
     this->initMenu();   // 初始化右键菜单
-
-    qDebug() << "DocImageBlock 3";
 
 }
 
@@ -44,6 +38,7 @@ void DocImageBlock::setImage(QPixmap & pixmap)
                 pixmap.width());                // 保存实际宽度
     this->realHeight = UnitTool::pixelToMM(
                 pixmap.height());               // 保存实际高度
+    this->width_height_ratio = this->realWidth / this->realHeight;
 
     this->setPixmap(pixmap);
 }
@@ -83,6 +78,7 @@ double DocImageBlock::getWidthHeightRatio()
 {
     if (isWidthHeightRatioLocked())
         return width_height_ratio;
+    else return -1;
 }
 
 DocPassage *DocImageBlock::getPassage()
@@ -187,17 +183,17 @@ void DocImageBlock::focusOutEvent(QFocusEvent *e)
     QLabel::focusOutEvent(e);
 }
 
-/**
- * @Author Pan
- * @brief  右键菜单
- * @param  QContextMenuEvent *ev
- * @return void
- * @date   2017/06/24
- */
-void DocImageBlock::contextMenuEvent(QContextMenuEvent *ev)
-{
-    context_menu->exec(ev->globalPos());
-}
+///**
+// * @Author Pan
+// * @brief  右键菜单
+// * @param  QContextMenuEvent *ev
+// * @return void
+// * @date   2017/06/24
+// */
+//void DocImageBlock::contextMenuEvent(QContextMenuEvent *ev)
+//{
+//    context_menu->exec(ev->globalPos());
+//}
 
 ///
 /// \brief DocImageBlock::initMenu
@@ -210,20 +206,13 @@ void DocImageBlock::initMenu()
     this->change_image = this->context_menu->addAction(tr("ChangeImage"));
     this->set_image_properties = this->context_menu->addAction(tr("Property"));
 
-
-
     //signal-slots
     this->connect(this->change_image, SIGNAL(triggered()),
                   this, SLOT(changeImage()));
+
     this->connect(this->set_image_properties, SIGNAL(triggered()),
                   this, SLOT(setImageProperties()));
-//    this->connect(properties_dialog,
-//                  SIGNAL(changeImageProperties(double,double,
-//                                               double,double,
-//                                               bool)),
-//                  this, SLOT(imagePropertiesChanged(double,double,
-//                                                    double,double,
-//                                                    bool)));
+
 }
 
 /**
@@ -236,15 +225,18 @@ void DocImageBlock::initMenu()
 void DocImageBlock::changeImage()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-                                    tr("Open File"), QDir::currentPath());
-    if (!fileName.isEmpty()) {
+                                                    tr("Open File"), QDir::currentPath());
+    if (!fileName.isEmpty())
+    {
         QPixmap image(fileName);
-        if (image.isNull()) {
+        if (image.isNull())
+        {
             QMessageBox::information(this, tr("OFD Editor"),
                                      tr("Cannot open file %1.").arg(fileName));
             return;
         }
-        this->setPixmap(image);
+        this->setImage(image);
+
     }
 }
 
@@ -257,14 +249,6 @@ void DocImageBlock::changeImage()
  */
 void DocImageBlock::setImageProperties()
 {
-//    emit sendImageInfo(this->width(),
-//                       this->height(),
-//                       this->pos().x(),
-//                       this->pos().y(),
-//                       this->block->getPage()->width(),
-//                       this->block->getPage()->height(),
-//                       this->width_height_ratio_locked);
-//    properties_dialog->exec();
     ImagePropertiesDialog* dialog = ImagePropertiesDialog::getInstance();
     dialog->init(this);
     dialog->exec();
@@ -277,14 +261,15 @@ void DocImageBlock::setImageProperties()
  * @return void
  * @date   2017/06/25
  */
-void DocImageBlock::imagePropertiesChanged(double new_width,
-                            double new_height,
-                            double new_x,
-                            double new_y,
-                            bool ratio_locked)
+void DocImageBlock::imagePropertiesChanged(
+        double new_width,
+        double new_height,
+        double new_x,
+        double new_y,
+        bool ratio_locked)
 {
-    this->resize(new_width, new_height);
-    this->move(new_x, new_y);
+    this->block->resize(new_width, new_height);
+    this->block->setPos(new_x, new_y);
     this->width_height_ratio_locked = ratio_locked;
     this->width_height_ratio = new_width / new_height;
 }

@@ -49,7 +49,7 @@ public slots:
 protected:
     void focusInEvent(QFocusEvent *ev);
     void focusOutEvent(QFocusEvent *ev);
-    void contextMenuEvent(QContextMenuEvent *ev);
+//    void contextMenuEvent(QContextMenuEvent *ev);
 
 private:
     DocBlock * block;               //对代理它的DocBlock的引用

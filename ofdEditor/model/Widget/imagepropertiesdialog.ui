@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>472</height>
+    <width>358</width>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,13 +34,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="xInPixel">
-        <property name="maximum">
-         <double>10000.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_12">
         <property name="font">
@@ -51,13 +44,6 @@
         </property>
         <property name="text">
          <string>水平</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="xInMM">
-        <property name="maximum">
-         <double>10000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -102,13 +88,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="yInPixel">
-        <property name="maximum">
-         <double>10000.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="3">
        <widget class="QDoubleSpinBox" name="yInPercentage">
         <property name="maximum">
@@ -137,7 +116,14 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="xInMM">
+        <property name="maximum">
+         <double>10000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="yInMM">
         <property name="maximum">
          <double>10000.000000000000000</double>
@@ -262,13 +248,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="HeightInPixel">
-        <property name="maximum">
-         <double>10000.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label_5">
         <property name="font">
@@ -280,13 +259,6 @@
         </property>
         <property name="text">
          <string>mm</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="WidthInPixel">
-        <property name="maximum">
-         <double>10000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -324,14 +296,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="HeightInMM">
         <property name="maximum">
          <double>10000.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="WidthInMM">
         <property name="maximum">
          <double>10000.000000000000000</double>
