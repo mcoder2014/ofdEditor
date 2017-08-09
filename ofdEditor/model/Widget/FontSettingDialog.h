@@ -64,7 +64,7 @@ private slots:
     void updatefixedPitch(int state);       // 固定字宽
     void updateWeight(int i);               // 字体粗细
 
-    void accept_slots();                    // 向DocTextBlock传递成功事件
+    void finished_slots( int value );       // 接受对话框的结果
 
 };
 

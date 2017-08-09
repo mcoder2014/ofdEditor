@@ -159,8 +159,8 @@ void FontSettingDialog::initConnect()
             this,SLOT(updatePreview(QTextCharFormat)));
 
     // 当用户点击确认后，执行的函数
-    connect(this, SIGNAL(accepted()),
-            this, SLOT(accept_slots()));                        // 窗口接受确认的信号
+    connect(this, SIGNAL(finished(int)),
+            this, SLOT(finished_slots(int)));                     // 窗口完成任务时
 
 }
 
@@ -501,19 +501,22 @@ void FontSettingDialog::updateWeight(int i)
     emit this->signal_updatePreview(*this->charFormat);
 }
 
-/**
- * @Author Chaoqun
- * @brief  用户确定事件
- * @param  void
- * @return void
-* @date   2017/05/26
- */
-void FontSettingDialog::accept_slots()
-{ 
-    emit this->sendFont(*this->charFormat);
+///
+/// \brief FontSettingDialog::finished_slots
+/// \param value
+///
+void FontSettingDialog::finished_slots(int value)
+{
+    if(value = QDialog::Accepted)
+    {
+        // 如果点击的是确定键
+        emit this->sendFont(*this->charFormat);
+    }
 
     disconnect(this,
                SIGNAL(sendFont(QTextCharFormat&)),
                this->textBlock,
                SLOT(setCharFormatOnSelection(QTextCharFormat&)));
 }
+
+

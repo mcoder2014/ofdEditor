@@ -64,6 +64,7 @@ private slots:
     void page_range_range_changed();
     void changed_page_range_changed();
     void emitInformation();
+    void finished_slots(int value);             // 完成使命
 
 signals:
     void modifyPageSize(

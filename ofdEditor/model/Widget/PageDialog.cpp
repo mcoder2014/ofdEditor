@@ -245,10 +245,8 @@ void PageDialog::initConnect()
                   SLOT(changed_page_range_changed()));
 
     // 选择确定后的操作
-    this->connect(this,
-                  SIGNAL(accepted()),
-                  this,
-                  SLOT(emitInformation()));
+    this->connect(this, SIGNAL(finished(int)),
+                  this,SLOT(finished_slots(int)));
 
     // 判断是否修改过默认值
     this->connect(ui->DefaultPageSizeWidth,
@@ -562,28 +560,41 @@ void PageDialog::changed_page_range_changed()
 ///
 void PageDialog::emitInformation()
 {
-    this->caculatePages();      // 计算选择的页数
 
-    emit this->modifyPageSize(
-                &changed_page_numbers,
-                ui->CurrentPageSizeWidth->value(),
-                ui->CurrentPageSizeHeight->value(),
-                ui->CurrentSetWorkingAreaChecked->isChecked(),
-                ui->CurrentWorkingAreaWidth->value(),
-                ui->CurrentWorkingAreaHeight->value(),
-                ui->CurrentWorkingAreaX->value(),
-                ui->CurrentWorkingAreaY->value());
 
-    if(isDefaultPageSizeChanged)
+}
+
+///
+/// \brief PageDialog::finished_slots
+/// \param value
+///
+void PageDialog::finished_slots(int value)
+{
+    if(value == QDialog::Accepted)
     {
-        emit this->modifyDefaultPageSize(
-                    ui->DefaultPageSizeWidth->value(),
-                    ui->DefaultPageSizeHeight->value(),
-                    ui->DefaultSetWorkingAreaChecked->isChecked(),
-                    ui->DefaultWorkingAreaWidth->value(),
-                    ui->DefaultWorkingAreaHeight->value(),
-                    ui->DefaultWorkingAreaX->value(),
-                    ui->DefaultWorkingAreaY->value());
+        // 如果用户选择了确定
+        this->caculatePages();      // 计算选择的页数
+        emit this->modifyPageSize(
+                    &changed_page_numbers,
+                    ui->CurrentPageSizeWidth->value(),
+                    ui->CurrentPageSizeHeight->value(),
+                    ui->CurrentSetWorkingAreaChecked->isChecked(),
+                    ui->CurrentWorkingAreaWidth->value(),
+                    ui->CurrentWorkingAreaHeight->value(),
+                    ui->CurrentWorkingAreaX->value(),
+                    ui->CurrentWorkingAreaY->value());
+
+        if(isDefaultPageSizeChanged)
+        {
+            emit this->modifyDefaultPageSize(
+                        ui->DefaultPageSizeWidth->value(),
+                        ui->DefaultPageSizeHeight->value(),
+                        ui->DefaultSetWorkingAreaChecked->isChecked(),
+                        ui->DefaultWorkingAreaWidth->value(),
+                        ui->DefaultWorkingAreaHeight->value(),
+                        ui->DefaultWorkingAreaX->value(),
+                        ui->DefaultWorkingAreaY->value());
+        }
     }
 
     // 断开链接

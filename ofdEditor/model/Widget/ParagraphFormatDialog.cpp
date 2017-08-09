@@ -153,8 +153,8 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
 {
 
     // 此信号槽用来将accepted信号接收，然后通过函数发送finished信号
-    connect(this,SIGNAL(accepted()),
-            this,SLOT(accept_slots()));
+    connect(this, SIGNAL(finished(int)),
+            this, SLOT(finished_slots(int)));
 
     // 设置对齐部分
     Qt::Alignment flag = blockFormat.alignment();       // 先获取对齐的样式
@@ -226,21 +226,20 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
 
 }
 
-/**
- * @Author Chaoqun
- * @brief  绑定accepted信号，用来向外界发送信号
- * @param  void
- * @return void
- * @date   2017/05/22
- */
-void ParagraphFormatDialog::accept_slots()
+///
+/// \brief ParagraphFormatDialog::finished_slots
+/// \param value
+///
+void ParagraphFormatDialog::finished_slots(int value)
 {
-    QTextBlockFormat blockFormat = this->getQTextBlockFormat();
-    emit this->finished(blockFormat);
+    if(value == QDialog::Accepted)
+    {
+        QTextBlockFormat blockFormat = this->getQTextBlockFormat();
+        emit this->finished(blockFormat);
+    }
 
     disconnect(this,
             SIGNAL(finished(QTextBlockFormat&)),
             this->textBlock,
                SLOT(setTextBlockFormat(QTextBlockFormat&))); // 断开信号与槽链接
-
 }

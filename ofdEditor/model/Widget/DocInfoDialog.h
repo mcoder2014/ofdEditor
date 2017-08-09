@@ -19,8 +19,6 @@ public:
     static void DestoryInstance();              // 销毁实例
     void init(CT_DocInfo* docInfo);             // 初始化-每次调用窗口时使用
 
-
-
 //    DocInfoDialog(CT_DocInfo* docInfo,QWidget *parent);
 
     ~DocInfoDialog();

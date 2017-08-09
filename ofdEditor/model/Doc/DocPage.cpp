@@ -666,7 +666,7 @@ void DocPage::addImage()
         //新建一个图片框
         DocImageBlock * new_image_block = new DocImageBlock();
         newBlock->setWidget(new_image_block);
-        new_image_block->setImage(image);
+        new_image_block->setImage(image);               // 设置图片
         double page_width = this->width(), page_height = this->height();
 //        qDebug() << "Page Width: " << this->width();
 //        qDebug() << "Page Height: " << this->height();

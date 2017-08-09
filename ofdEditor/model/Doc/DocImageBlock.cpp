@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include "DocPage.h"
+#include "Tool/UnitTool.h"
 
 DocImageBlock::DocImageBlock(QWidget *parent)
     :QLabel(parent)
@@ -17,7 +18,7 @@ DocImageBlock::DocImageBlock(QWidget *parent)
     qDebug() << "DocImageBlock 1";
 
     //Initialization
-    this->properties_dialog = new ImagePropertiesDialog(this, parent);
+//    this->properties_dialog = new ImagePropertiesDialog(this, parent);
     width_height_ratio_locked = false;
     width_height_ratio = 0.0;
 
@@ -38,6 +39,12 @@ DocImageBlock::DocImageBlock(QWidget *parent)
  */
 void DocImageBlock::setImage(QPixmap & pixmap)
 {
+
+    this->realWidth = UnitTool::pixelToMM(
+                pixmap.width());                // 保存实际宽度
+    this->realHeight = UnitTool::pixelToMM(
+                pixmap.height());               // 保存实际高度
+
     this->setPixmap(pixmap);
 }
 
@@ -78,6 +85,49 @@ double DocImageBlock::getWidthHeightRatio()
         return width_height_ratio;
 }
 
+DocPassage *DocImageBlock::getPassage()
+{
+    DocBlock *block = this->block;
+    if(block == NULL)
+        return NULL;
+
+    return block->getPassage();
+
+}
+
+///
+/// \brief DocImageBlock::getPage
+///     获得图片框所属的页
+/// \return
+///
+DocPage *DocImageBlock::getPage()
+{
+    DocBlock *block = this->block;
+    if(block == NULL)
+        return NULL;
+
+    return block->getPage();
+}
+
+///
+/// \brief DocImageBlock::getLayer
+///     获得图片框所属的层
+/// \return
+///
+DocLayer *DocImageBlock::getLayer()
+{
+    DocBlock *block = this->block;
+    if(block == NULL)
+        return NULL;
+
+    return block->getLayer();
+}
+
+///
+/// \brief DocImageBlock::getBlock
+/// 获得图片框所属的块
+/// \return
+///
 DocBlock *DocImageBlock::getBlock()
 {
     return this->block;
@@ -96,6 +146,16 @@ QString DocImageBlock::getType()
 QMenu *DocImageBlock::getMenu()
 {
     return this->context_menu;
+}
+
+double DocImageBlock::getRealWidth()
+{
+    return this->realWidth;
+}
+
+double DocImageBlock::getRealHeight()
+{
+    return this->realHeight;
 }
 
 /**
@@ -157,13 +217,13 @@ void DocImageBlock::initMenu()
                   this, SLOT(changeImage()));
     this->connect(this->set_image_properties, SIGNAL(triggered()),
                   this, SLOT(setImageProperties()));
-    this->connect(properties_dialog,
-                  SIGNAL(changeImageProperties(double,double,
-                                               double,double,
-                                               bool)),
-                  this, SLOT(imagePropertiesChanged(double,double,
-                                                    double,double,
-                                                    bool)));
+//    this->connect(properties_dialog,
+//                  SIGNAL(changeImageProperties(double,double,
+//                                               double,double,
+//                                               bool)),
+//                  this, SLOT(imagePropertiesChanged(double,double,
+//                                                    double,double,
+//                                                    bool)));
 }
 
 /**
@@ -197,14 +257,17 @@ void DocImageBlock::changeImage()
  */
 void DocImageBlock::setImageProperties()
 {
-    emit sendImageInfo(this->width(),
-                       this->height(),
-                       this->pos().x(),
-                       this->pos().y(),
-                       this->block->getPage()->width(),
-                       this->block->getPage()->height(),
-                       this->width_height_ratio_locked);
-    properties_dialog->exec();
+//    emit sendImageInfo(this->width(),
+//                       this->height(),
+//                       this->pos().x(),
+//                       this->pos().y(),
+//                       this->block->getPage()->width(),
+//                       this->block->getPage()->height(),
+//                       this->width_height_ratio_locked);
+//    properties_dialog->exec();
+    ImagePropertiesDialog* dialog = ImagePropertiesDialog::getInstance();
+    dialog->init(this);
+    dialog->exec();
 }
 
 /**
