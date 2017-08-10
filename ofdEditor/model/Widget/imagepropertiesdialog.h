@@ -15,7 +15,7 @@ class ImagePropertiesDialog : public QDialog
 
 public:
     static ImagePropertiesDialog* getInstance();    // 获得单例
-    static void DestoryInstance();                       // 销毁单例
+    static void DestoryInstance();                  // 销毁单例
     void init(DocImageBlock* _block);               // 使用时初始化
 
     ~ImagePropertiesDialog();
@@ -42,18 +42,23 @@ private:
 private slots:
     void finished_slots(int value);             // 完成窗口后执行
     void lockRatioStateChanged(int locked);     // 当纵横比锁定发生改变时
-//    void Width2HeightTrans(double value);       // 宽发生改变时作用于高
-//    void Height2WidthTrans(double value);       // 高发生改变时作用于宽
 
-//    void mm2Percentage(double value);           // 毫米单位到百分比
-//    void Percentage2mm(double value);           // 百分比单位到毫米
     void editfinished_MM_x();
     void editfinished_MM_y();
     void editfinished_percentage_x();
     void editfinished_percentage_y();
 
+
+    void editfinished_MM_width();
+    void editfinished_MM_height();
+    void editfinished_percentage_width();
+    void editfinished_percentage_height();
+
     void slots_valueChanged_x(double x);            // 当x发生改变时处理
     void slots_valueChanged_y(double y);            // 当y发生改变时处理
+
+    void slots_valueChanged_width(double width);    // 当width发生改变时触发
+    void slots_valueChanged_height(double height);  // 当height发生改变时触发
 
 signals:
     void changeImageProperties(double new_width,
