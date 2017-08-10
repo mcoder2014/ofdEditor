@@ -8,6 +8,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
+#include <QAction>
 
 // 类声明
 class DocLayer;
@@ -69,7 +70,7 @@ public slots:
     void setBlockFlag(BlockFlag flag){this->newBlockFlag = flag;}
 
     void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
-    void remove();          // 移除本页
+    void remove();                  // 移除本页
     void setScale(double scale);    // 设置页面的显示大小
     void setWorkingArea(
             bool isUsingWorkingArea,
@@ -111,6 +112,9 @@ private:
 
     BlockFlag newBlockFlag;             // 是否画块
     DocBlock * activeBlock;             // 正在活跃的那个DocBlock
+
+
+
 
     bool has_working_area;
     double working_area_width;

@@ -348,12 +348,12 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
 
     QPoint pos = event->pos();      // 获得相对于页面的
     QList<QGraphicsItem*> items = this->items(pos);     // 获得某鼠标下的所有块
-    qDebug() << "There are"
-             << items.size()
-             << " items at position "
-             << event->pos()
-             << " scene:"
-             << this->mapToScene(event->pos());
+//    qDebug() << "There are"
+//             << items.size()
+//             << " items at position "
+//             << event->pos()
+//             << " scene:"
+//             << this->mapToScene(event->pos());
 
     QMenu* seletion = new QMenu();
     seletion->setTitle(tr("seletion"));
@@ -363,6 +363,7 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
         // 将qgraphicsItem造型成为DocBlock
         if(items[i]->type() == DocBlock::Type)
         {
+            // 向下造型
             DocBlock* block = qgraphicsitem_cast<DocBlock*>(items[i]);
             if(block != NULL)
             {
