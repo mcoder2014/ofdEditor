@@ -5,6 +5,9 @@
 #include "Doc/DocBasicTypes.h"
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
+#include <QMenu>
+#include <QAction>
+#include "Doc/DocPage.h"
 
 class DocLayer;
 class QPainter;
@@ -43,16 +46,25 @@ public:
 
     RectAdjustStatus rectAdjust;                // 用来标识当前修改尺寸的状态
     DocLayer * getLayer(){return this->layer;}  // 获得所在的层
+    DocPage::Layer Layer();                     // 获得所在的层的名称
     DocPage * getPage();                        // 获得所在页
     DocPassage *getPassage();                   // 获得所在文章
     void paintHandle(QPainter& painter);        // 绘制负责变换的控制器
     qreal getZValue(){return this->realZValue;} // 获得当前块所在的Z值
     RectAdjustStatus currentStatus(QPointF pos);    // 鼠标所在位置可以进行什么调整
 
-    bool isTextBlock();         // 判断是否DocBlock装的是否是DocTextBlock
-    DocTextBlock *getTextBlock(); // 获得DocTextBlock
+    QMenu *getMenu();               // 根据块和块内部的设置，增加设置窗口
+    bool isTextBlock();             // 判断是否DocBlock装的是否是DocTextBlock
+    DocTextBlock *getTextBlock();   // 获得DocTextBlock
     bool isImageBlock();
     DocImageBlock *getImageBlock(); //获得DocImageBlock
+
+    QAction *action_geometry;       // 大小和位置
+    QAction *action_delete;         // 删除块
+
+    QAction *action_foreground;     // 移动到前景
+    QAction *action_body;           // 移动到正文
+    QAction *action_background;     // 移动到背景
 
 public slots:           // 槽函数
     void setLayer(DocLayer * layer){this->layer = layer;}
@@ -62,9 +74,12 @@ public slots:           // 槽函数
     void setPos(qreal x, qreal y);      // 设置位置
     // 移动位置应该在所在的DocPage中吧……
     void remove();                      // 从场景中移除本框
+
     void setWidget(QWidget* widget);           // 旧的函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
     void setWidget(DocImageBlock * imageBlock);
+
+    void sizeAndPositionDialog();           // 调整大小和位置窗口
 
 protected:
     void paint(QPainter *painter,
@@ -88,16 +103,23 @@ private:
     QSizeF blockSize;           // 用来纪录大小
     QPointF blockOldPos;        // 用来记录旧的位置
 
-    DocTextBlock * textBlock;    // 存下引用
+    DocTextBlock * textBlock;   // 存下引用
     DocImageBlock * imageBlock; //同上
+    qreal realZValue;           // 真实的z值
 
     bool isFocused;             // 是否被聚焦
     bool blockIsResizing;       // 是否正在改变大小
     bool isInResizeArea(const QPointF& pos);    // 检查鼠标是否在重置大小区域
-    qreal realZValue;           // 真实的z值
+
+    void initMenu();                // 初始化
 
 signals:
     void signals_blockRemoved(DocBlock* block);     // 当本块被移除时发出信号
+
+private slots:
+    void moveToForeground();    // 移动到前景层
+    void moveToBody();          // 移动到正文层
+    void moveToBackground();    // 移动到背景层
 
 };
 

@@ -108,6 +108,29 @@ QSize DocPage::getSize()
                  UnitTool::mmToPixel(height_mm));
 }
 
+///
+/// \brief DocPage::hasBlock
+///     判断该页面中是否包含某个块
+/// \param block
+/// \return
+///
+bool DocPage::hasBlock(DocBlock *block)
+{
+    bool flag = false;
+    if(this->foregroundLayer->hasBlock(block))
+    {
+        flag = true;
+    }
+    if(this->bodyLayer->hasBlock(block))
+    {
+        flag = true;
+    }
+    if(this->backgroundLayer->hasBlock(block))
+    {
+        flag = true;
+    }
+}
+
 /**
  * @Author Chaoqun
  * @brief  获得前景层
@@ -142,6 +165,28 @@ DocLayer *DocPage::getBodyLayer()
 DocLayer *DocPage::getBackgroundLayer()
 {
     return this->backgroundLayer;
+}
+
+///
+/// \brief DocPage::getLayer
+///     获得层
+/// \param layer
+/// \return
+///
+DocLayer *DocPage::getLayer(DocPage::Layer layer)
+{
+    if(layer == Foreground)
+    {
+        return this->foregroundLayer;
+    }
+    else if(layer == Body)
+    {
+        return this->bodyLayer;
+    }
+    else if(layer == Background)
+    {
+        return this->backgroundLayer;
+    }
 }
 
 /**
@@ -202,6 +247,34 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
     default:
         break;
     }
+
+}
+
+///
+/// \brief DocPage::changeBlockLayer
+/// \param block
+/// \param layer
+///
+void DocPage::changeBlockLayer(DocBlock *block, DocPage::Layer layer)
+{
+    if(!this->hasBlock(block))
+    {
+        // 如果本页中不包含此块
+        return;
+        qDebug() << "this page does not has this block.";
+    }
+
+    DocLayer *doclayer = block->getLayer();     // 获得层
+    if(doclayer == NULL)
+    {
+        return;
+        qDebug() << "This block has no layer";
+    }
+
+    DocLayer* goalLayer = this->getLayer(layer);    // 目标层
+
+    doclayer->removeBlock(block);   // 从原有层中删除
+    goalLayer->addBlock(block);     // 加入到目标层中
 
 }
 
@@ -355,9 +428,6 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
 //             << " scene:"
 //             << this->mapToScene(event->pos());
 
-    QMenu* seletion = new QMenu();
-    seletion->setTitle(tr("seletion"));
-
     for(int i = 0; i < items.size(); i++)
     {
         // 将qgraphicsItem造型成为DocBlock
@@ -367,21 +437,7 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
             DocBlock* block = qgraphicsitem_cast<DocBlock*>(items[i]);
             if(block != NULL)
             {
-                qDebug() << "qt cast success";
-                if(block->isTextBlock())
-                {
-                    // 如果是文本框
-                    DocTextBlock* textBlock = block->getTextBlock();
-//                    seletion->addAction(textBlock->getType());
-                    menu->addMenu(textBlock->getMenu());
-                }
-                else if(block->isImageBlock())
-                {
-                    // 如果是图片
-                    DocImageBlock* imageBlock = block->getImageBlock();
-//                    seletion->addAction(imageBlock->getType());
-                    menu->addMenu(imageBlock->getMenu());
-                }
+                menu->addMenu(block->getMenu());
             }
             else
             {
@@ -390,8 +446,6 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
         }
 
     }
-
-    menu->addMenu(seletion);                // 添加子菜单
 
     menu->exec(event->globalPos());         // 执行菜单
 
@@ -645,6 +699,45 @@ void DocPage::init()
     working_area_width = this->size().width();
     working_area_height = this->size().height();
     working_area_x = working_area_y = 0;
+
+    this->initMenu();           // 初始化菜单
+}
+
+///
+/// \brief DocPage::initMenu
+///
+void DocPage::initMenu()
+{
+    this->menu_insert =  new QMenu(tr("Insert"));
+
+    // 插入文本框
+    this->action_insertTextBlock = new QAction(tr("TextBlock"), NULL);
+
+    // 插入图片
+    this->action_insertImageBlock = new QAction(tr("ImageBlock"), NULL);
+
+    // 插入表格
+    this->action_insertTable = new QAction(tr("Table"), NULL);
+
+    // 插入页
+    this->action_insertPage = new QAction(tr("Page"), NULL);
+
+    //删除本页
+    this->action_deletePage = new QAction(tr("This Page"), NULL);
+
+    // 页面设置
+    this->action_pageSetting = new QAction(tr("Page Setting"), NULL);
+}
+
+///
+/// \brief DocPage::getMenu
+///     根绝获得的物体生成菜单
+/// \param items
+/// \return
+///
+QMenu *DocPage::getMenu(QList<QGraphicsItem *> &items)
+{
+
 }
 
 void DocPage::addImage()

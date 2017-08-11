@@ -31,7 +31,7 @@ class MODELSHARED_EXPORT DocPage
 public:
 
     enum Layer{Body,Foreground,Background};              // 分为三层
-    enum BlockFlag{none,draw,drawMove,blockMove, blockResize};        // 插入时的绘制状态
+    enum BlockFlag{none,draw,drawMove,blockMove, blockResize}; // 插入时的绘制状态
     enum BlockType{text,image,table};                    // 插入时的类型
     explicit DocPage(QWidget * parent = 0);
     DocPage(double width,
@@ -44,10 +44,12 @@ public:
     double getHeight(){return height_mm;}         // 返回毫米单位高度
 
     BlockFlag getBlockFlag(){return this->newBlockFlag;}
+    bool hasBlock(DocBlock* block);                // 页面中是否有某个块
 
     DocLayer *getForegroundLayer();                 // 获得前景层
     DocLayer* getBodyLayer();                       // 获得正文层
     DocLayer* getBackgroundLayer();                 // 获得背景层
+    DocLayer *getLayer(DocPage::Layer layer);       // 获得层
 
     //Pan
     void addImage();                                //添加图片
@@ -59,10 +61,11 @@ public:
     double getContentY(){return this->working_area_y;}
 
 public slots:
-    void setSize(double width, double height);             // 设置页面大小
-    void setPassage(DocPassage * passage);        // 设置文章
-    void addBlock(DocBlock* block, DocPage::Layer layer);  // 为页面添加一个新元素
+    void setSize(double width, double height);                       // 设置页面大小
+    void setPassage(DocPassage * passage);                           // 设置文章
+    void addBlock(DocBlock* block, DocPage::Layer layer);            // 为页面添加一个新元素
 //    void addBlock(DocTextBlock* textBlock, DocPage::Layer layer);  // 为页面添加一个新元素
+    void changeBlockLayer(DocBlock* block, DocPage::Layer layer);    // 更换block的层
     void addItem(QGraphicsItem *item);      // 拓展接口
     QGraphicsProxyWidget *addWidget(QWidget *widget,
                           Qt::WindowFlags wFlags = Qt::WindowFlags());
@@ -91,6 +94,7 @@ protected:
 private:
 
     void init();                         // 初始化UI
+    void initMenu();                     // 初始化一些自有的菜单
     DocPassage * passage;                // 页所属文章
     DocPageScene* docScene;              // 场景数据
 
@@ -99,6 +103,7 @@ private:
     DocLayer* backgroundLayer;           // 背景层
 
     InsertBlockInfo * insertBlockInfo;    // 下一个插入的Block的类型
+    QMenu *getMenu(QList<QGraphicsItem*>& items);   // 根据获得的物体生成菜单
 
     // 还应该有模板页
     //CT_PageArea* area;                  // 页面大小描述
@@ -114,8 +119,20 @@ private:
     DocBlock * activeBlock;             // 正在活跃的那个DocBlock
 
 
+    // QActions
+    QMenu *menu_insert;                 // 菜单
+
+    QAction *action_insertTextBlock;    // 插入文本框
+    QAction *action_insertImageBlock;   // 插入图片框
+    QAction *action_insertTable;        // 插入表格
+    QAction *action_insertPage;         // 插入页
+
+    QAction *action_deletePage;         // 删除本页
+
+    QAction *action_pageSetting;        // 页面设置
 
 
+    // 页面设置
     bool has_working_area;
     double working_area_width;
     double working_area_height;

@@ -153,3 +153,14 @@ DocPassage *DocLayer::getPassage()
         return NULL;
     return page->getPassage();
 }
+
+///
+/// \brief DocLayer::hasBlock
+///     检查块中是否包含此元素
+/// \param block
+/// \return
+///
+bool DocLayer::hasBlock(DocBlock *block)
+{
+    return this->blocks.contains(block);
+}

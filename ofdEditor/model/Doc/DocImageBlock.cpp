@@ -141,6 +141,10 @@ QString DocImageBlock::getType()
 ///
 QMenu *DocImageBlock::getMenu()
 {
+    this->context_menu->clear();
+    this->context_menu->addAction(this->change_image);
+    this->context_menu->addAction(this->set_image_properties);
+
     return this->context_menu;
 }
 
@@ -203,8 +207,11 @@ void DocImageBlock::initMenu()
 {
     this->context_menu = new QMenu(tr("DocImageBlock"));       // 新建菜单
 
-    this->change_image = this->context_menu->addAction(tr("ChangeImage"));
-    this->set_image_properties = this->context_menu->addAction(tr("Property"));
+    this->change_image = new QAction(tr("Change Image"), this);
+    this->set_image_properties = new QAction(tr("Property"), this);
+
+    this->context_menu->addAction(this->change_image);
+    this->context_menu->addAction(this->set_image_properties);
 
     //signal-slots
     this->connect(this->change_image, SIGNAL(triggered()),

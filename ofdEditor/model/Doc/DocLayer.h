@@ -29,6 +29,7 @@ public:
     DocPage::Layer getLayer(){return type;}
     DocPage* getPage();                     // 找到层所在的Page
     DocPassage *getPassage();               // 找到文章
+    bool hasBlock(DocBlock* block);         // 判断是否包含这个块
 
 public slots:
 

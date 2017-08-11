@@ -147,6 +147,23 @@ QString DocTextBlock::getType()
 ///
 QMenu *DocTextBlock::getMenu()
 {
+    // 重建菜单
+    this->ContextMenu->clear();     //清空菜单
+
+    this->ContextMenu->addAction(this->actionCut);
+    this->ContextMenu->addAction(this->actionCopy);
+    this->ContextMenu->addAction(this->actionPaste);
+    this->ContextMenu->addAction(this->actionSelectAll);
+
+    this->ContextMenu->addSeparator();                      // 增加分界线
+    this->ContextMenu->addAction(this->actionBold);         // 加粗
+    this->ContextMenu->addAction(this->actionItalic);       // 斜体
+//    this->ContextMenu->addAction(this->actionUnderline);    // 下划线
+    this->ContextMenu->addAction(this->actionColor);        // 颜色
+
+    this->ContextMenu->addSeparator();                      // 分界线
+    this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
+    this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
 
     // 检验粘贴键的状态
     QClipboard *board = QApplication::clipboard();
@@ -817,8 +834,29 @@ void DocTextBlock::init()
  */
 void DocTextBlock::initAcitons()
 {
+
+    // 剪切
+    this->actionCut = new QAction(tr("Cut"), this);
+    connect(this->actionCut, SIGNAL(triggered(bool)),
+            this, SLOT(cut()));
+
+    // 复制
+    this->actionCopy = new QAction(tr("Copy"), this);
+    connect(this->actionCopy, SIGNAL(triggered(bool)),
+            this, SLOT(copy()));
+
+    // 粘贴
+    this->actionPaste = new QAction(tr("Paste"), this);
+    connect(this->actionPaste, SIGNAL(triggered(bool)),
+            this, SLOT(paste()));
+
+    // 全选
+    this->actionSelectAll = new QAction(tr("Select All"), this);
+    connect(this->actionSelectAll, SIGNAL(triggered(bool)),
+            this, SLOT(selectAll()));
+
     // 粗体
-    this->actionBold = new QAction(tr("Bold"),NULL);
+    this->actionBold = new QAction(tr("Bold"), this);
     this->actionBold->setPriority(QAction::LowPriority);
     QFont bold;
     bold.setBold(true);
@@ -828,7 +866,7 @@ void DocTextBlock::initAcitons()
                   this,SLOT(textBold()));
 
     // 斜体
-    this->actionItalic = new QAction(tr("Italic"),NULL);
+    this->actionItalic = new QAction(tr("Italic"), this);
     this->actionItalic->setPriority(QAction::LowPriority);
     QFont italic;
     italic.setItalic(true);
@@ -838,7 +876,7 @@ void DocTextBlock::initAcitons()
                   this,SLOT(textItalic()));
 
     // 下划线
-    this->actionUnderline = new QAction(tr("Underline"),NULL);
+    this->actionUnderline = new QAction(tr("Underline"), this);
     this->actionUnderline->setPriority(QAction::LowPriority);
     QFont underline;
     underline.setUnderline(true);
@@ -848,19 +886,19 @@ void DocTextBlock::initAcitons()
                   this,SLOT(textUnderline()));
 
     // 设置字体颜色
-    this->actionColor = new QAction(tr("Color"),NULL);
+    this->actionColor = new QAction(tr("Color"), this);
     this->actionColor->setPriority(QAction::LowPriority);
 
     this->connect(this->actionColor,SIGNAL(triggered()),
                   this,SLOT(setTextColor()));
 
     // 段落
-    this->actionParagraph = new QAction(tr("Paragraph"),NULL);
+    this->actionParagraph = new QAction(tr("Paragraph"), this);
     this->connect(this->actionParagraph,SIGNAL(triggered()),
                   this,SLOT(textParagraph()));
 
     // 字体窗口测试
-    this->actionFontSetTest = new QAction(tr("FontDialogTest"),NULL);
+    this->actionFontSetTest = new QAction(tr("FontDialogTest"), this);
     this->connect(this->actionFontSetTest, SIGNAL(triggered()),
                   this, SLOT(customFontDialog()));
 
@@ -893,19 +931,10 @@ void DocTextBlock::initMenu()
     this->ContextMenu = new QMenu(tr("DocTextBlock"));
 
     // 基本功能
-    this->actionCut = this->ContextMenu->addAction(tr("Cut"));              // 剪切
-    this->actionCopy = this->ContextMenu->addAction(tr("Copy"));            // 复制
-    this->actionPaste = this->ContextMenu->addAction(tr("Paste"));          // 粘贴
-    this->actionSelectAll = this->ContextMenu->addAction(tr("SelectAll"));  // 全选
-
-    connect(this->actionCut, SIGNAL(triggered(bool)),
-            this, SLOT(cut()));
-    connect(this->actionCopy, SIGNAL(triggered(bool)),
-            this, SLOT(copy()));
-    connect(this->actionPaste, SIGNAL(triggered(bool)),
-            this, SLOT(paste()));
-    connect(this->actionSelectAll, SIGNAL(triggered(bool)),
-            this, SLOT(selectAll()));
+    this->ContextMenu->addAction(this->actionCut);
+    this->ContextMenu->addAction(this->actionCopy);
+    this->ContextMenu->addAction(this->actionPaste);
+    this->ContextMenu->addAction(this->actionSelectAll);
 
     this->ContextMenu->addSeparator();                      // 增加分界线
     this->ContextMenu->addAction(this->actionBold);         // 加粗
@@ -916,6 +945,5 @@ void DocTextBlock::initMenu()
     this->ContextMenu->addSeparator();                      // 分界线
     this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
     this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
-
 
 }

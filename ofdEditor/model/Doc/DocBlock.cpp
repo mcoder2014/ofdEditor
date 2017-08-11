@@ -32,6 +32,20 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setAcceptHoverEvents(true);
     textBlock = NULL;
     imageBlock = NULL;
+
+    this->initMenu();
+}
+
+///
+/// \brief DocBlock::Layer
+/// \return
+///
+DocPage::Layer DocBlock::Layer()
+{
+    if(this->layer != NULL)
+        return this->layer->getLayer();
+    else
+        return DocPage::Body;
 }
 
 /**
@@ -385,6 +399,15 @@ void DocBlock::setWidget(DocImageBlock * imageBlock)
     QGraphicsProxyWidget::setWidget(imageBlock);
 }
 
+///
+/// \brief DocBlock::sizeAndPositionDialog
+///     大小位置调整窗口
+///
+void DocBlock::sizeAndPositionDialog()
+{
+
+}
+
 /**
  * @Author Chaoqun
  * @brief  检查鼠标是否在重置大小区域
@@ -396,6 +419,73 @@ bool DocBlock::isInResizeArea(const QPointF &pos)
 {
     return (pos.x() - this->size().width() + 15) >
             (this->size().height() - pos.y());
+}
+
+
+void DocBlock::initMenu()
+{
+    // 移动到前景层
+    this->action_foreground = new QAction(tr("Foreground"), NULL);
+
+    this->connect(this->action_foreground, SIGNAL(triggered(bool)),
+                  this, SLOT(moveToForeground()));
+
+    // 移动到正文层
+    this->action_body = new QAction(tr("Body"), NULL);
+
+    this->connect(this->action_body, SIGNAL(triggered(bool)),
+                  this, SLOT(moveToBody()));
+
+    // 移动到背景层
+    this->action_background = new QAction(tr("Background"), NULL);
+
+    this->connect(this->action_background, SIGNAL(triggered(bool)),
+                  this, SLOT(moveToBackground()));
+
+    // 删除
+    this->action_delete = new QAction(tr("Delete"), NULL);
+
+    this->connect(this->action_delete, SIGNAL(triggered(bool)),
+                  this, SLOT(remove()));
+
+    // 大小和位置调整
+    this->action_geometry = new QAction(tr("size and position"), NULL);
+
+    this->connect(this->action_geometry, SIGNAL(triggered(bool)),
+                  this, SLOT(sizeAndPositionDialog()));
+}
+
+///
+/// \brief DocBlock::moveToForeground
+///
+void DocBlock::moveToForeground()
+{
+    if(this->Layer() != DocPage::Foreground)
+    {
+        this->getPage()->changeBlockLayer(this, DocPage::Foreground);
+    }
+}
+
+///
+/// \brief DocBlock::moveToBody
+///
+void DocBlock::moveToBody()
+{
+    if(this->Layer() != DocPage::Body)
+    {
+        this->getPage()->changeBlockLayer(this, DocPage::Body);
+    }
+}
+
+///
+/// \brief DocBlock::moveToBackground
+///
+void DocBlock::moveToBackground()
+{
+    if(this->Layer() != DocPage::Background)
+    {
+        this->getPage()->changeBlockLayer(this, DocPage::Background);
+    }
 }
 
 /**
@@ -454,6 +544,65 @@ DocBlock::RectAdjustStatus DocBlock::currentStatus( QPointF pos)
         }
 
     }
+}
+
+///
+/// \brief DocBlock::getMenu
+///     获得菜单
+/// \return
+///
+QMenu *DocBlock::getMenu()
+{
+    QMenu * menu = new QMenu();     // 新建菜单
+    QMenu * menu_layer = new QMenu(tr("Layer"));    // 子菜单-层
+    menu_layer->addAction(this->action_foreground);
+    menu_layer->addAction(this->action_body);
+    menu_layer->addAction(this->action_background);
+
+    // 设置提醒状态
+    if(this->Layer() == DocPage::Foreground)
+    {
+        this->action_foreground->setChecked(true);
+        this->action_body->setChecked(false);
+        this->action_background->setChecked(false);
+    }
+    else if(this->Layer() == DocPage::Body)
+    {
+        this->action_foreground->setChecked(false);
+        this->action_body->setChecked(true);
+        this->action_background->setChecked(false);
+    }
+    else if(this->Layer() == DocPage::Background)
+    {
+        this->action_foreground->setChecked(false);
+        this->action_body->setChecked(false);
+        this->action_background->setChecked(true);
+    }
+
+    if(this->isTextBlock())
+    {
+        // 文本框
+        menu = this->textBlock->getMenu();
+        menu->setTitle(this->textBlock->getType());
+
+        menu->addSeparator();
+        menu->addAction(this->action_geometry);
+        menu->addMenu(menu_layer);
+        menu->addAction(this->action_delete);
+
+    }
+    else if(this->isImageBlock())
+    {
+        // 如果是图片
+        menu = this->imageBlock->getMenu();
+        menu->setTitle(this->imageBlock->getType());
+
+        menu->addSeparator();
+        menu->addMenu(menu_layer);
+        menu->addAction(this->action_delete);
+    }
+
+    return menu;
 }
 
 /**
