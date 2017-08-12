@@ -56,11 +56,13 @@ public:
     QString getFilePath();                  // 获得文档路径
     QUndoStack *undoStack;                  // 撤销队列
     DocPage* getLastedActivedPage();        // Get last actived page
+    int getPageIndex(DocPage* page);        // 获得页面的序号
 
 public slots:
     void addPage(DocPage *page);                    // 添加一个新页面
     void addPassage(QVector<DocPage* >& passage);   // 添加很多界面
     void appendNewPage(DocPage *page = NULL);       // 如果为空，则代表假如空白页
+    void insertPage(DocPage* page, int index);      // 在指定位置插入页面
 
     void removePage(int index);                     // 移除某一页
     void removePage(DocPage* page);                 // 移除某一页

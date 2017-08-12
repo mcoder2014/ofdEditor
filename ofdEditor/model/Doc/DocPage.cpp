@@ -377,6 +377,11 @@ void DocPage::setWorkingArea(
     this->working_area_y = contentY;
 }
 
+void DocPage::insertPageDialog()
+{
+
+}
+
 
 /**
  * @Author Chaoqun

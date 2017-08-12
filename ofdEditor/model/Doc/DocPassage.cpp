@@ -119,7 +119,7 @@ void DocPassage::addPage(DocPage *page)
     this->pages.append(page);
     // 添加到ScrollArea
     this->layout->addWidget(page,0,Qt::AlignCenter);
-        // 向layout中增加一页，并居中显示
+    // 向layout中增加一页，并居中显示
 
     // 接收当前操作页面的更新
     this->connect(page, SIGNAL(signals_page_actived(DocPage*)),
@@ -127,7 +127,7 @@ void DocPassage::addPage(DocPage *page)
 
     this->layout->update();             // 更新
     page->setPassage(this);             // 设置页所属的文章
-    this->adjustWidgetSize();   // 调整大小
+    this->adjustWidgetSize();           // 调整大小
 
 //    qDebug() << "You have added an new page";
 
@@ -161,6 +161,11 @@ void DocPassage::appendNewPage(DocPage *page)
     if(page == NULL)
         page = new DocPage();
     this->addPage(page);            // 此处调用addPage
+}
+
+void DocPassage::insertPage(DocPage *page, int index)
+{
+
 }
 
 /**
@@ -336,6 +341,17 @@ QString DocPassage::getFilePath()
 DocPage *DocPassage::getLastedActivedPage()
 {
     return _lastActivedPage;
+}
+
+///
+/// \brief DocPassage::getPageIndex
+/// \param page
+/// \return
+///
+int DocPassage::getPageIndex(DocPage *page)
+{
+    int index = this->pages.indexOf(page);  // 查找页的序号
+    return index;
 }
 
 /**

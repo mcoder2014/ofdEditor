@@ -73,14 +73,15 @@ public slots:
     void setBlockFlag(BlockFlag flag){this->newBlockFlag = flag;}
 
     void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
-    void remove();                  // 移除本页
-    void setScale(double scale);    // 设置页面的显示大小
+    void remove();                      // 移除本页
+    void setScale(double scale);        // 设置页面的显示大小
     void setWorkingArea(
             bool isUsingWorkingArea,
             double contentWidth,
             double contentHeight,
             double contentX,
-            double contentY);          // 设置工作区域
+            double contentY);           // 设置工作区域
+    void insertPageDialog();            // 插入页面
 
 protected:
     void paintEvent(QPaintEvent *event);
