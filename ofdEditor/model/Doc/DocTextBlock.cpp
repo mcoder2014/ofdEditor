@@ -149,6 +149,7 @@ QMenu *DocTextBlock::getMenu()
 {
     // 重建菜单
     this->ContextMenu->clear();     //清空菜单
+    this->ContextMenu->setTitle(this->getType());
 
     this->ContextMenu->addAction(this->actionCut);
     this->ContextMenu->addAction(this->actionCopy);

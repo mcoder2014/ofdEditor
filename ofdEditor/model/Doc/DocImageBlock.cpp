@@ -142,6 +142,7 @@ QString DocImageBlock::getType()
 QMenu *DocImageBlock::getMenu()
 {
     this->context_menu->clear();
+    this->context_menu->setTitle(this->getType());
     this->context_menu->addAction(this->change_image);
     this->context_menu->addAction(this->set_image_properties);
 

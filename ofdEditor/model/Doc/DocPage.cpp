@@ -417,35 +417,11 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
 {
     // event->globalPos() 是相对于屏幕的
     // event->pos() 相对于页面左上角
-    QMenu* menu = new QMenu(this->passage); // 让passage作为父亲
+//    QMenu* menu = new QMenu(this->passage); // 让passage作为父亲
 
     QPoint pos = event->pos();      // 获得相对于页面的
     QList<QGraphicsItem*> items = this->items(pos);     // 获得某鼠标下的所有块
-//    qDebug() << "There are"
-//             << items.size()
-//             << " items at position "
-//             << event->pos()
-//             << " scene:"
-//             << this->mapToScene(event->pos());
-
-    for(int i = 0; i < items.size(); i++)
-    {
-        // 将qgraphicsItem造型成为DocBlock
-        if(items[i]->type() == DocBlock::Type)
-        {
-            // 向下造型
-            DocBlock* block = qgraphicsitem_cast<DocBlock*>(items[i]);
-            if(block != NULL)
-            {
-                menu->addMenu(block->getMenu());
-            }
-            else
-            {
-                qDebug() << "is not a Docblock class";
-            }
-        }
-
-    }
+    QMenu *menu = this->getMenu(items);
 
     menu->exec(event->globalPos());         // 执行菜单
 
@@ -676,8 +652,6 @@ void DocPage::init()
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-
-
     // 新建三个层
     this->foregroundLayer = new DocLayer(Foreground);
     this->foregroundLayer->setPage(this);
@@ -708,25 +682,31 @@ void DocPage::init()
 ///
 void DocPage::initMenu()
 {
+    this->menu_main = new QMenu(tr("Main"));
     this->menu_insert =  new QMenu(tr("Insert"));
 
     // 插入文本框
-    this->action_insertTextBlock = new QAction(tr("TextBlock"), NULL);
+    this->action_insertTextBlock = new QAction(tr("TextBlock"), this);
 
     // 插入图片
-    this->action_insertImageBlock = new QAction(tr("ImageBlock"), NULL);
+    this->action_insertImageBlock = new QAction(tr("ImageBlock"), this);
 
     // 插入表格
-    this->action_insertTable = new QAction(tr("Table"), NULL);
+    this->action_insertTable = new QAction(tr("Table"), this);
 
     // 插入页
-    this->action_insertPage = new QAction(tr("Page"), NULL);
+    this->action_insertPage = new QAction(tr("Page"), this);
 
     //删除本页
-    this->action_deletePage = new QAction(tr("This Page"), NULL);
+    this->action_deletePage = new QAction(tr("Delete This Page"), this);
 
     // 页面设置
-    this->action_pageSetting = new QAction(tr("Page Setting"), NULL);
+    this->action_pageSetting = new QAction(tr("Page Setting"), this);
+
+    this->menu_insert->addAction(this->action_insertTextBlock);
+    this->menu_insert->addAction(this->action_insertImageBlock);
+    this->menu_insert->addAction(this->action_insertTable);
+    this->menu_insert->addAction(this->action_insertPage);
 }
 
 ///
@@ -737,6 +717,57 @@ void DocPage::initMenu()
 ///
 QMenu *DocPage::getMenu(QList<QGraphicsItem *> &items)
 {
+    // 三种情况
+    // 无元素、一个元素、多个元素
+    int size = items.size();        // 鼠标下总共多少个元素
+    QMenu *menu = this->menu_main;
+    menu->clear();
+
+    if(size == 0)
+    {
+        menu->addMenu(this->menu_insert);
+        menu->addAction(this->action_deletePage);
+        menu->addAction(this->action_pageSetting);
+    }
+    else if(size == 1)
+    {
+
+        if(items[0]->type() == DocBlock::Type)
+        {
+            DocBlock* block = qgraphicsitem_cast<DocBlock *>(items[0]);
+            if(block != NULL)
+            {
+                menu = block->getMenu();
+            }
+        }
+
+        menu->addSeparator();
+        menu->addMenu(this->menu_insert);
+        menu->addAction(this->action_deletePage);
+        menu->addAction(this->action_pageSetting);
+    }
+    else if(size > 1)
+    {
+
+        for(int i = 0; i < items.size(); i++)
+        {
+            // 将qgraphicsItem造型成为DocBlock
+            if(items[i]->type() == DocBlock::Type)
+            {
+                // 向下造型
+                DocBlock* block = qgraphicsitem_cast<DocBlock*>(items[i]);
+                QMenu* tempMenu = block->getMenu();
+                menu->addMenu(tempMenu);
+            }
+        }
+
+        menu->addSeparator();
+        menu->addMenu(this->menu_insert);
+        menu->addAction(this->action_deletePage);
+        menu->addAction(this->action_pageSetting);
+    }
+
+    return menu;
 
 }
 

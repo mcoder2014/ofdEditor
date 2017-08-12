@@ -118,8 +118,8 @@ private:
     BlockFlag newBlockFlag;             // 是否画块
     DocBlock * activeBlock;             // 正在活跃的那个DocBlock
 
-
     // QActions
+    QMenu *menu_main;                   // 菜单
     QMenu *menu_insert;                 // 菜单
 
     QAction *action_insertTextBlock;    // 插入文本框
