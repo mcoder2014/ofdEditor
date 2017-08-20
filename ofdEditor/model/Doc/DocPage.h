@@ -82,6 +82,9 @@ public slots:
             double contentX,
             double contentY);           // 设置工作区域
     void insertPageDialog();            // 插入页面
+    void insertPageBefore();            // 在本页之前插入页面
+    void insertPageAfter();             // 在本页之后插入页面
+    void dialogPageSetting();           // 页面设置窗口
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -122,14 +125,16 @@ private:
     // QActions
     QMenu *menu_main;                   // 菜单
     QMenu *menu_insert;                 // 菜单
+    QMenu *menu_insertPage;             // 插入页
 
     QAction *action_insertTextBlock;    // 插入文本框
     QAction *action_insertImageBlock;   // 插入图片框
     QAction *action_insertTable;        // 插入表格
     QAction *action_insertPage;         // 插入页
+    QAction *action_insertPageBefore;   // 在本页之前插入页面
+    QAction *action_insertPageAfter;    // 在本页之后插入页面
 
     QAction *action_deletePage;         // 删除本页
-
     QAction *action_pageSetting;        // 页面设置
 
 

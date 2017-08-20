@@ -163,8 +163,64 @@ void DocPassage::appendNewPage(DocPage *page)
     this->addPage(page);            // 此处调用addPage
 }
 
+///
+/// \brief DocPassage::insertPage
+/// \param page 页面
+/// \param index    插入的位置
+///
 void DocPassage::insertPage(DocPage *page, int index)
 {
+    if(page == NULL)
+    {
+        qDebug() << "page is null";
+        page = new DocPage();
+    }
+
+    page->setSize(default_width, default_height);
+    page->setWorkingArea(
+                default_using_working_area,
+                default_working_width,
+                default_working_height,
+                default_working_x,
+                default_working_y);
+    int pos = -1;
+
+    // 插入位置
+    if(index >= this->pages.size())
+    {
+        // 插入到最后一位
+        pos = this->layout->indexOf(
+                    this->pages.operator [](this->pages.size()-1));
+        pos ++;
+
+        this->pages.append(page);
+
+    }
+    else if(index < 0)
+    {
+        // 插入到第一位
+        pos = this->layout->indexOf(
+                    this->pages.operator [](0));
+
+        this->pages.insert(0, page);
+
+    }
+    else
+    {
+        pos = this->layout->indexOf(
+                    this->pages.operator [](index));
+
+        this->pages.insert(index, page);
+    }
+
+    this->layout->insertWidget(pos, page, 0, Qt::AlignCenter);
+
+    this->connect(page, SIGNAL(signals_page_actived(DocPage*)),
+                  this, SLOT(setCurrentActivedPage(DocPage*)));
+
+    this->layout->update();
+    page->setPassage(this);
+    this->adjustWidgetSize();
 
 }
 
@@ -195,7 +251,7 @@ void DocPassage::removePage(DocPage *page)
 //    qDebug()<<"pages size" << this->pages.size();
 
     this->layout->removeWidget(page);       // 从场景中移除页面
-    page->deleteLater();                    // 移除页面
+//    page->deleteLater();                    // 移除页面
 
     this->pages.remove(index);              // 从数据中移除页面
 //    qDebug()<<"pages size" << this->pages.size();
@@ -344,6 +400,15 @@ DocPage *DocPassage::getLastedActivedPage()
 }
 
 ///
+/// \brief DocPassage::getLastedActivedPageIndex
+/// \return
+///
+int DocPassage::getLastedActivedPageIndex()
+{
+    return this->pages.indexOf(this->_lastActivedPage);
+}
+
+///
 /// \brief DocPassage::getPageIndex
 /// \param page
 /// \return
@@ -436,29 +501,34 @@ void DocPassage::closeEvent(QCloseEvent *event)
 void DocPassage::initUI()
 {
 
-    this->layout = new QVBoxLayout;             // 新建布局
+//    this->horizontalWhite = 100;            // 文章两侧黑边
+//    this->verticalWhite = 50;               // 文章之间黑边
+    this->marginWhite = 50;                   // 边缘留下50像素的留白
+    this->spacingWhite = 50;                  // 纸张之间留下的留白
+
+    this->layout = new QVBoxLayout;                     // 新建布局
+    this->layout->setMargin(this->marginWhite);         // 边缘留至少50的空白
+    this->layout->setSpacing(this->spacingWhite);       // 纸张之间留下50像素的留白
+    this->layout->setAlignment(Qt::AlignHCenter);       // 纸张自动居中排列
 
     // 新增widget
-    this->widget = new QWidget(this);
+    this->widget = new QWidget();                       // 中间文档显示区域
     this->widget->setLayout(this->layout);
     this->widget->setVisible(true);
-    this->widget->setBackgroundRole(QPalette::Dark);    // 背景
+    this->widget->setBackgroundRole(QPalette::Dark);    // widget 背景
     this->widget->setAutoFillBackground(true);
-
+    this->setWidgetResizable(true);                     // 设置ScrollArea 可以影响到内部纸张
     this->setWidget(this->widget);                      // 设置内置widget
-    this->setBackgroundRole(QPalette::Dark);            // 背景
+    this->setBackgroundRole(QPalette::Dark);            // ScrollArea 的背景
+    this->setAlignment(Qt::AlignHCenter);               // ScrollArea 设置位置水平居中
 
-    this->horizontalWhite = 100;            // 文章两侧黑边
-    this->verticalWhite = 50;               // 文章之间黑边
-    this->setAlignment(Qt::AlignHCenter);   // 设置位置水平居中
-
-    this->scaleFactor = 1.0;
+    this->scaleFactor = 1.0;                            // 放大缩小比例
 
     // 设置滚动条策略
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-    adjustScrollBarRange();     // 调整进度条长度
+    adjustScrollBarRange();                             // 调整进度条长度
 
     // 设置滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), 1);
@@ -541,37 +611,37 @@ void DocPassage::adjustScrollBarRange()
  */
 void DocPassage::adjustWidgetSize()
 {
-    // 计算页面大小
-    int width = 0;
-    int height = 0;
+//    // 计算页面大小
+//    int width = 0;
+//    int height = 0;
 
-    int length = this->pages.size();        // 文章的页数
-    for(int i = 0; i <length; i++)
-    {
-        if(width < this->pages[i]->viewport()->width())
-        {
-            // 最宽的一页的宽度
-           width =  this->pages[i]->viewport()->width();
-        }
+//    int length = this->pages.size();        // 文章的页数
+//    for(int i = 0; i <length; i++)
+//    {
+//        if(width < this->pages[i]->viewport()->width())
+//        {
+//            // 最宽的一页的宽度
+//           width =  this->pages[i]->viewport()->width();
+//        }
 
-        height += verticalWhite + this->pages[i]->viewport()->height();
-    }
+//        height += verticalWhite + this->pages[i]->viewport()->height();
+//    }
 
-    height += verticalWhite;
-    width += 2*horizontalWhite;
+//    height += verticalWhite;
+//    width += 2*horizontalWhite;
 
 //    this->widget->setMinimumSize(width, height);    // 设置内容大小
-    this->widget->resize(width,height);
-    this->widget->update();
-    this->layout->update();
+//    this->widget->resize(width,height);
+//    this->widget->update();
+//    this->widget->updateGeometry();
+//    this->layout->update();
     this->update();
     this->viewport()->update();
     this->QScrollArea::update();
 
     // 保存计算结果
-    this->widgetWidth = width;
-    this->widgetHeight = height;
-
+//    this->widgetWidth = width;
+//    this->widgetHeight = height;
 
     adjustScrollBarRange();     // 调整进度条长度
 

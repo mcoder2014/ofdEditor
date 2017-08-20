@@ -382,6 +382,34 @@ void DocPage::insertPageDialog()
 
 }
 
+///
+/// \brief DocPage::insertPageBefore
+///     在本页之前插入页面
+///
+void DocPage::insertPageBefore()
+{
+    int index = this->passage->getLastedActivedPageIndex();
+    this->passage->insertPage(NULL,index);
+}
+
+///
+/// \brief DocPage::insertPageAfter
+///     在本页之后插入页面
+///
+void DocPage::insertPageAfter()
+{
+    int index = this->passage->getLastedActivedPageIndex();
+    this->passage->insertPage(NULL,index + 1);
+}
+
+///
+/// \brief DocPage::dialogPageSetting
+///     调用文章的页面设置窗口
+void DocPage::dialogPageSetting()
+{
+    this->getPassage()->activatePageDialog();
+}
+
 
 /**
  * @Author Chaoqun
@@ -424,11 +452,12 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
     // event->pos() 相对于页面左上角
 //    QMenu* menu = new QMenu(this->passage); // 让passage作为父亲
 
-    QPoint pos = event->pos();      // 获得相对于页面的
+    QPoint pos = event->pos();                          // 获得相对于页面的
     QList<QGraphicsItem*> items = this->items(pos);     // 获得某鼠标下的所有块
     QMenu *menu = this->getMenu(items);
+    this->oldPos = pos;                                 // 记录鼠标位置
 
-    menu->exec(event->globalPos());         // 执行菜单
+    menu->exec(event->globalPos());                     // 执行菜单
 
 }
 
@@ -700,7 +729,14 @@ void DocPage::initMenu()
     this->action_insertTable = new QAction(tr("Table"), this);
 
     // 插入页
-    this->action_insertPage = new QAction(tr("Page"), this);
+    this->menu_insertPage = new QMenu(tr("Page"));
+    this->action_insertPage = new QAction(tr("Setting"), this);
+    this->action_insertPageBefore = new QAction(tr("Before"), this);
+    this->action_insertPageAfter = new QAction(tr("After"), this);
+
+    this->menu_insertPage->addAction(this->action_insertPageAfter);
+    this->menu_insertPage->addAction(this->action_insertPageBefore);
+    this->menu_insertPage->addAction(this->action_insertPage);
 
     //删除本页
     this->action_deletePage = new QAction(tr("Delete This Page"), this);
@@ -711,7 +747,23 @@ void DocPage::initMenu()
     this->menu_insert->addAction(this->action_insertTextBlock);
     this->menu_insert->addAction(this->action_insertImageBlock);
     this->menu_insert->addAction(this->action_insertTable);
-    this->menu_insert->addAction(this->action_insertPage);
+//    this->menu_insert->addAction(this->action_insertPage);
+    this->menu_insert->addMenu(this->menu_insertPage);
+
+
+    // 在本页之前插入
+    connect(this->action_insertPageBefore, SIGNAL(triggered(bool)),
+            this, SLOT(insertPageBefore()));
+    // 在本页之后插入
+    connect(this->action_insertPageAfter, SIGNAL(triggered(bool)),
+            this, SLOT(insertPageAfter()));
+    // 删除本页
+    connect(this->action_deletePage, SIGNAL(triggered(bool)),
+            this, SLOT(remove()));
+    // 页面设置
+    connect(this->action_pageSetting, SIGNAL(triggered(bool)),
+            this, SLOT(dialogPageSetting()));
+
 }
 
 ///

@@ -56,6 +56,7 @@ public:
     QString getFilePath();                  // 获得文档路径
     QUndoStack *undoStack;                  // 撤销队列
     DocPage* getLastedActivedPage();        // Get last actived page
+    int getLastedActivedPageIndex();        // Get the id of last actived page
     int getPageIndex(DocPage* page);        // 获得页面的序号
 
 public slots:
@@ -154,6 +155,8 @@ private:
     double widgetHeight;            // 内容的高度
     int horizontalWhite;            // 白色页面左右两边的灰色区域
     int verticalWhite;              // 白色页面上下的灰色区域
+    int marginWhite;                // 边缘留白
+    int spacingWhite;               // 纸张之间的留白
 
     // 默认的大小
     double default_width;                       //默认宽度
