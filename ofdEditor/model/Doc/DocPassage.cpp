@@ -286,17 +286,17 @@ void DocPassage::setDocInfo(CT_DocInfo &docInfo)
     this->setWindowTitle(this->docInfo->getTitle());        // 设置小窗口标题
 }
 
-///**
-// * @Author Chaoqun
-// * @brief  测试
-// * @param  参数
-// * @return 返回值
-// * @date   2017/06/22
-// */
-//void DocPassage::testMessage()
-//{
-////    qDebug()<<"passage success";
-//}
+/**
+ * @Author Chaoqun
+ * @brief  测试
+ * @param  参数
+ * @return 返回值
+ * @date   2017/06/22
+ */
+void DocPassage::testMessage()
+{
+    qDebug()<<"passage success ";
+}
 
 /**
  * @Author Chaoqun
@@ -492,6 +492,7 @@ void DocPassage::resizeEvent(QResizeEvent *event)
 void DocPassage::closeEvent(QCloseEvent *event)
 {
     QScrollArea::closeEvent(event);
+    qDebug() << "passage close request";
 }
 
 ///
@@ -588,7 +589,6 @@ void DocPassage::adjustScrollBarRange()
     QSize areaSize = this->viewport()->size();  // 视窗大小
     QSize widgetSize = this->widget->size();    // 面板大小
 
-
     this->horizontalScrollBar()->setPageStep(areaSize.width());
     this->horizontalScrollBar()->setRange(0,widgetSize.width()
                                         - areaSize.width());
@@ -600,7 +600,6 @@ void DocPassage::adjustScrollBarRange()
     this->horizontalScrollBar()->update();
     this->verticalScrollBar()->update();
 
-
 }
 
 /**
@@ -611,47 +610,16 @@ void DocPassage::adjustScrollBarRange()
  */
 void DocPassage::adjustWidgetSize()
 {
-//    // 计算页面大小
-//    int width = 0;
-//    int height = 0;
 
-//    int length = this->pages.size();        // 文章的页数
-//    for(int i = 0; i <length; i++)
-//    {
-//        if(width < this->pages[i]->viewport()->width())
-//        {
-//            // 最宽的一页的宽度
-//           width =  this->pages[i]->viewport()->width();
-//        }
-
-//        height += verticalWhite + this->pages[i]->viewport()->height();
-//    }
-
-//    height += verticalWhite;
-//    width += 2*horizontalWhite;
-
-//    this->widget->setMinimumSize(width, height);    // 设置内容大小
-//    this->widget->resize(width,height);
-//    this->widget->update();
-//    this->widget->updateGeometry();
-//    this->layout->update();
     this->update();
     this->viewport()->update();
     this->QScrollArea::update();
-
-    // 保存计算结果
-//    this->widgetWidth = width;
-//    this->widgetHeight = height;
 
     adjustScrollBarRange();     // 调整进度条长度
 
     // 调整滚动条位置
     adjustScrollBar(this->horizontalScrollBar(), this->scaleFactor);
     adjustScrollBar(this->verticalScrollBar(), this->scaleFactor);
-
-
-//    qDebug() <<"widget's Size"<<this->widget->size();
-//    qDebug() << "ScrollArea's Size" << this->size();
 
 }
 
@@ -663,15 +631,6 @@ void DocPassage::setDefaultPageSize(double default_width, double default_height)
 
 void DocPassage::activatePageDialog()
 {
-
-////    qDebug() << "page width in pixel = " <<  page->size().width()
-////             << "page height in pixel = " <<  page->size().height();
-
-    int index = this->pages.indexOf(this->_lastActivedPage);
-    qDebug() << "The No."
-             << index
-             <<" page has been actived---"
-            << this->_lastActivedPage->getWidth();
 
     if( this->_lastActivedPage!= NULL)
     {
@@ -827,9 +786,4 @@ void DocPassage::setScale(double scale)
 void DocPassage::setCurrentActivedPage(DocPage *page)
 {
     this->_lastActivedPage = page;
-
-//    int index = this->pages.indexOf(this->_lastActivedPage);
-//    qDebug() << "The No."
-//             << index
-//             <<" page has been actived" ;
 }

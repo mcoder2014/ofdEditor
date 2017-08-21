@@ -12,8 +12,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QDebug>
-#include <QMdiSubWindow>
-#include <QMdiArea>
+
 #include <QPalette>
 #include <QTextBlockFormat>
 #include <QTextCharFormat>
@@ -47,6 +46,23 @@ PassageMainWindow::~PassageMainWindow()
 }
 
 ///
+/// \brief PassageMainWindow::activePassage
+///     获得当前被激活的文章
+/// \return
+///
+DocPassage *PassageMainWindow::activedPassage()
+{
+    QWidget* widget = this->tabArea->currentWidget();
+    if(widget == 0)
+    {
+        // 如果返回空指针
+        return NULL;
+    }
+
+    return qobject_cast<DocPassage*>(widget);
+}
+
+///
 /// \brief PassageMainWindow::activateFindAndReplaceDock
 ///     激活查找替换窗口
 ///
@@ -57,31 +73,9 @@ void PassageMainWindow::activateFindAndReplaceDock()
         FindAndReplaceDock* find_and_replace_dock
                 = FindAndReplaceDock::getInstance();    // 获得单例
         find_and_replace_dock->setCurrentPassage(
-                    connector->getActivePassage());     // 设置当前操作的文章
+                    this->activedPassage());     // 设置当前操作的文章
         find_and_replace_dock->show();
     }
-}
-
-/**
- * @Author Chaoqun
- * @brief  摘要
- * @param  参数
- * @return 返回值
- * @date   2017/05/13
- */
-DocPassage *PassageMainWindow::createMdiChild()
-{
-    qDebug()<<"execute";
-
-    DocPassage * child = new DocPassage(this);
-//    qDebug() << "Creating new Passage Completed.";
-    child->addPage(new DocPage());      // 添加一个空白页
-//    qDebug() << "Creating new Page Completed.";
-    this->addDocPassage(child);         // 加入到本视区
-//    qDebug() << "Passage has " << child->getPages().size() << " pages.";
-//    qDebug() << "Page width = " << child->getPages()[0]->size().width()
-//             << " Page Height = " <<child->getPages()[0]->size().height();
-    return child;
 }
 
 /**
@@ -93,8 +87,12 @@ DocPassage *PassageMainWindow::createMdiChild()
  */
 void PassageMainWindow::init()
 {
-    this->area = new QMdiArea();
-    this->setCentralWidget(this->area);
+
+    /// 标签页
+    this->tabArea = new QTabWidget();
+    this->setCentralWidget(this->tabArea);
+    this->tabArea->setTabsClosable(true);               // 允许关闭标签页
+    this->tabArea->setMovable(true);                    // 允许调整标签页的顺序
 
     this->connector = new ActionConnector(this);        // 新建连接器
 
@@ -483,7 +481,7 @@ void PassageMainWindow::initAction()
 void PassageMainWindow::connectAction()
 {
     connect(this->newFileAction, SIGNAL(triggered(bool)),
-            this,SLOT(createMdiChild()));   // 新建窗口
+            this,SLOT(createEmptyPassage()));   // 新建窗口
 
     connect(this->openFileAtcion, SIGNAL(triggered(bool)),
             this, SLOT(openFile()));  //打开文件
@@ -554,13 +552,22 @@ void PassageMainWindow::connectAction()
     connect(this->underlineAction, SIGNAL(triggered(bool)),
             this,SLOT(underline()));    // 下划线
 
+    // 切换文章
+    connect(this->tabArea, SIGNAL(currentChanged(int)),
+            this, SLOT(changeCurrentPassage(int)));
 
-    connect(this->area, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            this->connector, SLOT(updateActivePassage(QMdiSubWindow*)));    // 检测ActivePassage更新
+    connect(this, SIGNAL(updateActivedPassage(DocPassage*)),
+            this->connector, SLOT(updateActivePassage(DocPassage*)));
 
+    // 关闭文章
+    connect(this->tabArea, SIGNAL(tabCloseRequested(int)),
+            this, SLOT(closePassageRequest(int)));
+
+    // 切换为编辑模式
     connect(this->editModeAction, SIGNAL(triggered(bool)),
             this, SLOT(switchToEditMode()));
 
+    // 切换为阅读模式
     connect(this->viewModeAction, SIGNAL(triggered(bool)),
             this, SLOT(switchToViewMode()));
 }
@@ -617,9 +624,7 @@ void PassageMainWindow::underline()
  */
 void PassageMainWindow::zoomIn()
 {
-//    DocPage* page = this->connector->getActivePage();
-//    page->scale(2,2);
-    DocPassage* passage = this->connector->getActivePassage();
+    DocPassage* passage = this->activedPassage();
     passage->zoomIn();
 }
 
@@ -634,7 +639,7 @@ void PassageMainWindow::zooomOut()
 {
 //    DocPage* page = this->connector->getActivePage();
 //    page->scale(0.5,0.5);
-    DocPassage* passage = this->connector->getActivePassage();
+    DocPassage* passage = this->activedPassage();
     passage->zoomOut();
 }
 
@@ -691,7 +696,7 @@ void PassageMainWindow::openFile()
 void PassageMainWindow::saveFile()
 {
 
-    DocPassage* passage = this->connector->getActivePassage();
+    DocPassage* passage = this->activedPassage();
     if(passage == NULL)
     {
         qDebug() << "Select NULL Passage";
@@ -816,7 +821,7 @@ void PassageMainWindow::imageDialog()
 
 void PassageMainWindow::pageDialog()
 {
-    DocPassage * passage = activeMdiChild();
+    DocPassage * passage = activedPassage();
     if (passage)
     {
         passage->activatePageDialog();
@@ -954,6 +959,34 @@ void PassageMainWindow::switchToEditMode()
 void PassageMainWindow::switchToViewMode()
 {
     this->editModeAction->setChecked(false);
+}
+
+///
+/// \brief PassageMainWindow::changeCurrentPassage
+///     切换当前操作文档
+/// \param index
+///
+void PassageMainWindow::changeCurrentPassage(int index)
+{
+    qDebug() << "index " << index;
+    if(index == -1)
+    {
+        // 如果没有则返回 NULL
+        emit updateActivedPassage(NULL);
+        return;
+    }
+
+    emit updateActivedPassage(
+                qobject_cast<DocPassage *>(
+                    this->tabArea->widget(index)));
+
+    qobject_cast<DocPassage *>(
+        this->tabArea->widget(index))->testMessage();
+}
+
+void PassageMainWindow::closePassageRequest(int index)
+{
+    this->tabArea->removeTab(index);
 }
 
 void PassageMainWindow::createTemplatePassage(int index)
@@ -1175,18 +1208,18 @@ void PassageMainWindow::createTemplatePassage(int index)
 
 }
 
-/**
- * @Author Chaoqun
- * @brief  获取激活的窗口
- * @param  void
- * @return DocPassage *
- * @date   2017/05/13
- */
-DocPassage *PassageMainWindow::activeMdiChild()
+///
+/// \brief PassageMainWindow::createEmptyPassage
+///     创建一个空的文章
+/// \return
+///
+DocPassage *PassageMainWindow::createEmptyPassage()
 {
-    if (QMdiSubWindow *activeSubWindow = this->area->activeSubWindow())
-        return qobject_cast<DocPassage *>(activeSubWindow->widget());
-    return 0;
+    DocPassage* child = new DocPassage();           // 新建文章
+    child->addPage(new DocPage());                  // 增加空白页面
+
+    this->addDocPassage(child);                     // 添加页面
+    return child;
 }
 
 /**
@@ -1204,7 +1237,7 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
         return NULL;
     }
 
-    this->area->addSubWindow(passage);          // 插入子窗口
+    this->tabArea->addTab(passage,tr("test"));
     this->connector->setDocPassage(passage);    // 设置引用
 
     passage->setVisible(true);            // 设置可见

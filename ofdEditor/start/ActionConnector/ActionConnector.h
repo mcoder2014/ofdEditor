@@ -40,7 +40,8 @@ public slots:
 
     void setDefaultLayer(DocPage::Layer layer){this->defaultLayer = layer;}
 
-    void updateActivePassage(QMdiSubWindow * window );      // 更新当前操作的文章
+    void updateActivePassage(DocPassage* passage);          // 更新当前操作的文章
+
     void startFindAndReplace();         //打开查找和替换界面
 
 private:

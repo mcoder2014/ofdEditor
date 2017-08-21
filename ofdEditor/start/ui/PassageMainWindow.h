@@ -8,10 +8,10 @@
 #include <QComboBox>            // 选择框
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
+#include <QTabWidget>           // 标签页
 
 class QAction;
 class QMenu;
-class QMdiArea;
 class DocPassage;
 class DocTextBlock;
 class ActionConnector;      // 函数功能的中间件
@@ -26,14 +26,16 @@ class PassageMainWindow
 public:
     explicit PassageMainWindow(QWidget *parent = 0);
     ~PassageMainWindow();
+    DocPassage * activedPassage();       // 获取获取当前激活的文档
 
 public slots:
     void activateFindAndReplaceDock();  // 激活查找替换窗口
-    DocPassage *createMdiChild();       // 创建一个新文档
-    DocPassage *activeMdiChild();       // 获取活动的窗口
-    DocPassage *addDocPassage(DocPassage * passage);
+
+    DocPassage *createEmptyPassage();   // 创建一个空的文章
+    DocPassage *addDocPassage(DocPassage * passage);    // 加入一个文章标签页
 
     void createTemplatePassage(int index);
+
 private:
     double scale;
 
@@ -65,7 +67,7 @@ private:
     QAction * undoAction;               // 撤销
     QAction * redoAction;               // 恢复操作
     QAction * copyAction;               // 复制
-    QAction * cutAction;               // 剪切
+    QAction * cutAction;                // 剪切
     QAction * pasteAction;              // 粘贴
     QAction * viewModeAction;           // 阅读模式
     QAction * editModeAction;           // 编辑模式
@@ -104,8 +106,9 @@ private:
     QAction* rightAction;               // 居右
     QAction* justifyAction;             // 两端对齐
 
-    QMdiArea * area;            // 多窗口区域
     QVector<DocPassage* >passages;      // 存储所有的passage
+
+    QTabWidget* tabArea;              // 使用标签页来表示多个文章
 
     ActionConnector* connector; // 功能连接中间件
 
@@ -138,13 +141,20 @@ private slots:
     void zoomIn();              // 放大
     void zooomOut();            // 缩小
 
-    void acceptTextBlock(DocTextBlock* textBlock);              // 接受当前处理的文字块的更新
+    void acceptTextBlock(DocTextBlock* textBlock);             // 接受当前处理的文字块的更新
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
     void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
-    void acceptImageBlock(DocImageBlock * imageBlock);          //接受当前处理的图片块
+    void acceptImageBlock(DocImageBlock * imageBlock);         //接受当前处理的图片块
 
     void switchToEditMode();        //切换到编辑模式
     void switchToViewMode();        //切换到阅读模式
+
+    void changeCurrentPassage(int index);                   // 当活跃内容 切换为当前页面
+    void closePassageRequest(int index);                    // 点击关闭时处理
+
+signals:
+    void updateActivedPassage(DocPassage * passage);        // 更新当前操作的文档对象
+
 };
 
 #endif // PASSAGEMAINWINDOW_H

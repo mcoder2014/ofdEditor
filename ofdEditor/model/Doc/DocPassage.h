@@ -85,7 +85,7 @@ public slots:
     // docId
     void resetDocId();          // 重新设置DocId
 
-//    void testMessage();       // 测试信号是否走通
+    void testMessage();       // 测试信号是否走通
 
     void adjustWidgetSize();// 根据页数来自动调整widget大小
 
@@ -125,11 +125,9 @@ public slots:
     // Set the current actived page
     void setCurrentActivedPage(DocPage* page);
 
-
 protected:
     void resizeEvent(QResizeEvent* event);
     void closeEvent(QCloseEvent *event);    // 继承，关闭前提示保存
-
 
 private:
     // 数据区
@@ -153,8 +151,7 @@ private:
     double scaleFactor;             // 表示缩放倍数
     double widgetWidth;             // 文章内部的宽度
     double widgetHeight;            // 内容的高度
-    int horizontalWhite;            // 白色页面左右两边的灰色区域
-    int verticalWhite;              // 白色页面上下的灰色区域
+
     int marginWhite;                // 边缘留白
     int spacingWhite;               // 纸张之间的留白
 

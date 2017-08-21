@@ -152,35 +152,9 @@ void ActionConnector::setDocPassage(DocPassage *passage)
     this->passage = passage;
 }
 
-
-
-
-/**
- * @Author Chaoqun
- * @brief  更新当前的活跃窗口
- * @param  参数
- * @return 返回值
- * @date   2017/06/23
- */
-void ActionConnector::updateActivePassage(QMdiSubWindow *window)
+void ActionConnector::updateActivePassage(DocPassage *passage)
 {
-    if(window == NULL)
-    {
-        qDebug() << "updateActivePassage NULL"
-                 << "there's no actived window";
-        this->passage = NULL;
-        return;
-    }
-    DocPassage* passage = qobject_cast<DocPassage*>(window->widget());  // 获得文档
-    if(passage == NULL)
-    {
-        qDebug()<< "The active MdiWindow may not DocPassage";
-        this->passage = NULL;
-    }
-    else
-    {
-        this->passage = passage;
-    }
+    this->passage = passage;
 }
 
 void ActionConnector::startFindAndReplace()
