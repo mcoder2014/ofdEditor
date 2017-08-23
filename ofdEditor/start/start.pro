@@ -28,11 +28,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     ui/PassageMainWindow.cpp \
-    ActionConnector/ActionConnector.cpp
+    ActionConnector/ActionConnector.cpp \
+    ui/RecentFiles.cpp
 
 HEADERS  += mainwindow.h \
     ui/PassageMainWindow.h \
-    ActionConnector/ActionConnector.h
+    ActionConnector/ActionConnector.h \
+    ui/RecentFiles.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -55,6 +57,7 @@ win32{
 RESOURCES += \
     icons.qrc
 
-FORMS +=
+FORMS += \
+    ui/RecentFiles.ui
 
 TRANSLATIONS = cn_start.ts
