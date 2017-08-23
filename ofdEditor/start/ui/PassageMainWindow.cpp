@@ -34,6 +34,9 @@
 #include "Tool/UnitTool.h"
 #include "Core/GlobalSetting.h"
 
+#include "Settings/RecentFileList.h"
+#include "Settings/RecentFileItem.h"
+
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
 {
@@ -131,6 +134,10 @@ void PassageMainWindow::init()
     connect(this->select_template_dialog, SIGNAL(createTemplate(int)),
           this, SLOT(createTemplatePassage(int)));
 
+    // 测试
+    RecentFileList * recentfilelist = RecentFileList::getInstance();
+    recentfilelist->qDebugFileList();
+    recentfilelist->save();
 }
 
 /**
@@ -984,6 +991,13 @@ void PassageMainWindow::changeCurrentPassage(int index)
         this->tabArea->widget(index))->testMessage();
 }
 
+///
+/// \brief PassageMainWindow::closePassageRequest
+///     关闭文件时需要处理的事情：
+///     1. 是否需要提示（保存文件）
+///     2. 是否需要更新最近打开文档
+/// \param index
+///
 void PassageMainWindow::closePassageRequest(int index)
 {
     this->tabArea->removeTab(index);

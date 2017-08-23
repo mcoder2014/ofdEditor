@@ -55,6 +55,7 @@ DocPassage::DocPassage(QWidget *parent)
 
     setAttribute(Qt::WA_DeleteOnClose);
     //    qDebug() << "DocPassage Constructor Finished.";
+    this->isEdited = false;
 }
 
 ///
@@ -66,23 +67,9 @@ DocPassage::DocPassage()
     this->undoStack = new QUndoStack(this); // 撤销恢复队列
     this->docInfo = new CT_DocInfo();       // 新建文章信息
     this->initUI();                         // 初始化界面
+    this->isEdited = false;
 
 }
-
-///**
-// * @Author Chaoqun
-// * @brief  含参构造函数
-// * @date   2017/05/01
-// */
-//DocPassage::DocPassage(QWidget *parent,
-//                       QString version, QString docType, double scaleFactor)
-//    :QScrollArea(parent)
-//{
-//    undoStack=new QUndoStack(this);
-//    this->version = version;
-//    this->docType = docType;
-//    this->scaleFactor = scaleFactor;
-//}
 
 DocPassage::~DocPassage()
 {
@@ -502,8 +489,6 @@ void DocPassage::closeEvent(QCloseEvent *event)
 void DocPassage::initUI()
 {
 
-//    this->horizontalWhite = 100;            // 文章两侧黑边
-//    this->verticalWhite = 50;               // 文章之间黑边
     this->marginWhite = 50;                   // 边缘留下50像素的留白
     this->spacingWhite = 50;                  // 纸张之间留下的留白
 
@@ -564,7 +549,7 @@ void DocPassage::initDocInfo()
     this->version = globalSetting->getDocVersion();
 
     QDateTime time = QDateTime::currentDateTime();  // 获得系统当前时间
-    this->docInfo->setCreationDate( time.toString("yyyy-MM-dd hh:mm:ss"));
+    this->docInfo->setCreationDate( time.toString("yyyy-MM-dd"));
 
 }
 

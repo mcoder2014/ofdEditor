@@ -29,12 +29,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     ui/PassageMainWindow.cpp \
     ActionConnector/ActionConnector.cpp \
-    ui/RecentFiles.cpp
+    ui/RecentFiles.cpp \
+    Settings/RecentFileList.cpp \
+    Settings/RecentFileItem.cpp
 
 HEADERS  += mainwindow.h \
     ui/PassageMainWindow.h \
     ActionConnector/ActionConnector.h \
-    ui/RecentFiles.h
+    ui/RecentFiles.h \
+    Settings/RecentFileList.h \
+    Settings/RecentFileItem.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -43,7 +47,8 @@ OBJECTS_DIR += ./tmp   # .obj 文件存放路径
 
 # 引用，可以直接使用 include<文件名> 方式引入头文件
 INCLUDEPATH += ../model \
-               ../ofd
+               ../ofd \
+               $$PWD/../libs/jsoncpp
 
 
 unix{

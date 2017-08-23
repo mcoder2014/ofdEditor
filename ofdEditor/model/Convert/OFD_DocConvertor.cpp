@@ -101,8 +101,9 @@ DocPage *OFD_DocConvertor::buildDocPage(DocPassage *passage, Page *ct_page)
            page = new DocPage();
         }
 
-        passage->addPage(page);         // 加入到文章中来
         page->setVisible(false);        // 先隐藏显示
+        passage->addPage(page);         // 加入到文章中来
+
 
         // 将每一层加入到页中
         QVector<CT_Layer *>* layers = ct_page->getContent();     // 获得文章中的层信息

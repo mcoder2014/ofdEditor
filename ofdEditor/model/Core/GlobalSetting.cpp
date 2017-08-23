@@ -168,14 +168,16 @@ void GlobalSetting::exportGlobalSetting(QString filePath)
     QFile qfile;
     qfile.setFileName(filePath);
 
-    if(!qfile.open(QIODevice::ReadWrite | QIODevice::Text))
+    if(!qfile.open(QIODevice::ReadWrite
+                   | QIODevice::Text
+                   | QIODevice::Truncate))
     {
         qDebug() << "Program could not creat the global setting file";
         return;
     }
 
     QTextStream txtOutput(&qfile);  // 用来作为输出流
-    Json::StyledWriter swriter;     // 用来将value转换为 string
+//    Json::StyledWriter swriter;     // 用来将value转换为 string
 
     Value root;
     Value app;          // 应用程序
@@ -219,6 +221,7 @@ void GlobalSetting::exportGlobalSetting(QString filePath)
         root["Paragraph"] = paragraph;
 
     txtOutput << QString::fromStdString(root.toStyledString()) <<endl;
+    txtOutput.flush();
     qfile.close();
 }
 

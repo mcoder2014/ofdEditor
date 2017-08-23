@@ -41,8 +41,6 @@ public:
 
     explicit DocPassage(QWidget* parent);
     DocPassage();                                       // 空构造函数
-//    DocPassage(QWidget *parent, QString version,
-//               QString docType,double scaleFactor);     // 可能用不上了
     ~DocPassage();
 
     CT_DocInfo* getDocInfo();                // 获取CT_DocInfo数据
@@ -58,6 +56,8 @@ public:
     DocPage* getLastedActivedPage();        // Get last actived page
     int getLastedActivedPageIndex();        // Get the id of last actived page
     int getPageIndex(DocPage* page);        // 获得页面的序号
+
+    bool isNeedSave(){return  this->isEdited;}  // 文档是否被修改，需要保存吗
 
 public slots:
     void addPage(DocPage *page);                    // 添加一个新页面
@@ -137,6 +137,7 @@ private:
     CT_CommonData* commonData;      // 文档公用文档数据
     QVector<DocPage *> pages;       // 既作为数据，也作为渲染
     DocPage* _lastActivedPage;      // 用来纪录最后操作过的页面
+    bool isEdited;                  // 是否修改过
 
     // 文件信息
     QString filePath;
