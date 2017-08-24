@@ -47,17 +47,19 @@ public:
     QString getUUID();                      // 获得文章的uuid
     QString getTempSavePath();              // 获得文章保存前的临时路径
     QString getTempStorePath();             // 获得暂存资源的临时路径
+    QString getFilePath();                  // 获得文档路径
     QString getVersion( ){return this->version;}
     QString getDocType( ){return this->docType;}
     QVector<DocPage* >* getPages();         // 获得文档中包含的所有页面
     DocPage *getPage(int index);            // 获得文档中的某一页
-    QString getFilePath();                  // 获得文档路径
-    QUndoStack *undoStack;                  // 撤销队列
+
     DocPage* getLastedActivedPage();        // Get last actived page
     int getLastedActivedPageIndex();        // Get the id of last actived page
     int getPageIndex(DocPage* page);        // 获得页面的序号
 
     bool isNeedSave(){return  this->isEdited;}  // 文档是否被修改，需要保存吗
+
+    QUndoStack *undoStack;                  // 撤销队列
 
 public slots:
     void addPage(DocPage *page);                    // 添加一个新页面
@@ -121,6 +123,7 @@ public slots:
     void zoomOut();                     // 放大
 
     void setScale(double scale);        // 设置缩放
+    void updateEditTime();              // 更新修改文件日期
 
     // Set the current actived page
     void setCurrentActivedPage(DocPage* page);
@@ -138,6 +141,7 @@ private:
     QVector<DocPage *> pages;       // 既作为数据，也作为渲染
     DocPage* _lastActivedPage;      // 用来纪录最后操作过的页面
     bool isEdited;                  // 是否修改过
+
 
     // 文件信息
     QString filePath;

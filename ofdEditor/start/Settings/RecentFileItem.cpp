@@ -1,5 +1,5 @@
 #include "RecentFileItem.h"
-#include <qDebug>
+#include <QDebug>
 #include <QFile>
 
 RecentFileItem::RecentFileItem(QObject *parent) : QObject(parent)
@@ -18,10 +18,10 @@ RecentFileItem::RecentFileItem(
     this->fileName = fileName;
     this->author = author;
     this->recentEditTime = QDateTime::fromString(
-                recentOpenTime,
+                recentEditTime,
                 "yyyy-MM-dd");
     this->recentOpenTime = QDateTime::fromString(
-                recentEditTime,
+                recentOpenTime,
                 "yyyy-MM-dd");
     this->filePath = filePath;
 }

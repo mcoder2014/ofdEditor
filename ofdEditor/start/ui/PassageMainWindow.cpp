@@ -33,13 +33,29 @@
 #include "Widget/SelectTemplateDialog.h"
 #include "Tool/UnitTool.h"
 #include "Core/GlobalSetting.h"
+#include "DataTypes/document/CT_DocInfo.h"
 
 #include "Settings/RecentFileList.h"
 #include "Settings/RecentFileItem.h"
+#include "ui/RecentFiles.h"
+
+
+PassageMainWindow* PassageMainWindow::m_instance = NULL;
+
+PassageMainWindow *PassageMainWindow::getInstance()
+{
+    if(m_instance == NULL)
+    {
+        m_instance = new PassageMainWindow();
+    }
+
+    return m_instance;
+}
 
 PassageMainWindow::PassageMainWindow(QWidget *parent)
     :QMainWindow(parent)
 {
+    m_instance = this;
     init();
 }
 
@@ -96,6 +112,11 @@ void PassageMainWindow::init()
     this->setCentralWidget(this->tabArea);
     this->tabArea->setTabsClosable(true);               // 允许关闭标签页
     this->tabArea->setMovable(true);                    // 允许调整标签页的顺序
+
+    // 最近打开文件
+    RecentFiles* recentWidget = RecentFiles::getInstance();
+
+    this->tabArea->addTab(recentWidget,tr("Welcome!"));
 
     this->connector = new ActionConnector(this);        // 新建连接器
 
@@ -672,23 +693,7 @@ void PassageMainWindow::openFile()
         QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
         qDebug() << path;
 
-        ZipTool zipTool;
-        QString tempPath = zipTool.FilePathToFloderPath(path);
-        qDebug() << "Temp path is :" << tempPath;
-
-        ZipTool::extractDir(path,tempPath);     // 解压到临时文件夹
-
-        // 解读文件
-//        OFDParser ofdParser("C:\\Users\\User\\AppData\\Local\\Temp\\%表格.ofd%\\OFD.xml");
-        OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
-//        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
-        OFD* data = ofdParser.getData();    // 读取出OFD文件
-        qDebug()<< "ofd file open" << tempPath + "/OFD.xml";
-        OFD_DocConvertor convert;
-        DocPassage* passage = convert.ofd_to_doc(data);
-        passage->setFilePath(path);         // 设置文件路径
-
-        this->addDocPassage(passage);       // 添加文章
+        this->openFile(path);       // 调用打开文件
 
     }
 }
@@ -718,29 +723,42 @@ void PassageMainWindow::saveFile()
         return;
     }
 
+    passage->updateEditTime();                      // 更新文件修改日期
+    this->addRecentFile(passage);                   // 添加到最近打开的文件列表
+
     Doc_OFDConvertor docToOfd;
     OFD* ofdFile = docToOfd.doc_to_ofd(passage);
 
     QString tempPath = passage->getTempStorePath();
-    ZipTool::deleteFolder(tempPath);                // 删除文件夹
+    ZipTool::deleteFolder(tempPath);              // 删除文件夹
     QDir dir;
     dir.mkdir(tempPath);                          // 生成文件夹
-    OFDWriter writer(ofdFile, tempPath+"/");            // 写出文件
+    OFDWriter writer(ofdFile, tempPath+"/");      // 写出文件
 
     ZipTool::compressDir(filePath,
-                         tempPath);                 // 将文件夹压缩为指定文件
+                         tempPath);               // 将文件夹压缩为指定文件
 
 }
 
-/**
- * @Author Chaoqun
- * @brief  文件另存为
- * @param  void
- * @return void
- * @date   2017/06/26
- */
+///
+/// \brief PassageMainWindow::saveFileAs
+///     另存为文件
+///     先判断文件是否可以
+///     弹出文件对话框
+///     保存文件
+///
 void PassageMainWindow::saveFileAs()
 {
+    // 检查文档
+    DocPassage* passage = this->connector->getActivePassage();
+    if(passage == NULL)
+    {
+        qDebug() << "Select NULL Passage";
+        return;
+    }
+    passage->updateEditTime();
+
+    // 弹出保存文件对话框
     QFileDialog * fileDialog = new QFileDialog(this);           // 新建一个QFileDialog
 
     fileDialog->setAcceptMode(QFileDialog::AcceptSave);         // 设置对话框为保存文件类型
@@ -753,14 +771,6 @@ void PassageMainWindow::saveFileAs()
     {
         QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
 
-
-        DocPassage* passage = this->connector->getActivePassage();
-        if(passage == NULL)
-        {
-            qDebug() << "Select NULL Passage";
-            return;
-        }
-
         Doc_OFDConvertor docToOfd;
         OFD* ofdFile = docToOfd.doc_to_ofd(passage);
 
@@ -770,10 +780,10 @@ void PassageMainWindow::saveFileAs()
         {
             qDebug() << "the file is existing";
             // 如果文件夹已存在则要删除该文件夹
-            ZipTool::deleteFolder(tempPath);                // 删除文件夹
+            ZipTool::deleteFolder(tempPath);                  // 删除文件夹
         }
 
-        dir.mkdir(tempPath);                          // 生成文件夹
+        dir.mkdir(tempPath);                                  // 生成文件夹
         OFDWriter writer(ofdFile, tempPath + "/");            // 写出文件
 
         qDebug() << "temp Files Path:" << tempPath;
@@ -784,7 +794,8 @@ void PassageMainWindow::saveFileAs()
 
         if(flag == true)
         {
-            passage->setFilePath(path);
+            passage->setFilePath(path);                         // 设置文件路径
+            this->addRecentFile(passage);                       // 添加到最近文件
         }
         else
         {
@@ -1004,6 +1015,13 @@ void PassageMainWindow::closePassageRequest(int index)
 
 
     this->tabArea->removeTab(index);
+
+    if(this->tabArea->count() == 0)
+    {
+        RecentFiles* recentWidget = RecentFiles::getInstance();
+        recentWidget->init();
+        this->tabArea->addTab(recentWidget,tr("Welcome!"));
+    }
 }
 
 void PassageMainWindow::createTemplatePassage(int index)
@@ -1226,6 +1244,42 @@ void PassageMainWindow::createTemplatePassage(int index)
 }
 
 ///
+/// \brief PassageMainWindow::openFile
+///         打开文件
+/// \param filePath
+///
+void PassageMainWindow::openFile(QString filePath)
+{
+
+    QFile qfile;
+    qfile.setFileName(filePath);
+    if(!qfile.exists())
+    {
+        // 如果文件不存在，则中断程序
+        return;
+    }
+
+    ZipTool zipTool;
+    QString tempPath = zipTool.FilePathToFloderPath(filePath);
+    qDebug() << "Temp path is :" << tempPath;
+
+    ZipTool::extractDir(filePath,tempPath);     // 解压到临时文件夹
+
+    // 解读文件
+//        OFDParser ofdParser("C:\\Users\\User\\AppData\\Local\\Temp\\%表格.ofd%\\OFD.xml");
+    OFDParser ofdParser(tempPath + "/OFD.xml");      // 新建临时路径
+//        OFDParser ofdParser("C:/Users/User/Desktop/表格/OFD.xml");
+    OFD* data = ofdParser.getData();    // 读取出OFD文件
+    qDebug()<< "ofd file open" << tempPath + "/OFD.xml";
+    OFD_DocConvertor convert;
+    DocPassage* passage = convert.ofd_to_doc(data);
+    passage->setFilePath(filePath);         // 设置文件路径
+
+    this->addRecentFile(passage);       // 添加到最近文件
+    this->addDocPassage(passage);       // 添加文章
+}
+
+///
 /// \brief PassageMainWindow::closeEvent
 ///     关闭时要检查是否有文档需要保存，有需要保存的时候，要终止关闭窗口
 ///     1.关闭可以关闭的文档
@@ -1267,7 +1321,11 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
         return NULL;
     }
 
-    this->tabArea->addTab(passage,tr("test"));
+    this->tabArea->addTab(
+                passage,
+                passage->getFilePath().section('/',-1));
+    this->tabArea->setCurrentIndex(
+                this->tabArea->count() - 1);
     this->connector->setDocPassage(passage);    // 设置引用
 
     passage->setVisible(true);            // 设置可见
@@ -1286,5 +1344,48 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
     this->connect(passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)),
                   this, SLOT(acceptImageBlock(DocImageBlock*)));
     return passage;
+}
+
+///
+/// \brief PassageMainWindow::disableButtons
+///     禁用掉无关按钮，适用于尚未打开文件的状态
+///
+void PassageMainWindow::disableButtons()
+{
+
+}
+
+///
+/// \brief PassageMainWindow::enableButtons
+///     开启所有按钮，适用于已经打开文件的状态
+void PassageMainWindow::enableButtons()
+{
+
+}
+
+///
+/// \brief PassageMainWindow::addRecentFile
+///     增加最近文件记录
+///     打开文件、保存文件时调用
+/// \param passages
+///
+void PassageMainWindow::addRecentFile(DocPassage *passages)
+{
+
+    CT_DocInfo * info = passages->getDocInfo();
+    QDateTime date = QDateTime::currentDateTime();
+
+    RecentFileList* list = RecentFileList::getInstance();
+    RecentFileItem* item = new RecentFileItem(
+                passages->getFilePath().section('/',-1),
+                info->getAuthor(),
+                info->getModDate(),
+                date.toString("yyyy-MM-dd"),
+                passages->getFilePath()
+                );
+
+    list->addItem(item);
+
+    list->save();           // 保存到文件
 }
 

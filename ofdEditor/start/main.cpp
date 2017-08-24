@@ -28,7 +28,11 @@ int main(int argc, char *argv[])
     }
 
     PassageMainWindow w;
+
     w.show();
+
+//    PassageMainWindow* mainwindow = PassageMainWindow::getInstance();
+//    mainwindow->show();
 
     return a.exec();
 }

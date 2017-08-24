@@ -67,6 +67,7 @@ DocPassage::DocPassage()
     this->undoStack = new QUndoStack(this); // 撤销恢复队列
     this->docInfo = new CT_DocInfo();       // 新建文章信息
     this->initUI();                         // 初始化界面
+    this->initDocInfo();
     this->isEdited = false;
 
 }
@@ -759,6 +760,18 @@ void DocPassage::setScale(double scale)
 
     this->scaleFactor = scale;
 
+}
+
+///
+/// \brief DocPassage::updateEditTime
+///     更新修改文件的设置
+///
+void DocPassage::updateEditTime()
+{
+    QDateTime date = QDateTime::currentDateTime();
+    QString str = date.toString("yyyy-MM-dd");
+
+    this->docInfo->setModDate(str);
 }
 
 ///

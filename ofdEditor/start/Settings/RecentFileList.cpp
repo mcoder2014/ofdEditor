@@ -245,6 +245,12 @@ bool RecentFileList::isExisting(QString filePath)
     return false;
 }
 
+///
+/// \brief RecentFileList::item
+///     获得某一项
+/// \param filePath
+/// \return
+///
 RecentFileItem *RecentFileList::item(QString filePath)
 {
     for(int i = 0; i < this->fileList.size(); i++)
@@ -254,6 +260,20 @@ RecentFileItem *RecentFileList::item(QString filePath)
     }
 
     return NULL;
+}
+
+///
+/// \brief RecentFileList::item
+///     获得某一项
+/// \param i
+/// \return
+///
+RecentFileItem *RecentFileList::item(int i)
+{
+    if(i < 0 || i > this->fileList.size())
+        return NULL;
+
+    return this->fileList[i];
 }
 
 RecentFileItem *RecentFileList::remove(RecentFileItem *item)
@@ -292,6 +312,7 @@ void RecentFileList::addItem(RecentFileItem *item)
         // 如果是新项，则直接插入
         this->fileList.append(item);
     }
+    item->print();
     this->exportRecentFileList(this->filePath); // 自动保存
 }
 

@@ -26,10 +26,12 @@ public:
     void clear(){this->fileList.clear();}   // 嫌麻烦可以清除所有最近记录
     bool isExisting(QString filePath);      // 检查某文件是否存在
     RecentFileItem *item(QString filePath); // 检查文件是否存在,返回该文件
+    RecentFileItem *item(int i);            // 根据位置获得
     RecentFileItem *remove(RecentFileItem* item);   // 从队列中清除某一项
     RecentFileItem *remove(QString filePath);       // 从队列中清除某一项
     void addItem(RecentFileItem* item);     // 添加新的项
     int indexOf(RecentFileItem* item);      // item的位置
+    int size(){return this->fileList.size();}   // 获取队列大小
 
     void save(){this->exportRecentFileList(this->filePath);}    // 保存到文件
     void load(){this->loadRecentFileList(this->filePath);}      // 从文件中更新

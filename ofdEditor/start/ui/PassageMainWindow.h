@@ -24,22 +24,55 @@ class PassageMainWindow
 {
     Q_OBJECT
 public:
+    static PassageMainWindow* getInstance();               // 获得单例
+
     explicit PassageMainWindow(QWidget *parent = 0);
     ~PassageMainWindow();
-    DocPassage * activedPassage();       // 获取获取当前激活的文档
+    DocPassage * activedPassage();                  // 获取获取当前激活的文档
 
 public slots:
-    void activateFindAndReplaceDock();  // 激活查找替换窗口
+    void activateFindAndReplaceDock();              // 激活查找替换窗口
 
-    DocPassage *createEmptyPassage();   // 创建一个空的文章
+    DocPassage *createEmptyPassage();               // 创建一个空的文章
     DocPassage *addDocPassage(DocPassage * passage);    // 加入一个文章标签页
+    void disableButtons();                          // 禁用掉无关的按钮
+    void enableButtons();                           // 开启所有按钮
+    void addRecentFile(DocPassage* passages);       // 增加最近文件记录
 
     void createTemplatePassage(int index);
+    void openFile(QString filePath);                // 打开文件
+    void openFile();            // 打开新文件
+    void saveFile();            // 保存文件测试
+    void saveFileAs();          // 将文件另存为
+    void fontDialog();          // 打开字体框
+    void paragraphDialog();     // 打开段落框
+    void imageDialog();         // 打开图片框
+    void pageDialog();          // 打开页面框
+    void templateDialog();      //打开模板选择
+    void Bold();                // 加粗事件
+    void Italic();              // 斜体事件
+    void underline();           // 下划线事件
+
+    void zoomIn();              // 放大
+    void zooomOut();            // 缩小
+
+    void acceptTextBlock(DocTextBlock* textBlock);             // 接受当前处理的文字块的更新
+    void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
+    void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
+    void acceptImageBlock(DocImageBlock * imageBlock);         //接受当前处理的图片块
+
+    void switchToEditMode();        //切换到编辑模式
+    void switchToViewMode();        //切换到阅读模式
+
+    void changeCurrentPassage(int index);                   // 当活跃内容 切换为当前页面
+    void closePassageRequest(int index);                    // 点击关闭时处理
+
 
 protected:
     void closeEvent(QCloseEvent *event);     // 关闭窗口时的响应事件
 
 private:
+    static PassageMainWindow* m_instance;   // 单例
     double scale;
 
     // 菜单栏
@@ -128,32 +161,7 @@ private:
 
     SelectTemplateDialog * select_template_dialog;  //选择模板对话框
 
-private slots:
-    void openFile();            // 打开新文件
-    void saveFile();            // 保存文件测试
-    void saveFileAs();          // 将文件另存为
-    void fontDialog();          // 打开字体框
-    void paragraphDialog();     // 打开段落框
-    void imageDialog();         // 打开图片框
-    void pageDialog();          // 打开页面框
-    void templateDialog();      //打开模板选择
-    void Bold();                // 加粗事件
-    void Italic();              // 斜体事件
-    void underline();           // 下划线事件
 
-    void zoomIn();              // 放大
-    void zooomOut();            // 缩小
-
-    void acceptTextBlock(DocTextBlock* textBlock);             // 接受当前处理的文字块的更新
-    void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
-    void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
-    void acceptImageBlock(DocImageBlock * imageBlock);         //接受当前处理的图片块
-
-    void switchToEditMode();        //切换到编辑模式
-    void switchToViewMode();        //切换到阅读模式
-
-    void changeCurrentPassage(int index);                   // 当活跃内容 切换为当前页面
-    void closePassageRequest(int index);                    // 点击关闭时处理
 
 signals:
     void updateActivedPassage(DocPassage * passage);        // 更新当前操作的文档对象
