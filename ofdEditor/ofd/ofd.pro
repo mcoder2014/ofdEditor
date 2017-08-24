@@ -26,8 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp \
     ofd_parser.cpp \
     DataTypes/basic_datatypes.cpp \
     ofd_writer.cpp  \
@@ -36,20 +34,14 @@ SOURCES += \
     DataTypes/page/CT_PageBlock.cpp \
 
 HEADERS +=\
-    mainwindow.h \
     DataTypes/basic_datatype.h \
-#    DataTypes/CT_Action.h \
-#    DataTypes/Color/CT_AxialShd.h \
     DataTypes/Color/CT_Color.h \
     DataTypes/Color/CT_ColorSpace.h \
-#    DataTypes/Color/CT_Pattern.h \
-#    DataTypes/Color/CT_RadialShd.h \
     DataTypes/document/CT_CommonData.h \
     DataTypes/document/CT_DocInfo.h \
     DataTypes/document/DocBody.h \
     DataTypes/document/Document.h \
     DataTypes/document/OFD.h \
-#    DataTypes/image/CT_Clip.h \
     DataTypes/image/CT_DrawParam.h \
     DataTypes/image/CT_GraphicUnit.h \
     DataTypes/image/CT_Image.h \
@@ -61,7 +53,6 @@ HEADERS +=\
     DataTypes/page/CT_Pages.h \
     DataTypes/page/Page.h \
     ofd_parser.h \
-#    DataTypes/text/CT_CGTransform.h \
     DataTypes/text/TextCode.h \
     ofd_global.h \
     ofd_writer.h \

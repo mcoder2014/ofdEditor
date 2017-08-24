@@ -29,6 +29,7 @@ public:
     RecentFileItem *remove(RecentFileItem* item);   // 从队列中清除某一项
     RecentFileItem *remove(QString filePath);       // 从队列中清除某一项
     void addItem(RecentFileItem* item);     // 添加新的项
+    int indexOf(RecentFileItem* item);      // item的位置
 
     void save(){this->exportRecentFileList(this->filePath);}    // 保存到文件
     void load(){this->loadRecentFileList(this->filePath);}      // 从文件中更新

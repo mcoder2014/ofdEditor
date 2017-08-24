@@ -36,6 +36,9 @@ public slots:
 
     void createTemplatePassage(int index);
 
+protected:
+    void closeEvent(QCloseEvent *event);     // 关闭窗口时的响应事件
+
 private:
     double scale;
 
@@ -61,7 +64,7 @@ private:
     QAction * saveAsAction;             // 另存为
     QAction * printAction;              // 打印
     QAction * attributeAction;          // 文档属性
-    QAction * softwareSettingAction;          // 软件设置
+    QAction * softwareSettingAction;    // 软件设置
 
     // 编辑
     QAction * undoAction;               // 撤销

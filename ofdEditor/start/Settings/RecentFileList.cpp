@@ -259,14 +259,16 @@ RecentFileItem *RecentFileList::item(QString filePath)
 RecentFileItem *RecentFileList::remove(RecentFileItem *item)
 {
     RecentFileItem* oldItem = this->item(item->getFilePath());
-    this->fileList.remove(oldItem);
+    this->fileList.remove(
+                this->fileList.indexOf(oldItem));
     return oldItem;
 }
 
 RecentFileItem *RecentFileList::remove(QString filePath)
 {
     RecentFileItem *oldItem = this->item(filePath);
-    this->fileList.remove(oldItem);
+    this->fileList.remove(
+                this->fileList.indexOf(oldItem));
     return oldItem;
 }
 
@@ -278,10 +280,10 @@ RecentFileItem *RecentFileList::remove(QString filePath)
 void RecentFileList::addItem(RecentFileItem *item)
 {
 
-    if(this->isExisting(item))
+    if(this->isExisting(item->getFilePath()))
     {
         // 如果已经存在同样的项，先删除，后更新再插入
-        this->fileList.remove(item);
+        this->remove(item);
         this->fileList.append(item);
 
     }
@@ -291,6 +293,18 @@ void RecentFileList::addItem(RecentFileItem *item)
         this->fileList.append(item);
     }
     this->exportRecentFileList(this->filePath); // 自动保存
+}
+
+int RecentFileList::indexOf(RecentFileItem *item)
+{
+    for(int i = 0; i < this->fileList.size(); i++)
+    {
+        if(this->fileList[i]->getFilePath() == filePath)
+            return i;
+    }
+
+    return -1;
+
 }
 
 ///

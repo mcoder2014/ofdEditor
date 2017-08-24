@@ -996,10 +996,13 @@ void PassageMainWindow::changeCurrentPassage(int index)
 ///     关闭文件时需要处理的事情：
 ///     1. 是否需要提示（保存文件）
 ///     2. 是否需要更新最近打开文档
+///     3. 只有全部处理好的，才可以关闭该选项
 /// \param index
 ///
 void PassageMainWindow::closePassageRequest(int index)
 {
+
+
     this->tabArea->removeTab(index);
 }
 
@@ -1219,6 +1222,19 @@ void PassageMainWindow::createTemplatePassage(int index)
     new_page_1->addBlock(line_block, DocPage::Body);
 
     addDocPassage(new_passage);
+
+}
+
+///
+/// \brief PassageMainWindow::closeEvent
+///     关闭时要检查是否有文档需要保存，有需要保存的时候，要终止关闭窗口
+///     1.关闭可以关闭的文档
+///     2.一个一个提醒还没有保存的文档
+///     3.全部完成后才可以关闭窗口
+/// \param event
+///
+void PassageMainWindow::closeEvent(QCloseEvent *event)
+{
 
 }
 
