@@ -36,6 +36,7 @@ private:
 
 private slots:
     void selectOpenFile(int row, int column); // 双击某行能够打开最近文件
+    void cleanRecentRecord();                 // 与按钮绑定，清空最近记录
 
 signals:
     void openFile(QString filePath);

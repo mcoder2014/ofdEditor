@@ -22,7 +22,7 @@ public:
     QDateTime getRecentOpenTime(){return this->recentOpenTime;}
     QString getRecentOpenTime_str(){
         return this->recentOpenTime.toString(
-                    "yyyy-MM-dd");}
+                    "yyyy-MM-dd HH:mm:ss");}
     QDateTime getRecentEditTime(){return this->recentEditTime;}
     QString getRecentEditTime_str(){
         return this->recentEditTime.toString(

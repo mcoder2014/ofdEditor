@@ -74,6 +74,10 @@ RecentFiles::RecentFiles(QWidget *parent) :
     this->connect(this, SIGNAL(openFile(QString)),
                   mainWindow, SLOT(openFile(QString)));
 
+    // 清空最近记录
+    connect(ui->btn_cleanRecent, SIGNAL(released()),
+            this, SLOT(cleanRecentRecord()));
+
 }
 
 RecentFiles::~RecentFiles()
@@ -138,4 +142,16 @@ void RecentFiles::selectOpenFile(int row, int column)
 
     emit this->openFile(path);              // 发出打开文件信号
 
+}
+
+
+///
+/// \brief RecentFiles::cleanRecentRecord
+///     与按钮绑定
+void RecentFiles::cleanRecentRecord()
+{
+    RecentFileList * list = RecentFileList::getInstance();
+    list->clear();
+    list->save();
+    this->clear();
 }

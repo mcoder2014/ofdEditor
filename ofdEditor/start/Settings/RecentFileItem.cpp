@@ -22,7 +22,7 @@ RecentFileItem::RecentFileItem(
                 "yyyy-MM-dd");
     this->recentOpenTime = QDateTime::fromString(
                 recentOpenTime,
-                "yyyy-MM-dd");
+                "yyyy-MM-dd HH:mm:ss");
     this->filePath = filePath;
 }
 
@@ -30,7 +30,7 @@ void RecentFileItem::setRecentOpenTime(QString recentOpenTime)
 {
     this->recentOpenTime = QDateTime::fromString(
                 recentOpenTime,
-                "yyyy-MM-dd");
+                "yyyy-MM-dd HH:mm:ss");
 }
 
 void RecentFileItem::setRecentOpenTime(QDateTime recentOpenTime)
@@ -66,7 +66,7 @@ void RecentFileItem::init(
     this->author = author;
     this->recentOpenTime = QDateTime::fromString(
                 recentOpenTime,
-                "yyyy-MM-dd");
+                "yyyy-MM-dd HH:mm:ss");
     this->recentOpenTime = QDateTime::fromString(
                 recentEditTime,
                 "yyyy-MM-dd");
@@ -77,7 +77,7 @@ void RecentFileItem::print()
 {
     qDebug() << "fileName " << this->fileName
              << " author " << this->author
-             << " recent open time " << this->recentOpenTime.toString("yyyy-MM-dd")
+             << " recent open time " << this->recentOpenTime.toString("yyyy-MM-dd HH:mm:ss")
              << " recent edit time" << this->recentEditTime.toString("yyyy-MM-dd")
              << " filePath" << this->filePath;
 }

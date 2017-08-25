@@ -1380,7 +1380,7 @@ void PassageMainWindow::addRecentFile(DocPassage *passages)
                 passages->getFilePath().section('/',-1),
                 info->getAuthor(),
                 info->getModDate(),
-                date.toString("yyyy-MM-dd"),
+                date.toString("yyyy-MM-dd HH:mm:ss"),
                 passages->getFilePath()
                 );
 
