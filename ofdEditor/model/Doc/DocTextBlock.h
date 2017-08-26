@@ -98,9 +98,9 @@ protected:
     void focusOutEvent(QFocusEvent *e);
 
 private slots:
-    void checkCurrentFormat();                        // 检查当前的格式是否发生改变
-    void emitFormatSignals();                         // 发射格式的信号
-    void printTestMessage();        // 测试右键信号是否畅通
+    void checkCurrentFormat();                  // 检查当前的格式是否发生改变
+    void emitFormatSignals();                   // 发射格式的信号
+    void textBlockSizeChanged();                // 当文字内容改变时自动调整文字大小
 
 private:
     QString content;        // 文字内容
@@ -120,7 +120,7 @@ private:
     QAction * actionItalic;     // 斜体
     QAction * actionColor;      // 设置颜色
     QAction * actionParagraph;  // 设置段落
-    QAction * actionFontSetTest;    // 新字体窗口测试
+    QAction * actionFontSetTest;// 新字体窗口测试
 
     QMenu * ContextMenu;        // 右键菜单
     DocBlock* block;            // 本类型所在的block

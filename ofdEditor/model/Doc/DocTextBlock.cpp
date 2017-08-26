@@ -787,9 +787,33 @@ void DocTextBlock::emitFormatSignals()
     emit this->signals_currentTextBlock(this);
 }
 
-void DocTextBlock::printTestMessage()
+///
+/// \brief DocTextBlock::textBlockSizeChanged
+///     当文字内容改变时，尝试调整文本框大小
+void DocTextBlock::textBlockSizeChanged()
 {
-    qDebug() << "Click Right Button";
+    QTextDocument* doc = this->document();      // 获得文档
+//    document()->adjustSize();
+
+    qDebug() << "Document.size.width"
+             << doc->size().width()
+             << "Document.textWidth"
+             << doc->textWidth();
+
+    int newHeight = doc->size().height() + 10;
+
+    int oldWidth = (int)(this->block->size().width() + 0.5);
+    int oldHeight = (int)(this->block->size().height() + 0.5);
+
+    if(oldHeight < newHeight)
+    {
+        // 如果需要调整大小
+        this->block->resize(oldWidth, newHeight);
+        qDebug() << "Automatically resize edit size"
+                 << oldWidth
+                 << ","
+                 << newHeight;
+    }
 }
 
 /**
@@ -902,6 +926,10 @@ void DocTextBlock::initAcitons()
     this->actionFontSetTest = new QAction(tr("FontDialogTest"), this);
     this->connect(this->actionFontSetTest, SIGNAL(triggered()),
                   this, SLOT(customFontDialog()));
+
+    // 自动调整窗口大小
+    this->connect(this, SIGNAL(textChanged()),
+                  this, SLOT(textBlockSizeChanged()));
 
 }
 

@@ -10,7 +10,7 @@
 #include <QTextTableCell>
 #include <QTextTableCellFormat>
 #include <QTextTableFormat>
-
+#include <QTextCursor>
 
 ///
 /// \brief The DocTable class
@@ -29,15 +29,17 @@ public:
     ~DocTable();
 
 public slots:
-    setTable(int rows, int columns);        // 设置表格长和宽
+    void setTable(int rows, int columns);        // 设置表格长和宽
+    void setDefaultStyle();                      // 设置默认样式
 
 private slots:
 
 private:
     // tableCell的内容估计使用QTextBlock
-    int rowCount;       // 行数
-    int colCount;       // 列数
-    QTextTable* _table; // 该表格
+    int rowCount;               // 行数
+    int colCount;               // 列数
+    QTextTable* _table;         // 该表格
+    QTextCursor tableCursor;    // 记录指向表格的光标
 };
 
 #endif // TABLE_H
