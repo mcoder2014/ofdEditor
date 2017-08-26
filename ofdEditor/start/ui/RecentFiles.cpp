@@ -45,7 +45,7 @@ void RecentFiles::init()
     ui->recent_table->horizontalHeader()->setVisible(true);
 
     int length = recentlist->size();    // 获得有效的列表长度
-    for(int i = 0; i < length; i++)
+    for(int i = length-1; i >= 0; i--)
     {
         this->appendItem(recentlist->item(i));
     }
@@ -92,8 +92,8 @@ RecentFiles::~RecentFiles()
 ///
 void RecentFiles::appendItem(RecentFileItem *item)
 {
-//    int rows = ui->recent_table->rowCount();    // 共有多少行
-    ui->recent_table->insertRow(0);
+    int rows = ui->recent_table->rowCount();    // 共有多少行
+    ui->recent_table->insertRow(rows);
 
     QTableWidgetItem* fileName = new QTableWidgetItem();
     QTableWidgetItem* author = new QTableWidgetItem();
@@ -107,11 +107,11 @@ void RecentFiles::appendItem(RecentFileItem *item)
     recentEditTime->setText(item->getRecentEditTime_str());
     filePath->setText(item->getFilePath());
 
-    ui->recent_table->setItem(0,0,fileName);
-    ui->recent_table->setItem(0,1,author);
-    ui->recent_table->setItem(0,2,recentOpenTime);
-    ui->recent_table->setItem(0,3,recentEditTime);
-    ui->recent_table->setItem(0,4,filePath);
+    ui->recent_table->setItem(rows,0,fileName);
+    ui->recent_table->setItem(rows,1,author);
+    ui->recent_table->setItem(rows,2,recentOpenTime);
+    ui->recent_table->setItem(rows,3,recentEditTime);
+    ui->recent_table->setItem(rows,4,filePath);
 
 }
 
