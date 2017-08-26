@@ -80,6 +80,7 @@ public slots:           // 槽函数
     void setWidget(DocImageBlock * imageBlock);
 
     void sizeAndPositionDialog();           // 调整大小和位置窗口
+    void setShowBoundaryBox(bool flag);     // 设置是否显示边框
 
 protected:
     void paint(QPainter *painter,
@@ -106,6 +107,7 @@ private:
     DocTextBlock * textBlock;   // 存下引用
     DocImageBlock * imageBlock; //同上
     qreal realZValue;           // 真实的z值
+    bool isShowBox;             // 是否显示边框
 
     bool isFocused;             // 是否被聚焦
     bool blockIsResizing;       // 是否正在改变大小
@@ -115,6 +117,7 @@ private:
 
 signals:
     void signals_blockRemoved(DocBlock* block);     // 当本块被移除时发出信号
+    void signal_resize(qreal x, qreal y, qreal width, qreal height);  // 发送block大小改变信号
 
 private slots:
     void moveToForeground();    // 移动到前景层

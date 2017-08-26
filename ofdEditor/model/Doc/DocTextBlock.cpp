@@ -301,6 +301,8 @@ void DocTextBlock::setFont(
 void DocTextBlock::setBlock(DocBlock *block)
 {
     this->block = block;        // 设置Block
+    this->connect(block, SIGNAL(signal_resize(qreal,qreal,qreal,qreal)),
+                  this, SLOT(textBlockSizeChanged()));
 }
 
 /**
@@ -324,14 +326,15 @@ void DocTextBlock::remove()
  */
 void DocTextBlock::showBoundaryFrame(bool show)
 {
-    if(show)
-    {
-        this->setFrameStyle(QFrame::Box);           // 显示边框
-    }
-    else
-    {
-        this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
-    }
+//    if(show)
+//    {
+//        this->setFrameStyle(QFrame::Box);           // 显示边框
+//    }
+//    else
+//    {
+//        this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
+//    }
+    this->block->setShowBoundaryBox(show);
 }
 
 
@@ -795,10 +798,10 @@ void DocTextBlock::textBlockSizeChanged()
     QTextDocument* doc = this->document();      // 获得文档
 //    document()->adjustSize();
 
-    qDebug() << "Document.size.width"
-             << doc->size().width()
-             << "Document.textWidth"
-             << doc->textWidth();
+//    qDebug() << "Document.size.width"
+//             << doc->size().width()
+//             << "Document.textWidth"
+//             << doc->textWidth();
 
     int newHeight = doc->size().height() + 10;
 
@@ -809,10 +812,10 @@ void DocTextBlock::textBlockSizeChanged()
     {
         // 如果需要调整大小
         this->block->resize(oldWidth, newHeight);
-        qDebug() << "Automatically resize edit size"
-                 << oldWidth
-                 << ","
-                 << newHeight;
+//        qDebug() << "Automatically resize edit size"
+//                 << oldWidth
+//                 << ","
+//                 << newHeight;
     }
 }
 

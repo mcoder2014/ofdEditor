@@ -30,8 +30,9 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setFlag(QGraphicsProxyWidget::ItemIsSelectable, true);    // 可选择
     this->setFlag(QGraphicsProxyWidget::ItemIsFocusable, true);     // 可关注
     this->setAcceptHoverEvents(true);
-    textBlock = NULL;
-    imageBlock = NULL;
+    this->textBlock = NULL;
+    this->imageBlock = NULL;
+    this->isShowBox = false;
 
     this->initMenu();
 }
@@ -118,6 +119,8 @@ void DocBlock::resize(qreal w, qreal h)
     QGraphicsProxyWidget::resize(w,h);
     this->blockSize.setWidth(w);
     this->blockSize.setHeight(h);
+
+    emit this->signal_resize(this->x(),this->y(),w,h);
 }
 
 /**
@@ -132,6 +135,8 @@ void DocBlock::resize(const QSizeF &size)
     QGraphicsProxyWidget::resize(size);
     this->blockSize.setWidth(size.width());
     this->blockSize.setHeight(size.height());
+    emit this->signal_resize(this->x(),this->y(),
+                           size.width(),size.height());
 }
 
 /**
@@ -198,6 +203,22 @@ void DocBlock::paint(QPainter *painter,
     if(this->isFocused && this->rectAdjust != blockMove)
     {
         this->paintHandle(*painter);        // 画出调整框
+    }
+
+    if(this->isShowBox)
+    {
+        // 如果需要花边框的话，为什么要在这里画呢
+        // 因为如果需要绘制边框，直接用系统的显示边框会影响block内的尺寸
+
+        painter->setPen(Qt::black);
+
+        // resize line
+        qreal w = this->blockSize.width();
+        qreal h = this->blockSize.height();
+
+        painter->drawRect(0,0,
+                          w,h);
+
     }
 
 }
@@ -406,6 +427,16 @@ void DocBlock::setWidget(DocImageBlock * imageBlock)
 void DocBlock::sizeAndPositionDialog()
 {
 
+}
+
+///
+/// \brief DocBlock::setShowBoundaryBox
+///     设置是否显示包围的边框
+/// \param flag
+///
+void DocBlock::setShowBoundaryBox(bool flag)
+{
+    this->isShowBox = flag;
 }
 
 /**

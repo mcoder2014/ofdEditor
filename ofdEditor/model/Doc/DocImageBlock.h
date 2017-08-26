@@ -49,14 +49,12 @@ public slots:
 protected:
     void focusInEvent(QFocusEvent *ev);
     void focusOutEvent(QFocusEvent *ev);
-//    void contextMenuEvent(QContextMenuEvent *ev);
 
 private:
     DocBlock * block;               //对代理它的DocBlock的引用
     QMenu * context_menu;           //右键菜单
     QAction * change_image;         //更改图片
     QAction * set_image_properties; //更改图片的位置和尺寸
-//    ImagePropertiesDialog * properties_dialog;
     bool width_height_ratio_locked;
     double width_height_ratio;
 
@@ -67,13 +65,6 @@ private:
 
 
 signals:
-//    void sendImageInfo(double image_width,
-//                       double image_height,
-//                       double image_x,
-//                       double image_y,
-//                       double page_width,
-//                       double page_height,
-//                       bool ratio_is_locked);
     void signals_currrentImageBlock(DocImageBlock * textBlock);   //当前操作的imageBlock
 };
 

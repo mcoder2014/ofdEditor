@@ -16,7 +16,6 @@ DocImageBlock::DocImageBlock(QWidget *parent)
     this->setFocusPolicy(Qt::StrongFocus);
 
     //Initialization
-//    this->properties_dialog = new ImagePropertiesDialog(this, parent);
     width_height_ratio_locked = true;
     width_height_ratio = 0.0;
 
@@ -170,7 +169,8 @@ void DocImageBlock::focusInEvent(QFocusEvent *e)
 {
     //qDebug() << "focus In Event";
     emit signals_currrentImageBlock(this);
-    this->setFrameShape(QFrame::Box);
+//    this->setFrameShape(QFrame::Box);
+    this->block->setShowBoundaryBox(true);
     this->setLineWidth(1);
     QLabel::focusInEvent(e);
 }
@@ -184,21 +184,10 @@ void DocImageBlock::focusInEvent(QFocusEvent *e)
  */
 void DocImageBlock::focusOutEvent(QFocusEvent *e)
 {
-    this->setFrameStyle(QFrame::NoFrame);
+//    this->setFrameStyle(QFrame::NoFrame);
+    this->block->setShowBoundaryBox(false);
     QLabel::focusOutEvent(e);
 }
-
-///**
-// * @Author Pan
-// * @brief  右键菜单
-// * @param  QContextMenuEvent *ev
-// * @return void
-// * @date   2017/06/24
-// */
-//void DocImageBlock::contextMenuEvent(QContextMenuEvent *ev)
-//{
-//    context_menu->exec(ev->globalPos());
-//}
 
 ///
 /// \brief DocImageBlock::initMenu
