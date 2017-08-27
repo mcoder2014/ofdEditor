@@ -53,7 +53,9 @@ SOURCES += model.cpp \
     Widget/FindAndReplaceDock.cpp \
     Widget/SelectTemplateDialog.cpp \
     Core/GlobalSetting.cpp \
-    Widget/InsertPageDialog.cpp
+    Widget/InsertPageDialog.cpp \
+    Widget/TableSettingDialog.cpp \
+    Widget/TableInsertRowOrColDialog.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -86,7 +88,9 @@ HEADERS += model.h\
     Widget/SelectTemplateDialog.h \
     Core/GlobalSetting.h \
     Widget/DocInfoDialog.h \
-    Widget/InsertPageDialog.h
+    Widget/InsertPageDialog.h \
+    Widget/TableSettingDialog.h \
+    Widget/TableInsertRowOrColDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -122,7 +126,9 @@ FORMS += \
     Widget/InsertTableDialog.ui \
     Widget/FindAndReplaceDock.ui \
     Widget/SelectTemplateDialog.ui \
-    Widget/InsertPageDialog.ui
+    Widget/InsertPageDialog.ui \
+    Widget/TableSettingDialog.ui \
+    Widget/TableInsertRowOrColDialog.ui
 
 RESOURCES += \
     resource.qrc

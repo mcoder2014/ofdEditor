@@ -107,6 +107,7 @@ protected:
     QString content;        // 文字内容
     void init();            // 初始化
     void initAcitons();     // 初始化事件
+    void initNotUseInSun(); // 初始化函数，不应用在子类之中
     void initFormat();      // 初始化文字样式
     void initMenu();        // 初始化右键菜单
 

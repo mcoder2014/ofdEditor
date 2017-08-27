@@ -22,12 +22,14 @@ DocTextBlock::DocTextBlock(QWidget *parent)
     :QTextEdit(parent)
 {
     this->init();   // 调用初始化函数
+
+    this->initNotUseInSun();
 }
 
 DocTextBlock::DocTextBlock(double i)
     :QTextEdit(0)
 {
-
+    this->init();
 }
 
 DocTextBlock::~DocTextBlock()
@@ -164,7 +166,6 @@ QMenu *DocTextBlock::getMenu()
     this->ContextMenu->addSeparator();                      // 增加分界线
     this->ContextMenu->addAction(this->actionBold);         // 加粗
     this->ContextMenu->addAction(this->actionItalic);       // 斜体
-//    this->ContextMenu->addAction(this->actionUnderline);    // 下划线
     this->ContextMenu->addAction(this->actionColor);        // 颜色
 
     this->ContextMenu->addSeparator();                      // 分界线
@@ -825,6 +826,7 @@ void DocTextBlock::textBlockSizeChanged()
  */
 void DocTextBlock::init()
 {
+
     this->setMinimumSize(5,5);        // 为了正确显示缩放标识
 
     // 关闭滑动条
@@ -847,7 +849,6 @@ void DocTextBlock::init()
             this, SLOT(checkCurrentFormat()));
 
     this->initAcitons();    // 初始化QAction相关
-    this->initMenu();       // 初始化右键菜单
     qDebug() << "text block init finished";
 }
 
@@ -928,10 +929,16 @@ void DocTextBlock::initAcitons()
     this->connect(this->actionFontSetTest, SIGNAL(triggered()),
                   this, SLOT(customFontDialog()));
 
+}
+
+void DocTextBlock::initNotUseInSun()
+{
+
+    this->initMenu();       // 初始化右键菜单
+
     // 自动调整窗口大小
     this->connect(this, SIGNAL(textChanged()),
                   this, SLOT(textBlockSizeChanged()));
-
 }
 
 /**
@@ -969,7 +976,7 @@ void DocTextBlock::initMenu()
     this->ContextMenu->addSeparator();                      // 增加分界线
     this->ContextMenu->addAction(this->actionBold);         // 加粗
     this->ContextMenu->addAction(this->actionItalic);       // 斜体
-//    this->ContextMenu->addAction(this->actionUnderline);    // 下划线
+//    this->ContextMenu->addAction(this->actionUnderline);  // 下划线
     this->ContextMenu->addAction(this->actionColor);        // 颜色
 
     this->ContextMenu->addSeparator();                      // 分界线

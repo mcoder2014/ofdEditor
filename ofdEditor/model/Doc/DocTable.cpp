@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QVector>
 #include <QDebug>
+#include <QApplication>
+#include <QClipboard>
 
 DocTable::DocTable(QWidget *parent)
     :DocTextBlock(1.0)
@@ -42,48 +44,52 @@ DocTable::~DocTable()
 
 }
 
-DocPassage *DocTable::getPassage()
+///
+/// \brief DocTable::getType
+/// \return
+///
+QString DocTable::getType()
 {
-    DocBlock *block = this->_block;
-    if(block == NULL)
-        return NULL;
-
-    return block->getPassage();
+    return tr("DocTable");
 }
-
-DocPage *DocTable::getPage()
-{
-    DocBlock *block = this->_block;
-    if(block == NULL)
-        return NULL;
-
-    return block->getPage();
-}
-
-DocLayer *DocTable::getLayer()
-{
-    DocBlock *block = this->_block;
-    if(block == NULL)
-        return NULL;
-
-    return block->getLayer();
-}
-
-DocBlock *DocTable::getBlock()
-{
-    return this->_block;
-}
-
 
 ///
 /// \brief DocTable::getMenu
 ///     关于表格操作的菜单
 /// \return
 ///
-//QMenu *DocTable::getMenu()
-//{
+QMenu *DocTable::getMenu()
+{
+    this->ContextMenu->clear();     //清空菜单
+    this->ContextMenu->setTitle(this->getType());
 
-//}
+    this->ContextMenu->addAction(this->actionCut);
+    this->ContextMenu->addAction(this->actionCopy);
+    this->ContextMenu->addAction(this->actionPaste);
+    this->ContextMenu->addAction(this->actionSelectAll);
+
+    this->ContextMenu->addSeparator();                      // 增加分界线
+    this->ContextMenu->addAction(this->actionBold);         // 加粗
+    this->ContextMenu->addAction(this->actionItalic);       // 斜体
+    this->ContextMenu->addAction(this->actionColor);        // 颜色
+
+    this->ContextMenu->addSeparator();                      // 分界线
+    this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
+    this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
+
+    // 检验粘贴键的状态
+    QClipboard *board = QApplication::clipboard();
+    if(board->text().length() <= 0)
+    {
+        this->actionPaste->setEnabled(false);
+    }
+    else
+    {
+        this->actionPaste->setEnabled(true);
+    }
+
+    return this->ContextMenu;
+}
 
 ///
 /// \brief DocTable::setTable
@@ -93,7 +99,7 @@ DocBlock *DocTable::getBlock()
 ///
 void DocTable::setTable(int rows, int columns)
 {
-
+    this->_table->resize(rows,columns);
 }
 
 ///
@@ -130,37 +136,66 @@ void DocTable::setDefaultStyle()
 ///
 void DocTable::setBlock(DocBlock *block)
 {
-    this->_block = block;
+    this->block = block;
     this->connect(block, SIGNAL(signal_resize(qreal,qreal,qreal,qreal)),
                   this, SLOT(blockSizeChanged()));
-//    qDebug() << "set block success";
+//    qDebug() << "set block success table";
+}
+
+void DocTable::focusInEvent(QFocusEvent *e)
+{
+    emitFormatSignals();
+    QTextEdit::focusInEvent(e);
+}
+
+void DocTable::focusOutEvent(QFocusEvent *e)
+{
+    QTextEdit::focusOutEvent(e);
 }
 
 void DocTable::init()
 {
-    this->setFrameStyle(QFrame::NoFrame);
-    this->setMinimumSize(10,10);
+//    this->setFrameStyle(QFrame::NoFrame);
+    this->setMinimumSize(50,10);
 
-    // 关闭滚动条
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    // 设置为背景透明
-    this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
+//    // 关闭滚动条
+//    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    // 设置为背景透明
+//    this->viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
     this->setDefaultStyle();            // 设置默认样式
+
+    this->initMenu();
 
 }
 
 void DocTable::initMenu()
 {
+    this->ContextMenu = new QMenu(tr("DocTable"));
+
+    // 基本功能
+    this->ContextMenu->addAction(this->actionCut);
+    this->ContextMenu->addAction(this->actionCopy);
+    this->ContextMenu->addAction(this->actionPaste);
+    this->ContextMenu->addAction(this->actionSelectAll);
+
+    this->ContextMenu->addSeparator();                      // 增加分界线
+    this->ContextMenu->addAction(this->actionBold);         // 加粗
+    this->ContextMenu->addAction(this->actionItalic);       // 斜体
+    this->ContextMenu->addAction(this->actionColor);        // 颜色
+
+    this->ContextMenu->addSeparator();                      // 分界线
+    this->ContextMenu->addAction(this->actionFontSetTest);  // 字体
+    this->ContextMenu->addAction(this->actionParagraph);    // 段落设置
+
+    qDebug() << "init Menu" <<this->ContextMenu;
 
 }
 
 void DocTable::initConnection()
 {
-//    qDebug() << "init connection";
     this->connect(this, SIGNAL(textChanged()),
                   this, SLOT(blockSizeChanged()));
-//    qDebug() << "init connection success";
 }
 
 ///
@@ -168,19 +203,19 @@ void DocTable::initConnection()
 ///
 void DocTable::blockSizeChanged()
 {
-    qDebug() << "block resize";
+//    qDebug() << "block resize";
 
     QTextDocument* doc = this->document();      // 获得文档
     int newHeight = doc->size().height();
 
-    int oldWidth = (int)(this->_block->size().width() + 0.5);
-    int oldHeight = (int)(this->_block->size().height() + 0.5);
+    int oldWidth = (int)(this->block->size().width() + 0.5);
+    int oldHeight = (int)(this->block->size().height() + 0.5);
 
     if(oldHeight - newHeight > 5
             || oldHeight - newHeight < -5)
     {
         // 如果需要调整大小
-        this->_block->resize(oldWidth, newHeight);
+        this->block->resize(oldWidth, newHeight);
     }
 
 }

@@ -99,7 +99,6 @@ protected:
     void mousePressEvent (QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent (QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent (QGraphicsSceneMouseEvent * event);
-    void contextMenuEvent (QGraphicsSceneContextMenuEvent *event);   //　邮件菜单吧
 
 private:
 

@@ -36,26 +36,23 @@ public:
     DocTable(QWidget *parent = NULL);
     DocTable(int rows, int columns);
 
-    ~DocTable();
+     ~DocTable();
 
-    DocPassage *getPassage();
-    DocPage *getPage();
-    DocLayer *getLayer();
-    DocBlock *getBlock();
-
-//    QMenu *getMenu();
+    QString getType();                          // 获得类型
+    QMenu *getMenu();
 
 public slots:
     void setTable(int rows, int columns);        // 设置表格长和宽
     void setDefaultStyle();                      // 设置默认样式
     void setBlock(DocBlock* block);              // 设置块
 
+protected:
+    void focusInEvent(QFocusEvent *e);
+    void focusOutEvent(QFocusEvent *e);
 
 private slots:
 
 private:
-    // tableCell的内容估计使用QTextBlock
-    DocBlock* _block;
     int rowCount;               // 行数
     int colCount;               // 列数
     QTextTable* _table;         // 该表格
@@ -63,6 +60,11 @@ private:
     void init();                // 通用的初始化部分
     void initMenu();            // 初始化菜单
     void initConnection();      // 初始化信号槽链接
+
+    QAction *actionDeleteRow;       // 删除该行
+    QAction *actionDeleteColumn;    // 删除该列
+    QAction *actionInsertRowOrCol;  // 插入行或列-由对话框解决
+    QAction *actionTableSetting;    // 表格设置-对话框解决
 
 private slots:
     void blockSizeChanged();    // 根据文字内容自动调整块的大小

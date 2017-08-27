@@ -34,6 +34,7 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setAcceptHoverEvents(true);
     this->textBlock = NULL;
     this->imageBlock = NULL;
+    this->_table = NULL;
     this->isShowBox = false;
 
     this->initMenu();
@@ -297,8 +298,8 @@ void DocBlock::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 void DocBlock::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    this->clearFocus();
-    this->setFocus();
+//    this->clearFocus();
+//    this->setFocus();
 
 }
 
@@ -364,18 +365,6 @@ void DocBlock::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 /**
  * @Author Chaoqun
- * @brief  可以实现右键菜单
- * @param  参数
- * @return 返回值
- * @date   2017/06/20
- */
-void DocBlock::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    QGraphicsProxyWidget::contextMenuEvent(event);
-}
-
-/**
- * @Author Chaoqun
  * @brief  设置内容
  * @param  QWidget *widget
  * @return void
@@ -405,6 +394,7 @@ void DocBlock::setWidget(DocTextBlock *textBlock)
     this->textBlock = textBlock;                // 给DocBlock设置引用
 
     QGraphicsProxyWidget::setWidget(textBlock);
+    qDebug() <<"set widget text";
 }
 
 
@@ -432,6 +422,7 @@ void DocBlock::setWidget(DocTable *table)
     table->setBlock(this);
     this->_table = table;
     QGraphicsProxyWidget::setWidget(table);
+    qDebug() << "set Widget table";
 }
 
 ///
@@ -624,7 +615,7 @@ QMenu *DocBlock::getMenu()
         this->action_background->setChecked(true);
     }
 
-    if(this->isTextBlock() || this->isTableBlock())
+    if(this->isTextBlock())
     {
         // 文本框
         menu = this->textBlock->getMenu();
@@ -635,6 +626,17 @@ QMenu *DocBlock::getMenu()
         menu->addMenu(menu_layer);
         menu->addAction(this->action_delete);
 
+    }
+    else if(this->isTableBlock())
+    {
+        // 这个是表格
+        menu = this->_table->getMenu();
+        menu->setTitle(this->_table->getType());
+
+        menu->addSeparator();
+        menu->addAction(this->action_geometry);
+        menu->addMenu(menu_layer);
+        menu->addAction(this->action_delete);
     }
     else if(this->isImageBlock())
     {
