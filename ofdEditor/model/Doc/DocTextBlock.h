@@ -26,6 +26,7 @@ class MODELSHARED_EXPORT DocTextBlock
     Q_OBJECT
 public:
     DocTextBlock(QWidget *parent = NULL);
+    DocTextBlock(double i);                // 假的构造函数
     ~DocTextBlock();
     void setContent(QString str);       // 设置内容
 
@@ -97,12 +98,12 @@ protected:
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);
 
-private slots:
+protected slots:
     void checkCurrentFormat();                  // 检查当前的格式是否发生改变
     void emitFormatSignals();                   // 发射格式的信号
     void textBlockSizeChanged();                // 当文字内容改变时自动调整文字大小
 
-private:
+protected:
     QString content;        // 文字内容
     void init();            // 初始化
     void initAcitons();     // 初始化事件

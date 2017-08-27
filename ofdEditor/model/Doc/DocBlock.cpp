@@ -624,7 +624,7 @@ QMenu *DocBlock::getMenu()
         this->action_background->setChecked(true);
     }
 
-    if(this->isTextBlock())
+    if(this->isTextBlock() || this->isTableBlock())
     {
         // 文本框
         menu = this->textBlock->getMenu();

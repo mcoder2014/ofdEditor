@@ -22,6 +22,11 @@ DocTextBlock::DocTextBlock(QWidget *parent)
     :QTextEdit(parent)
 {
     this->init();   // 调用初始化函数
+}
+
+DocTextBlock::DocTextBlock(double i)
+    :QTextEdit(0)
+{
 
 }
 
@@ -843,6 +848,7 @@ void DocTextBlock::init()
 
     this->initAcitons();    // 初始化QAction相关
     this->initMenu();       // 初始化右键菜单
+    qDebug() << "text block init finished";
 }
 
 /**

@@ -16,6 +16,7 @@
 #include <QTextFormat>
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
+#include "Doc/DocTextBlock.h"
 
 class DocBlock;
 class DocPassage;
@@ -28,7 +29,7 @@ class DocLayer;
 ///         为一个QTextEdit、但内部内容仅有一个QTextTable
 ///
 class MODELSHARED_EXPORT DocTable
-        :public QTextEdit
+        :public DocTextBlock
 {
     Q_OBJECT
 public:
@@ -42,7 +43,7 @@ public:
     DocLayer *getLayer();
     DocBlock *getBlock();
 
-    QMenu *getMenu();
+//    QMenu *getMenu();
 
 public slots:
     void setTable(int rows, int columns);        // 设置表格长和宽

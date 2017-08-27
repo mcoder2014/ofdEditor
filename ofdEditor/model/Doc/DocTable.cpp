@@ -9,14 +9,13 @@
 #include <QDebug>
 
 DocTable::DocTable(QWidget *parent)
-    :QTextEdit(parent)
+    :DocTextBlock(1.0)
 {
     QTextCursor cursor = this->textCursor();        // 获得光标
     this->_table = cursor.insertTable(3,4);         // 插入一个表格
 
     this->init();
     this->initConnection();
-
 
 }
 
@@ -27,7 +26,7 @@ DocTable::DocTable(QWidget *parent)
 /// \param columns
 ///
 DocTable::DocTable(int rows, int columns)
-    :QTextEdit(0)
+    :DocTextBlock(1.0)
 {
     QTextCursor cursor = this->textCursor();        // 获得光标
     this->_table = cursor.insertTable(rows, columns);         // 插入一个表格
@@ -81,10 +80,10 @@ DocBlock *DocTable::getBlock()
 ///     关于表格操作的菜单
 /// \return
 ///
-QMenu *DocTable::getMenu()
-{
+//QMenu *DocTable::getMenu()
+//{
 
-}
+//}
 
 ///
 /// \brief DocTable::setTable
