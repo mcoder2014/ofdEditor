@@ -218,7 +218,8 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
                 passage,SIGNAL(signals_currentCharFormatChanged(QTextCharFormat)));
         connect(textBlock,SIGNAL(signals_currentTextBlock(DocTextBlock*)),
                 passage,SIGNAL(signals_currentTextBlock(DocTextBlock*)));
-    } else if (block->isImageBlock())
+    }
+    else if (block->isImageBlock())
     {
         DocImageBlock * imageBlock = block->getImageBlock();
         DocPassage * passage = this->getPassage();
@@ -227,6 +228,14 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
         //转发给passage
         this->connect(imageBlock, SIGNAL(signals_currrentImageBlock(DocImageBlock*)),
                       passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)));
+    }
+    else if (block->isTableBlock())
+    {
+        DocTable *table = block->getTableBlock();
+        DocPassage *passage = this->getPassage();
+
+        // 之后可以做信号的转发
+
     }
 //    qDebug()<< "connect";
 
@@ -311,7 +320,7 @@ QGraphicsProxyWidget *DocPage::addWidget(QWidget *widget,
  * @return void
  * @date   2017/05/16
  */
-void DocPage::setInsertBlockType(InsertBlockInfo &blockInfo)
+void DocPage::setInsertBlockType(InsertBlockInfo blockInfo)
 {
     if(this->insertBlockInfo == NULL)
     {
@@ -504,10 +513,6 @@ void DocPage::mousePressEvent(QMouseEvent *event)
         if( items.size()> 0)
         {
             QGraphicsItem* tempItem = items[0];
-
-            // 不清楚为什么，造型函数在这里编译出错，因此我采取了强制类型转换
-//            DocBlock * block = qobject_cast<DocBlock *>(tempItem);
-//            DocBlock * block = (DocBlock *)tempItem;
             DocBlock* block = qgraphicsitem_cast<DocBlock *>(tempItem);
             if(block != NULL)
             {
@@ -850,11 +855,6 @@ void DocPage::addImage()
         new_image_block->setImage(image);               // 设置图片
         double page_width = this->width(), page_height = this->height();
 
-//        qDebug() << "Page Width: " << this->width();
-//        qDebug() << "Page Height: " << this->height();
-//        qDebug() << "Image Width: " << image.width();
-//        qDebug() << "Image Height: " << image.height();
-
         double ratio;
         if (image.width() > page_width || image.height() > page_height)
         {
@@ -876,4 +876,32 @@ void DocPage::addImage()
 
         this->addBlock(newBlock,this->insertBlockInfo->layer);
     }
+}
+
+///
+/// \brief DocPage::addTable
+///     在屏幕中央，插入一个由对话框大小的表格
+///
+void DocPage::addTable()
+{
+    qDebug() << "insert Table";
+    // 暂时做测试，新建默认大小的表格
+    DocTable * _table = new DocTable();
+    DocBlock * newBlock = new DocBlock();
+    newBlock->setWidget(_table);
+
+    double page_width = this->width(), page_height = this->height();
+
+    double ratio = 1;
+    double table_width = page_width * 0.8;
+    double table_height = table_width;
+
+    newBlock->setPos(
+                (page_width - table_width)/2,
+                (page_height - table_height)/2 );
+    newBlock->resize(
+                table_width * ratio,
+                table_height * ratio);
+
+    this->addBlock(newBlock, this->insertBlockInfo->layer);
 }

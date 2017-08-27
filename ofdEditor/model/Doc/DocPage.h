@@ -52,7 +52,7 @@ public:
     DocLayer *getLayer(DocPage::Layer layer);       // 获得层
 
     //Pan
-    void addImage();                                //添加图片
+
 
     bool isUsingWorkArea(){return this->has_working_area;}
     double getContentWidth(){return this->working_area_width;}
@@ -64,7 +64,8 @@ public slots:
     void setSize(double width, double height);                       // 设置页面大小
     void setPassage(DocPassage * passage);                           // 设置文章
     void addBlock(DocBlock* block, DocPage::Layer layer);            // 为页面添加一个新元素
-//    void addBlock(DocTextBlock* textBlock, DocPage::Layer layer);  // 为页面添加一个新元素
+    void addImage();                                                 //添加图片
+    void addTable();        // 用对话框来设置插入表格的大小
     void changeBlockLayer(DocBlock* block, DocPage::Layer layer);    // 更换block的层
     void addItem(QGraphicsItem *item);      // 拓展接口
     QGraphicsProxyWidget *addWidget(QWidget *widget,
@@ -72,7 +73,7 @@ public slots:
 
     void setBlockFlag(BlockFlag flag){this->newBlockFlag = flag;}
 
-    void setInsertBlockType(InsertBlockInfo& blockInfo);    // 设置下一个要插入的block的信息
+    void setInsertBlockType(InsertBlockInfo blockInfo);    // 设置下一个要插入的block的信息
     void remove();                      // 移除本页
     void setScale(double scale);        // 设置页面的显示大小
     void setWorkingArea(

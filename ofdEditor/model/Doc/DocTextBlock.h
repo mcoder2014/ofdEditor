@@ -130,7 +130,7 @@ private:
 
 signals:
     void signals_remove(DocTextBlock* textBlock);    // 移除文本框的信号。
-    void signals_setZValue(qreal z);    // 设置Z值的信号
+    void signals_setZValue(qreal z);                 // 设置Z值的信号
 
     void signals_currentCharFormatChanged(
             QTextCharFormat fmt);    // 当前选择的charFormat发生了变化

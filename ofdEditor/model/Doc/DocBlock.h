@@ -15,6 +15,7 @@ class DocTextBlock;
 class DocPage;
 class DocPassage;
 class DocImageBlock;
+class DocTable;
 
 /**
  * @Author Chaoqun
@@ -58,6 +59,8 @@ public:
     DocTextBlock *getTextBlock();   // 获得DocTextBlock
     bool isImageBlock();
     DocImageBlock *getImageBlock(); //获得DocImageBlock
+    bool isTableBlock();
+    DocTable *getTableBlock();      // 获得DocTable
 
     QAction *action_geometry;       // 大小和位置
     QAction *action_delete;         // 删除块
@@ -78,6 +81,7 @@ public slots:           // 槽函数
     void setWidget(QWidget* widget);           // 旧的函数
     void setWidget(DocTextBlock *textBlock);   // SetWidget
     void setWidget(DocImageBlock * imageBlock);
+    void setWidget(DocTable* table);
 
     void sizeAndPositionDialog();           // 调整大小和位置窗口
     void setShowBoundaryBox(bool flag);     // 设置是否显示边框
@@ -106,6 +110,7 @@ private:
 
     DocTextBlock * textBlock;   // 存下引用
     DocImageBlock * imageBlock; //同上
+    DocTable * _table;          // 存下引用
     qreal realZValue;           // 真实的z值
     bool isShowBox;             // 是否显示边框
 

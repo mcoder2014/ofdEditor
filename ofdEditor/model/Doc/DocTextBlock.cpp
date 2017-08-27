@@ -326,14 +326,6 @@ void DocTextBlock::remove()
  */
 void DocTextBlock::showBoundaryFrame(bool show)
 {
-//    if(show)
-//    {
-//        this->setFrameStyle(QFrame::Box);           // 显示边框
-//    }
-//    else
-//    {
-//        this->setFrameStyle(QFrame::NoFrame);       // 隐藏边框
-//    }
     this->block->setShowBoundaryBox(show);
 }
 

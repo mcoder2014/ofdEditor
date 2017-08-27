@@ -15,6 +15,7 @@
 #include "Doc/DocPage.h"
 #include "Doc/DocPassage.h"
 #include "Doc/DocImageBlock.h"
+#include "Doc/DocTable.h"
 
 DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     :QGraphicsProxyWidget(parent,wFlags)
@@ -23,6 +24,7 @@ DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     this->setVisible(true);
     this->setZValue(200);
     this->isFocused = false;            // 初始时设为false
+
 
     this->blockIsResizing = false;
     this->rectAdjust = blockNone;       // 一开始处于空状态
@@ -421,6 +423,18 @@ void DocBlock::setWidget(DocImageBlock * imageBlock)
 }
 
 ///
+/// \brief DocBlock::setWidget
+///     设置对象为表格
+/// \param table
+///
+void DocBlock::setWidget(DocTable *table)
+{
+    table->setBlock(this);
+    this->_table = table;
+    QGraphicsProxyWidget::setWidget(table);
+}
+
+///
 /// \brief DocBlock::sizeAndPositionDialog
 ///     大小位置调整窗口
 ///
@@ -528,7 +542,7 @@ void DocBlock::moveToBackground()
  */
 DocBlock::RectAdjustStatus DocBlock::currentStatus( QPointF pos)
 {
-    if (isTextBlock())
+    if (isTextBlock() || isTableBlock())
     {
         if((pos.x() - this->size().width() + 15) >
                 (this->size().height() - pos.y()))
@@ -666,6 +680,7 @@ DocTextBlock *DocBlock::getTextBlock()
 {
     if (isTextBlock())
         return this->textBlock;
+    return NULL;
 }
 
 /**
@@ -691,4 +706,17 @@ DocImageBlock * DocBlock::getImageBlock()
 {
     if (isImageBlock())
         return imageBlock;
+    return NULL;
+}
+
+bool DocBlock::isTableBlock()
+{
+    return this->_table != NULL;
+}
+
+DocTable *DocBlock::getTableBlock()
+{
+    if(this->isTableBlock())
+        return this->_table;
+    return NULL;
 }

@@ -70,7 +70,7 @@ void ActionConnector::addNewPage()
  *@return 返回值
  *@date   2017/05/15
  */
-void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
+void ActionConnector::addNewBlock(InsertBlockInfo blockInfo)
 {
     if(this->passage == NULL)
     {
@@ -86,23 +86,26 @@ void ActionConnector::addNewBlock(InsertBlockInfo& blockInfo)
     }
     else
     {
-        //插入文本框
+
         if (blockInfo.type == DocPage::text)
         {
+            //插入文本框
 //            qDebug() << "get Focus Sucess";
-            page->setBlockFlag(DocPage::draw);      // 进入绘画状态
-
-    //        InsertBlockInfo blockInfo(type,layer);  // 设置插入文本框信息
-            page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
-
-            page->viewport()->setCursor(Qt::CrossCursor);       // 将鼠标设置为加号形状
+            page->setBlockFlag(DocPage::draw);              // 进入绘画状态
+            page->setInsertBlockType(blockInfo);            // 设置插入文本框信息
+            page->viewport()->setCursor(Qt::CrossCursor);   // 将鼠标设置为加号形状
         }
-        //插入图片框
         else if (blockInfo.type == DocPage::image)
         {
-            page->setInsertBlockType(blockInfo);    // 设置插入文本框信息
-//            qDebug() << "!!!";
+            //插入图片框
+            page->setInsertBlockType(blockInfo);            // 设置插入文本框信息
             page->addImage();
+        }
+        else if( blockInfo.type == DocPage::table )
+        {
+            // 插入表格
+            page->setInsertBlockType(blockInfo);            // 设置插入为表格
+            page->addTable();                               // 从对话框来设置
         }
     }
 }
@@ -129,10 +132,10 @@ void ActionConnector::addTableBlock()
     if(this->passage == NULL)
         return;
 
-//    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::table);  // 设置插入文本框信息
-//    this->addNewBlock(blockInfo);
-    InsertTableDialog * tableDialog = new InsertTableDialog(0);
-    tableDialog->exec();
+    InsertBlockInfo blockInfo(this->defaultLayer,DocPage::table);  // 设置插入文本框信息
+    this->addNewBlock(blockInfo);
+//    InsertTableDialog * tableDialog = new InsertTableDialog(0);
+//    tableDialog->exec();
 }
 
 void ActionConnector::undo()
