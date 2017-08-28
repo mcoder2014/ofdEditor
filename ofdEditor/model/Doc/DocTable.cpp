@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QClipboard>
+#include "Widget/TableSettingDialog.h"
 
 DocTable::DocTable(QWidget *parent)
     :DocTextBlock(1.0)
@@ -88,26 +89,47 @@ QMenu *DocTable::getMenu()
 
     // 选择表格的状态
     QTextCursor cursor = this->textCursor();            // 文本光标
-//    int firstRow, numRows, firstColumn, numColumns;     // 选择的
-//    cursor.selectedTableCells(
-//                &firstRow, &numRows, &firstColumn, &numColumns);
     this->selectedCells(cursor);
 
-    qDebug() << "firstRow, numRows, firstColumn, numColumns"
-             << this->firstRow
-             << this->rows
-             << this->firstColumn
-             << this->columns;
+//    qDebug() << "firstRow, numRows, firstColumn, numColumns"
+//             << this->firstRow
+//             << this->rows
+//             << this->firstColumn
+//             << this->columns;
 
     this->ContextMenu->addSeparator();      // ------------------
     this->ContextMenu->addAction(this->actionTableSetting); // 表格设置
     this->ContextMenu->addMenu(this->menu_insertRowOrCol);  // 插入行或列
-    this->ContextMenu->addAction(this->actionMergeCells);   // 合并单元格
-    this->ContextMenu->addAction(this->actionSplitCells);   // 拆分单元格
+
+    if(this->rows > 1 || this->columns > 1)
+    {
+        this->ContextMenu->addAction(this->actionMergeCells);   // 合并单元格
+        this->ContextMenu->addAction(this->actionSplitCells);   // 拆分单元格
+    }
+
     this->ContextMenu->addAction(this->actionDeleteRow);    // 删除该行
     this->ContextMenu->addAction(this->actionDeleteColumn); // 删除该列
 
     return this->ContextMenu;
+}
+
+///
+/// \brief DocTable::getTableColor
+///     获得表格线条的颜色
+/// \return
+///
+QColor DocTable::getTableColor()
+{
+    QTextTableFormat format = this->_table->format();
+    QBrush brush = format.borderBrush();
+    return brush.color();
+}
+
+QVector<QTextLength> DocTable::getColumnWidth()
+{
+    QTextTableFormat format = this->_table->format();
+    QVector<QTextLength> vector = format.columnWidthConstraints();
+    return vector;
 }
 
 ///
@@ -145,8 +167,28 @@ void DocTable::setDefaultStyle()
     format.setBorderStyle(QTextFrameFormat::BorderStyle_Solid);
     format.setCellSpacing(0);
 //    format.setCellPadding(0);
+//    format.setCellPadding(5);
 
     this->_table->setFormat(format);
+}
+
+void DocTable::setDefaultStyle(bool flag)
+{
+    this->isDefaultStyle = flag;
+    if(flag == true)
+        updateStyle();
+}
+
+///
+/// \brief DocTable::setColumnWidth
+///     设置每列的宽度
+/// \param vector
+///
+void DocTable::setColumnWidth(QVector<QTextLength> &vector)
+{
+    this->colWidth.clear();
+    this->colWidth = vector;
+    this->updateStyle();
 }
 
 ///
@@ -159,6 +201,35 @@ void DocTable::setBlock(DocBlock *block)
     this->connect(block, SIGNAL(signal_resize(qreal,qreal,qreal,qreal)),
                   this, SLOT(blockSizeChanged()));
     //    qDebug() << "set block success table";
+}
+
+///
+/// \brief DocTable::setCellPadding
+///     设置单元格留白
+/// \param cellpadding
+///
+void DocTable::setCellPadding(double cellpadding)
+{
+    QTextTableFormat format = this->_table->format();
+    format.setCellPadding(cellpadding);
+    this->_table->setFormat(format);
+}
+
+void DocTable::setTableColor(QColor color)
+{
+    QTextTableFormat format = this->_table->format();
+    format.setBorderBrush(color);
+    this->_table->setFormat(format);
+}
+
+///
+/// \brief DocTable::setTableWidth
+///     设置表格总体宽度
+/// \param width
+///
+void DocTable::setTableWidth(double width)
+{
+    this->block->resize(width,this->block->size().rheight());
 }
 
 ///
@@ -179,36 +250,74 @@ void DocTable::insertRowBefore()
 ///
 void DocTable::insertRow(QTextCursor cursor, int flag)
 {
-    int firstRow, numRows, firstColumn, numColumns;     // 选择的
-    cursor.selectedTableCells(
-                &firstRow, &numRows, &firstColumn, &numColumns);
+    this->selectedCells(cursor);
 
     // 插入行
     if(flag == -1)
     {
-        // 在选择区域最左侧插入一行
-
+        // 在选择区域上方插入一行
+        this->_table->insertRows(this->firstRow,1);
     }
     else if(flag == 1)
     {
-
+        this->_table->insertRows(this->firstRow + 1, 1);
     }
 
 }
 
+///
+/// \brief DocTable::insertRowAfter
+///
 void DocTable::insertRowAfter()
 {
-
+    QTextCursor cursor = this->textCursor();
+    this->insertRow(cursor, 1);
 }
 
 void DocTable::insertColBefore()
 {
-
+    QTextCursor cursor = this->textCursor();
+    this->insertCol(cursor, -1);
 }
 
 void DocTable::insertColAfter()
 {
+    QTextCursor cursor = this->textCursor();
+    this->insertCol(cursor, 1);
+}
 
+void DocTable::insertCol(QTextCursor cursor, int flag)
+{
+    this->selectedCells(cursor);
+
+    // 插入行
+    if(flag == -1)
+    {
+        // 在选择区域前
+        this->_table->insertColumns(this->firstColumn,1);
+    }
+    else if(flag == 1)
+    {
+        this->_table->insertColumns(this->firstColumn + 1, 1);
+    }
+
+    if(!this->isDefaultStyle)
+    {
+        // 如果是自定义列宽
+        double width = this->colWidth[this->firstColumn].rawValue();
+        this->colWidth.remove(this->firstColumn);
+        this->colWidth.insert(
+                    this->firstColumn,
+                    QTextLength(
+                        QTextLength::PercentageLength,
+                        width / 2));
+        this->colWidth.insert(
+                    this->firstColumn,
+                    QTextLength(
+                        QTextLength::PercentageLength,
+                        width / 2));
+    }
+    this->updateStyle();
 }
 
 void DocTable::mergeCells()
@@ -217,24 +326,58 @@ void DocTable::mergeCells()
     this->_table->mergeCells(cursor);
 }
 
+///
+/// \brief DocTable::splitCells
+///     将已经合并的项给分离开来
+///
 void DocTable::splitCells()
 {
+    QTextCursor cursor = this->textCursor();
+    this->selectedCells(cursor);
 
+    this->_table->splitCell(
+                this->firstRow,
+                this->firstColumn,
+                1,
+                1);
+//    qDebug() <<"split cells";
 }
 
+///
+/// \brief DocTable::delRow
+///     删除当前行
+///
 void DocTable::delRow()
 {
+    QTextCursor cursor = this->textCursor();
+    this->selectedCells(cursor);
 
+    this->_table->removeRows(this->firstRow, 1);
 }
 
+///
+/// \brief DocTable::delCol
+///     删除当前列
+///
 void DocTable::delCol()
 {
+    QTextCursor cursor = this->textCursor();
+    this->selectedCells(cursor);
 
+    this->_table->removeColumns(this->firstColumn, 1);
+    this->updateStyle();
 }
 
+///
+/// \brief DocTable::tableSetting
+///     给出表格设置窗口，然后设置表格
+///
 void DocTable::tableSetting()
 {
+    TableSettingDialog* dialog = TableSettingDialog::getInstance();
+    dialog->init(this);
 
+    dialog->exec();
 }
 
 void DocTable::updateStyle()
@@ -247,6 +390,13 @@ void DocTable::updateStyle()
     else
     {
         // 按照设置的比例调节
+        QTextTableFormat format = this->_table->format();
+        if(format.columnWidthConstraints().size() == this->getColumns())
+        {
+            format.setColumnWidthConstraints(this->colWidth);
+            this->_table->setFormat(format);
+        }
+
     }
 }
 
@@ -285,6 +435,25 @@ void DocTable::selectedCells(QTextCursor &cursor)
 
 }
 
+///
+/// \brief DocTable::checkCursorInTable
+///     与光标改变事件相关联，如果光标出现在了表格外部，
+/// 则将它重新移动回到表格内部
+///
+void DocTable::checkCursorInTable()
+{
+    QTextCursor cursor = this->textCursor();
+    int cursorPosition = cursor.position();                 // 光标位置
+
+    if(!(cursorPosition >= this->_table->firstPosition()
+            && cursorPosition <= this->_table->lastPosition()))
+    {
+        // 如果光标离开了表格的范围
+        this->setTextCursor(this->_table->firstCursorPosition());
+    }
+
+}
+
 void DocTable::init()
 {
 //    this->setFrameStyle(QFrame::NoFrame);
@@ -297,10 +466,13 @@ void DocTable::init()
 
     this->isDefaultStyle = true;
     this->updateStyle();            // 更新样式
+    this->setCellPadding(5);
 
     this->initAction();
     this->initMenu();
     this->initConnection();
+
+//    this->setCellPadding(5);
 
 }
 
@@ -402,6 +574,10 @@ void DocTable::initConnection()
     // 自动调整大小
     this->connect(this, SIGNAL(textChanged()),
                   this, SLOT(blockSizeChanged()));
+
+    // 防止光标移动到表格以外
+    this->connect(this, SIGNAL(cursorPositionChanged()),
+                  this, SLOT(checkCursorInTable()));
 }
 
 ///

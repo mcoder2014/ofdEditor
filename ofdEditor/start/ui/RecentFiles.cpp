@@ -59,6 +59,16 @@ RecentFiles::RecentFiles(QWidget *parent) :
     ui->setupUi(this);
     // 最后一行自动适应宽度
     ui->recent_table->horizontalHeader()->setStretchLastSection(true);
+    ui->recent_table->horizontalHeader()->setResizeMode(
+                0, QHeaderView::ResizeToContents);
+    ui->recent_table->horizontalHeader()->setResizeMode(
+                1, QHeaderView::ResizeToContents);
+    ui->recent_table->horizontalHeader()->setResizeMode(
+                2, QHeaderView::ResizeToContents);
+    ui->recent_table->horizontalHeader()->setResizeMode(
+                3, QHeaderView::ResizeToContents);
+    ui->recent_table->horizontalHeader()->setResizeMode(
+                4, QHeaderView::Stretch);
     // 设置每次可以选取一行
     ui->recent_table->setSelectionBehavior(QAbstractItemView::SelectRows);
     // 设置只可以单选

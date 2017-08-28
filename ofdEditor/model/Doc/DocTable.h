@@ -40,11 +40,22 @@ public:
 
     QString getType();                          // 获得类型
     QMenu *getMenu();
+    bool isDefaultWidth(){return this->isDefaultStyle;}     // 是否是均分宽度
+    double cellPadding(){return this->_table->format().cellPadding();}
+    QColor getTableColor();
+    QVector<QTextLength> getColumnWidth();       // 获得行列宽度
+    int getColumns(){return this->_table->columns();}
+    int getRows(){return this->_table->rows();}
 
 public slots:
     void setTable(int rows, int columns);        // 设置表格长和宽
     void setDefaultStyle();                      // 设置默认样式
+    void setDefaultStyle(bool flag);             // 设置是否为默认样式
+    void setColumnWidth(QVector<QTextLength>& vector);  // 设置每列的宽度
     void setBlock(DocBlock* block);              // 设置块
+    void setCellPadding(double cellpadding);     // 设置单元格留白
+    void setTableColor(QColor color);            // 设置表格颜色
+    void setTableWidth(double width);            // 设置表格整体宽度
 
     // 插入行或列
     void insertRowBefore();
@@ -54,6 +65,9 @@ public slots:
     void insertRowAfter();
     void insertColBefore();
     void insertColAfter();
+    void insertCol(
+            QTextCursor cursor,
+            int flag);
 
     // 合并单元格
     void mergeCells();
@@ -75,6 +89,7 @@ protected:
 
 private slots:
     void selectedCells(QTextCursor& cursor);
+    void checkCursorInTable();              // 确保光标永远在表格内部
 
 private:
     int rowCount;               // 行数
