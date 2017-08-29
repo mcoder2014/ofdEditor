@@ -26,9 +26,11 @@ public:
     DocPassage *getPassage();           // 获得文章
     DocPage *getPage();                 // 获得页
     DocLayer *getLayer();               // 获得层
-    DocBlock *getBlock();          //获取代理它的DocBlock
-    QString getType();              // 获得标识，来区分不同的块
-    QMenu* getMenu();               // 获得图片块的菜单成分
+    DocBlock *getBlock();               //获取代理它的DocBlock
+    QString getType();                  // 获得标识，来区分不同的块
+    QMenu* getMenu();                   // 获得图片块的菜单成分
+    QString getFileName();              // 获得图片的文件名
+    void saveImage( QString filepath );  // 保存文件
 
     // 单位为 mm
     double getRealWidth();          // 获得图片真实大小
@@ -41,10 +43,13 @@ public slots:
             double new_x,
             double new_y,
             bool ratio_locked);             // 修改图片属性
+    void setFileName(QString fileName);     // 设置图片文件名
+    void setImage(QString filePath);        // 直接使用路径设置图片
     void setImage(QPixmap & pixmap);        // 设置图片
     void setBlock(DocBlock * _block);       // 设置所属的块
     void changeImage();                     // 修改图片
     void setImageProperties();              // 设置图片属性
+    void setWidthHeightRatioLocked(bool flag){this->width_height_ratio_locked = flag;}
 
 protected:
     void focusInEvent(QFocusEvent *ev);
@@ -57,7 +62,8 @@ private:
     QAction * set_image_properties; //更改图片的位置和尺寸
     bool width_height_ratio_locked;
     double width_height_ratio;
-    QString temp_store;
+
+    QString fileName;               // 图片的文件名       ---- uuid + 后缀名
 
     void initMenu();                // 初始化右键菜单
 

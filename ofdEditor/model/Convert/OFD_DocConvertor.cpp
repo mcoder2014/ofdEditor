@@ -10,6 +10,7 @@
 #include "DataTypes/page/page.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocBlock.h"
+#include "Doc/DocImageBlock.h"
 #include "Tool/UnitTool.h"
 #include "DataTypes/text/TextCode.h"
 #include "DataTypes/text/CT_Text.h"
@@ -18,6 +19,8 @@
 #include "Convert/Objects/MinTextUnit.h"
 #include "DataTypes/page/CT_PageArea.h"
 #include "DataTypes/document/ct_commondata.h"
+#include "DataTypes/image/CT_Image.h"
+#include "DataTypes/image/CT_MultiMedia.h"
 
 OFD_DocConvertor::OFD_DocConvertor()
 {
@@ -61,6 +64,7 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         {
 
             //  生成每一页
+//            qDebug() << "build Page" << i;
             DocPage * newPage = this->buildDocPage(passage, (*pages)[i]);
             newPage->setVisible(true);
         }
@@ -188,6 +192,14 @@ void OFD_DocConvertor::insertPageBlock(DocPage *page,
     // 处理 CT_Path
 
     // 处理 CT_Image
+    QVector <CT_Image *> *images = pageBlock->getImageObject();
+    for(int i = 0; i < images->size(); i++)
+    {
+        this->insertCT_Image(
+                    page,
+                    doctype,
+                    images->operator [](i));
+    }
 
 
 }
@@ -327,9 +339,41 @@ void OFD_DocConvertor::insertCT_Path(DocPage *page, CT_Layer *layer, CT_Path *pa
 
 }
 
-void OFD_DocConvertor::insertCT_Image(DocPage *page, DocPage::Layer layer, CT_Image *image)
+///
+/// \brief OFD_DocConvertor::insertCT_Image
+/// \param page
+/// \param layer
+/// \param image
+///
+void OFD_DocConvertor::insertCT_Image(
+        DocPage *page,
+        DocPage::Layer layer,
+        CT_Image *image)
 {
+    DocImageBlock *imageBlock = new DocImageBlock();
 
+    // 获得多媒体资源
+    CT_Base* base_media =
+            this->ofdFile->getDocuments()->operator [](0)
+                ->getIDTable()->getItem(
+                    image->getResourceID());
+    CT_MultiMedia* multMedia = (CT_MultiMedia *)base_media;
+
+    qDebug() << multMedia->MediaFile;
+    imageBlock->setImage(multMedia->MediaFile);             // 设置图片
+    imageBlock->setWidthHeightRatioLocked(false);           // 先不要锁定纵横比
+    DocBlock * block = new DocBlock();
+
+    block->setWidget(imageBlock);
+    ST_Box box = image->boundary;                           // 获得位置大小
+    block->resize(
+                UnitTool::mmToPixel(box.getDeltaX()),
+                UnitTool::mmToPixel(box.getDeltaY()));
+    block->setPos(
+                UnitTool::mmToPixel(box.getX()),
+                UnitTool::mmToPixel(box.getY()));
+
+    page->addBlock(block, layer);                      // 加入到页面中
 }
 
 /**

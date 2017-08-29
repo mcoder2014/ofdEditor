@@ -4,6 +4,7 @@
 #include "Doc/DocBlock.h"
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocLayer.h"
+#include "Doc/DocImageBlock.h"
 
 #include <QVector>
 #include <QTextCursor>
@@ -30,6 +31,8 @@
 #include "DataTypes/text/textcode.h"
 #include "DataTypes/basic_datatype.h"
 #include "Tool/UnitTool.h"
+#include "DataTypes/image/CT_Image.h"
+#include "DataTypes/image/CT_MultiMedia.h"
 
 Doc_OFDConvertor::Doc_OFDConvertor(QObject *parent)
     : QObject(parent)
@@ -98,20 +101,24 @@ void Doc_OFDConvertor::buildDocument()
     // 设置ID_Table
     this->table = document->getIDTable();       // 获得IDTable
 
-    // 设置publicRes
+    // 设置publicRes\documentRes
     this->public_res = new Res();
     this->public_res->setBaseLoc("Res");
+    this->document_res = new Res();
+    this->document_res->setBaseLoc("Res");
     document->getPublicRes()->append(this->public_res);   // 将公用资源加入到document
-
+    document->document_res->append(this->document_res);
     // 设置common_data
     CT_CommonData * commonData = new CT_CommonData();
     document->setCommonData(commonData);
 
-        // 设置指向资源文件的
+    // 设置指向资源文件的
     commonData->getPublicRes()->append(ST_Loc("PublicRes.xml",
-                                                  "PublicRes.xml",
-                                                  "PublicRes.xml"));
-
+                                               "PublicRes.xml",
+                                               "PublicRes.xml"));
+    commonData->document_res->append(ST_Loc("DocumentRes.xml",
+                                            "DocumentRes.xml",
+                                            "DocumentRes.xml"));
 
     this->buildPages(document);     // 解析每一页
 
@@ -246,7 +253,14 @@ void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
         if(block->isTextBlock())
         {
             // 进入文字框处理模式
-            this->buildText(ctLayer,block->getTextBlock());
+            this->buildText(ctLayer, block->getTextBlock());
+        }
+
+        // 如果是图片对象
+        if(block->isImageBlock())
+        {
+            // 将图片移动到资源文件夹，存下路径再结束
+            this->buildImage(ctLayer, block->getImageBlock());
         }
     }
 
@@ -460,6 +474,45 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
     }
     //// 将文本框按照 格式和行进行拆分
 
+}
+
+///
+/// \brief Doc_OFDConvertor::buildImage
+/// \param ctLayer
+/// \param imageBlock
+///
+void Doc_OFDConvertor::buildImage(CT_Layer *ctLayer, DocImageBlock *imageBlock)
+{
+    // 新建所需的对象，设置ID
+    CT_Image *ctimage = new CT_Image();                 // iamgeobject
+    CT_MultiMedia *multiMedia = new CT_MultiMedia();    // 多媒体
+    multiMedia->setID(this->table->size() + 1,
+                      this->table);
+    ctimage->setID(this->table->size() + 1,
+                   this->table);
+
+    // 设置多媒体引用的标签
+    multiMedia->Format = "Image";
+    multiMedia->Type = "Jpeg";
+    multiMedia->MediaFile = imageBlock->getFileName();
+
+    // 将图片存储到临时文件夹去
+    QString fileName = this->passage->getTempSavePath()
+            + "/" + multiMedia->MediaFile;
+    imageBlock->saveImage(fileName);
+
+    DocBlock* block = imageBlock->getBlock();
+
+    // 设置边界
+    ctimage->setBoundary(
+                UnitTool::pixelToMM(block->x()),
+                UnitTool::pixelToMM(block->y()),
+                UnitTool::pixelToMM(block->size().width()),
+                UnitTool::pixelToMM(block->size().height()));
+
+
+    this->document_res->getMultiMedia()->push_back(multiMedia);     // 追加到资源文件内
+    ctLayer->image_object->push_back(ctimage);
 }
 
 /**

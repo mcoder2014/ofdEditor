@@ -734,6 +734,8 @@ void PassageMainWindow::saveFile()
     QDir dir;
     dir.mkdir(tempPath);                          // 生成文件夹
     OFDWriter writer(ofdFile, tempPath+"/");      // 写出文件
+    writer.setTempPath(passage->getTempSavePath());         // 保存着图片的临时路径
+    writer.writeOFD();
 
     ZipTool::compressDir(filePath,
                          tempPath);               // 将文件夹压缩为指定文件
@@ -785,6 +787,8 @@ void PassageMainWindow::saveFileAs()
 
         dir.mkdir(tempPath);                                  // 生成文件夹
         OFDWriter writer(ofdFile, tempPath + "/");            // 写出文件
+        writer.setTempPath(passage->getTempSavePath());
+        writer.writeOFD();
 
         qDebug() << "temp Files Path:" << tempPath;
         qDebug() << "selected ofd"<< path;
@@ -1385,7 +1389,6 @@ void PassageMainWindow::addRecentFile(DocPassage *passages)
                 );
 
     list->addItem(item);
-
     list->save();           // 保存到文件
 }
 

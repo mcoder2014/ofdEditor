@@ -6,28 +6,28 @@
 // //////////////////////////////////////////////////////////////////////
 
 /*
-The JsonCpp library's source code, including accompanying documentation, 
+The JsonCpp library's source code, including accompanying documentation,
 tests and demonstration applications, are licensed under the following
 conditions...
 
-The author (Baptiste Lepilleur) explicitly disclaims copyright in all 
-jurisdictions which recognize such a disclaimer. In such jurisdictions, 
+The author (Baptiste Lepilleur) explicitly disclaims copyright in all
+jurisdictions which recognize such a disclaimer. In such jurisdictions,
 this software is released into the Public Domain.
 
 In jurisdictions which do not recognize Public Domain property (e.g. Germany as of
 2010), this software is Copyright (c) 2007-2010 by Baptiste Lepilleur, and is
 released under the terms of the MIT License (see below).
 
-In jurisdictions which recognize Public Domain property, the user of this 
-software may choose to accept it either as 1) Public Domain, 2) under the 
-conditions of the MIT License (see below), or 3) under the terms of dual 
+In jurisdictions which recognize Public Domain property, the user of this
+software may choose to accept it either as 1) Public Domain, 2) under the
+conditions of the MIT License (see below), or 3) under the terms of dual
 Public Domain/MIT License conditions described here, as they choose.
 
 The MIT License is about as close to Public Domain as a license can get, and is
 described in clear, concise terms at:
 
    http://en.wikipedia.org/wiki/MIT_License
-   
+
 The full text of the MIT License follows:
 
 ========================================================================
@@ -126,6 +126,65 @@ static inline std::string codePointToUTF8(unsigned int cp) {
     result[0] = static_cast<char>(0xF0 | (0x7 & (cp >> 18)));
   }
 
+/*
+  if (cp <= 0x7f)
+  {
+     result.resize(1);
+     result[0] = static_cast<char>(cp);
+   }
+   else if (cp <= 0x7FF)
+   {
+     result.resize(2);
+     result[1] = static_cast<char>(0x80 | (0x3f & cp));
+     result[0] = static_cast<char>(0xC0 | (0x1f & (cp >> 6)));
+   }
+   else if (cp <= 0xFFFF)
+   {
+       if (
+         (cp >= 0x4E00 && cp <= 0x9FA5)
+         || (cp >= 0xF900 && cp <= 0xFA2D)
+         || cp == 0x3002
+         || cp == 0xFF1F
+         || cp == 0xFF01
+         || cp == 0xFF0C
+         || cp == 0x3001
+         || cp == 0xFF1B
+         || cp == 0xFF1A
+         || cp == 0x300C
+         || cp == 0x300D
+         || cp == 0x300E
+         || cp == 0x300F || cp == 0x2018 || cp == 0x2019 || cp == 0x201C
+         || cp == 0x201D || cp == 0xFF08 || cp == 0xFF09 || cp == 0x3014
+         || cp == 0x3015 || cp == 0x3010 || cp == 0x3011 || cp == 0x2014
+         || cp == 0x2026 || cp == 0x2013 || cp == 0xFF0E || cp == 0x300A
+         || cp == 0x300B || cp == 0x3008 || cp == 0x3009)
+     {
+         wchar_t src[2] = { 0 };
+         char dest[5] = { 0 };
+         src[0] = static_cast<wchar_t>(cp);
+         std::string curLocale = setlocale(LC_ALL, NULL);
+         setlocale(LC_ALL, "chs");
+         wcstombs_s(NULL, dest, 5, src, 2);
+         result = dest;
+         setlocale(LC_ALL, curLocale.c_str());
+     }
+     else
+     {
+         result.resize(3);
+         result[2] = static_cast<char>(0x80 | (0x3f & cp));
+         //result[1] = static_cast<char>(0x80 | (0x3f & (cp >> 6)));
+         //result[0] = static_cast<char>(0xE0 | (0xf & (cp >> 12)));
+         result[1] = 0x80 | static_cast<char>((0x3f & (cp >> 6)));
+         result[0] = 0xE0 | static_cast<char>((0xf & (cp >> 12)));
+     }
+   } else if (cp <= 0x10FFFF) {
+     result.resize(4);
+     result[3] = static_cast<char>(0x80 | (0x3f & cp));
+     result[2] = static_cast<char>(0x80 | (0x3f & (cp >> 6)));
+     result[1] = static_cast<char>(0x80 | (0x3f & (cp >> 12)));
+     result[0] = static_cast<char>(0xF0 | (0x7 & (cp >> 18)));
+   } */
+
   return result;
 }
 
@@ -207,7 +266,7 @@ static inline void fixNumericLocale(char* begin, char* end) {
 #include <limits>
 
 #if defined(_MSC_VER)
-#if !defined(WINCE) && defined(__STDC_SECURE_LIB__) && _MSC_VER >= 1500 // VC++ 9.0 and above 
+#if !defined(WINCE) && defined(__STDC_SECURE_LIB__) && _MSC_VER >= 1500 // VC++ 9.0 and above
 #define snprintf sprintf_s
 #elif _MSC_VER >= 1900 // VC++ 14.0 and above
 #define snprintf std::snprintf
@@ -3773,7 +3832,7 @@ Value& Path::make(Value& root) const {
 #endif
 
 #if defined(_MSC_VER)
-#if !defined(WINCE) && defined(__STDC_SECURE_LIB__) && _MSC_VER >= 1500 // VC++ 9.0 and above 
+#if !defined(WINCE) && defined(__STDC_SECURE_LIB__) && _MSC_VER >= 1500 // VC++ 9.0 and above
 #define snprintf sprintf_s
 #elif _MSC_VER >= 1900 // VC++ 14.0 and above
 #define snprintf std::snprintf
@@ -3786,7 +3845,7 @@ Value& Path::make(Value& root) const {
 #define snprintf std::snprintf
 #endif
 
-#if defined(__BORLANDC__)  
+#if defined(__BORLANDC__)
 #include <float.h>
 #define isfinite _finite
 #define snprintf _snprintf
@@ -4849,7 +4908,7 @@ StreamWriter* StreamWriterBuilder::newStreamWriter() const
   std::string cs_str = settings_["commentStyle"].asString();
   bool eyc = settings_["enableYAMLCompatibility"].asBool();
   bool dnp = settings_["dropNullPlaceholders"].asBool();
-  bool usf = settings_["useSpecialFloats"].asBool(); 
+  bool usf = settings_["useSpecialFloats"].asBool();
   unsigned int pre = settings_["precision"].asUInt();
   CommentStyle::Enum cs = CommentStyle::All;
   if (cs_str == "All") {
@@ -4938,8 +4997,3 @@ std::ostream& operator<<(std::ostream& sout, Value const& root) {
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: src/lib_json/json_writer.cpp
 // //////////////////////////////////////////////////////////////////////
-
-
-
-
-

@@ -24,6 +24,7 @@ class CT_DrawParam;
 class CT_Font;
 class Res;
 class CT_PageArea;
+class CT_MultiMedia;
 
 class OFDSHARED_EXPORT OFDWriter
 {
@@ -32,9 +33,11 @@ private:
     ST_Loc current_path;        //当前文档节点的路径
     QFile * current_file;        //当前输出的文件
     QXmlStreamWriter writer;
+    QString tempPath;           // 临时文件夹
+
     void makePath(ST_Loc path);
     void createFile();
-    void writeOFD();
+
     void writeDocument(Document * data);
     void writePage(Page * data);
     void writeRes(Res * data);
@@ -44,6 +47,7 @@ private:
     void writeColor(CT_Color * cur_color);
     void writeColorSpace(CT_ColorSpace * cur_colorspace);
     void writeFont(CT_Font * cur_font);
+    void writeMultiMedia(CT_MultiMedia* cur_multiMedia);
     void writeDrawParam(CT_DrawParam * cur_draw_param);
     void writeTextObject(CT_Text * cur_text);
     void writePathObject(CT_Path * cur_path);
@@ -53,6 +57,9 @@ private:
     void writeBase(CT_Base * cur_base);
 public:
     OFDWriter(OFD * _data, QString _path);
+    void writeOFD();
+    void setTempPath(QString tmpPath){ this->tempPath = tmpPath;}
+    QString getTempPath(){ return this->tempPath; }         // 转换时，将临时路径的图片等资源文件拷贝过来
 };
 
 QXmlStreamAttributes getAttributes(OFD * data);  //返回OFD类型标签的属性，方便书写
@@ -65,4 +72,5 @@ QXmlStreamAttributes getAttributes(CT_ColorSpace * cur_colorspace);
 QXmlStreamAttributes getAttributes(CT_DrawParam * cur_draw_param);
 QXmlStreamAttributes getAttributes(CT_Font * cur_font);
 QXmlStreamAttributes getAttributes(CT_Text * cur_text);
+QXmlStreamAttributes getAttributes(CT_MultiMedia* cur_multiMedia);
 #endif // OFD_WRITER_H

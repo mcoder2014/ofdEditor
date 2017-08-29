@@ -10,13 +10,15 @@
 
 class OFDSHARED_EXPORT Document {
 public:
-    CT_CommonData * common_data;  //文档公共数据，定义了默认页面单位、页面区域定义、公共资源等数据
-    CT_Outlines * outlines;   //大纲树
-    ST_Loc custom_tags; //指向自定义标引文件
-    ST_Loc extensions;  //指向拓展文件
-    ST_Loc annotations; //指向注释文件
-    ID_Table * id_table;          //记录所有CT_Base的ID信息
+    CT_CommonData * common_data;    //文档公共数据，定义了默认页面单位、页面区域定义、公共资源等数据
+    CT_Outlines * outlines;         //大纲树
+    ST_Loc custom_tags;             //指向自定义标引文件
+    ST_Loc extensions;              //指向拓展文件
+    ST_Loc annotations;             //指向注释文件
+    ID_Table * id_table;            //记录所有CT_Base的ID信息
     QVector<Res *> * public_res;
+    QVector<Res *> * document_res;
+
     CT_Pages *pages;
 
 
@@ -49,6 +51,8 @@ public:
         if (!_id_table)
             id_table = new ID_Table;
         else id_table = _id_table;
+
+        document_res = new QVector<Res *>();
     }
 
     CT_CommonData * getCommonData() {

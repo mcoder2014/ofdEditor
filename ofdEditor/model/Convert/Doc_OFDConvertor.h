@@ -18,6 +18,7 @@ class CT_ColorSpace;    // 颜色空间
 class Page;
 class Document;
 class CT_Layer;
+class DocImageBlock;
 
 
 /**
@@ -41,14 +42,16 @@ private:
 
     void buildDocBody();        // 生成DocBody
     void buildDocument();       // 生成Document
-    void buildPages(Document *document);          // 处理页面S
+    void buildPages(Document *document);                            // 处理页面S
 
     void buildPage(Page* ctPage,
-                   DocPage* docPage);   // 处理其中某一页
+                   DocPage* docPage);                               // 处理其中某一页
 
     void buildLayer(CT_Layer* ctLayer,
-                    DocLayer* layer);   // 将一层中的信息存储出来
-    void buildText(CT_Layer* ctLayer,DocTextBlock* textBlock);    // 将DocTextBlock中的信息转换处理
+                    DocLayer* layer);                               // 将一层中的信息存储出来
+    void buildText(CT_Layer* ctLayer,DocTextBlock* textBlock);      // 将DocTextBlock中的信息转换处理
+    void buildImage(CT_Layer* ctLayer, DocImageBlock *imageBlock);  // 处理图片
+
 
     int addFont(CT_Font* font);    // 添加字体类型到资源
     int addColorSpace(CT_ColorSpace* colorSpace);  // 添加颜色空间
@@ -60,6 +63,7 @@ private:
     DocPassage* passage;        // 文章
     OFD* ofdFile;               // OFD 对象
     Res* public_res;            // Res 公共资源文件
+    Res* document_res;          // 放图片等多媒体资源的res
     ID_Table* table;            // ID table
 
 

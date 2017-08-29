@@ -321,7 +321,14 @@ QString DocPassage::getTempSavePath()
 {
     QString temp = QDir::tempPath() + "/";      // 获得系统临时路径
     QString uuid = this->getUUID();             // 获得uuid
-    QString end = "-source";
+    QString end = "_source";
+
+    QDir dir(temp + uuid + end);
+    if(!dir.exists())
+    {
+        dir.mkpath(temp + uuid + end);
+    }
+
     return temp + uuid + end;       // 获得临时存放路径
 }
 
@@ -336,7 +343,9 @@ QString DocPassage::getTempStorePath()
 {
     QString temp = QDir::tempPath() + "/";      // 获得系统临时路径
     QString uuid = this->getUUID();             // 获得uuid
-    QString end = "-file";
+    QString end = "_file";
+
+
     return temp + uuid + end;       // 获得临时存放路径
 }
 

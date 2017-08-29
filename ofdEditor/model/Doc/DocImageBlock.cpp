@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include "DocPage.h"
 #include "Tool/UnitTool.h"
+#include <QUuid>
 
 DocImageBlock::DocImageBlock(QWidget *parent)
     :QLabel(parent)
@@ -148,6 +149,38 @@ QMenu *DocImageBlock::getMenu()
     return this->context_menu;
 }
 
+QString DocImageBlock::getFileName()
+{
+    if(this->fileName.size() == 0)
+    {
+        // 如果没有设置文件名，则随机生成文件名
+        QUuid uuid = QUuid::createUuid();   // 创建uuid
+        QString imageName = uuid.toString();    // 转换为字符串
+
+        // 去掉字符串的链接符号  {0142d46f-60b5-47cf-8310-50008cc7cb3a}
+        // 0142d46f60b547cf831050008cc7cb3a
+        imageName.remove(imageName.length()-1, 1);
+        imageName.remove(imageName.length() -13, 1);
+        imageName.remove(imageName.length() -17,1);
+        imageName.remove(imageName.length() -21, 1);
+        imageName.remove(imageName.length() - 25,1);
+        imageName.remove(0,1);
+
+        this->fileName = imageName + ".jpg";
+    }
+    return this->fileName;
+}
+
+///
+/// \brief DocImageBlock::saveImage
+///     将图片保存到指定路径
+/// \param filepath
+///
+void DocImageBlock::saveImage(QString filepath)
+{
+    this->pixmap()->save(filepath, 0, 100);
+}
+
 double DocImageBlock::getRealWidth()
 {
     return this->realWidth;
@@ -269,4 +302,21 @@ void DocImageBlock::imagePropertiesChanged(
     this->block->setPos(new_x, new_y);
     this->width_height_ratio_locked = ratio_locked;
     this->width_height_ratio = new_width / new_height;
+}
+
+void DocImageBlock::setFileName(QString fileName)
+{
+    this->fileName = fileName;
+}
+
+///
+/// \brief DocImageBlock::setImage
+///     直接用文件路径设置图片块
+/// \param filePath
+///
+void DocImageBlock::setImage(QString filePath)
+{
+    QPixmap image(filePath);
+    this->fileName = filePath.section("/", -1);     // 获取文件名部分
+    this->setImage(image);
 }
