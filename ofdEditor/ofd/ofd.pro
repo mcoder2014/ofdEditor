@@ -32,6 +32,7 @@ SOURCES += \
     Loaders/ZipTool.cpp \
     ofdexceptions.cpp \
     DataTypes/page/CT_PageBlock.cpp \
+    DataTypes/image/CT_MultiMedia.cpp
 
 HEADERS +=\
     DataTypes/basic_datatype.h \
@@ -63,6 +64,7 @@ HEADERS +=\
     DataTypes/document/CustomTags.h \
     DataTypes/document/Res.h \
     DataTypes/text/CT_Font.h \
+    DataTypes/image/CT_MultiMedia.h
 
 
 DESTDIR = ../bin     # 生成文件在这

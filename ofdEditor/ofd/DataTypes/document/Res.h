@@ -5,6 +5,7 @@
 #include "../Color/CT_ColorSpace.h"
 #include "../image/CT_DrawParam.h"
 #include "../../ofd_global.h"  // 生成库文件需要
+#include "DataTypes/image/CT_MultiMedia.h"
 
 class OFDSHARED_EXPORT Res {
     //属性
@@ -13,6 +14,7 @@ class OFDSHARED_EXPORT Res {
     QVector<CT_Font *> * fonts;
     QVector<CT_ColorSpace *> * colorspaces;
     QVector<CT_DrawParam *> * draw_params;
+    QVector<CT_MultiMedia *> multMedias;
     //Other resource collections to be implemented
 
 public:

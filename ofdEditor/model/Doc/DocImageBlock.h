@@ -57,6 +57,7 @@ private:
     QAction * set_image_properties; //更改图片的位置和尺寸
     bool width_height_ratio_locked;
     double width_height_ratio;
+    QString temp_store;
 
     void initMenu();                // 初始化右键菜单
 
