@@ -25,6 +25,7 @@ void OFDWriter::createFile()
     qDebug() << current_path.getPath() << endl;
     if (!current_file->open(QFile::WriteOnly | QFile::Text))
     {
+        qDebug() << "can't open or write file";
         throw WritingFileException("无法打开或创建XML文件: " + current_path.getPath());
     }
     writer.setDevice(current_file);
@@ -200,6 +201,12 @@ void OFDWriter::writeDocument(Document * data)
             ST_Loc p = data->getCommonData()->getPublicRes()->at(i);
             writer.writeTextElement("ofd:PublicRes", p.getRelativePath());
         }
+
+        for(int i = 0; i < data->getCommonData()->document_res->size(); i++)
+        {
+            ST_Loc p = data->getCommonData()->document_res->operator [](i);
+            writer.writeTextElement("ofd:DocumentRes", p.getRelativePath());
+        }
         //TemplatePage & DefaultCS to be implemented
         writer.writeEndElement();   //ofd:CommonData
     }
@@ -360,14 +367,14 @@ void OFDWriter::writeRes(Res * data)
         writer.writeAttribute("BaseLoc", data->getBaseLoc().getRelativePath());
 
         resFloderPath = current_path.getPath().left(current_path.getPath().lastIndexOf('/') + 1)
-                + data->getBaseLoc().getPath(); // 获得绝对路径
+                + data->getBaseLoc().getPath() + "/"; // 获得绝对路径
         qDebug() << "Res "<< resFloderPath;
 
         if(!QDir(resFloderPath).exists())
         {
             this->makePath(ST_Loc(resFloderPath,
                                   resFloderPath,
-                                  resFloderPath));
+                                  ""));
         }
     }
     else
@@ -431,6 +438,10 @@ void OFDWriter::writeRes(Res * data)
             CT_MultiMedia* multMedia = data->getMultiMedia()->operator [](i);
             writer.writeStartElement("ofd:MultiMedia");
             writeMultiMedia(multMedia);
+            writer.writeStartElement("ofd:MediaFile");
+            writer.writeCharacters(multMedia->MediaFile);
+            writer.writeEndElement();   // mediafile
+
             writer.writeEndElement();   // ofd:MultiMedia
             qDebug() << this->tempPath + "/" + multMedia->MediaFile;
             qDebug() << current_path.getPath().left(current_path.getPath().lastIndexOf('/') + 1)
@@ -902,10 +913,13 @@ QXmlStreamAttributes getAttributes(CT_Image * cur_image)
     {
         qDebug("CT_Image类型数据缺少必要的属性ResourceID");
     }
+
     if (!cur_image->getSubstitution().isNull())
     {
         a.append("Substitution", QString::number(cur_image->getSubstitution().getRefID()));
     }
+
+    return a;
 }
 
 QXmlStreamAttributes getAttributes(CT_ColorSpace * cur_colorspace)
@@ -1034,10 +1048,10 @@ QXmlStreamAttributes getAttributes(CT_MultiMedia *cur_multiMedia)
         a.append("Type" ,cur_multiMedia->Type);
     }
 
-    if(cur_multiMedia->MediaFile.size() != 0)
-    {
-        a.append("MediaFile",cur_multiMedia->MediaFile);
-    }
+//    if(cur_multiMedia->MediaFile.size() != 0)
+//    {
+//        a.append("MediaFile",cur_multiMedia->MediaFile);
+//    }
 
     return a;
 }

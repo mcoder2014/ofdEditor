@@ -72,5 +72,6 @@ QXmlStreamAttributes getAttributes(CT_ColorSpace * cur_colorspace);
 QXmlStreamAttributes getAttributes(CT_DrawParam * cur_draw_param);
 QXmlStreamAttributes getAttributes(CT_Font * cur_font);
 QXmlStreamAttributes getAttributes(CT_Text * cur_text);
+QXmlStreamAttributes getAttributes(CT_Image * cur_image);
 QXmlStreamAttributes getAttributes(CT_MultiMedia* cur_multiMedia);
 #endif // OFD_WRITER_H

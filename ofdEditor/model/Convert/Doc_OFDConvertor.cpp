@@ -490,6 +490,7 @@ void Doc_OFDConvertor::buildImage(CT_Layer *ctLayer, DocImageBlock *imageBlock)
                       this->table);
     ctimage->setID(this->table->size() + 1,
                    this->table);
+    ctimage->setResourceID(multiMedia->getID().getID(), this->table);
 
     // 设置多媒体引用的标签
     multiMedia->Format = "Image";
