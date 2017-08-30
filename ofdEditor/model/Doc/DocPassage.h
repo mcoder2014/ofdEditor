@@ -56,6 +56,7 @@ public:
     DocPage* getLastedActivedPage();        // Get last actived page
     int getLastedActivedPageIndex();        // Get the id of last actived page
     int getPageIndex(DocPage* page);        // 获得页面的序号
+    int pageCount(){return this->pages.size();} // 共有多少页面
 
     bool isNeedSave(){return  this->isEdited;}  // 文档是否被修改，需要保存吗
 

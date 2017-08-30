@@ -12,6 +12,10 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QDebug>
+#include <QPrintDialog>
+#include <QAbstractPrintDialog>
+#include <QPrinter>
+#include <QPainter>
 
 #include <QPalette>
 #include <QTextBlockFormat>
@@ -520,6 +524,10 @@ void PassageMainWindow::connectAction()
     connect(this->saveAsAction, SIGNAL(triggered(bool)),
             this,SLOT(saveFileAs()));
 
+    // 打印文章
+    connect(this->printAction, SIGNAL(triggered(bool)),
+            this, SLOT(printPassage()));
+
     connect(this->attributeAction, SIGNAL(triggered(bool)),
             this->connector, SLOT(showAttribute()));        // 显示文档属性
 
@@ -640,6 +648,57 @@ void PassageMainWindow::underline()
     if(this->textBlock != NULL)
     {
         this->textBlock->textUnderline();   // 下划线
+    }
+}
+
+///
+/// \brief PassageMainWindow::printPassage
+///     弹出打印机设置
+///
+void PassageMainWindow::printPassage()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog printDialog(&printer, this);
+
+    printDialog.setOptions(QAbstractPrintDialog::PrintToFile
+                          | QAbstractPrintDialog::PrintSelection
+                          | QAbstractPrintDialog::PrintPageRange
+                          | QAbstractPrintDialog::PrintShowPageSize
+                          | QAbstractPrintDialog::PrintCollateCopies
+                          | QAbstractPrintDialog::PrintCurrentPage);
+
+    DocPassage* passage = this->activedPassage();
+    printDialog.setMinMax(1,passage->pageCount());
+
+    if(printDialog.exec() == QDialog::Accepted)
+    {
+        // 接受打印机设置 -- 全部打印
+        printer.setPageSize(QPrinter::A4);
+        QPainter painterPixmap;
+        painterPixmap.begin(&printer);
+
+        for(int i =0; i < passage->pageCount(); i++)
+        {
+            QPixmap pixmap = QPixmap::grabWidget(
+                        passage->getPage(i));
+
+            // 调整比例
+            QRect rect = painterPixmap.viewport();
+            QSize size = passage->getPage(i)->size();
+            size.scale(rect.size(), Qt::KeepAspectRatio);     //此处保证图片显示完整
+            painterPixmap.setViewport(rect.x(), rect.y(),
+                                size.width(), size.height());
+            painterPixmap.setWindow(passage->getPage(i)->rect());
+            painterPixmap.drawPixmap(0,0,pixmap);
+
+            // 防止多增加一页
+            if(i != passage->pageCount() - 1)
+                printer.newPage();
+
+        }
+
+        painterPixmap.end();
+
     }
 }
 

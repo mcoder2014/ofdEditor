@@ -950,12 +950,11 @@ void DocTextBlock::initNotUseInSun()
  */
 void DocTextBlock::initFormat()
 {
-    QTextCursor cursor = this->textCursor();            // 获得当前光标
-
-    QTextCharFormat charFormat = cursor.charFormat();   // 字符格式
-    charFormat.setVerticalAlignment(QTextCharFormat::AlignMiddle);
-
-    this->mergeCurrentCharFormat(charFormat);
+    this->document()->setDocumentMargin(0);     // 清空文档的边界
+    QTextFrameFormat frameFormat = this->document()->rootFrame()->frameFormat();
+    frameFormat.setMargin(0);       // 设置边缘
+    frameFormat.setPadding(0);      // 设置留白
+    this->document()->rootFrame()->setFrameFormat(frameFormat);     // 设置格式
 
 }
 

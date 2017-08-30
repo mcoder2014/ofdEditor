@@ -30,6 +30,7 @@ public:
     DocPage* getPage();                     // 找到层所在的Page
     DocPassage *getPassage();               // 找到文章
     bool hasBlock(DocBlock* block);         // 判断是否包含这个块
+    int size(){return this->blocks.size();} // 判断层中包含多少个块
 
 public slots:
 
@@ -39,10 +40,8 @@ void removeBlock(DocBlock* block);  // 移除Block
 void setLayer(DocPage::Layer layer){this->type = layer;}
 void setPage(DocPage* page);        // 设置page
 
-
 private:
     QVector<DocBlock* > blocks;         // 块    -文字块图形块的父类
-    QVector<DocTable* > tables;         // 表格
 
     DocPage::Layer type;                // 共三层
     DocPage* parent;                    // 表明此层是哪一个页面的

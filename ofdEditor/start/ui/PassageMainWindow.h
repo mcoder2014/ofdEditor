@@ -53,6 +53,8 @@ public slots:
     void Italic();              // 斜体事件
     void underline();           // 下划线事件
 
+    void printPassage();        // 打印文章
+
     void zoomIn();              // 放大
     void zooomOut();            // 缩小
 

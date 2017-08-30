@@ -919,6 +919,15 @@ QXmlStreamAttributes getAttributes(CT_Image * cur_image)
         a.append("Substitution", QString::number(cur_image->getSubstitution().getRefID()));
     }
 
+    // 图片对象似乎需要插入CTM
+    double width = cur_image->boundary.getDeltaX();
+    double height = cur_image->boundary.getDeltaY();
+
+    a.append(
+                "CTM",
+                QString::number(width) + " 0 0 "
+                +QString::number(height) + " 0 0");
+
     return a;
 }
 

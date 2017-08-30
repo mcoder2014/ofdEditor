@@ -203,28 +203,37 @@ void Doc_OFDConvertor::buildPage(Page *ctPage, DocPage *docPage)
 
     // 分成多个层，对每个层进行处理
     DocLayer* foreground = docPage->getForegroundLayer();   // 获得前景层
-    CT_Layer* foreLayer = new CT_Layer();                   // 处理前景层
-    foreLayer->setType("Foreground");                       // 设置类型
-    foreLayer->setID(this->table->size()+1,this->table);    // 设置ID
-    layers->append(foreLayer);                               // 加入到Page中
-    this->buildLayer(foreLayer,foreground);                 // 处理该层的信息
-
+    if(foreground->size() > 0)
+    {
+        CT_Layer* foreLayer = new CT_Layer();                   // 处理前景层
+        foreLayer->setType("Foreground");                       // 设置类型
+        foreLayer->setID(this->table->size()+1,this->table);    // 设置ID
+        layers->append(foreLayer);                               // 加入到Page中
+        this->buildLayer(foreLayer,foreground);                 // 处理该层的信息
+    }
 
     // 处理正文层
     DocLayer* body = docPage->getBodyLayer();
-    CT_Layer* bodyLayer = new CT_Layer();
-    bodyLayer->setType("Body");
-    bodyLayer->setID(this->table->size()+1,this->table);
-    layers->append(bodyLayer);
-    this->buildLayer(bodyLayer,body);
+    if(body->size() > 0)
+    {
+        CT_Layer* bodyLayer = new CT_Layer();
+        bodyLayer->setType("Body");
+        bodyLayer->setID(this->table->size()+1,this->table);
+        layers->append(bodyLayer);
+        this->buildLayer(bodyLayer,body);
+    }
+
 
     // 背景层
     DocLayer* background = docPage->getBackgroundLayer();
-    CT_Layer* backLayer = new CT_Layer();
-    backLayer->setType("Background");
-    backLayer->setID(this->table->size()+1,this->table);
-    layers->append(backLayer);
-    this->buildLayer(backLayer,background);
+    if(background->size() > 0)
+    {
+        CT_Layer* backLayer = new CT_Layer();
+        backLayer->setType("Background");
+        backLayer->setID(this->table->size()+1,this->table);
+        layers->append(backLayer);
+        this->buildLayer(backLayer,background);
+    }
 
     qDebug() << "build page Finished";
 
@@ -291,14 +300,12 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
 
     cursor.movePosition(QTextCursor::Start);    // 移动到文章开头
 
-
-
-    QString lineContent;        // 行内容
-    QString lineContent_backup;        // 当前行内容备份
-    int pixelContent = 0;       // 当前行已经使用的像素长度
-    int pixelContHeight = 0;    // 当前行的最大高度
-    int pixelLine = 0;          // 当前纵向已经进入的深度
-    QString tempFragment;      // 块
+    QString lineContent;                // 行内容
+    QString lineContent_backup;         // 当前行内容备份
+    int pixelContent = 0;               // 当前行已经使用的像素长度
+    int pixelContHeight = 0;            // 当前行的最大高度
+    int pixelLine = 0;                  // 当前纵向已经进入的深度
+    QString tempFragment;               // 块
     QTextFragment fragment;     // 短句
 
     // lineCount记录当前处理到的行数，第一行从0开始算起
@@ -381,7 +388,7 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
                          << " pixelHeight:" << pixelHeight;
             }
 
-            CT_Text* ct_text = new CT_Text();
+            CT_Text* ct_text = new CT_Text();                       // 新建文本块
             ct_text->setID(this->table->size() +1 ,this->table);    // 设置ID
             ctLayer->getTextObject()->append(ct_text);              // 加入到layer
 
@@ -486,15 +493,15 @@ void Doc_OFDConvertor::buildImage(CT_Layer *ctLayer, DocImageBlock *imageBlock)
     // 新建所需的对象，设置ID
     CT_Image *ctimage = new CT_Image();                 // iamgeobject
     CT_MultiMedia *multiMedia = new CT_MultiMedia();    // 多媒体
-    multiMedia->setID(this->table->size() + 1,
-                      this->table);
     ctimage->setID(this->table->size() + 1,
                    this->table);
+    multiMedia->setID(this->table->size() + 1,
+                      this->table);
     ctimage->setResourceID(multiMedia->getID().getID(), this->table);
 
     // 设置多媒体引用的标签
-    multiMedia->Format = "Image";
-    multiMedia->Type = "Jpeg";
+    multiMedia->Format = "";
+    multiMedia->Type = "Image";
     multiMedia->MediaFile = imageBlock->getFileName();
 
     // 将图片存储到临时文件夹去

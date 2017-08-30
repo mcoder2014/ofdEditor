@@ -31,20 +31,6 @@ DocLayer::~DocLayer()
     }
     this->blocks.clear();
 
-    // 释放表格
-    int tables_length = this->tables.size();
-    for(int i = 0; i < tables_length; i++)
-    {
-        // 挨个释放表格的空间
-        DocTable* temp = this->tables.at(i);
-        if(temp != NULL)
-        {
-            delete temp;
-            (this->tables)[i]=NULL;
-        }
-    }
-    this->tables.clear();
-
 }
 
 /**
