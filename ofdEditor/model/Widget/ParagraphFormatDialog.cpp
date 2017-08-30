@@ -2,6 +2,7 @@
 #include "ui_ParagraphFormatDialog.h"
 
 #include "Doc/DocTextBlock.h"
+#include <QDebug>
 
 ParagraphFormatDialog* ParagraphFormatDialog::m_instance = NULL;    // 初始化静态单例
 
@@ -223,6 +224,10 @@ void ParagraphFormatDialog::init(const QTextBlockFormat &blockFormat)
     // 行高值
     double lineHeightValue = blockFormat.lineHeight();
     ui->doubleLineHight->setValue(lineHeightValue);
+
+    qDebug() << "LineHeightType" << lineHeightTypes
+             << "Value" << lineHeightValue;
+
 
 }
 

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "model_global.h"
+#include <QTextBlock>
 
 class DocPassage;       // 文章
 class DocPage;          // 页
@@ -48,9 +49,18 @@ private:
                    DocPage* docPage);                               // 处理其中某一页
 
     void buildLayer(CT_Layer* ctLayer,
-                    DocLayer* layer);                               // 将一层中的信息存储出来
-    void buildText(CT_Layer* ctLayer,DocTextBlock* textBlock);      // 将DocTextBlock中的信息转换处理
-    void buildImage(CT_Layer* ctLayer, DocImageBlock *imageBlock);  // 处理图片
+                    DocLayer* layer);                                   // 将一层中的信息存储出来
+    void buildText(CT_Layer* ctLayer, DocTextBlock* textBlock);         // 将DocTextBlock中的信息转换处理
+    void buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBlock);   // 处理文本块，方案二
+    void buildQTextBlock(
+            CT_Layer *ctlayer,
+            QTextBlock *textBlock,
+            double pos_x,
+            double pos_y,
+            double width,
+            double height);     // 处理一个 QTextBlock
+    void buildImage(CT_Layer* ctLayer, DocImageBlock *imageBlock);      // 处理图片
+
 
 
     int addFont(CT_Font* font);    // 添加字体类型到资源
@@ -58,6 +68,7 @@ private:
 
     int checkFont(CT_Font* font);  // 检查publicRes中是否存在该字体
     int checkColorSpace(CT_ColorSpace* colorSpace);    // 检查是否存在该颜色空间
+
 
 private:
     DocPassage* passage;        // 文章

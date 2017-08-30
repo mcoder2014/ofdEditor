@@ -263,6 +263,7 @@ void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
         {
             // 进入文字框处理模式
             this->buildText(ctLayer, block->getTextBlock());
+            this->buildTextBlock(ctLayer, block->getTextBlock());
         }
 
         // 如果是图片对象
@@ -270,6 +271,12 @@ void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
         {
             // 将图片移动到资源文件夹，存下路径再结束
             this->buildImage(ctLayer, block->getImageBlock());
+        }
+
+        // 如果是表格文件
+        if(block->isTableBlock())
+        {
+            // 除了保存文字，还要画线
         }
     }
 
@@ -467,7 +474,7 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
                             + QString::number(
                                 UnitTool::pixelToMM(
                                     metrics.boundingRect(
-                                        nextEditContent.operator [](delta_x)).width()));
+                                        nextEditContent.mid(delta_x,1)).width()));
                 }
                 textCode->setDeltaX(delta_x_str);
             }
@@ -480,6 +487,138 @@ void Doc_OFDConvertor::buildText(CT_Layer* ctLayer,DocTextBlock *textBlock)
         cursor.movePosition(QTextCursor::NextBlock);        //
     }
     //// 将文本框按照 格式和行进行拆分
+
+}
+
+///
+/// \brief Doc_OFDConvertor::buildTextBlock
+/// \param CT_Layer
+/// \param textBlock
+///     处理 DocTextBlock 实际相当于计算 QTextEdit中的文本的位置大小
+///
+void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBlock)
+{
+    DocBlock *block = textBlock->getBlock();        // 获得Block可以获得文本块的总大小
+    double block_pos_x = block->x();
+    double block_pos_y = block->y();
+    double block_width = block->size().width();
+    double block_height = block->size().height();
+
+    int lineCount = 0;                              // 用来计算共有多少行
+    textBlock->moveCursor(QTextCursor::Start);      // 将鼠标移动到文档开始
+    QTextCursor cursor = textBlock->textCursor();   // 光标
+
+    // 计算每行的文字的最大高度
+    QVector<int> lineHeight_Font;                 // 每个字体的实际高度
+    QVector<int> lineHeight_Real;                 // 经过段落格式后的高度
+
+    QVector<int> end_of_line_pos;                   // 纪录每一行结尾的地方
+    QVector<int> start_of_fragment;                 // 每一个QTextFragment开始的位置
+
+    QTextBlock::iterator it_fragment = cursor.block().begin();
+
+    QString tempFragment;
+    // 一行一行的进行遍历
+    while(!cursor.atEnd())
+    {
+        lineCount ++;
+        cursor.movePosition(QTextCursor::EndOfLine);    // 移动到当前行尾，纪录位置
+        end_of_line_pos.push_back(cursor.position());   // 将该行的结尾位置发出来
+        cursor.movePosition(QTextCursor::Right);
+
+        // 先用每块的字体初始化一下 lineHeight_Font
+        QTextCharFormat charFormat = cursor.charFormat();
+        QFontMetrics fontMetrics(charFormat.font());
+
+        lineHeight_Font.push_back(
+                    fontMetrics.ascent() + fontMetrics.descent() + fontMetrics.leading() + 1);
+    }
+
+    QTextFrame::iterator  it = textBlock->document()->rootFrame()->begin();     // 遍历rootFrame
+    while (!it.atEnd())
+    {
+        // QTextBlock
+        QTextBlock  block = it.currentBlock();  // 当前block
+        qDebug() << "block "<< block.text();
+        QTextBlock::iterator block_it = block.begin();
+        while(!block_it.atEnd())
+        {
+            // 没有到结尾
+            QTextFragment fragment = block_it.fragment();
+            start_of_fragment.push_back(fragment.position());
+
+            // 判断 fragment 影响哪几行的高度
+            int lineHeight_fragment = 0;
+            QFontMetricsF fontMetrics(fragment.charFormat().font());
+            lineHeight_fragment = fontMetrics.ascent() + fontMetrics.descent() + fontMetrics.leading() + 1;
+
+            // 利用快的起点和重点，判断影响了哪几行
+            int start_pos = fragment.position();
+            int end_pos = fragment.position() + fragment.length();
+            int start_line = 0;
+            int end_line = 0;
+
+            for(int line = 0; line < end_of_line_pos.size(); line ++)
+            {
+                if(start_pos > end_of_line_pos[line])
+                {
+                    start_line = line + 1;
+                }
+
+                if(end_pos < end_of_line_pos[line])
+                {
+                    end_line = line;
+                    break;
+                }
+            }
+            qDebug() << "fragment pos"<<fragment.position()
+                     << start_line << end_line;
+
+            for(int line = start_line; line < end_line; line ++)
+            {
+                if(lineHeight_fragment > lineHeight_Font[line])
+                {
+                    lineHeight_Font[line] = lineHeight_fragment;
+                }
+            }
+
+            block_it ++;
+        }           // 遍历fragment
+        it ++;
+    }               // 遍历block
+
+    // 遍历每行，根据行高规则计算行高
+    for(int line = 0 ; line < end_of_line_pos.size(); line ++)
+    {
+
+    }
+
+    qDebug() << "lineCount" << lineCount << endl
+             << "end of line" << end_of_line_pos    << endl
+             << " start of fragements" << start_of_fragment << endl
+             << "line height font" << lineHeight_Font << endl;
+
+
+}
+
+///
+/// \brief Doc_OFDConvertor::buildQTextBlock
+/// \param ctlayer
+/// \param textBlock
+/// \param pos_x
+/// \param pos_y
+/// \param width
+/// \param height
+///     使用提供的大小做为QTextBlock的大小进行处理文本
+///
+void Doc_OFDConvertor::buildQTextBlock(
+        CT_Layer *ctlayer,
+        QTextBlock *textBlock,
+        double pos_x,
+        double pos_y,
+        double width,
+        double height)
+{
 
 }
 
