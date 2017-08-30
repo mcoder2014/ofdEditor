@@ -540,10 +540,11 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
         // QTextBlock
         QTextBlock  block = it.currentBlock();  // 当前block
         qDebug() << "block "<< block.text();
+
         QTextBlock::iterator block_it = block.begin();
         while(!block_it.atEnd())
         {
-            // 没有到结尾
+            // 遍历QTextFragment
             QTextFragment fragment = block_it.fragment();
             start_of_fragment.push_back(fragment.position());
 
@@ -572,9 +573,9 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
                 }
             }
             qDebug() << "fragment pos"<<fragment.position()
-                     << start_line << end_line;
+                     << start_line << end_line << lineHeight_fragment << fragment.text();
 
-            for(int line = start_line; line < end_line; line ++)
+            for(int line = start_line; line <= end_line; line ++)
             {
                 if(lineHeight_fragment > lineHeight_Font[line])
                 {
@@ -587,16 +588,53 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
         it ++;
     }               // 遍历block
 
+    lineHeight_Real = lineHeight_Font;      // 复制内容
+
     // 遍历每行，根据行高规则计算行高
     for(int line = 0 ; line < end_of_line_pos.size(); line ++)
     {
+        cursor.setPosition(end_of_line_pos[line]);
+        QTextBlockFormat blockFormat = cursor.blockFormat();
 
+        int lineHeightType = blockFormat.lineHeightType();
+        int lineHeightValue = blockFormat.lineHeight();
+
+        switch (lineHeightType)
+        {
+        case QTextBlockFormat::SingleHeight:
+            // 单倍行距不用改
+            break;
+        case QTextBlockFormat::MinimumHeight:
+            // 最小值
+            if(lineHeight_Font[line] < lineHeightValue)
+            {
+                lineHeight_Real[line] = lineHeightValue;
+            }
+            else
+            {
+                lineHeight_Real[line] = lineHeight_Font[line];
+            }
+            break;
+        case QTextBlockFormat::FixedHeight:
+            // 固定值
+            lineHeight_Real[line] = lineHeightValue;
+            break;
+        case QTextBlockFormat::ProportionalHeight:
+            // 多倍行距
+            lineHeight_Real[line] = (int)(1.0 * lineHeightValue / 100 * lineHeight_Font[line]);
+            break;
+        default:
+            break;
+        }
     }
 
     qDebug() << "lineCount" << lineCount << endl
              << "end of line" << end_of_line_pos    << endl
              << " start of fragements" << start_of_fragment << endl
-             << "line height font" << lineHeight_Font << endl;
+             << "line height font" << lineHeight_Font << endl
+             << "line height real" << lineHeight_Real << endl;
+
+    // ---------------- 行高计算完毕，下面应该做啥子
 
 
 }
