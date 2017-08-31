@@ -35,6 +35,10 @@ public:
     explicit Doc_OFDConvertor(QObject *parent = 0);
     OFD *doc_to_ofd(DocPassage* passage);           // 执行程序入口
 
+
+    int addFont(CT_Font* font);    // 添加字体类型到资源
+    int addColorSpace(CT_ColorSpace* colorSpace);  // 添加颜色空间
+
 signals:
 
 public slots:
@@ -63,8 +67,6 @@ private:
 
 
 
-    int addFont(CT_Font* font);    // 添加字体类型到资源
-    int addColorSpace(CT_ColorSpace* colorSpace);  // 添加颜色空间
 
     int checkFont(CT_Font* font);  // 检查publicRes中是否存在该字体
     int checkColorSpace(CT_ColorSpace* colorSpace);    // 检查是否存在该颜色空间
