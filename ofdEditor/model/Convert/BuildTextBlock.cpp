@@ -516,6 +516,7 @@ double BuildTextBlock::buildSmall_cttext(
 //        break;
     }
 
+    qDebug() <<"build small cttext " <<content;
     return width;
 }
 
