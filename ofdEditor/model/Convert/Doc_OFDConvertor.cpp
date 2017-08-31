@@ -513,17 +513,19 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
     QVector<int> lineHeight_Real;                 // 经过段落格式后的高度
 
     QVector<int> end_of_line_pos;                   // 纪录每一行结尾的地方
+    QVector<int> start_of_line_Pos;                  // 记录每行开始的位置
     QVector<int> start_of_fragment;                 // 每一个QTextFragment开始的位置
 
-    QTextBlock::iterator it_fragment = cursor.block().begin();
-
-    QString tempFragment;
-    // 一行一行的进行遍历
+    // 一行一行的进行遍历-记录每行的开始位置和行数
     while(!cursor.atEnd())
     {
         lineCount ++;
+        cursor.movePosition(QTextCursor::StartOfLine);  // 移动到每行开始的位置
+        start_of_line_Pos.push_back(cursor.position());
+
         cursor.movePosition(QTextCursor::EndOfLine);    // 移动到当前行尾，纪录位置
         end_of_line_pos.push_back(cursor.position());   // 将该行的结尾位置发出来
+
         cursor.movePosition(QTextCursor::Right);
 
         // 先用每块的字体初始化一下 lineHeight_Font
@@ -531,9 +533,13 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
         QFontMetrics fontMetrics(charFormat.font());
 
         lineHeight_Font.push_back(
-                    fontMetrics.ascent() + fontMetrics.descent() + fontMetrics.leading() + 1);
+                    fontMetrics.ascent()
+                    + fontMetrics.descent()
+                    + fontMetrics.leading() + 1);
+
     }
 
+    // 计算每行的行高----------------------------------------------
     QTextFrame::iterator  it = textBlock->document()->rootFrame()->begin();     // 遍历rootFrame
     while (!it.atEnd())
     {
@@ -588,6 +594,7 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
         it ++;
     }               // 遍历block
 
+    // 结合行高策略，计算每行的行高---------------------------------------------
     lineHeight_Real = lineHeight_Font;      // 复制内容
 
     // 遍历每行，根据行高规则计算行高
@@ -634,7 +641,27 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
              << "line height font" << lineHeight_Font << endl
              << "line height real" << lineHeight_Real << endl;
 
-    // ---------------- 行高计算完毕，下面应该做啥子
+    double current_height = 0;
+    QTextFrame::iterator it_block = textBlock->document()->rootFrame()->begin();        // 遍历block
+    while(!it_block.atEnd())
+    {
+        QTextBlock block = it_block.currentBlock();         // 遍历block
+        QTextBlockFormat blockFormat = block.blockFormat(); // 当前的blockFormat
+
+        if(block != textBlock->document()->firstBlock())
+        {
+            // 如果不是第一个块，要加上上一个块的段前和这一个段的段后
+            double last_bottom_margin = block.previous().blockFormat().bottomMargin()+0.5;
+            double this_top_margin = block.blockFormat().topMargin()+0.5;
+            current_height = current_height + last_bottom_margin + this_top_margin;
+        }
+
+        double current_x_start = blockFormat.indent() * textBlock->document()->indentWidth();
+
+        cursor.setPosition(block.position());       // 将光标移动到块开始的地方
+
+    }
+
 
 
 }
