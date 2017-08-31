@@ -55,7 +55,8 @@ SOURCES += model.cpp \
     Core/GlobalSetting.cpp \
     Widget/InsertPageDialog.cpp \
     Widget/TableSettingDialog.cpp \
-    Widget/BlockSizeAndPosSettingDialog.cpp
+    Widget/BlockSizeAndPosSettingDialog.cpp \
+    Convert/BuildTextBlock.cpp
 
 HEADERS += model.h\
         model_global.h \
@@ -90,7 +91,8 @@ HEADERS += model.h\
     Widget/DocInfoDialog.h \
     Widget/InsertPageDialog.h \
     Widget/TableSettingDialog.h \
-    Widget/BlockSizeAndPosSettingDialog.h
+    Widget/BlockSizeAndPosSettingDialog.h \
+    Convert/BuildTextBlock.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

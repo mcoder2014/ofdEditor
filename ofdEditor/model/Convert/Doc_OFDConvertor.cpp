@@ -5,6 +5,7 @@
 #include "Doc/DocTextBlock.h"
 #include "Doc/DocLayer.h"
 #include "Doc/DocImageBlock.h"
+#include "Convert/BuildTextBlock.h"
 
 #include <QVector>
 #include <QTextCursor>
@@ -262,8 +263,14 @@ void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
         if(block->isTextBlock())
         {
             // 进入文字框处理模式
-            this->buildText(ctLayer, block->getTextBlock());
-            this->buildTextBlock(ctLayer, block->getTextBlock());
+//            this->buildText(ctLayer, block->getTextBlock());
+//            this->buildTextBlock(ctLayer, block->getTextBlock());
+            BuildTextBlock buildTextBlock;
+            buildTextBlock.buildText(
+                        block->getTextBlock(),
+                        ctLayer,
+                        this->table,
+                        this);
         }
 
         // 如果是图片对象
@@ -504,6 +511,9 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
     double block_width = block->size().width();
     double block_height = block->size().height();
 
+    qDebug() << "block boundary"
+             << block_pos_x << block_pos_y << block_width << block_height;
+
     int lineCount = 0;                              // 用来计算共有多少行
     textBlock->moveCursor(QTextCursor::Start);      // 将鼠标移动到文档开始
     QTextCursor cursor = textBlock->textCursor();   // 光标
@@ -641,13 +651,17 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
              << "line height font" << lineHeight_Font << endl
              << "line height real" << lineHeight_Real << endl;
 
-    double current_height = 0;
+    // 处理-----------------------------------------------------------------------------------
+
+    double current_height = 0;          // 当前左上角的位置
+    int current_line = -1;               // 用来标记当前处理到了第几行
     QTextFrame::iterator it_block = textBlock->document()->rootFrame()->begin();        // 遍历block
     while(!it_block.atEnd())
     {
         QTextBlock block = it_block.currentBlock();         // 遍历block
         QTextBlockFormat blockFormat = block.blockFormat(); // 当前的blockFormat
 
+        // 处理段前段后的问题
         if(block != textBlock->document()->firstBlock())
         {
             // 如果不是第一个块，要加上上一个块的段前和这一个段的段后
@@ -656,10 +670,290 @@ void Doc_OFDConvertor::buildTextBlock(CT_Layer *CT_Layer, DocTextBlock *textBloc
             current_height = current_height + last_bottom_margin + this_top_margin;
         }
 
-        double current_x_start = blockFormat.indent() * textBlock->document()->indentWidth();
+        if(block.text().size() ==0)
+        {
+            // 因为如果是空行的话，则没有QTextFragment
+            current_height = current_height + lineHeight_Real[current_line];
+            current_line ++;        // 行数 +1
+            it_block ++;            // 进入下一个块
+            continue;
+        }
 
-        cursor.setPosition(block.position());       // 将光标移动到块开始的地方
+        // 计算每行的文本宽度 然后根据对齐的规则，可以获得每个字符的额外间距
+        //--------------------------------------------------------
+        QVector<double> block_line_content_width;       // 每行的不计算布局的纯文本的宽度
+        QVector<int >block_line_content_count;          // 每行的文字的数量
+        {
+            QString lineContent;        // 行内容
+            QString lineContent_backup; // 行内容备份
+            QString tempFragment;
+            QTextFragment fragment;
+            QTextCursor tempCursor = textBlock->textCursor();
 
+            QTextBlock::iterator iter = block.begin();
+
+            while(!iter.atEnd()
+                  || lineContent.size() != 0
+                  || tempFragment.size() != 0)
+            {
+                if(tempFragment.size() == 0 && !iter.atEnd())
+                {
+                    // 如果处理字段为空了
+                    fragment = iter.fragment();     // 获得新的字段
+                    tempFragment = fragment.text(); // 留存内容
+                    iter ++;
+                }
+                else if(tempFragment.size() == 0 && iter.atEnd())
+                {
+                    break;
+                }
+
+                if(lineContent.size() == 0)
+                {
+                    // 如果当前行处理完了
+                    tempCursor.select(QTextCursor::LineUnderCursor);    // 选择当前行
+                    lineContent = tempCursor.selectedText();
+                    lineContent_backup = lineContent;
+
+                    block_line_content_width.push_back(0);
+                    block_line_content_count.push_back(lineContent.size());
+
+                }
+
+                QString nextEditContent;    // 即将处理的字段
+
+                // 处理当前fragment
+                if(tempFragment.size() < lineContent.size())
+                {
+                    // 当前小块的长度没有达到行的长度
+                    lineContent.remove(0, tempFragment.length());
+                    qDebug() << " tempFragment "<< tempFragment ;
+
+                    nextEditContent = tempFragment;
+                    tempFragment.remove(0,tempFragment.size());
+
+                }
+                else if(tempFragment.size() >= lineContent.size())
+                {
+                    // 当前块跨越了好几行
+                   tempFragment.remove(0,lineContent.size());
+                   qDebug() << "use remaind lineContent: "<< lineContent;
+
+                   nextEditContent = lineContent;
+                   lineContent.remove(0,lineContent.size());
+
+                }
+
+                QFontMetricsF fontMetrics(fragment.charFormat().font());
+                double width = fontMetrics.boundingRect(nextEditContent).width();
+                block_line_content_width[block_line_content_width.size() - 1 ] =
+                        block_line_content_width[block_line_content_width.size() - 1 ]  + width;
+
+            }
+
+        }
+
+        qDebug() << "blockLine Width" << block_line_content_width;
+        QVector<double > block_line_space = block_line_content_width;           // 每行空白的位置
+        QVector<double > block_line_word_space = block_line_content_width;      // 每行中空白位置除以每行中每个字的位置
+
+        for(int i = 0; i < block_line_space.size(); i++)
+        {
+            block_line_space[i] =  block_width - block_line_content_width[i];
+            block_line_word_space[i] = (block_width - block_line_content_width[i]) / (block_line_content_count[i] - 1);
+        }
+
+        // 处理一般化的块的问题
+        double block_indent = blockFormat.indent() * textBlock->document()->indentWidth();   // 整体缩进
+
+        // 解析文本内容
+        //--------------------------------------------------------
+        {
+            QString lineContent;        // 行内容
+            QString lineContent_backup; // 行内容备份
+            int blockLineCount = -1;
+            QString tempFragment;
+            QTextFragment fragment;
+            QTextCursor tempCursor = textBlock->textCursor();
+            QTextBlock::iterator iter = block.begin();
+            bool blockFirstLine = true;
+            double current_x = 0;               // 填充字符的x值
+            current_x = blockFormat.textIndent();   // 初始化为首行缩进
+
+            while(!iter.atEnd()
+                  || lineContent.size() != 0
+                  || tempFragment.size() != 0)
+            {
+                if(tempFragment.size() == 0 && !iter.atEnd())
+                {
+                    // 如果处理字段为空了
+                    fragment = iter.fragment();     // 获得新的字段
+                    tempFragment = fragment.text(); // 留存内容
+                    iter ++;
+                }
+                else if(tempFragment.size() == 0 && iter.atEnd())
+                    break;
+
+                if(lineContent.size() == 0)
+                {
+                    // 如果当前行处理完了
+                    tempCursor.select(QTextCursor::LineUnderCursor);    // 选择当前行
+                    lineContent = tempCursor.selectedText();
+                    lineContent_backup = lineContent;
+                    block_line_content_width.push_back(0);
+
+                    // 每到新的一行，设置开始文字位置
+                    switch(blockFormat.alignment())
+                    {
+                    case Qt::AlignLeft:
+                        current_x = block_indent;
+                        break;
+                    case Qt::AlignRight:
+                        current_x = block_indent + block_line_space[blockLineCount];
+                        break;
+                    case Qt::AlignHCenter:
+                        current_x = block_indent + block_line_space[blockLineCount] / 2 ;
+                        break;
+                    case Qt::AlignJustify:
+                        current_x = block_indent;
+                        break;
+                    }
+
+                    if(blockFirstLine)      // 如果是本段落的第一行
+                    {
+                        blockFirstLine = false;
+                        current_x += blockFormat.textIndent();
+                        blockLineCount = 0;
+                    }
+                    if(current_line != 0)
+                    {
+                        current_height += lineHeight_Real[current_line -1];
+                    }
+                    current_x = block_indent;
+                    current_line ++;
+                    blockLineCount ++;
+                }
+
+                QString nextEditContent;    // 即将处理的字段
+
+                // 处理当前fragment
+                if(tempFragment.size() < lineContent.size())
+                {
+                    // 当前小块的长度没有达到行的长度
+                    lineContent.remove(0, tempFragment.length());
+                    nextEditContent = tempFragment;
+                    tempFragment.remove(0,tempFragment.size());
+
+                }
+                else if(tempFragment.size() >= lineContent.size())
+                {
+                    // 当前块跨越了好几行
+                   tempFragment.remove(0,lineContent.size());
+                   nextEditContent = lineContent;
+                   lineContent.remove(0,lineContent.size());
+
+                }
+
+                // 样式
+                QTextCharFormat charFormat = fragment.charFormat();     // 字符格式
+                QTextBlockFormat blockFormat = tempCursor.blockFormat();// 块格式
+                QFont font = charFormat.font();     // 字体
+                QFontMetrics fontMetics(font);
+
+                // 新建 CT_Text
+                CT_Text* ct_text = new CT_Text();                       // 新建文本块
+                ct_text->setID(this->table->size() +1 ,this->table);    // 设置ID
+                CT_Layer->getTextObject()->append(ct_text);              // 加入到layer
+
+                // 设置颜色
+                QBrush brush = charFormat.foreground();     // 获得画笔
+                QColor color = brush.color();               // 获得颜色
+                CT_ColorSpace *space = new CT_ColorSpace(); // 颜色空间
+                space->setBitsPerComponent(8);
+                space->setType("RGB");
+                int colorSpaceId = this->addColorSpace(space);
+                CT_Color* ct_color = new CT_Color();
+
+                ct_color->setValue(QString::number(color.red()) + " "
+                                   + QString::number(color.green()) + " "
+                                   + QString::number(color.blue()));
+                ct_color->setColorSpace(colorSpaceId,this->table);
+
+                ct_text->setFillColor(ct_color);
+
+
+                // 加入字体
+                CT_Font* ctfont = new CT_Font();
+                ctfont->setFamilyName(font.family());
+                ctfont->setFontName(font.family());
+                int font_id = this->addFont(ctfont);    // 添加字体ID
+                ct_text->setFont(font_id, this->table); // 设置字体引用
+
+                // 设置字体
+                if(font.italic())
+                {
+                    // 如果斜体
+                    ct_text->setItalic(true);
+                }
+                if(font.weight() != 50)
+                {
+                    // 字重
+                    ct_text->setWeight(font.weight() * 8);  // 默认值400
+                }
+
+                ct_text->setSize(
+                            UnitTool::pixelToMM(
+                                fontMetics.height()));      // 设置字体大小
+
+                ct_text->setBoundary(
+                            UnitTool::pixelToMM(block_pos_x + current_x),
+                            UnitTool::pixelToMM(block_pos_y + current_height),
+                            UnitTool::pixelToMM(block_width),
+                            UnitTool::pixelToMM(lineHeight_Real[lineCount]));
+
+                // 设置delta_x
+                TextCode* textCode = new TextCode();        // 文字内容
+                textCode->setText(nextEditContent);            // 设置文字内容
+                textCode->setX(0);  // 设置起始位置
+                textCode->setY(UnitTool::pixelToMM(lineHeight_Font[lineCount]));
+
+                if(nextEditContent.length()>1)
+                {
+                    QString delta_x_str;
+                    // n个字符 n-1 个 delta_x
+                    for(int delta_x = 0; delta_x < nextEditContent.length()-1; delta_x++)
+                    {
+
+                        if(blockFormat.alignment() == Qt::AlignJustify)
+                        {
+                            delta_x_str = delta_x_str + " "
+                                    + QString::number(
+                                        UnitTool::pixelToMM(
+                                            fontMetics.boundingRect(
+                                                nextEditContent.mid(delta_x,1)).width()
+                                            + block_line_word_space[blockLineCount]));
+                        }
+                        else
+                        {
+                            delta_x_str = delta_x_str + " "
+                                    + QString::number(
+                                        UnitTool::pixelToMM(
+                                            fontMetics.boundingRect(
+                                                nextEditContent.mid(delta_x,1)).width()));
+                        }
+
+                    }
+                    textCode->setDeltaX(delta_x_str);
+                }
+
+                ct_text->getTextCode()->append(textCode);   // 加入到textCode中
+
+
+            }
+
+        }
+
+        it_block ++;
     }
 
 
