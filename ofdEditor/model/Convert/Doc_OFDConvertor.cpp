@@ -6,6 +6,7 @@
 #include "Doc/DocLayer.h"
 #include "Doc/DocImageBlock.h"
 #include "Convert/BuildTextBlock.h"
+#include "Convert/BuildTextTable.h"
 
 #include <QVector>
 #include <QTextCursor>
@@ -280,10 +281,16 @@ void Doc_OFDConvertor::buildLayer(CT_Layer* ctLayer,DocLayer *layer)
             this->buildImage(ctLayer, block->getImageBlock());
         }
 
-        // 如果是表格文件
+        // 如果是表格
         if(block->isTableBlock())
         {
-            // 除了保存文字，还要画线
+            // 处理表格
+            BuildTextTable buildTextTable;
+            buildTextTable.buildTable(
+                        block->getTableBlock(),
+                        ctLayer,
+                        this->table,
+                        this);
         }
     }
 

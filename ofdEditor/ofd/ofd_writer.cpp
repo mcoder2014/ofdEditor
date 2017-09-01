@@ -853,9 +853,10 @@ QXmlStreamAttributes getAttributes(CT_Text * cur_text)
     {
         a.append("ReadDirection", QString::number(cur_text->getReadDirection()));
     }
+    qDebug() << "weight ------" << cur_text->getWeight();
     if (cur_text->getWeight() != 400)
     {
-        a.append("ReadDirection", QString::number(cur_text->getWeight()));
+        a.append("Weight", QString::number(cur_text->getWeight()));
     }
     if (cur_text->getItalic())
     {

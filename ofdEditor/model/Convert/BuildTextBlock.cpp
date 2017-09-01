@@ -440,11 +440,10 @@ double BuildTextBlock::buildSmall_cttext(
     if(font.italic())
     {
         ct_text->setItalic(true);
+        qDebug() << "italic -------------------------------------";
     }
-    if(font.weight() != 50)
-    {
-        ct_text->setWeight(font.weight() * 8);
-    }
+    // 设置字重
+    ct_text->setWeight(this->getWeight(font.weight()));
 
     // 设置颜色
     QColor color = charFormat.foreground().color(); // 获得颜色
@@ -457,6 +456,7 @@ double BuildTextBlock::buildSmall_cttext(
                        + " " + QString::number(color.green())
                        + " " + QString::number(color.blue()));
     ct_color->setColorSpace(colorSpaceId,this->table);
+    ct_text->setFillColor(ct_color);
 
     QFontMetricsF fontMetrics(font);
 
@@ -511,6 +511,10 @@ double BuildTextBlock::buildSmall_cttext(
                         + QString::number(
                             UnitTool::pixelToMM(
                                 fontMetrics.boundingRect(content.mid(delta,1)).width()));
+//                delta_x  = delta_x + " "
+//                        + QString::number(
+//                            UnitTool::pixelToMM(
+//                                fontMetrics.maxWidth()));
             }
             txtCode->setDeltaX(delta_x);
         }
@@ -557,6 +561,25 @@ double BuildTextBlock::buildSmall_cttext(
 
     qDebug() <<"build small cttext " <<content;
     return width;
+}
+
+
+///
+/// \brief BuildTextBlock::getWeight
+///     将
+/// \param width
+/// \return
+///
+int BuildTextBlock::getWeight(double weight)
+{
+    if( weight < 63 )
+    {
+        return 400;
+    }
+    else
+    {
+        return 500;
+    }
 }
 
 

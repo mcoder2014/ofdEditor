@@ -46,6 +46,7 @@ public:
     QVector<QTextLength> getColumnWidth();       // 获得行列宽度
     int getColumns(){return this->_table->columns();}
     int getRows(){return this->_table->rows();}
+    QTextTable* getTable();                     // 获得QTextTable表格的指针
 
 public slots:
     void setTable(int rows, int columns);        // 设置表格长和宽

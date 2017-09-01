@@ -301,7 +301,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
         font.setPixelSize(UnitTool::mmToPixel(text->getSize()));    // 字号
         font.setFamily(textFont.family());                      // 设置字体
 
-        qDebug() << "italic " << text->getItalic();
+        qDebug() << "italic ------------------------------------" << text->getItalic();
         // 倾斜
         if(text->getItalic())
         {
@@ -310,7 +310,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
 
         // 加粗
         int weight = text->getWeight();  // 获得粗细
-        font.setWeight(weight / 8);
+        font.setWeight(this->getWeight(weight));
 
         // 上下间距
         blockFormat.setTopMargin(0);
@@ -387,6 +387,8 @@ QColor OFD_DocConvertor::ctColorToQColor(CT_Color *ct_color)
 {
 
     QColor defaultColor(Qt::black);         // 设置默认颜色
+    if(ct_color == NULL)
+        return defaultColor;
 
     Document* document = (*this->ofdFile->getDocuments())[0];
     ID_Table* table = document->getIDTable();
@@ -459,4 +461,12 @@ QColor OFD_DocConvertor::ctColorToQColor(CT_Color *ct_color)
         return defaultColor;
     }
 
+}
+
+int OFD_DocConvertor::getWeight(int weight)
+{
+    if(weight < 500)
+        return 50;
+    else
+        return 75;
 }

@@ -60,6 +60,8 @@ private:
 
     QColor ctColorToQColor(CT_Color* ct_color);     // 颜色转换
 
+    int getWeight(int weight);              // ofd的weight 转化 QText的weight
+
 };
 
 #endif // OFD_DOCCONVERTOR_H

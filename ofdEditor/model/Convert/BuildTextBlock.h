@@ -38,6 +38,7 @@ public:
     void build();                           // 开始构建真正的内容
     double calculateTemp_x(int lineNum, int align, double indent);  // 根据现有信息，计算出temp_x
     double buildSmall_cttext(QString content, QTextCharFormat charFormat, double x, double y, int lineNum, Qt::Alignment align);
+    int getWeight(double width);         // 将Qt中的字重转换为ofd的字重
 
     DocTextBlock *textBlock;
     CT_Layer *layer;

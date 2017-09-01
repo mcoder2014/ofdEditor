@@ -380,6 +380,25 @@ void OFDParser::readPage(Page * page_data) {
                         qDebug() << "CT_Text类型数据中缺少必要的Size属性\n位于"
                                  << current_path.getRelativePath();
                     }
+
+                    // Italic
+                    if(t.hasAttribute("Italic"))
+                    {
+                        QString italic = t.attribute("Italic");
+                        italic = italic.toLower();
+                        if(italic == "true")
+                        {
+                            text_data->italic = true;
+                        }
+                    }
+
+                    // Weight
+                    if(t.hasAttribute("Weight"))
+                    {
+                        text_data->weight = t.attribute("Weight").toInt();
+                    }
+
+
                     //                    qDebug() << "Checkpoint 2.3";
                     //many optional attributes to be implemented
                     // textCode

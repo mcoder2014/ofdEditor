@@ -120,8 +120,12 @@ public:
     void setWeight(int _weight) {
         if (_weight == 1000)
             weight = 900;
-        else if (_weight % 100 != 0 || _weight > 1000 || _weight <= 0)
+        else if (_weight % 100 != 0
+                 || _weight > 1000
+                 || _weight <= 0)
             weight = 400;
+        else
+            weight = _weight;
     }
 
     bool getItalic() {
