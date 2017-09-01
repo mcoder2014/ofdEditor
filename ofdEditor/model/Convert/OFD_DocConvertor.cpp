@@ -64,7 +64,7 @@ DocPassage *OFD_DocConvertor::ofd_to_doc(OFD *ofd)
         {
 
             //  生成每一页
-//            qDebug() << "build Page" << i;
+            qDebug() << "build Page" << i;
             DocPage * newPage = this->buildDocPage(passage, (*pages)[i]);
             newPage->setVisible(true);
         }
@@ -114,7 +114,7 @@ DocPage *OFD_DocConvertor::buildDocPage(DocPassage *passage, Page *ct_page)
         for(int i = 0; i < layers->size(); i++)
         {
             CT_Layer* layer = (*layers)[i];
-//            qDebug() << "excute insertLayer: " << i;
+            qDebug() << "excute insertLayer: " << i;
             this->insertLayer(page,layer);          // 将该层的内容加入到页面中
         }
 
@@ -238,7 +238,7 @@ void OFD_DocConvertor::insertCT_Text(DocPage *page, DocPage::Layer layer, CT_Tex
     // 处理每一个textCode
     QVector<TextCode *>* textCodes = text->getTextCode();   // 获得文字内容
     int length = textCodes->size();             // 数量
-//    qDebug() << "textCodes' length:" << length;
+    qDebug() << "textCodes' length:" << length;
     for(int i = 0 ; i< length; i++)
     {
         TextCode* textCode = (*textCodes)[i];   // 当前处理的块

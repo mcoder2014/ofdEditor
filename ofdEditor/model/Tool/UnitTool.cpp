@@ -139,6 +139,11 @@ QRect UnitTool::getBox(QPoint point1, QPoint point2)
     return QRect(x,y,w,h);
 }
 
+double UnitTool::pointSizeToMM(double pointsize)
+{
+    return pointsize * 0.35146;
+}
+
 /**
  * @Author Chaoqun
  * @brief  判断两个数是否相等，因为公文的误差要求是 1mm，

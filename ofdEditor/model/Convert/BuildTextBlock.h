@@ -37,7 +37,7 @@ public:
     void caculateLineContentWidth();        // 计算每行文本所占的文字的宽度
     void build();                           // 开始构建真正的内容
     double calculateTemp_x(int lineNum, int align, double indent);  // 根据现有信息，计算出temp_x
-    double buildSmall_cttext(QString content, QFont font, double x, double y, int lineNum, Qt::Alignment align);
+    double buildSmall_cttext(QString content, QTextCharFormat charFormat, double x, double y, int lineNum, Qt::Alignment align);
 
     DocTextBlock *textBlock;
     CT_Layer *layer;

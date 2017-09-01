@@ -309,15 +309,22 @@ void BuildTextBlock::build()
         QString fragmentContent;
         double temp_x = 0;
         double temp_y = 0;
-        int currentLine = blockStartLineNum[blockNum];
+        int currentLine = blockStartLineNum[blockNum] - 1;
 
-        while(currentLine < blockEndLineNum[blockNum]
+        while(currentLine <= blockEndLineNum[blockNum]
               || !it_fragment.atEnd()
               || fragmentContent.size() != 0)
         {
             if(lineContent.size() == 0)
             {
                 // 如果当前行没内容了
+                currentLine ++;
+                if(currentLine > blockEndLineNum[blockNum])
+                {
+                    // 放止因为fragment 而出现问题
+                    break;
+                }
+
                 lineContent = every_line_text[currentLine];
                 temp_y += lineHeight_Real[currentLine];
                 if(currentLine == blockStartLineNum[blockNum])
@@ -330,7 +337,6 @@ void BuildTextBlock::build()
                 else
                     temp_x = calculateTemp_x(currentLine, blockFormat.alignment(),
                                              blockFormat.indent() * this->textBlock->document()->indentWidth());
-                currentLine ++;
                 continue;
             }
             if(fragmentContent.size() == 0)
@@ -356,11 +362,14 @@ void BuildTextBlock::build()
                 fragmentContent = "";
             }
 
+            qDebug() << "Line " << currentLine
+                     << "Deal:" << editContent;
+
             double width =buildSmall_cttext(
                         editContent,
-                        fragment.charFormat().font(),
+                        fragment.charFormat(),
                         this->textBlock->getBlock()->x() + temp_x,
-                        this->textBlock->getBlock()->y() + blockStartY[currentLine] + temp_y,
+                        this->textBlock->getBlock()->y() + blockStartY[blockNum] + temp_y,
                         currentLine,
                         blockFormat.alignment());
 
@@ -392,6 +401,7 @@ double BuildTextBlock::calculateTemp_x(int lineNum, int align, double indent)
         return (blockwidth - contentWidth) / 2.0;
         break;
     case Qt::AlignJustify:
+        qDebug() <<"Justify";
         return indent;
         break;
     default:
@@ -410,8 +420,10 @@ double BuildTextBlock::calculateTemp_x(int lineNum, int align, double indent)
 /// \return
 ///
 double BuildTextBlock::buildSmall_cttext(
-        QString content, QFont font, double x, double y, int lineNum, Qt::Alignment align)
+        QString content, QTextCharFormat charFormat, double x, double y, int lineNum, Qt::Alignment align)
 {
+    QFont font = charFormat.font();
+
     qDebug() <<"build small cttext " <<content;
     // 新建CT_Text
     CT_Text *ct_text = new CT_Text();
@@ -434,20 +446,50 @@ double BuildTextBlock::buildSmall_cttext(
         ct_text->setWeight(font.weight() * 8);
     }
 
+    // 设置颜色
+    QColor color = charFormat.foreground().color(); // 获得颜色
+    CT_ColorSpace *space = new CT_ColorSpace();
+    space->setBitsPerComponent(8);
+    space->setType("RGB");
+    int colorSpaceId = this->convertor->addColorSpace(space);
+    CT_Color* ct_color = new CT_Color();
+    ct_color->setValue(QString::number(color.red())
+                       + " " + QString::number(color.green())
+                       + " " + QString::number(color.blue()));
+    ct_color->setColorSpace(colorSpaceId,this->table);
+
     QFontMetricsF fontMetrics(font);
 
-    ct_text->setSize(
-                UnitTool::pixelToMM(fontMetrics.boundingRect(content).height()));
+    //    qDebug() << "font pointsize"
+    //             << font.pointSizeF()
+    //             << "font pixel Size"
+    //             << font.pixelSize() << UnitTool::pixelToMM(font.pixelSize())
+    //             << "pixelToMM" << UnitTool::pixelToMM(
+    //                    fontMetrics.ascent() + fontMetrics.descent() + 1)
+    //             << "test" << font.pointSizeF() * 0.35146;
+    if(font.pointSizeF() != -1)
+    {
+        ct_text->setSize(
+                    UnitTool::pointSizeToMM(font.pointSizeF()));
+    }
+    else if(font.pixelSize() != -1)
+    {
+        ct_text->setSize(
+                    UnitTool::pixelToMM(font.pixelSize()));
+    }
+    //    ct_text->setSize(
+    //                UnitTool::pixelToMM(
+    //                    fontMetrics.ascent() + fontMetrics.descent() + 1));
 
 
     double width = 0;
 
-    switch (align)
+
+
+    if(align ==Qt::AlignLeft
+            || align == Qt::AlignRight
+            || align == Qt::AlignHCenter)
     {
-    case Qt::AlignLeft:
-    case Qt::AlignRight:
-    case Qt::AlignHCenter:
-        // 左对齐右对齐，居中，字间距不会变
         ct_text->setBoundary(
                     UnitTool::pixelToMM(x),
                     UnitTool::pixelToMM(y),
@@ -457,7 +499,7 @@ double BuildTextBlock::buildSmall_cttext(
         TextCode *txtCode = new TextCode();        // 文字内容
         txtCode->setText(content);
         txtCode->setX(
-                    UnitTool::pixelToMM(1));
+                    UnitTool::pixelToMM(0));
         txtCode->setY(
                     UnitTool::pixelToMM(lineHeight_Font[lineNum]));
         if(content.size() > 1)
@@ -472,48 +514,45 @@ double BuildTextBlock::buildSmall_cttext(
             }
             txtCode->setDeltaX(delta_x);
         }
+
         width = fontMetrics.boundingRect(content).width();
-
         ct_text->getTextCode()->append(txtCode);
+    }
+    else if(align == Qt::AlignJustify)
+    {
+        double delta_delta_x = 1.0 *
+                (this->textBlock->getBlock()->size().width() - lineWidth_content[lineNum])
+                /( every_line_text[lineNum].size() -1);
 
-        break;
+        ct_text->setBoundary(
+                    UnitTool::pixelToMM(x),
+                    UnitTool::pixelToMM(y),
+                    UnitTool::pixelToMM(fontMetrics.boundingRect(content).width()
+                                        + content.length() * delta_delta_x),
+                    UnitTool::pixelToMM(lineHeight_Real[lineNum] + 5));
 
-//    case Qt::AlignJustify:
+        TextCode *textCode = new TextCode();        // 文字内容
+        textCode->setText(content);
+        textCode->setX(
+                    UnitTool::pixelToMM(1));
+        textCode->setY(
+                    UnitTool::pixelToMM(lineHeight_Font[lineNum]));
 
-//        double delta_delta_x = 1.0 *
-//                (this->textBlock->getBlock()->size().width() - lineWidth_content[lineNum])
-//                /( every_line_text[lineNum].size() -1);
-//        ct_text->setBoundary(
-//                    UnitTool::pixelToMM(x),
-//                    UnitTool::pixelToMM(y),
-//                    UnitTool::pixelToMM(fontMetrics.boundingRect(content).width()
-//                                        + content.length() * delta_delta_x),
-//                    UnitTool::pixelToMM(lineHeight_Real[lineNum] + 5));
+        if(content.size() > 1)
+        {
+            QString delta_x;
+            for(int delta = 0; delta <content.size() -1; delta ++)
+            {
+                delta_x  = delta_x + " "
+                        + QString::number(
+                            UnitTool::pixelToMM(
+                                fontMetrics.boundingRect(content.mid(delta,1)).width() + delta_delta_x));
+            }
+            textCode->setDeltaX(delta_x);
+        }
+        ct_text->getTextCode()->append(textCode);
 
-//        TextCode *textCode = new TextCode();        // 文字内容
-//        textCode->setText(content);
-//        textCode->setX(
-//                    UnitTool::pixelToMM(1));
-//        textCode->setY(
-//                    UnitTool::pixelToMM(lineHeight_Font[lineNum]));
-
-//        if(content.size() > 1)
-//        {
-//            QString delta_x;
-//            for(int delta = 0; delta <content.size() -1; delta ++)
-//            {
-//                delta_x  = delta_x + " "
-//                        + QString::number(
-//                            UnitTool::pixelToMM(
-//                                fontMetrics.boundingRect(content.mid(delta,1)).width() + delta_delta_x));
-//            }
-//            txtCode->setDeltaX(delta_x);
-//        }
-//        ct_text->getTextCode()->append(txtCode);
-
-//        width = fontMetrics.boundingRect(content).width() + delta_delta_x * content.size();
-
-//        break;
+        width = fontMetrics.boundingRect(content).width() + delta_delta_x * content.size();
     }
 
     qDebug() <<"build small cttext " <<content;
