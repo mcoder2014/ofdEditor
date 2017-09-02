@@ -124,7 +124,8 @@ void ZipTool::deleteFolder(const QString &folderFullPath)
                 if(fileListTemp.size() == 0)
                     /* 下层没有文件或文件夹 则直接删除  */
                 {
-                    dirTemp.rmdir(".");
+//                    dirTemp.rmdir(".");
+                    dirTemp.rmdir(QDir::toNativeSeparators(dirTemp.path()));
                     fileList.removeAt(i);
                 }
                 else /* 下层有文件夹或文件 则将信息添加到列表  */
@@ -140,7 +141,9 @@ void ZipTool::deleteFolder(const QString &folderFullPath)
             }
         }
     }
-    dir.rmdir(".");
+//    dir.rmdir(".");
+    dir.rmdir(QDir::toNativeSeparators(dir.path()));
+
     qDebug() << "deleteFolder succeed";
     /*删除目标文件夹,
      * 如果只是清空文件夹folderFullPath的内容
