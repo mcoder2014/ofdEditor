@@ -86,6 +86,7 @@ bool ZipTool::compressDir(QString fileCompressed,
  */
 void ZipTool::deleteFolder(const QString &folderFullPath)
 {
+    qDebug() << "deleteFolder";
     QDir             dir(folderFullPath);
     QFileInfoList    fileList;
     QFileInfo        curFile;
@@ -140,6 +141,7 @@ void ZipTool::deleteFolder(const QString &folderFullPath)
         }
     }
     dir.rmdir(".");
+    qDebug() << "deleteFolder succeed";
     /*删除目标文件夹,
      * 如果只是清空文件夹folderFullPath的内容
      * 而不删除folderFullPath本身,则删掉本行即可  */
