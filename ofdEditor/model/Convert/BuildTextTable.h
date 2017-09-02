@@ -1,10 +1,11 @@
 #ifndef BUILDTEXTTABLE_H
 #define BUILDTEXTTABLE_H
 
+#include "Doc_OFDConvertor.h"
 #include <QObject>
 #include "model_global.h"
 #include <QTextBlock>
-#include "Doc_OFDConvertor.h"
+
 class DocPassage;       // 文章
 class DocPage;          // 页
 class DocLayer;         // 层

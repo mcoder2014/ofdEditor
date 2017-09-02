@@ -30,6 +30,8 @@ class DocImageBlock;
 class MODELSHARED_EXPORT Doc_OFDConvertor
         : public QObject
 {
+
+
     Q_OBJECT
 public:
     explicit Doc_OFDConvertor(QObject *parent = 0);
@@ -38,6 +40,8 @@ public:
 
     int addFont(CT_Font* font);    // 添加字体类型到资源
     int addColorSpace(CT_ColorSpace* colorSpace);  // 添加颜色空间
+
+
 
 signals:
 
@@ -72,7 +76,7 @@ private:
     int checkColorSpace(CT_ColorSpace* colorSpace);    // 检查是否存在该颜色空间
 
 
-private:
+public:
     DocPassage* passage;        // 文章
     OFD* ofdFile;               // OFD 对象
     Res* public_res;            // Res 公共资源文件
