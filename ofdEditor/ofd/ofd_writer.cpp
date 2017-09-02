@@ -23,10 +23,16 @@ void OFDWriter::createFile()
 {
     current_file = new QFile(current_path.getPath());
     qDebug() << current_path.getPath() << endl;
-    if (!current_file->open(QFile::WriteOnly | QFile::Text))
+    if(current_file->exists())
+    {
+        QFile::remove(current_path.getPath());      // 删除文件夹
+        qDebug() << "remove exists file";
+    }
+    else
+        qDebug() <<"file not exists";
+    if (!current_file->open(QFile::ReadWrite | QFile::Text))
     {
         qDebug() << "can't open or write file";
-        throw WritingFileException("无法打开或创建XML文件: " + current_path.getPath());
     }
     writer.setDevice(current_file);
 }
@@ -275,6 +281,7 @@ void OFDWriter::writeDocument(Document * data)
     //正文结束
     writer.writeEndDocument();
     current_file->close();
+
     ST_Loc cur_path = current_path;
     for (int i = 0; i < data->getPages()->getPages()->size(); i++)
     {
@@ -1063,10 +1070,13 @@ QXmlStreamAttributes getAttributes(CT_Font * cur_font)
 void OFDWriter::makePath(ST_Loc path)
 {
     QString path_str = path.getPath();
-    int n = 0;
-    while (path_str[path_str.length() - n - 1] != '/')
-        n++;
-    path_str.chop(n);
+//    int n = 0;
+//    while (path_str[path_str.length() - n - 1] != '/')
+//        n++;
+//    path_str.chop(n);
+    int index = path_str.lastIndexOf('/');
+    path_str = path_str.left(index + 1);
+
     qDebug() << path_str;
     if (!QDir().mkpath(path_str))
     {

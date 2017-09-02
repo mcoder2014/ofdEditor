@@ -789,8 +789,14 @@ void PassageMainWindow::saveFile()
     OFD* ofdFile = docToOfd.doc_to_ofd(passage);
 
     QString tempPath = passage->getTempStorePath();
-    ZipTool::deleteFolder(tempPath);              // 删除文件夹
+
     QDir dir;
+    if(dir.exists(tempPath))
+    {
+        qDebug() << "the file is existing";
+        // 如果文件夹已存在则要删除该文件夹
+        ZipTool::deleteFolder(tempPath);                  // 删除文件夹
+    }
     dir.mkdir(tempPath);                          // 生成文件夹
     OFDWriter writer(ofdFile, tempPath+"/");      // 写出文件
     writer.setTempPath(passage->getTempSavePath());         // 保存着图片的临时路径
