@@ -37,7 +37,7 @@ private:
 
     void makePath(ST_Loc path);
     void createFile();
-    void makePath(QString path);
+    void makePath(QString path_str);
 
     void writeDocument(Document * data);
     void writePage(Page * data);
