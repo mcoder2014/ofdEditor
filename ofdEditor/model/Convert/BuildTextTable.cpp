@@ -105,8 +105,8 @@ void BuildTextTable::saveAsImage()
 
     QPixmap pixmap = QPixmap::grabWidget(
                 this->table_block->getPage(),
-                block->x()+1,
-                block->y()+1,
+                block->x(),
+                block->y(),
                 block->size().width()+1 ,
                 block->size().height()+1);
 
