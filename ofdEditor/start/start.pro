@@ -31,14 +31,16 @@ SOURCES += main.cpp\
     ActionConnector/ActionConnector.cpp \
     ui/RecentFiles.cpp \
     Settings/RecentFileList.cpp \
-    Settings/RecentFileItem.cpp
+    Settings/RecentFileItem.cpp \
+    ui/ProgramSettingDialog.cpp
 
 HEADERS  += mainwindow.h \
     ui/PassageMainWindow.h \
     ActionConnector/ActionConnector.h \
     ui/RecentFiles.h \
     Settings/RecentFileList.h \
-    Settings/RecentFileItem.h
+    Settings/RecentFileItem.h \
+    ui/ProgramSettingDialog.h
 
 DESTDIR = ../bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
@@ -63,6 +65,7 @@ RESOURCES += \
     icons.qrc
 
 FORMS += \
-    ui/RecentFiles.ui
+    ui/RecentFiles.ui \
+    ui/ProgramSettingDialog.ui
 
 TRANSLATIONS = cn_start.ts

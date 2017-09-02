@@ -31,6 +31,34 @@ void OFDWriter::createFile()
     writer.setDevice(current_file);
 }
 
+///
+/// \brief OFDWriter::makePath
+/// Res文件夹创建的时候有bug，尝试通过创建文件来创建文件夹
+/// \param path
+///
+void OFDWriter::makePath(QString path)
+{
+    int lastIndex = path.lastIndexOf('/');
+    path = path.left(lastIndex +1) + "text.txt";
+
+    QFile file(path);
+    if(!file.exists())
+    {
+        if(file.open(QFile::ReadWrite | QFile::Text))
+        {
+            qDebug() << "create file success" << path;
+            file.close();
+        }
+        else
+        {
+            qDebug() << "create file failed" << path;
+        }
+    }
+
+
+
+}
+
 void OFDWriter::writeOFD()
 {
     createFile();
@@ -375,6 +403,7 @@ void OFDWriter::writeRes(Res * data)
             this->makePath(ST_Loc(resFloderPath,
                                   resFloderPath,
                                   ""));
+            this->makePath(resFloderPath);
         }
     }
     else
@@ -1041,7 +1070,7 @@ void OFDWriter::makePath(ST_Loc path)
     qDebug() << path_str;
     if (!QDir().mkpath(path_str))
     {
-        throw WritingFileException("无法创建文件路径: " + path.getPath());
+        qDebug() << "can't mkPath:"<<path;
     }
 }
 
