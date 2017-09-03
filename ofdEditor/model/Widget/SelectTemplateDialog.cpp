@@ -69,5 +69,6 @@ void SelectTemplateDialog::lastTemplate()
 void SelectTemplateDialog::emitCreateTemplateSignal()
 {
     qDebug() << "Emit create template signal.";
-    emit createTemplate(current_template_index);
+//    emit createTemplate(current_template_index);
+    emit createTemplate(0);
 }

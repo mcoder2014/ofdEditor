@@ -121,9 +121,8 @@ void DocPassage::addPage(DocPage *page)
 
     this->layout->update();             // 更新
     page->setPassage(this);             // 设置页所属的文章
-    this->adjustWidgetSize();           // 调整大小
-
     page->setScale(this->scaleFactor);
+    this->adjustWidgetSize();           // 调整大小
 
 //    qDebug() << "You have added an new page";
 
@@ -220,8 +219,7 @@ void DocPassage::insertPage(DocPage *page, int index)
     this->layout->update();
     page->setPassage(this);
 
-    page->setScale(this->scaleFactor);
-
+    page->setScale(this->scaleFactor);      // 调整到合适的缩放比例
     this->adjustWidgetSize();
 
 }

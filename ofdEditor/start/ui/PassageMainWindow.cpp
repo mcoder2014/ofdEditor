@@ -1234,7 +1234,7 @@ void PassageMainWindow::setStatusMessage(QString msg)
 void PassageMainWindow::createTemplatePassage(int index)
 {
     qDebug() << "???";
-    DocPassage * new_passage = new DocPassage(this);
+    DocPassage * new_passage = new DocPassage();
     //**********************************************
     DocPage * new_page_1 = new DocPage();
 
@@ -1383,7 +1383,7 @@ void PassageMainWindow::createTemplatePassage(int index)
     body_6->setWidget(bodytext_6);
 
     bodytext_6->setAlignment(Qt::AlignCenter);
-    body_6->setPos(UnitTool::mmToPixel(120), UnitTool::mmToPixel(95));
+    body_6->setPos(UnitTool::mmToPixel(120), UnitTool::mmToPixel(108));
     body_6->resize(200, 35);
     bodytext_6->setFont(font6);
 
