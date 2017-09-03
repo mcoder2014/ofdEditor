@@ -107,8 +107,8 @@ void BuildTextTable::saveAsImage()
                 this->table_block->getPage(),
                 block->x(),
                 block->y(),
-                block->size().width()+1 ,
-                block->size().height()+1);
+                block->size().width()+4 ,
+                block->size().height()+4);
 
     pixmap.save(filePath,"JPEG",100);
 
