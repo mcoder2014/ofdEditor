@@ -236,6 +236,12 @@ void DocPage::addBlock(DocBlock *block, DocPage::Layer layer)
         DocPassage *passage = this->getPassage();
 
         // 之后可以做信号的转发
+        connect(table, SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat)),
+                passage, SIGNAL(signals_currentBlockFormatChanged(QTextBlockFormat)));
+        connect(table, SIGNAL(signals_currentCharFormatChanged(QTextCharFormat)),
+                passage, SIGNAL(signals_currentCharFormatChanged(QTextCharFormat)));
+        connect(table ,SIGNAL(signals_currentTable(DocTable*)),
+                passage, SIGNAL(signals_currentTableBlock(DocTable*)));
 
     }
 //    qDebug()<< "connect";

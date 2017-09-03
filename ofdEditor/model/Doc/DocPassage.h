@@ -23,6 +23,7 @@ class CT_CommonData;
 class DocBlock;
 class DocTextBlock;
 class DocImageBlock;
+class DocTable;
 //class PageDialog;
 
 /**
@@ -192,6 +193,8 @@ signals:
             DocTextBlock* textBlock); // 当前操作的textBlock
     void signals_currentImageBlock(
             DocImageBlock* imageBlock);  //当前操作的imageBlock
+    void signals_currentTableBlock(
+            DocTable* tableBlock);
     void signals_setEditable(bool flag);    // 通知自己页面是否可以编辑
 
 };

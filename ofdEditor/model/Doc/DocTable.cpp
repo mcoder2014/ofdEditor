@@ -411,6 +411,18 @@ void DocTable::focusOutEvent(QFocusEvent *e)
     QTextEdit::focusOutEvent(e);
 }
 
+void DocTable::emitFormatSignals()
+{
+    QTextCursor cursor = this->textCursor();    // 光标
+    this->_currentBlockFormat = cursor.blockFormat();   // 获得块格式
+    this->_currentCharFormat = cursor.charFormat();     // 获得字符格式
+
+    // 发射三个信号
+    emit this->signals_currentBlockFormatChanged(this->_currentBlockFormat);
+    emit this->signals_currentCharFormatChanged(this->_currentCharFormat);
+    emit this->signals_currentTable(this);
+}
+
 void DocTable::selectedCells(QTextCursor &cursor)
 {
     // 这里可以检测是否复选单元格

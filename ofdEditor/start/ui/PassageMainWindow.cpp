@@ -38,6 +38,7 @@
 #include "Tool/UnitTool.h"
 #include "Core/GlobalSetting.h"
 #include "DataTypes/document/CT_DocInfo.h"
+#include "Doc/DocTable.h"
 
 #include "Settings/RecentFileList.h"
 #include "Settings/RecentFileItem.h"
@@ -131,6 +132,7 @@ void PassageMainWindow::init()
     // 初始化变量
     this->imageBlock = NULL;
     this->textBlock = NULL;
+    this->tableBlock = NULL;
 
     initAction();
     connectAction();
@@ -583,6 +585,10 @@ void PassageMainWindow::connectAction()
     connect(this->imageFormat, SIGNAL(triggered(bool)),
             this, SLOT(imageDialog()));                 //修改图片
 
+    // 设置表格
+    connect(this->tableFormat, SIGNAL(triggered(bool)),
+            this, SLOT(tableSetting()));
+
     connect(this->boldAction, SIGNAL(triggered(bool)),
             this,SLOT(Bold()));         // 加粗
 
@@ -899,6 +905,8 @@ void PassageMainWindow::fontDialog()
 {
     if (textBlock)
         this->textBlock->customFontDialog();    // 用自定义窗口修改字体
+    else if(this->tableBlock)
+        this->tableBlock->customFontDialog();
 }
 
 /**
@@ -912,6 +920,8 @@ void PassageMainWindow::paragraphDialog()
 {
     if (textBlock)
         this->textBlock->textParagraph();       // 用自定义段落窗口修改段落
+    else if(this->tableBlock)
+        this->tableBlock->customFontDialog();
 }
 
 void PassageMainWindow::imageDialog()
@@ -940,7 +950,10 @@ void PassageMainWindow::templateDialog()
 
 void PassageMainWindow::tableSetting()
 {
-
+    if(this->tableBlock != NULL)
+    {
+        this->tableBlock->tableSetting();
+    }
 }
 
 /**
@@ -1458,6 +1471,11 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
     //处理变更的imageBlock
     this->connect(passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)),
                   this, SLOT(acceptImageBlock(DocImageBlock*)));
+
+    // 转发tableBlock
+    this->connect(passage, SIGNAL(signals_currentTableBlock(DocTable*)),
+                  this, SLOT(acceptTableBlock(DocTable*)));
+
     this->connect(this, SIGNAL(setEditable(bool)),
                   passage, SIGNAL(signals_setEditable(bool)));  // 转发设置可以编辑
 

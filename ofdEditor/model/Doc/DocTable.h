@@ -88,6 +88,9 @@ protected:
     void focusInEvent(QFocusEvent *e);
     void focusOutEvent(QFocusEvent *e);
 
+protected slots:
+    void emitFormatSignals();
+
 private slots:
     void selectedCells(QTextCursor& cursor);
     void checkCursorInTable();              // 确保光标永远在表格内部

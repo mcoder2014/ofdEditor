@@ -14,6 +14,9 @@
 #include <QMainWindow>
 #include <Quuid>
 #include <QDir>
+#include "Doc/DocTable.h"
+#include "Doc/DocTextBlock.h"
+#include "Doc/DocImageBlock.h"
 
 ///
 /// \brief DocPassage::createNewPassage
