@@ -9,6 +9,7 @@
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
 #include <QTabWidget>           // 标签页
+#include <QActionGroup>
 
 class QAction;
 class QMenu;
@@ -58,8 +59,8 @@ public slots:
 
     void printPassage();        // 打印文章
 
-    void undo();
-    void redo();
+    void undo();                // 撤销
+    void redo();                // 恢复
 
     void zoomIn();              // 放大
     void zooomOut();            // 缩小
@@ -151,6 +152,7 @@ private:
     QAction* leftAction;                // 居左
     QAction* rightAction;               // 居右
     QAction* justifyAction;             // 两端对齐
+    QActionGroup *alignGroup;           // 对齐选项组
 
     QVector<DocPassage* >passages;      // 存储所有的passage
 
@@ -173,6 +175,10 @@ private:
     SelectTemplateDialog * select_template_dialog;  //选择模板对话框
 
 
+
+private slots:
+    void slots_selectAlign(QAction *action);
+    void slots_setFont( const QFont & font );
 
 signals:
     void updateActivedPassage(DocPassage * passage);        // 更新当前操作的文档对象

@@ -88,6 +88,7 @@ public slots:
     void setFont(
             QTextCursor& cursor,
             const QFont &font);                 // 设置给定光标下的字体格式
+    void setFont(QString fontName);
 
     // 关于框的一些其他部分
     void setBlock(DocBlock* block);             // 设置Block

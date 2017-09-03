@@ -455,6 +455,12 @@ void PassageMainWindow::initAction()
     this->justifyAction->setIcon(QIcon(":/icons/source/icons/justify.png"));
     this->justifyAction->setCheckable(true);
 
+    // 添加成组
+    this->alignGroup = new QActionGroup(0);
+    this->alignGroup->addAction(this->middleAction);
+    this->alignGroup->addAction(this->leftAction);
+    this->alignGroup->addAction(this->rightAction);
+    this->alignGroup->addAction(this->justifyAction);
 
 /*---------------------------------------------------------------------*/
     this->file_toolBar = this->addToolBar(tr("File"));
@@ -496,7 +502,7 @@ void PassageMainWindow::initAction()
     this->textBlock_toolBar = this->addToolBar(tr("TextBlock"));
     this->textBlock_toolBar->setMovable(false);
     this->textBlock_toolBar->addWidget(this->fontCombox);           // 字体选择
-    this->textBlock_toolBar->addWidget(this->fontSizeCombox);       // 字体大小设置
+//    this->textBlock_toolBar->addWidget(this->fontSizeCombox);       // 字体大小设置
     this->textBlock_toolBar->addSeparator();                        // 分隔符
     this->textBlock_toolBar->addAction(this->boldAction);           // 字体加粗
     this->textBlock_toolBar->addAction(this->italicAction);         // 斜体
@@ -545,11 +551,11 @@ void PassageMainWindow::connectAction()
 
     //undo operation
     connect(this->undoAction,SIGNAL(triggered(bool)),
-            this->connector,SLOT(undo()));
+            this,SLOT(undo()));
 
     //redo operation
     connect(this->redoAction,SIGNAL(triggered(bool)),
-            this->connector,SLOT(redo()));
+            this,SLOT(redo()));
 
     // 放大
     connect(this->zoomInAction, SIGNAL(triggered(bool)),
@@ -616,6 +622,13 @@ void PassageMainWindow::connectAction()
     // 切换为阅读模式
     connect(this->viewModeAction, SIGNAL(triggered(bool)),
             this, SLOT(switchToViewMode()));
+
+    // 字体选择
+    connect(this->fontCombox, SIGNAL(currentFontChanged(QFont)),
+            this, SLOT(slots_setFont(QFont)));
+    // 对其样式
+    connect(this->alignGroup, SIGNAL(triggered(QAction*)),
+            this, SLOT(slots_selectAlign(QAction*)));
 }
 
 /**
@@ -628,6 +641,57 @@ void PassageMainWindow::connectAction()
 void PassageMainWindow::disconnectAction()
 {
 
+}
+
+void PassageMainWindow::slots_selectAlign(QAction *action)
+{
+    Qt::Alignment alignment;
+    if(action == this->leftAction)
+    {
+        alignment = Qt::AlignLeft;
+    }
+    else if(action == this->rightAction)
+    {
+        alignment = Qt::AlignRight;
+    }
+    else if(action == this->middleAction)
+    {
+        alignment = Qt::AlignHCenter;
+    }
+    else if(action == this->justifyAction)
+    {
+        alignment = Qt::AlignJustify;
+    }
+
+    if(this->textBlock)
+    {
+        QTextBlockFormat blockFormat;
+        blockFormat.setAlignment(alignment);
+        this->textBlock->mergeBlockFormatOnBlock(blockFormat);
+    }
+    else if(this->tableBlock)
+    {
+        QTextBlockFormat blockFormat;
+        blockFormat.setAlignment(alignment);
+        this->tableBlock->mergeBlockFormatOnBlock(blockFormat);
+    }
+}
+
+///
+/// \brief PassageMainWindow::slots_setFont
+///     快速设定字体
+/// \param font
+///
+void PassageMainWindow::slots_setFont(const QFont &font)
+{
+    if(this->textBlock != NULL)
+    {
+        this->textBlock->setFont(font.family());
+    }
+    else if(this->tableBlock != NULL)
+    {
+        this->tableBlock->setFont(font.family());
+    }
 }
 
 /**
@@ -714,12 +778,27 @@ void PassageMainWindow::printPassage()
 
 void PassageMainWindow::undo()
 {
-
+    if(this->textBlock != NULL)
+    {
+        this->textBlock->undo();
+    }
+    else if(this->tableBlock != NULL)
+    {
+        this->tableBlock->undo();
+    }
 }
 
 void PassageMainWindow::redo()
 {
 
+    if(this->textBlock != NULL)
+    {
+        this->textBlock->redo();
+    }
+    else if(this->tableBlock != NULL)
+    {
+        this->tableBlock->redo();
+    }
 }
 
 /**

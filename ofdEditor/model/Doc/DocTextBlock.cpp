@@ -222,7 +222,7 @@ void DocTextBlock::mergeFormatOnWordOrSelection(
     if(!cursor.hasSelection())
     {
         // 如果没有选择文字段落
-        cursor.select(QTextCursor::WordUnderCursor);
+//        cursor.select(QTextCursor::WordUnderCursor);
         qDebug() << "cursor has no selection!";
     }
     cursor.mergeCharFormat(format);         // 合并光标下的 QTextCharFormat
@@ -240,10 +240,10 @@ void DocTextBlock::mergeBlockFormatOnBlock(
         QTextBlockFormat &blockFormat)
 {
     QTextCursor cursor = this->textCursor();        // 光标
-    if(!cursor.hasSelection())
-    {
-        cursor.select(QTextCursor::BlockUnderCursor);   // 选择光标下的块
-    }
+//    if(!cursor.hasSelection())
+//    {
+//        cursor.select(QTextCursor::BlockUnderCursor);   // 选择光标下的块
+//    }
 
     cursor.mergeBlockFormat(blockFormat);
 }
@@ -295,6 +295,16 @@ void DocTextBlock::setFont(
     currentFormat.setFont(font);            // 设置字体
 
     mergeFormatOnWordOrSelection(cursor, currentFormat);    // 合并给定光标下的字体样式
+}
+
+void DocTextBlock::setFont(QString fontName)
+{
+    QTextCursor cursor = this->textCursor();
+    QTextCharFormat charformat = cursor.charFormat();
+    QFont font = charformat.font();
+    font.setFamily(fontName);
+    charformat.setFont(font);
+    mergeFormatOnWordOrSelection(cursor,charformat);
 }
 
 /**
