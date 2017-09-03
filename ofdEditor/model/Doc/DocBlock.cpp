@@ -16,6 +16,7 @@
 #include "Doc/DocPassage.h"
 #include "Doc/DocImageBlock.h"
 #include "Doc/DocTable.h"
+#include "Widget/BlockSizeAndPosSettingDialog.h"
 
 DocBlock::DocBlock(QGraphicsItem *parent , Qt::WindowFlags wFlags)
     :QGraphicsProxyWidget(parent,wFlags)
@@ -436,7 +437,9 @@ void DocBlock::setWidget(DocTable *table)
 ///
 void DocBlock::sizeAndPositionDialog()
 {
-
+    BlockSizeAndPosSettingDialog* dialog = BlockSizeAndPosSettingDialog::getInstance();
+    dialog->init(this);
+    dialog->exec();
 }
 
 ///
