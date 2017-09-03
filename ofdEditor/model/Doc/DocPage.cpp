@@ -129,6 +129,7 @@ bool DocPage::hasBlock(DocBlock *block)
     {
         flag = true;
     }
+    return flag;
 }
 
 /**
@@ -269,15 +270,15 @@ void DocPage::changeBlockLayer(DocBlock *block, DocPage::Layer layer)
     if(!this->hasBlock(block))
     {
         // 如果本页中不包含此块
-        return;
         qDebug() << "this page does not has this block.";
+        return;
     }
 
     DocLayer *doclayer = block->getLayer();     // 获得层
     if(doclayer == NULL)
     {
-        return;
         qDebug() << "This block has no layer";
+        return;
     }
 
     DocLayer* goalLayer = this->getLayer(layer);    // 目标层
@@ -419,6 +420,23 @@ void DocPage::dialogPageSetting()
     this->getPassage()->activatePageDialog();
 }
 
+///
+/// \brief DocPage::setEditedAble
+/// \param flag
+///
+void DocPage::setEditedAble(bool flag)
+{
+    if(flag)
+    {
+        this->isEditable = flag;
+    }
+    else
+    {
+        this->isEditable = flag;
+        this->newBlockFlag = none;
+    }
+}
+
 
 /**
  * @Author Chaoqun
@@ -461,6 +479,9 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
     // event->pos() 相对于页面左上角
 //    QMenu* menu = new QMenu(this->passage); // 让passage作为父亲
 
+    if(!this->isEditable)
+        return;
+
     QPoint pos = event->pos();                          // 获得相对于页面的
     QList<QGraphicsItem*> items = this->items(pos);     // 获得某鼠标下的所有块
     QMenu *menu = this->getMenu(items);
@@ -479,6 +500,8 @@ void DocPage::contextMenuEvent(QContextMenuEvent *event)
  */
 void DocPage::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if(!this->isEditable)
+        return;
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
@@ -492,6 +515,9 @@ void DocPage::mouseDoubleClickEvent(QMouseEvent *event)
 void DocPage::mousePressEvent(QMouseEvent *event)
 {
 //    qDebug() << "mouse Press";
+
+    if(!this->isEditable)
+        return;
 
     // 如果是加入新块状态
     if(this->newBlockFlag == draw)
@@ -566,6 +592,9 @@ void DocPage::mousePressEvent(QMouseEvent *event)
 void DocPage::mouseMoveEvent(QMouseEvent *event)
 {
 
+    if(!this->isEditable)
+        return;
+
     QGraphicsView::mouseMoveEvent(event);
 
     if(this->newBlockFlag == drawMove)
@@ -625,6 +654,9 @@ void DocPage::mouseMoveEvent(QMouseEvent *event)
  */
 void DocPage::mouseReleaseEvent(QMouseEvent *event)
 {
+    if(!this->isEditable)
+        return;
+
 
     if(this->newBlockFlag == drawMove)
     {
@@ -671,8 +703,18 @@ void DocPage::mouseReleaseEvent(QMouseEvent *event)
 ///
 void DocPage::focusInEvent(QFocusEvent *event)
 {
-    QGraphicsView::focusInEvent(event);
+    if(this->isEditable)
+    {
+        QGraphicsView::focusInEvent(event);
+    }
+
     emit signals_page_actived(this);
+}
+
+void DocPage::focusOutEvent(QFocusEvent *event)
+{
+    if(this->isEditable)
+        QGraphicsView::focusOutEvent(event);
 }
 
 
@@ -683,6 +725,8 @@ void DocPage::focusInEvent(QFocusEvent *event)
  */
 void DocPage::init()
 {
+    this->isEditable = true;               // 是否可以编辑
+
     this->setWindowFlags(Qt::Widget);
 
     this->docScene = new DocPageScene(); // 新建
@@ -729,9 +773,13 @@ void DocPage::initMenu()
 
     // 插入图片
     this->action_insertImageBlock = new QAction(tr("ImageBlock"), this);
+    this->connect(action_insertImageBlock, SIGNAL(triggered(bool)),
+                  this, SLOT(addImage()));
 
     // 插入表格
     this->action_insertTable = new QAction(tr("Table"), this);
+    this->connect(action_insertTable, SIGNAL(triggered(bool)),
+                  this, SLOT(addTable()));
 
     // 插入页
     this->menu_insertPage = new QMenu(tr("Page"));

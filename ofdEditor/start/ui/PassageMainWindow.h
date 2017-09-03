@@ -17,6 +17,7 @@ class DocTextBlock;
 class ActionConnector;      // 函数功能的中间件
 class DocImageBlock;
 class SelectTemplateDialog;
+class DocTable;
 
 // 编辑窗口的主界面
 class PassageMainWindow
@@ -49,11 +50,16 @@ public slots:
     void imageDialog();         // 打开图片框
     void pageDialog();          // 打开页面框
     void templateDialog();      //打开模板选择
+    void tableSetting();        // 打开表格设置
+
     void Bold();                // 加粗事件
     void Italic();              // 斜体事件
     void underline();           // 下划线事件
 
     void printPassage();        // 打印文章
+
+    void undo();
+    void redo();
 
     void zoomIn();              // 放大
     void zooomOut();            // 缩小
@@ -62,13 +68,14 @@ public slots:
     void acceptTextBlockFormat(QTextBlockFormat blockFormat);  // 接受当前处理的块格式
     void acceptTextCharFormat(QTextCharFormat charFormat);     // 接受当前处理的字符格式
     void acceptImageBlock(DocImageBlock * imageBlock);         //接受当前处理的图片块
+    void acceptTableBlock(DocTable* table);                    // 接受当前表格
 
     void switchToEditMode();        //切换到编辑模式
     void switchToViewMode();        //切换到阅读模式
 
     void changeCurrentPassage(int index);                   // 当活跃内容 切换为当前页面
     void closePassageRequest(int index);                    // 点击关闭时处理
-
+    void setStatusMessage(QString msg);
 
 protected:
     void closeEvent(QCloseEvent *event);     // 关闭窗口时的响应事件
@@ -76,6 +83,7 @@ protected:
 private:
     static PassageMainWindow* m_instance;   // 单例
     double scale;
+    bool isEditable;
 
     // 菜单栏
     QMenu * filesMenu;          // 文件
@@ -160,6 +168,7 @@ private:
     QTextBlockFormat _currentBlockFormat;  // 当前块格式
 
     DocImageBlock *imageBlock;  //图片块
+    DocTable *tableBlock;       // 表格块
 
     SelectTemplateDialog * select_template_dialog;  //选择模板对话框
 
@@ -167,6 +176,7 @@ private:
 
 signals:
     void updateActivedPassage(DocPassage * passage);        // 更新当前操作的文档对象
+    void setEditable(bool flag);                            // 设置是否可以编辑
 
 };
 

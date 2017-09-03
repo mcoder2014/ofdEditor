@@ -113,6 +113,9 @@ void DocPassage::addPage(DocPage *page)
     this->connect(page, SIGNAL(signals_page_actived(DocPage*)),
                   this, SLOT(setCurrentActivedPage(DocPage*)));
 
+    this->connect(this, SIGNAL(signals_setEditable(bool)),
+                  page, SLOT(setEditedAble(bool)));
+
     this->layout->update();             // 更新
     page->setPassage(this);             // 设置页所属的文章
     this->adjustWidgetSize();           // 调整大小
@@ -205,6 +208,9 @@ void DocPassage::insertPage(DocPage *page, int index)
 
     this->connect(page, SIGNAL(signals_page_actived(DocPage*)),
                   this, SLOT(setCurrentActivedPage(DocPage*)));
+
+    this->connect(this, SIGNAL(signals_setEditable(bool)),
+                  page, SLOT(setEditedAble(bool)));
 
     this->layout->update();
     page->setPassage(this);

@@ -235,6 +235,9 @@ void DocBlock::paint(QPainter *painter,
  */
 void DocBlock::focusInEvent(QFocusEvent *event)
 {
+    if(!this->getPage()->getEditable())
+        return;
+
     QGraphicsProxyWidget::focusInEvent(event);
     this->isFocused = true;
 
@@ -252,6 +255,8 @@ void DocBlock::focusInEvent(QFocusEvent *event)
  */
 void DocBlock::focusOutEvent(QFocusEvent *event)
 {
+    if(!this->getPage()->getEditable())
+        return;
     QGraphicsProxyWidget::focusOutEvent(event);
     this->isFocused = false;
     QGraphicsProxyWidget::setZValue(this->realZValue);    // 还原到真实的Z坐标
@@ -462,18 +467,19 @@ void DocBlock::initMenu()
 {
     // 移动到前景层
     this->action_foreground = new QAction(tr("Foreground"), NULL);
-
+    this->action_foreground->setCheckable(true);
     this->connect(this->action_foreground, SIGNAL(triggered(bool)),
                   this, SLOT(moveToForeground()));
 
     // 移动到正文层
     this->action_body = new QAction(tr("Body"), NULL);
-
+    this->action_body->setCheckable(true);
     this->connect(this->action_body, SIGNAL(triggered(bool)),
                   this, SLOT(moveToBody()));
 
     // 移动到背景层
     this->action_background = new QAction(tr("Background"), NULL);
+    this->action_background->setCheckable(true);
 
     this->connect(this->action_background, SIGNAL(triggered(bool)),
                   this, SLOT(moveToBackground()));

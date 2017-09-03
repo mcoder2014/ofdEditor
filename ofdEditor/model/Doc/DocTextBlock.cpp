@@ -701,8 +701,11 @@ void DocTextBlock::serCharFormatOnSelection(
  */
 void DocTextBlock::focusInEvent(QFocusEvent *e)
 {
-    this->showBoundaryFrame(true);
 
+    if(!this->getPage()->getEditable())
+        return;
+
+    this->showBoundaryFrame(true);
     emitFormatSignals();            // 当鼠标移进时，必须发出信号
 
     QTextEdit::focusInEvent(e);
@@ -717,8 +720,10 @@ void DocTextBlock::focusInEvent(QFocusEvent *e)
  */
 void DocTextBlock::focusOutEvent(QFocusEvent *e)
 {
-    this->showBoundaryFrame(false);
+    if(!this->getPage()->getEditable())
+        return;
 
+    this->showBoundaryFrame(false);
     QTextEdit::focusOutEvent(e);
 }
 

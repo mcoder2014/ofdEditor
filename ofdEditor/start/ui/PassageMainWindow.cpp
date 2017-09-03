@@ -98,6 +98,8 @@ void PassageMainWindow::activateFindAndReplaceDock()
         find_and_replace_dock->setCurrentPassage(
                     this->activedPassage());     // 设置当前操作的文章
         find_and_replace_dock->show();
+        find_and_replace_dock->update();
+        find_and_replace_dock->setBackgroundRole(QPalette::Window);
     }
 }
 
@@ -110,6 +112,8 @@ void PassageMainWindow::activateFindAndReplaceDock()
  */
 void PassageMainWindow::init()
 {
+
+    this->isEditable = true;
 
     /// 标签页
     this->tabArea = new QTabWidget();
@@ -702,6 +706,16 @@ void PassageMainWindow::printPassage()
     }
 }
 
+void PassageMainWindow::undo()
+{
+
+}
+
+void PassageMainWindow::redo()
+{
+
+}
+
 /**
  * @Author Chaoqun
  * @brief  放大函数
@@ -924,6 +938,11 @@ void PassageMainWindow::templateDialog()
     this->select_template_dialog->exec();
 }
 
+void PassageMainWindow::tableSetting()
+{
+
+}
+
 /**
  * @Author Chaoqun
  * @brief  接受当前处理的文字块的更新
@@ -935,6 +954,7 @@ void PassageMainWindow::acceptTextBlock(DocTextBlock *textBlock)
 {
     this->textBlock = textBlock;        // 修改引用
     this->imageBlock = NULL;
+    this->tableBlock = NULL;
 }
 
 /**
@@ -1036,16 +1056,32 @@ void PassageMainWindow::acceptImageBlock(DocImageBlock *imageBlock)
 {
     this->imageBlock = imageBlock;
     this->textBlock = NULL;
+    this->tableBlock = NULL;
+}
+
+void PassageMainWindow::acceptTableBlock(DocTable *table)
+{
+    this->tableBlock = table;
+    this->textBlock = NULL;
+    this->imageBlock = NULL;
 }
 
 void PassageMainWindow::switchToEditMode()
 {
     this->viewModeAction->setChecked(false);
+    this->editModeAction->setChecked(true);
+
+    this->isEditable = true;
+    emit this->setEditable(this->isEditable);
 }
 
 void PassageMainWindow::switchToViewMode()
 {
     this->editModeAction->setChecked(false);
+    this->viewModeAction->setChecked(true);
+
+    this->isEditable = false;
+    emit this->setEditable(this->isEditable);
 }
 
 ///
@@ -1091,6 +1127,16 @@ void PassageMainWindow::closePassageRequest(int index)
         recentWidget->init();
         this->tabArea->addTab(recentWidget,tr("Welcome!"));
     }
+}
+
+///
+/// \brief PassageMainWindow::setStatusMessage
+/// \param msg
+///     在状态栏中显示信息
+///
+void PassageMainWindow::setStatusMessage(QString msg)
+{
+
 }
 
 void PassageMainWindow::createTemplatePassage(int index)
@@ -1412,6 +1458,11 @@ DocPassage *PassageMainWindow::addDocPassage(DocPassage *passage)
     //处理变更的imageBlock
     this->connect(passage, SIGNAL(signals_currentImageBlock(DocImageBlock*)),
                   this, SLOT(acceptImageBlock(DocImageBlock*)));
+    this->connect(this, SIGNAL(setEditable(bool)),
+                  passage, SIGNAL(signals_setEditable(bool)));  // 转发设置可以编辑
+
+    emit this->setEditable(this->isEditable);
+
     return passage;
 }
 

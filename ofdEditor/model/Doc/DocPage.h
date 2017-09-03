@@ -50,8 +50,7 @@ public:
     DocLayer* getBodyLayer();                       // 获得正文层
     DocLayer* getBackgroundLayer();                 // 获得背景层
     DocLayer *getLayer(DocPage::Layer layer);       // 获得层
-
-    //Pan
+    bool getEditable(){return this->isEditable;}
 
 
     bool isUsingWorkArea(){return this->has_working_area;}
@@ -86,6 +85,8 @@ public slots:
     void insertPageBefore();            // 在本页之前插入页面
     void insertPageAfter();             // 在本页之后插入页面
     void dialogPageSetting();           // 页面设置窗口
+    void setEditedAble(bool flag);      // 设置是否可以编辑
+
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -95,6 +96,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void focusInEvent(QFocusEvent *event);
+    void focusOutEvent(QFocusEvent *event);
 
 private:
 
@@ -137,6 +139,9 @@ private:
 
     QAction *action_deletePage;         // 删除本页
     QAction *action_pageSetting;        // 页面设置
+
+    // 是否可以编辑
+    bool isEditable;
 
 
     // 页面设置

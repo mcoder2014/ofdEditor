@@ -192,6 +192,7 @@ signals:
             DocTextBlock* textBlock); // 当前操作的textBlock
     void signals_currentImageBlock(
             DocImageBlock* imageBlock);  //当前操作的imageBlock
+    void signals_setEditable(bool flag);    // 通知自己页面是否可以编辑
 
 };
 
